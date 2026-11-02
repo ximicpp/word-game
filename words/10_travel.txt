@@ -1,0 +1,74 @@
+# 旅行与交通 | travel
+## 交通工具
+transport|A2|ˈtrænspɔːt|交通|Public transport in this city is very good.|
+car|A2|kɑː|汽车|My mum drives a red car.|
+bus|A2|bʌs|公共汽车|I take the bus to school.|
+plane|A2|pleɪn|飞机|The plane landed on time.|syn:aeroplane
+aeroplane|A2|ˈeərəpleɪn|飞机|Have you ever been on an aeroplane?|
+bike|A2|baɪk|自行车|I ride my bike to the park.|syn:bicycle
+bicycle|A2|ˈbaɪsɪkl|自行车|He bought a new bicycle.|
+motorbike|A2|ˈməʊtəbaɪk|摩托车|My uncle rides a motorbike.|
+taxi|A2|ˈtæksi|出租车|Let's take a taxi to the airport.|
+boat|A2|bəʊt|小船|We went on a boat trip.|syn:ship
+ship|A2|ʃɪp|轮船|The ship crossed the ocean.|
+ferry|B1|ˈferi|渡轮|We took the ferry to France.|hyper:ship
+underground|A2|ˌʌndəˈɡraʊnd|地铁；地下的|Take the underground to the city centre.|
+tram|A2|træm|有轨电车|You can take a tram to the museum.|
+lorry|B1|ˈlɒri|卡车|A big lorry blocked the road.|syn:truck
+truck|B1|trʌk|卡车|The truck was full of vegetables.|
+helicopter|A2|ˈhelɪkɒptə|直升机|A helicopter flew over the beach.|
+vehicle|B1|ˈviːəkl|车辆|No vehicle is allowed in the park.|
+## 出行
+travel|A2|ˈtrævl|旅行|I love to travel to new places.|
+trip|A2|trɪp|旅行；短途旅行|We went on a school trip to the zoo.|syn:journey
+journey|A2|ˈdʒɜːni|旅程|The journey took three hours.|
+tour|A2|tʊə|游览|We took a tour of the city.|
+tourist|A2|ˈtʊərɪst|游客|Lots of tourists visit the castle. Every tourist takes photos.|
+abroad|B1|əˈbrɔːd|在国外|She wants to study abroad.|
+passenger|A2|ˈpæsɪndʒə|乘客|The bus can carry fifty passengers. One passenger was late.|
+passport|A2|ˈpɑːspɔːt|护照|Don't forget your passport.|
+ticket|A2|ˈtɪkɪt|票|I bought a ticket for the train.|
+luggage|A2|ˈlʌɡɪdʒ|行李|How much luggage do you have?|syn:baggage
+baggage|B1|ˈbæɡɪdʒ|行李|Collect your baggage here.|
+suitcase|A2|ˈsuːtkeɪs|行李箱|My suitcase is too heavy.|
+map|A2|mæp|地图|Let's look at the map.|
+guidebook|B1|ˈɡaɪdbʊk|旅游指南|The guidebook says the castle is closed on Mondays.|
+arrive|A2|əˈraɪv|到达|What time does the train arrive?|ant:leave
+arrival|B1|əˈraɪvl|到达|The arrival time is six o'clock.|ant:departure
+departure|B1|dɪˈpɑːtʃə|出发|Our departure was late because of the snow.|
+leave|A2|liːv|离开|The bus will leave in five minutes.|
+reach|B1|riːtʃ|到达；够到|We will reach the top of the hill soon.|syn:arrive
+miss|A2|mɪs|错过；想念|Hurry up or we'll miss the train.|coll:miss a chance
+delay|B1|dɪˈleɪ|延误|There is a delay of twenty minutes.|
+cancel|B1|ˈkænsl|取消|The flight was cancelled because of the storm. They had to cancel it.|
+reservation|B1|ˌrezəˈveɪʃn|预订|I have a reservation for two nights.|
+flight|A2|flaɪt|航班|Our flight was delayed.|
+fly|A2|flaɪ|飞；乘飞机|We fly to Rome tomorrow.|
+land|B1|lænd|着陆；陆地|The plane will land in ten minutes.|ant:take off
+drive|A2|draɪv|开车|My dad likes to drive to work.|
+park|A2|pɑːk|停车；公园|You can't park here.|
+crash|B1|kræʃ|碰撞|Two cars crashed on the motorway. Drive slowly or you'll crash.|
+traffic|A2|ˈtræfɪk|交通（车流）|There's a lot of traffic in the morning.|coll:traffic jam
+speed|B1|spiːd|速度|The train travels at high speed.|
+fast|A2|fɑːst|快的|This is a fast train.|ant:slow
+slow|A2|sləʊ|慢的|The bus is very slow.|
+## 地点
+airport|A2|ˈeəpɔːt|机场|We got to the airport early.|
+station|A2|ˈsteɪʃn|车站|Meet me at the station.|
+bus stop|A2|ˈbʌs stɒp|公交车站|Wait for me at the bus stop.|
+platform|A2|ˈplætfɔːm|站台|The train leaves from platform two.|
+port|B1|pɔːt|港口|The ship arrived at the port.|
+road|A2|rəʊd|道路|Be careful when you cross the road.|syn:street
+motorway|B1|ˈməʊtəweɪ|高速公路|There is a lot of traffic on the motorway.|hyper:road
+petrol|A2|ˈpetrəl|汽油|We need to stop for petrol.|
+hotel|A2|həʊˈtel|酒店|Our hotel is near the beach.|
+hostel|B1|ˈhɒstl|青年旅社|We stayed in a cheap hostel.|hyper:hotel
+campsite|B1|ˈkæmpsaɪt|露营地|The campsite is next to a lake.|
+reception|B1|rɪˈsepʃn|前台|Leave your key at reception.|
+stay|A2|steɪ|停留；住|We stayed at a hotel for a week. Stay as long as you like.|
+sightseeing|B1|ˈsaɪtsiːɪŋ|观光|We went sightseeing in Paris.|
+souvenir|B1|ˌsuːvəˈnɪə|纪念品|I bought a souvenir for my friend.|
+view|A2|vjuː|风景；看法|The view from the top is amazing.|
+foreign|A2|ˈfɒrən|外国的|Can you speak a foreign language?|
+country|A2|ˈkʌntri|国家；乡村|What country are you from?|
+international|B1|ˌɪntəˈnæʃnəl|国际的|It's an international school.|

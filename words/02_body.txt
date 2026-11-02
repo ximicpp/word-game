@@ -1,0 +1,81 @@
+# 身体与健康 | body
+## 身体部位
+body|A2|ˈbɒdi|身体|Exercise is good for your body and mind.|
+head|A2|hed|头|She hit her head on the door.|
+face|A2|feɪs|脸|Wash your face before breakfast.|
+hair|A2|heə|头发|She has long brown hair.|
+eye|A2|aɪ|眼睛|Close your eyes and count to ten. Open one eye now.|
+ear|A2|ɪə|耳朵|My left ear hurts.|
+nose|A2|nəʊz|鼻子|The clown had a red nose.|
+mouth|A2|maʊθ|嘴|Don't talk with your mouth full.|
+tooth|A2|tuːθ|牙齿|I lost a tooth when I was six.|
+teeth|A2|tiːθ|牙齿（复数）|Brush your teeth twice a day.|
+lip|B1|lɪp|嘴唇|My lip is dry in winter.|
+tongue|B1|tʌŋ|舌头|The dog put out its tongue.|
+neck|A2|nek|脖子|A giraffe has a very long neck.|
+shoulder|A2|ˈʃəʊldə|肩膀|He put his bag on his shoulder.|
+arm|A2|ɑːm|手臂|She broke her arm playing football.|
+hand|A2|hænd|手|Raise your hand if you know the answer.|
+finger|A2|ˈfɪŋɡə|手指|I cut my finger on a piece of glass.|
+thumb|B1|θʌm|拇指|He gave me a thumbs-up with his thumb.|
+nail|B1|neɪl|指甲；钉子|Stop biting your nail!|
+back|A2|bæk|背；后面|I've got a pain in my back.|
+stomach|A2|ˈstʌmək|胃；肚子|My stomach hurts after eating so much.|
+leg|A2|leɡ|腿|A spider has eight legs and each leg is thin.|
+knee|A2|niː|膝盖|I fell and hurt my knee.|
+foot|A2|fʊt|脚|My left foot is bigger than my right one.|
+feet|A2|fiːt|脚（复数）|My feet are cold.|
+toe|A2|təʊ|脚趾|I hit my toe on the table.|
+heart|A2|hɑːt|心脏；心|Your heart beats faster when you run.|
+brain|B1|breɪn|大脑|The brain needs sleep to work well.|
+blood|B1|blʌd|血|He gave blood at the hospital.|
+bone|B1|bəʊn|骨头|The dog is chewing a bone.|
+skin|B1|skɪn|皮肤|Put on sun cream to protect your skin.|
+muscle|B1|ˈmʌsl|肌肉|Swimming makes your muscles strong. Rest each muscle after training.|
+## 健康
+health|A2|helθ|健康|Too much sugar is bad for your health.|
+healthy|A2|ˈhelθi|健康的|Eat healthy food like fruit and vegetables.|ant:unhealthy
+unhealthy|B1|ʌnˈhelθi|不健康的|Fast food is unhealthy.|
+ill|A2|ɪl|生病的|I was ill and missed school.|syn:sick;ant:well
+sick|A2|sɪk|生病的；恶心的|I feel sick after the boat trip.|
+illness|B1|ˈɪlnəs|疾病|He is getting better after his illness.|syn:disease
+disease|B1|dɪˈziːz|疾病|Washing your hands helps stop disease.|
+well|A2|wel|健康的；好地|I hope you feel well soon.|
+fit|A2|fɪt|健康的；合身|She keeps fit by cycling to school.|
+pain|B1|peɪn|疼痛|I have a pain in my side.|syn:ache
+ache|B1|eɪk|疼痛|I've got a stomach ache.|
+hurt|A2|hɜːt|疼；伤害|Does your leg hurt when you walk?|
+injure|B1|ˈɪndʒə|使受伤|Be careful not to injure yourself.|syn:hurt
+injury|B1|ˈɪndʒəri|伤|The player has a knee injury.|
+headache|A2|ˈhedeɪk|头痛|I've got a headache, so I'm going to bed.|
+toothache|A2|ˈtuːθeɪk|牙痛|I have toothache, so I need a dentist.|
+cold|A2|kəʊld|感冒；冷的|I caught a cold at the weekend.|ant:hot
+cough|B1|kɒf|咳嗽|He has had a bad cough for a week.|
+temperature|A2|ˈtemprətʃə|体温；温度|The nurse took my temperature.|
+fever|B1|ˈfiːvə|发烧|The child has a high fever.|syn:temperature
+flu|A2|fluː|流感|Half the class is off with flu.|
+medicine|A2|ˈmedsn|药|Take this medicine three times a day.|
+pill|B1|pɪl|药丸|Take one pill after dinner.|syn:medicine
+doctor|A2|ˈdɒktə|医生|You should see a doctor about that cough.|
+nurse|A2|nɜːs|护士|The nurse gave me an injection.|
+dentist|A2|ˈdentɪst|牙医|I go to the dentist twice a year.|
+hospital|A2|ˈhɒspɪtl|医院|She was in hospital for three days.|
+ambulance|A2|ˈæmbjələns|救护车|Call an ambulance, quickly!|
+accident|A2|ˈæksɪdənt|事故；意外|He broke his leg in a car accident.|
+emergency|B1|iˈmɜːdʒənsi|紧急情况|In an emergency, call 999.|
+appointment|B1|əˈpɔɪntmənt|预约|I have an appointment with the doctor at four.|
+operation|B1|ˌɒpəˈreɪʃn|手术|After the operation, he felt much better.|
+recover|B1|rɪˈkʌvə|康复|It took her a month to recover.|
+rest|A2|rest|休息|You need to rest for a few days.|
+sleep|A2|sliːp|睡觉|I usually sleep for nine hours.|ant:wake
+asleep|A2|əˈsliːp|睡着的|The baby is asleep at last.|ant:awake
+awake|B1|əˈweɪk|醒着的|I was awake all night.|
+diet|B1|ˈdaɪət|饮食；节食|A good diet includes lots of vegetables.|
+exercise|A2|ˈeksəsaɪz|锻炼；练习|Doctors say we need exercise every day.|coll:take exercise
+weight|B1|weɪt|体重；重量|He lost weight by eating less sugar.|
+breathe|B1|briːð|呼吸|Breathe in slowly through your nose.|
+smoke|B1|sməʊk|吸烟；烟|Smoking is bad for your health, so never smoke.|
+alive|B1|əˈlaɪv|活着的|The fish is still alive.|ant:dead
+dead|A2|ded|死的|The plant is dead because I forgot to water it.|
+die|A2|daɪ|死|Plants die without water.|
+death|B1|deθ|死亡|The death of his dog made him very sad.|

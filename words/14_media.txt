@@ -1,0 +1,69 @@
+# 交流与科技 | media
+## 交流
+talk|A2|tɔːk|谈话|Can I talk to you for a minute?|syn:speak
+speak|A2|spiːk|说（语言）|Do you speak French?|
+say|A2|seɪ|说|What did you say?|
+tell|A2|tel|告诉|Tell me a story.|
+chat|A2|tʃæt|聊天|We chat online every evening.|
+conversation|A2|ˌkɒnvəˈseɪʃn|对话|We had a long conversation.|
+discuss|B1|dɪˈskʌs|讨论|Let's discuss our plan.|
+discussion|B1|dɪˈskʌʃn|讨论|We had a class discussion about pets.|
+call|A2|kɔːl|打电话；叫|I'll call you tomorrow.|
+phone|A2|fəʊn|电话|Can I use your phone?|
+mobile|A2|ˈməʊbaɪl|手机|Turn off your mobile in class.|syn:phone
+message|A2|ˈmesɪdʒ|消息|I sent you a message.|
+text|A2|tekst|短信；文本|Send me a text when you arrive.|
+letter|A2|ˈletə|信；字母|I wrote a letter to my grandma.|
+postcard|A2|ˈpəʊstkɑːd|明信片|Send me a postcard from Spain.|hyper:card
+envelope|A2|ˈenvələʊp|信封|Put the letter in an envelope.|
+post|A2|pəʊst|邮寄；邮件|I'll post the letter today.|
+reply|A2|rɪˈplaɪ|回复|Please reply to my email.|syn:answer
+news|A2|njuːz|新闻；消息|Have you heard the news?|
+shout|A2|ʃaʊt|喊|Don't shout, I can hear you.|ant:whisper
+whisper|B1|ˈwɪspə|低语|She whispered the answer to me. Don't whisper in class.|
+listen|A2|ˈlɪsn|（注意地）听|Listen carefully to the instructions.|form:silent;syn:hear
+hear|A2|hɪə|听见|I can hear birds outside.|sound:here
+voice|A2|vɔɪs|嗓音|She has a beautiful voice.|
+joke|A2|dʒəʊk|笑话|He told a funny joke.|
+## 科技
+technology|A2|tekˈnɒlədʒi|科技|Technology changes very fast.|
+internet|A2|ˈɪntənet|互联网|I use the internet for my homework.|
+website|A2|ˈwebsaɪt|网站|Check the school website.|
+laptop|A2|ˈlæptɒp|笔记本电脑|I do my homework on my laptop.|hyper:computer
+tablet|B1|ˈtæblət|平板电脑|She reads books on her tablet.|
+screen|A2|skriːn|屏幕|Don't sit too close to the screen.|
+keyboard|A2|ˈkiːbɔːd|键盘|The keyboard is too small.|
+click|A2|klɪk|点击|Click on the picture.|
+download|A2|ˌdaʊnˈləʊd|下载|Download the app for free.|ant:upload
+upload|B1|ˌʌpˈləʊd|上传|I'll upload the photos tonight.|
+app|A2|æp|应用程序|This app helps me learn English.|
+password|A2|ˈpɑːswɜːd|密码|Never tell anyone your password.|
+search|B1|sɜːtʃ|搜索|Search for the answer online.|
+type|A2|taɪp|打字；类型|I can type very fast.|
+print|A2|prɪnt|打印|Can you print this page?|
+delete|B1|dɪˈliːt|删除|Delete the old photos.|
+battery|B1|ˈbætri|电池|My phone battery is low.|
+charge|B1|tʃɑːdʒ|充电；收费|I need to charge my phone.|
+camera|A2|ˈkæmərə|相机|I took this photo with my new camera.|
+photo|A2|ˈfəʊtəʊ|照片|Can I take a photo?|syn:picture
+picture|A2|ˈpɪktʃə|图片；画|Look at this picture.|
+video|A2|ˈvɪdiəʊ|视频|We watched a funny video.|
+machine|A2|məˈʃiːn|机器|This machine makes coffee.|
+robot|B1|ˈrəʊbɒt|机器人|The robot can clean the floor.|
+invent|B1|ɪnˈvent|发明|Who invented the telephone? I want to invent a robot.|
+invention|B1|ɪnˈvenʃn|发明|The phone is a great invention.|
+electric|B1|ɪˈlektrɪk|电的|They have an electric car.|
+digital|B1|ˈdɪdʒɪtl|数字的|I have a digital camera.|
+## 媒体
+media|B1|ˈmiːdiə|媒体|Social media is popular with teenagers.|
+newspaper|A2|ˈnjuːzpeɪpə|报纸|Dad reads the newspaper every morning.|
+magazine|A2|ˌmæɡəˈziːn|杂志|I buy a music magazine every month.|
+article|B1|ˈɑːtɪkl|文章|I read an interesting article about sharks.|
+television|A2|ˈtelɪvɪʒn|电视|We watch television after dinner.|syn:TV
+TV|A2|ˌtiːˈviː|电视|What's on TV tonight?|
+programme|A2|ˈprəʊɡræm|节目|My favourite programme is on at seven.|
+channel|B1|ˈtʃænl|频道|Change the channel, please.|
+radio|A2|ˈreɪdiəʊ|收音机|I listen to the radio in the car.|
+blog|A2|blɒɡ|博客|She writes a blog about travel.|
+podcast|B1|ˈpɒdkɑːst|播客|I listen to a podcast on the bus.|
+headline|B1|ˈhedlaɪn|标题|The headline says the team won.|

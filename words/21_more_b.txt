@@ -1,0 +1,118 @@
+# 工作与职业 | work
+## 工作
+apply|B1|əˈplaɪ|申请|I want to apply for the job.|
+application|B1|ˌæplɪˈkeɪʃn|申请|Fill in the application form.|
+CV|B1|ˌsiː ˈviː|简历|Send your CV by email.|
+qualification|B1|ˌkwɒlɪfɪˈkeɪʃn|资格；证书|What qualification do you need for this job?|
+qualified|B1|ˈkwɒlɪfaɪd|有资格的|She is a qualified nurse.|
+profession|B1|prəˈfeʃn|职业|Teaching is a great profession.|syn:career
+professional|B1|prəˈfeʃənl|专业的；职业的|He's a professional footballer.|
+part-time|B1|ˌpɑːt ˈtaɪm|兼职的|She has a part-time job.|ant:full-time
+full-time|B1|ˌfʊl ˈtaɪm|全职的|He works full-time.|
+staff|B1|stɑːf|员工|The staff are very friendly.|
+client|B1|ˈklaɪənt|客户|The lawyer is meeting a client.|syn:customer
+task|B1|tɑːsk|任务|My first task is to answer emails.|syn:job
+responsibility|B1|rɪˌspɒnsəˈbɪləti|责任|Looking after the dog is my responsibility.|
+deadline|B1|ˈdedlaɪn|截止日期|The deadline is Friday.|
+shift|B1|ʃɪft|轮班|He works the night shift.|
+overtime|B1|ˈəʊvətaɪm|加班|She did two hours of overtime.|
+industry|B1|ˈɪndəstri|工业；行业|The car industry is very important here.|
+product|B1|ˈprɒdʌkt|产品|This is our newest product.|
+produce|B1|prəˈdjuːs|生产|The factory will produce a thousand cars.|
+production|B1|prəˈdʌkʃn|生产|Production starts next month.|
+equipment|B1|ɪˈkwɪpmənt|设备|We need new sports equipment.|
+hire|B1|ˈhaɪə|租用；雇用|We can hire bikes at the beach.|
+## 职业
+astronaut|B1|ˈæstrənɔːt|宇航员|The astronaut flew into space.|
+captain|B1|ˈkæptɪn|船长；队长|The captain of the ship is very experienced.|
+detective|B1|dɪˈtektɪv|侦探|The detective found the thief.|
+electrician|B1|ɪˌlekˈtrɪʃn|电工|The electrician fixed the lights.|
+gardener|B1|ˈɡɑːdnə|园丁|The gardener is cutting the grass.|
+model|B1|ˈmɒdl|模特；模型|She works as a fashion model.|
+plumber|B1|ˈplʌmə|水管工|Call the plumber, the tap is broken.|
+postman|A2|ˈpəʊstmən|邮递员|The postman brought a letter.|
+sailor|B1|ˈseɪlə|水手|The sailor has travelled around the world.|
+surgeon|B1|ˈsɜːdʒən|外科医生|The surgeon did the operation.|hyper:doctor
+tailor|B1|ˈteɪlə|裁缝|The tailor made a suit for my dad.|
+technician|B1|tekˈnɪʃn|技术员|The technician repaired the computer.|
+butcher|B1|ˈbʊtʃə|屠夫；肉店|Buy some meat at the butcher.|
+baker|A2|ˈbeɪkə|面包师|The baker makes bread every morning.|
+librarian|B1|laɪˈbreəriən|图书管理员|The librarian helped me find a book.|
+# 运动与爱好 | sport
+## 运动
+athlete|B1|ˈæθliːt|运动员|She is a great athlete.|
+boxing|B1|ˈbɒksɪŋ|拳击|Boxing can be dangerous.|hyper:sport
+karate|B1|kəˈrɑːti|空手道|I do karate twice a week.|hyper:sport
+rugby|B1|ˈrʌɡbi|橄榄球|Rugby is popular in Wales.|hyper:sport
+snowboarding|B1|ˈsnəʊbɔːdɪŋ|单板滑雪|We went snowboarding in the Alps.|hyper:sport
+surfing|B1|ˈsɜːfɪŋ|冲浪|Surfing is fun when the waves are big.|hyper:sport
+table tennis|A2|ˈteɪbl tenɪs|乒乓球|Let's play table tennis.|hyper:sport
+gymnastics|B1|dʒɪmˈnæstɪks|体操|She is very good at gymnastics.|hyper:sport
+marathon|B1|ˈmærəθən|马拉松|My dad ran a marathon.|hyper:race
+referee|B1|ˌrefəˈriː|裁判|The referee blew the whistle.|
+whistle|B1|ˈwɪsl|口哨|The game ends when the referee blows the whistle.|
+tournament|B1|ˈtʊənəmənt|锦标赛|Our team won the tournament.|syn:competition
+league|B1|liːɡ|联赛|They are the best team in the league.|
+opponent|B1|əˈpəʊnənt|对手|Our opponent was very strong.|
+warm up|B1|ˌwɔːm ˈʌp|热身|Warm up before you run.|
+record|B1|ˈrekɔːd|纪录；记录|She broke the world record.|
+compete|B1|kəmˈpiːt|比赛；竞争|Ten teams will compete in the final.|
+final|B1|ˈfaɪnl|决赛；最后的|We're in the final!|
+## 爱好
+board game|A2|ˈbɔːd ɡeɪm|棋盘游戏|We play a board game every Sunday.|hyper:game
+video game|A2|ˈvɪdiəʊ ɡeɪm|电子游戏|He plays a video game every evening.|hyper:game
+knit|B1|nɪt|编织|My grandma likes to knit.|
+sew|B1|səʊ|缝纫|Can you sew a button on?|sound:so
+craft|B1|krɑːft|手工艺|We made a craft for the school fair.|
+magic|B1|ˈmædʒɪk|魔术；魔法|He can do magic tricks.|
+trick|B1|trɪk|把戏；诀窍|Let me show you a card trick.|
+gardening|B1|ˈɡɑːdnɪŋ|园艺|My mum loves gardening.|
+hiking|B1|ˈhaɪkɪŋ|徒步旅行|We went hiking in the mountains.|syn:walking
+walking|A2|ˈwɔːkɪŋ|步行|Walking is good exercise.|
+theme park|B1|ˈθiːm pɑːk|主题公园|We went to a theme park.|
+entry|B1|ˈentri|入场；参赛作品|Entry is free.|
+# 购物与金钱 | shopping
+## 购物
+pay back|B1|ˌpeɪ ˈbæk|还钱|I'll pay back the money tomorrow.|
+exchange|B1|ɪksˈtʃeɪndʒ|交换；兑换|Can I exchange this shirt for a bigger one?|
+refund|B1|ˈriːfʌnd|退款|I'd like a refund, please.|
+fee|B1|fiː|费用|The entrance fee is five pounds.|syn:price
+tax|B1|tæks|税|The price includes tax.|
+budget|B1|ˈbʌdʒɪt|预算|We have a small budget for the trip.|
+account|B1|əˈkaʊnt|账户|I opened a bank account.|
+cash machine|B1|ˈkæʃ məʃiːn|自动取款机|Is there a cash machine near here?|
+counter|B1|ˈkaʊntə|柜台|Pay at the counter.|
+checkout|B1|ˈtʃekaʊt|收银台|There's a long queue at the checkout.|
+label|B1|ˈleɪbl|标签|Read the label before you buy.|
+quality|B1|ˈkwɒləti|质量|These shoes are good quality.|
+second-hand|B1|ˌsekənd ˈhænd|二手的|I bought a second-hand bike.|ant:new
+# 旅行与交通 | travel
+## 旅行
+accommodation|B1|əˌkɒməˈdeɪʃn|住处|We need accommodation for three nights.|
+backpacker|B1|ˈbækpækə|背包客|The hostel is full of backpackers. One backpacker is from Brazil.|
+check in|B1|ˌtʃek ˈɪn|登记入住|We can check in at two o'clock.|ant:check out
+check out|B1|ˌtʃek ˈaʊt|退房|You must check out by eleven.|
+cruise|B1|kruːz|游轮旅行|They went on a cruise around Greece.|
+destination|B1|ˌdestɪˈneɪʃn|目的地|Paris is a popular destination.|
+excursion|B1|ɪkˈskɜːʃn|短途旅行|We went on an excursion to the lake.|syn:trip
+explore|B1|ɪkˈsplɔː|探索|Let's explore the old town.|
+guided tour|B1|ˌɡaɪdɪd ˈtʊə|有导游的游览|We went on a guided tour of the castle.|
+package holiday|B1|ˈpækɪdʒ hɒlədeɪ|包价旅游|We booked a package holiday.|
+resort|B1|rɪˈzɔːt|度假胜地|It's a popular ski resort.|
+route|B1|ruːt|路线|What's the quickest route?|syn:way
+visa|B1|ˈviːzə|签证|Do I need a visa?|
+customs|B1|ˈkʌstəmz|海关|We went through customs at the airport.|
+boarding pass|B1|ˈbɔːdɪŋ pɑːs|登机牌|Show your boarding pass at the gate.|
+seat|A2|siːt|座位|Is this seat free?|
+seatbelt|B1|ˈsiːtbelt|安全带|Fasten your seatbelt.|
+## 交通
+engine|B1|ˈendʒɪn|发动机|The car engine won't start.|
+fuel|B1|ˈfjuːəl|燃料|We need to buy fuel.|syn:petrol
+licence|B1|ˈlaɪsns|执照|You need a licence to drive.|
+parking|B1|ˈpɑːkɪŋ|停车|Parking is free on Sundays.|
+puncture|B1|ˈpʌŋktʃə|（轮胎）被刺破|My bike has a puncture.|
+roundabout|B1|ˈraʊndəbaʊt|环岛|Turn left at the roundabout.|
+tyre|B1|ˈtaɪə|轮胎|I need a new tyre.|
+wheel|B1|wiːl|轮子|A bike has two wheels. One wheel is flat.|
+fare|B1|feə|车费|The bus fare is two pounds.|sound:fair
+commute|B1|kəˈmjuːt|通勤|I commute to work by train.|

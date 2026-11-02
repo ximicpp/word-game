@@ -1,0 +1,71 @@
+# 购物与金钱 | shopping
+## 商店
+shop|A2|ʃɒp|商店；购物|The shop opens at nine.|syn:store
+store|B1|stɔː|商店；储存|There's a big store in the town centre.|
+shopping|A2|ˈʃɒpɪŋ|购物|I go shopping with my mum on Saturdays.|
+supermarket|A2|ˈsuːpəmɑːkɪt|超市|We buy our food at the supermarket.|hyper:shop
+market|A2|ˈmɑːkɪt|市场|We buy fresh vegetables at the market.|
+bakery|A2|ˈbeɪkəri|面包店|The bakery sells fresh bread.|hyper:shop
+bookshop|A2|ˈbʊkʃɒp|书店|I found this novel in a small bookshop.|hyper:shop
+chemist|A2|ˈkemɪst|药店|You can buy medicine at the chemist.|syn:pharmacy
+pharmacy|B1|ˈfɑːməsi|药房|The pharmacy closes at six.|
+newsagent|B1|ˈnjuːzeɪdʒənt|报刊店|I buy a comic at the newsagent.|hyper:shop
+department store|A2|dɪˈpɑːtmənt stɔː|百货商店|The department store sells everything.|hyper:store
+shopping centre|A2|ˈʃɒpɪŋ sentə|购物中心|Let's meet at the shopping centre.|syn:mall
+mall|B1|mɔːl|商场|The new mall has a cinema.|
+customer|A2|ˈkʌstəmə|顾客|The shop is full of customers today. One customer is waiting.|
+cashier|B1|kæˈʃɪə|收银员|Pay the cashier at the front.|
+queue|B1|kjuː|排队；队伍|There was a long queue at the checkout.|
+## 买卖
+buy|A2|baɪ|买|I want to buy a new bike.|ant:sell
+sell|A2|sel|卖|They sell ice cream at the beach.|
+pay|A2|peɪ|付钱|Can I pay by card?|
+spend|A2|spend|花（钱/时间）|Don't spend all your money on sweets.|ant:save
+save|A2|seɪv|节省；保存；救|I'm saving money for a new phone. Try to save a little each week.|
+cost|A2|kɒst|花费；价钱|How much does this cost?|syn:price
+price|A2|praɪs|价格|The price of this book is ten pounds.|
+cheap|A2|tʃiːp|便宜的|This T-shirt is very cheap.|ant:expensive
+expensive|A2|ɪkˈspensɪv|昂贵的|That watch is too expensive.|
+sale|A2|seɪl|特价；出售|There's a sale at the shoe shop.|
+discount|B1|ˈdɪskaʊnt|折扣|Students get a ten percent discount.|
+offer|B1|ˈɒfə|优惠；提供|There's a special offer on chocolate.|
+bargain|B1|ˈbɑːɡən|便宜货|This jacket was a real bargain.|
+receipt|B1|rɪˈsiːt|收据|Keep the receipt in case you want to return it.|
+change|A2|tʃeɪndʒ|零钱；改变|Here's your change.|form:chance
+return|A2|rɪˈtɜːn|退回；返回|Can I return these shoes?|
+choose|A2|tʃuːz|选择|Choose a colour you like.|syn:pick
+choice|B1|tʃɔɪs|选择|There's a big choice of cakes.|
+pick|B1|pɪk|挑选；摘|Pick any card you like.|
+afford|B1|əˈfɔːd|买得起|I can't afford a new laptop.|
+try|A2|traɪ|尝试；试穿|Can I try on this coat?|
+deliver|B1|dɪˈlɪvə|递送|They will deliver the sofa on Friday.|
+delivery|B1|dɪˈlɪvəri|递送|Delivery is free for orders over twenty pounds.|
+online|A2|ˌɒnˈlaɪn|在线的；网上|I often buy books online.|
+## 钱
+money|A2|ˈmʌni|钱|I don't have enough money.|
+cash|A2|kæʃ|现金|Do you want to pay in cash?|
+coin|A2|kɔɪn|硬币|I found a coin under the sofa.|
+note|A2|nəʊt|纸币；便条|Can you change a ten-pound note?|
+pound|A2|paʊnd|英镑|It costs five pounds and one pound for the bag.|
+dollar|A2|ˈdɒlə|美元|One dollar is not much money.|
+credit card|A2|ˈkredɪt kɑːd|信用卡|Can I pay by credit card?|
+bank|A2|bæŋk|银行|I keep my money in the bank.|
+pocket money|A2|ˈpɒkɪt mʌni|零花钱|I get pocket money every week.|
+rich|A2|rɪtʃ|富有的|He became rich by selling cars.|ant:poor
+poor|A2|pɔː|穷的；可怜的|The poor dog was very hungry.|
+borrow|A2|ˈbɒrəʊ|借（入）|Can I borrow your pencil?|ant:lend
+lend|A2|lend|借（出）|Can you lend me five pounds?|
+owe|B1|əʊ|欠|I owe you two pounds.|
+worth|B1|wɜːθ|值……|This old coin is worth a lot of money.|
+value|B1|ˈvæljuː|价值|The value of the house has gone up.|
+## 东西
+thing|A2|θɪŋ|东西|Put each thing back in its place.|
+gift|A2|ɡɪft|礼物|This gift is for you.|syn:present
+packet|A2|ˈpækɪt|小包|I bought a packet of crisps.|
+box|A2|bɒks|盒子|Put the toys in the box.|
+basket|A2|ˈbɑːskɪt|篮子|Put the apples in the basket.|
+trolley|B1|ˈtrɒli|手推车|Push the trolley to the car.|
+list|A2|lɪst|清单|Don't forget the shopping list.|
+brand|B1|brænd|品牌|What brand is your phone?|
+advertisement|B1|ədˈvɜːtɪsmənt|广告|I saw an advertisement for a new game.|syn:advert
+advert|B1|ˈædvɜːt|广告|There's an advert for cheap flights.|

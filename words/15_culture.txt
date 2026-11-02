@@ -1,0 +1,66 @@
+# 娱乐与文化 | culture
+## 影视演出
+film|A2|fɪlm|电影|Let's watch a film tonight.|syn:movie
+movie|A2|ˈmuːvi|电影|This movie is really scary.|
+cartoon|A2|kɑːˈtuːn|动画片|My little brother loves cartoons. This cartoon is funny.|
+show|A2|ʃəʊ|节目；表演；展示|We went to a magic show.|
+concert|A2|ˈkɒnsət|音乐会|I went to my first concert last year.|
+drama|B1|ˈdrɑːmə|戏剧|I'm in the drama club.|
+comedy|B1|ˈkɒmədi|喜剧|I love watching comedy.|ant:tragedy
+tragedy|B1|ˈtrædʒədi|悲剧|Romeo and Juliet is a tragedy.|
+horror|B1|ˈhɒrə|恐怖|I don't watch horror films.|
+audience|B1|ˈɔːdiəns|观众|The audience clapped at the end.|
+stage|B1|steɪdʒ|舞台|The band came on the stage.|
+famous|A2|ˈfeɪməs|著名的|He's a famous footballer.|syn:well-known
+well-known|B1|ˌwel ˈnəʊn|著名的|It's a well-known song.|
+perform|B1|pəˈfɔːm|表演|The band will perform tonight.|
+performance|B1|pəˈfɔːməns|表演|It was a great performance.|
+act|B1|ækt|表演；行为|She wants to act in films.|
+role|B1|rəʊl|角色|He played the role of the king.|syn:part
+scene|B1|siːn|场景|The last scene was very sad.|sound:seen
+entertainment|B1|ˌentəˈteɪnmənt|娱乐|There's lots of entertainment at the festival.|
+## 文学
+story|A2|ˈstɔːri|故事|Tell me a story.|
+novel|B1|ˈnɒvl|小说|She's reading a long novel.|hyper:book
+poem|B1|ˈpəʊɪm|诗|We wrote a poem about the sea.|
+poetry|B1|ˈpəʊətri|诗歌|I like reading poetry.|
+comic|A2|ˈkɒmɪk|漫画书|I read a comic every week.|
+fairy tale|B1|ˈfeəri teɪl|童话|Cinderella is a famous fairy tale.|
+hero|B1|ˈhɪərəʊ|英雄；男主角|The hero saved the princess.|
+title|B1|ˈtaɪtl|标题|What's the title of the book?|
+chapter|B1|ˈtʃæptə|章|Read chapter three for homework.|
+## 艺术与音乐
+colour|A2|ˈkʌlə|颜色|What's your favourite colour?|
+red|A2|red|红色|She has a red bike.|hyper:colour
+blue|A2|bluː|蓝色|The sky is blue.|hyper:colour
+green|A2|ɡriːn|绿色|The grass is green.|hyper:colour
+yellow|A2|ˈjeləʊ|黄色|Bananas are yellow.|hyper:colour
+black|A2|blæk|黑色|I have a black cat.|hyper:colour;ant:white
+white|A2|waɪt|白色|Snow is white.|hyper:colour
+grey|A2|ɡreɪ|灰色|The sky is grey today.|hyper:colour
+brown|A2|braʊn|棕色|He has brown eyes.|hyper:colour
+pink|A2|pɪŋk|粉色|She painted her room pink.|hyper:colour
+purple|A2|ˈpɜːpl|紫色|Purple is my favourite colour.|hyper:colour
+dark|A2|dɑːk|深色的；黑暗的|He wore a dark blue suit.|ant:light
+bright|A2|braɪt|明亮的；鲜艳的|The room is bright and sunny.|
+exhibition|B1|ˌeksɪˈbɪʃn|展览|There's a photo exhibition at the museum.|
+sculpture|B1|ˈskʌlptʃə|雕塑|There's a sculpture of a horse in the park.|
+design|B1|dɪˈzaɪn|设计|I like the design of your T-shirt.|
+pop|A2|pɒp|流行音乐|I love pop music.|
+classical|B1|ˈklæsɪkl|古典的|She listens to classical music.|
+jazz|B1|dʒæz|爵士乐|There's a jazz band at the café.|
+instrument|B1|ˈɪnstrəmənt|乐器|Do you play an instrument?|
+choir|B1|ˈkwaɪə|合唱团|She sings in the school choir.|
+tune|B1|tjuːn|曲调|I can't get that tune out of my head.|
+## 文化与节日
+culture|B1|ˈkʌltʃə|文化|I'm interested in Japanese culture.|
+tradition|B1|trəˈdɪʃn|传统|It's a family tradition to eat fish at New Year.|
+traditional|B1|trəˈdɪʃənl|传统的|We wore traditional clothes.|
+custom|B1|ˈkʌstəm|习俗|It's a custom to give red envelopes.|syn:tradition
+Christmas|A2|ˈkrɪsməs|圣诞节|We put up a tree at Christmas.|hyper:festival
+New Year|A2|ˌnjuː ˈjɪə|新年|Happy New Year!|hyper:festival
+fireworks|B1|ˈfaɪəwɜːks|烟花|We watched the fireworks at midnight.|
+parade|B1|pəˈreɪd|游行|There's a parade on the main street.|
+costume|B1|ˈkɒstjuːm|戏服；服装|She wore a cat costume to the party.|
+religion|B1|rɪˈlɪdʒən|宗教|They study different religions. Each religion has festivals.|
+event|B1|ɪˈvent|事件；活动|The concert was the biggest event of the year.|

@@ -1,0 +1,131 @@
+# 城镇与地点 | town
+## 地点
+cathedral|B1|kəˈθiːdrəl|大教堂|We visited the old cathedral.|hyper:church
+mosque|B1|mɒsk|清真寺|There is a beautiful mosque in the city.|
+fountain|B1|ˈfaʊntən|喷泉|Children played in the fountain.|
+statue|B1|ˈstætʃuː|雕像|There's a statue of the king in the square.|
+industrial|B1|ɪnˈdʌstriəl|工业的|It's an industrial city.|
+suburb|B1|ˈsʌbɜːb|郊区|They live in a quiet suburb.|ant:centre
+outskirts|B1|ˈaʊtskɜːts|郊区|The factory is on the outskirts of town.|syn:suburb
+district|B1|ˈdɪstrɪkt|区|This district has lots of shops.|syn:area
+region|B1|ˈriːdʒən|地区|It rains a lot in this region.|syn:area
+location|B1|ˈləʊkeɪʃn|位置|The hotel is in a great location.|syn:place
+site|B1|saɪt|场所；地址|This is the site of the new school.|
+lane|B1|leɪn|小路；车道|We walked down a narrow lane.|
+avenue|B1|ˈævənjuː|大街|The shop is on Fifth Avenue.|
+path|B1|pɑːθ|小路|Follow the path through the woods.|
+tunnel|B1|ˈtʌnl|隧道|The train went through a tunnel.|
+harbour|B1|ˈhɑːbə|港口|The boats are in the harbour.|syn:port
+community|B1|kəˈmjuːnəti|社区|We have a strong community.|
+council|B1|ˈkaʊnsl|市政会|The council will build a new park.|
+youth club|B1|ˈjuːθ klʌb|青年俱乐部|I go to the youth club on Fridays.|
+nightclub|B1|ˈnaɪtklʌb|夜总会|The nightclub is closed on Mondays.|
+hairdresser's|B1|ˈheədresəz|理发店|I went to the hairdresser's.|
+take-away|B1|ˈteɪk əweɪ|外卖店|There's a Chinese take-away on our street.|
+## 方向
+upwards|B1|ˈʌpwədz|向上|The balloon floated upwards.|ant:downwards
+downwards|B1|ˈdaʊnwədz|向下|The path goes downwards to the beach.|
+forwards|B1|ˈfɔːwədz|向前|Move forwards, please.|ant:backwards
+backwards|B1|ˈbækwədz|向后|He walked backwards.|
+ahead|B1|əˈhed|在前面|Go straight ahead.|
+nearby|B1|ˌnɪəˈbaɪ|附近的|There's a park nearby.|
+distance|B1|ˈdɪstəns|距离|What's the distance from here to London?|
+# 自然与天气 | nature
+## 天气
+breeze|B1|briːz|微风|A cool breeze came from the sea.|syn:wind
+frost|B1|frɒst|霜|There was frost on the car this morning.|
+hail|B1|heɪl|冰雹|Hail damaged the car.|
+mist|B1|mɪst|薄雾|The hills were covered in mist.|syn:fog
+humid|B1|ˈhjuːmɪd|潮湿的|It's hot and humid today.|
+freezing|B1|ˈfriːzɪŋ|极冷的|It's freezing outside!|syn:cold
+boiling|B1|ˈbɔɪlɪŋ|极热的|It's boiling in here!|ant:freezing
+mild|B1|maɪld|温和的|We had a mild winter.|
+sunshine|B1|ˈsʌnʃaɪn|阳光|Let's sit in the sunshine.|
+sunset|B1|ˈsʌnset|日落|We watched the sunset.|ant:sunrise
+sunrise|B1|ˈsʌnraɪz|日出|We got up to see the sunrise.|
+## 自然
+branch|B1|brɑːntʃ|树枝|A bird sat on the branch.|
+bush|B1|bʊʃ|灌木|The cat hid under a bush.|
+root|B1|ruːt|根|The tree has deep roots. Each root drinks water.|
+soil|B1|sɔɪl|土壤|Plants need good soil.|syn:earth
+mud|B1|mʌd|泥|My boots are covered in mud.|
+pond|B1|pɒnd|池塘|There are fish in the pond.|
+stream|B1|striːm|小溪|We crossed the stream.|syn:river
+waterfall|B1|ˈwɔːtəfɔːl|瀑布|The waterfall is very high.|
+shell|B1|ʃel|贝壳|I found a shell on the beach.|
+cliff|B1|klɪf|悬崖|Don't go too close to the cliff.|
+volcano|B1|vɒlˈkeɪnəʊ|火山|The volcano is still active.|
+peak|B1|piːk|山顶|We reached the peak at noon.|
+landscape|B1|ˈlændskeɪp|风景|The landscape here is beautiful.|syn:view
+scenery|B1|ˈsiːnəri|风景|We stopped to enjoy the scenery.|
+oxygen|B1|ˈɒksɪdʒən|氧气|Plants produce oxygen.|
+gas|B1|ɡæs|气体；煤气|Is your cooker gas or electric?|
+## 动物
+creature|B1|ˈkriːtʃə|生物|What a strange creature!|syn:animal
+mammal|B1|ˈmæml|哺乳动物|A whale is a mammal.|
+reptile|B1|ˈreptaɪl|爬行动物|A snake is a reptile.|
+penguin|B1|ˈpeŋɡwɪn|企鹅|A penguin can't fly.|hyper:bird
+parrot|B1|ˈpærət|鹦鹉|The parrot can say hello.|hyper:bird
+eagle|B1|ˈiːɡl|鹰|An eagle flew over the mountain.|hyper:bird
+owl|B1|aʊl|猫头鹰|An owl hunts at night.|hyper:bird
+swan|B1|swɒn|天鹅|A white swan swam on the lake.|hyper:bird
+crocodile|B1|ˈkrɒkədaɪl|鳄鱼|A crocodile has big teeth.|hyper:reptile
+kangaroo|B1|ˌkæŋɡəˈruː|袋鼠|Kangaroos live in Australia. A kangaroo can jump far.|
+panda|A2|ˈpændə|熊猫|The panda is eating bamboo.|
+squirrel|B1|ˈskwɪrəl|松鼠|A squirrel ran up the tree.|
+deer|B1|dɪə|鹿|We saw a deer in the forest.|
+hamster|B1|ˈhæmstə|仓鼠|My hamster sleeps all day.|hyper:pet
+puppy|B1|ˈpʌpi|小狗|We got a new puppy.|hyper:dog
+kitten|B1|ˈkɪtn|小猫|The kitten is playing with a ball.|hyper:cat
+donkey|B1|ˈdɒŋki|驴|The donkey carried our bags.|
+bull|B1|bʊl|公牛|Be careful of the bull.|
+octopus|B1|ˈɒktəpəs|章鱼|An octopus has eight arms.|
+cage|B1|keɪdʒ|笼子|The bird is in a cage.|
+hunt|B1|hʌnt|打猎|Lions hunt at night. They hunt in groups.|
+extinct|B1|ɪkˈstɪŋkt|灭绝的|Dinosaurs are extinct.|
+dinosaur|A2|ˈdaɪnəsɔː|恐龙|My brother loves dinosaurs. His favourite dinosaur is T. rex.|
+## 环境
+climate change|B1|ˈklaɪmət tʃeɪndʒ|气候变化|Climate change is a serious problem.|
+global|B1|ˈɡləʊbl|全球的|It's a global problem.|
+environmental|B1|ɪnˌvaɪrənˈmentl|环境的|Pollution is an environmental problem.|
+solar|B1|ˈsəʊlə|太阳的|We have solar panels on the roof.|
+natural|B1|ˈnætʃrəl|自然的|This juice has only natural sugar.|ant:artificial
+artificial|B1|ˌɑːtɪˈfɪʃl|人造的|The flowers are artificial.|
+disaster|B1|dɪˈzɑːstə|灾难|The flood was a disaster.|
+recycling|B1|ˌriːˈsaɪklɪŋ|回收|Put the bottles in the recycling.|
+# 时间与数量 | time
+## 时间
+daily|B1|ˈdeɪli|每天的|Exercise is part of my daily routine.|
+weekly|B1|ˈwiːkli|每周的|We have a weekly test.|
+monthly|B1|ˈmʌnθli|每月的|I read a monthly magazine.|
+yearly|B1|ˈjɪəli|每年的|There's a yearly music festival.|
+routine|B1|ruːˈtiːn|日常惯例|What's your morning routine?|
+period|B1|ˈpɪəriəd|时期；一段时间|We studied this period in history.|
+decade|B1|ˈdekeɪd|十年|Prices have doubled in a decade.|
+nowadays|B1|ˈnaʊədeɪz|如今|Nowadays, everyone has a phone.|
+lately|B1|ˈleɪtli|最近|Have you seen him lately?|syn:recently
+immediately|B1|ɪˈmiːdiətli|立刻|Come here immediately!|
+later|A2|ˈleɪtə|以后|See you later!|
+afterwards|B1|ˈɑːftəwədz|后来|We had dinner and afterwards we went for a walk.|
+eventually|B1|ɪˈventʃuəli|最终|We eventually found the hotel.|syn:finally
+meanwhile|B1|ˈmiːnwaɪl|与此同时|Meanwhile, Tom was cooking.|
+occasionally|B1|əˈkeɪʒnəli|偶尔|I occasionally go to the theatre.|syn:sometimes
+rarely|B1|ˈreəli|很少|I rarely eat meat.|syn:seldom
+seldom|B1|ˈseldəm|很少|He seldom arrives late.|
+forever|B1|fərˈevə|永远|I'll love you forever.|
+temporary|B1|ˈtemprəri|临时的|It's only a temporary job.|ant:permanent
+permanent|B1|ˈpɜːmənənt|永久的|She has a permanent job now.|
+## 数量
+quantity|B1|ˈkwɒntəti|数量|A small quantity of salt.|syn:amount
+several|A2|ˈsevrəl|几个|I've been there several times.|
+plenty|B1|ˈplenti|大量|We have plenty of time.|
+various|B1|ˈveəriəs|各种各样的|There are various kinds of tea.|
+weigh|B1|weɪ|称重|How much do you weigh?|sound:way
+width|B1|wɪdθ|宽度|Measure the width of the door.|
+depth|B1|depθ|深度|What's the depth of the pool?|
+calculate|B1|ˈkælkjuleɪt|计算|Calculate the total cost.|
+divide|B1|dɪˈvaɪd|除；分开|Divide the cake into eight pieces.|
+multiply|B1|ˈmʌltɪplaɪ|乘|Multiply three by four.|
+increase|B1|ɪnˈkriːs|增加|Prices increase every year.|ant:decrease
+decrease|B1|dɪˈkriːs|减少|The number of students will decrease.|
+reduce|B1|rɪˈdjuːs|减少|Reduce the amount of sugar you eat.|syn:decrease

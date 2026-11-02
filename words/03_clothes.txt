@@ -1,0 +1,68 @@
+# 衣服与打扮 | clothes
+## 衣服
+clothes|A2|kləʊðz|衣服|I need some new clothes for school.|
+coat|A2|kəʊt|外套|Put on your coat, it's cold.|syn:jacket
+jacket|A2|ˈdʒækɪt|夹克|This jacket has two big pockets.|
+jumper|A2|ˈdʒʌmpə|毛衣|Grandma knitted me a red jumper.|syn:sweater
+sweater|A2|ˈswetə|毛衣|I wear a warm sweater in winter.|
+shirt|A2|ʃɜːt|衬衫|Dad wears a white shirt to work.|
+T-shirt|A2|ˈtiː ʃɜːt|T恤|I bought a T-shirt at the concert.|
+blouse|A2|blaʊz|女式衬衫|She wore a blue blouse and a skirt.|
+dress|A2|dres|连衣裙；穿衣|She wore a long dress to the party.|
+skirt|A2|skɜːt|短裙|Her school uniform has a grey skirt.|
+trousers|A2|ˈtraʊzəz|裤子|These trousers are too long for me.|
+jeans|A2|dʒiːnz|牛仔裤|I wear jeans at the weekend.|hyper:trousers
+shorts|A2|ʃɔːts|短裤|It's hot, so I'm wearing shorts.|
+suit|A2|suːt|西装；适合|He wore a dark suit to the wedding.|
+uniform|A2|ˈjuːnɪfɔːm|制服|We have to wear a uniform at school.|
+pyjamas|A2|pəˈdʒɑːməz|睡衣|I put on my pyjamas and went to bed.|
+swimsuit|A2|ˈswɪmsuːt|泳衣|Don't forget your swimsuit for the pool.|
+tights|B1|taɪts|连裤袜|She wore black tights under her skirt.|
+underwear|B1|ˈʌndəweə|内衣|Pack enough underwear for the trip.|
+sock|A2|sɒk|袜子|I can only find one sock!|coll:pair of socks
+shoe|A2|ʃuː|鞋|I lost one shoe at the beach.|
+boot|A2|buːt|靴子|Put on a boot and see if it fits.|syn:shoe
+trainers|A2|ˈtreɪnəz|运动鞋|I need new trainers for running.|syn:shoe
+sandal|B1|ˈsændl|凉鞋|She wore one sandal and one shoe by mistake.|
+slipper|B1|ˈslɪpə|拖鞋|The dog ran off with my slipper.|
+## 配饰
+hat|A2|hæt|帽子|Wear a hat in the sun.|syn:cap
+cap|A2|kæp|帽子（有檐）|He always wears a baseball cap.|
+scarf|A2|skɑːf|围巾|My scarf keeps my neck warm.|
+glove|A2|ɡlʌv|手套|I lost a glove on the bus.|
+belt|A2|belt|腰带|These trousers need a belt.|
+tie|A2|taɪ|领带；系|He wears a tie to school.|
+pocket|A2|ˈpɒkɪt|口袋|I keep my phone in my pocket.|
+button|B1|ˈbʌtn|纽扣；按钮|A button came off my coat.|
+zip|B1|zɪp|拉链|The zip on my bag is broken.|
+bag|A2|bæɡ|包|My school bag is very heavy.|
+handbag|A2|ˈhændbæɡ|手提包|She keeps her keys in her handbag.|hyper:bag
+backpack|A2|ˈbækpæk|双肩包|I carry my books in a backpack.|syn:rucksack
+rucksack|A2|ˈrʌksæk|背包|Put the water in your rucksack.|
+purse|A2|pɜːs|钱包（女式）|She took some coins out of her purse.|syn:wallet
+wallet|A2|ˈwɒlɪt|钱包|He keeps his cards in his wallet.|
+umbrella|A2|ʌmˈbrelə|雨伞|Take an umbrella, it might rain.|
+glasses|A2|ˈɡlɑːsɪz|眼镜|I can't read without my glasses.|
+sunglasses|A2|ˈsʌnɡlɑːsɪz|太阳镜|Don't forget your sunglasses on the beach.|
+watch|A2|wɒtʃ|手表；观看|My watch says it's three o'clock.|
+ring|A2|rɪŋ|戒指；打电话|She wears a gold ring.|
+necklace|A2|ˈnekləs|项链|He gave her a silver necklace.|
+earring|B1|ˈɪərɪŋ|耳环|She lost an earring at the party.|
+jewellery|B1|ˈdʒuːəlri|珠宝首饰|She doesn't wear much jewellery.|
+## 穿戴与样子
+wear|A2|weə|穿；戴|You need to wear a uniform at school.|form:where;coll:wear a uniform
+put|A2|pʊt|放；穿上|Put on your shoes, we're leaving.|
+take|A2|teɪk|拿；脱下|Take off your wet coat.|
+fashion|A2|ˈfæʃn|时尚|She is very interested in fashion.|
+fashionable|B1|ˈfæʃnəbl|时髦的|That colour is very fashionable this year.|
+style|B1|staɪl|风格；款式|I like the style of your jacket.|
+size|A2|saɪz|尺寸|What size are your shoes?|
+tight|B1|taɪt|紧的|My shoes are too tight.|ant:loose
+loose|B1|luːs|松的|This shirt is too loose for me.|form:lose
+cotton|B1|ˈkɒtn|棉|This T-shirt is made of cotton.|syn:wool
+wool|B1|wʊl|羊毛|My scarf is made of wool.|
+leather|B1|ˈleðə|皮革|He bought a leather jacket.|
+silk|B1|sɪlk|丝绸|The dress is made of silk.|
+plain|B1|pleɪn|朴素的；纯色的|I prefer plain T-shirts without pictures.|
+striped|B1|straɪpt|有条纹的|He wore a striped shirt.|syn:spotted
+spotted|B1|ˈspɒtɪd|有斑点的|She has a spotted dress with white dots.|

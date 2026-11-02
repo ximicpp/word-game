@@ -1,0 +1,103 @@
+# 描述事物 | describe
+## 大小形状
+big|A2|bɪɡ|大的|They live in a big house.|ant:small;syn:large
+small|A2|smɔːl|小的|I have a small dog.|syn:little
+large|A2|lɑːdʒ|大的|Can I have a large coffee?|
+little|A2|ˈlɪtl|小的；少许|My little brother is five.|
+huge|A2|hjuːdʒ|巨大的|The elephant is huge.|syn:enormous;ant:tiny
+enormous|B1|ɪˈnɔːməs|巨大的|They have an enormous garden.|
+tiny|B1|ˈtaɪni|极小的|A tiny mouse ran past.|
+long|A2|lɒŋ|长的|She has long hair.|ant:short
+wide|B1|waɪd|宽的|The river is very wide.|ant:narrow
+narrow|B1|ˈnærəʊ|窄的|The street is too narrow for cars.|
+deep|B1|diːp|深的|The lake is very deep.|ant:shallow
+shallow|B1|ˈʃæləʊ|浅的|Children can swim in the shallow end.|
+high|A2|haɪ|高的|The mountain is very high.|ant:low
+low|A2|ləʊ|低的|The table is too low.|
+thick|B1|θɪk|厚的|This book is very thick.|ant:thin
+heavy|A2|ˈhevi|重的|My bag is too heavy.|ant:light
+round|A2|raʊnd|圆的|The table is round.|ant:square
+sharp|B1|ʃɑːp|锋利的|Be careful, the knife is sharp.|
+## 好坏与质量
+good|A2|ɡʊd|好的|This is a good book.|ant:bad
+bad|A2|bæd|坏的|The weather is bad today.|
+better|A2|ˈbetə|更好的|I feel better today.|ant:worse
+best|A2|best|最好的|She is my best friend.|ant:worst
+worse|A2|wɜːs|更坏的|My cold is worse today.|
+worst|A2|wɜːst|最坏的|It was the worst day of my life.|
+great|A2|ɡreɪt|很棒的；巨大的|We had a great time.|syn:wonderful
+wonderful|A2|ˈwʌndəfl|极好的|What a wonderful idea!|
+amazing|A2|əˈmeɪzɪŋ|令人惊奇的|The view is amazing.|syn:fantastic
+fantastic|A2|fænˈtæstɪk|极好的|The concert was fantastic.|
+excellent|A2|ˈeksələnt|优秀的|You did an excellent job.|
+perfect|A2|ˈpɜːfɪkt|完美的|Your English is perfect.|
+terrible|A2|ˈterəbl|糟糕的|The food was terrible.|syn:awful
+awful|B1|ˈɔːfl|糟糕的|What awful weather!|
+fine|A2|faɪn|好的；晴朗的|I'm fine, thanks.|
+OK|A2|ˌəʊˈkeɪ|可以；好的|Is it OK if I sit here?|
+lovely|A2|ˈlʌvli|可爱的；令人愉快的|What a lovely day!|
+special|A2|ˈspeʃl|特别的|Today is a special day.|ant:ordinary
+ordinary|B1|ˈɔːdnri|普通的|It was just an ordinary day.|
+usual|A2|ˈjuːʒuəl|通常的|I'll meet you at the usual place.|ant:unusual
+unusual|B1|ʌnˈjuːʒuəl|不寻常的|It's unusual to see snow here.|
+strange|A2|streɪndʒ|奇怪的|I heard a strange noise.|syn:weird
+weird|B1|wɪəd|奇怪的|That's a weird idea.|
+normal|B1|ˈnɔːml|正常的|It's normal to feel nervous.|
+important|A2|ɪmˈpɔːtnt|重要的|This is an important meeting.|
+necessary|B1|ˈnesəsəri|必要的|It's not necessary to bring food.|
+popular|A2|ˈpɒpjələ|受欢迎的|This game is very popular.|
+real|A2|rɪəl|真的|Is that a real diamond?|ant:fake
+true|A2|truː|真实的|Is it true that you can speak four languages?|ant:false
+false|B1|fɔːls|错误的；假的|True or false?|
+## 难易
+easy|A2|ˈiːzi|容易的|The test was easy.|ant:difficult;ant:hard
+difficult|A2|ˈdɪfɪkəlt|困难的|This question is difficult.|syn:hard
+hard|A2|hɑːd|难的；硬的；努力地|The exam was hard.|ant:soft
+simple|A2|ˈsɪmpl|简单的|It's a simple recipe.|ant:complicated
+complicated|B1|ˈkɒmplɪkeɪtɪd|复杂的|The rules are too complicated.|
+possible|A2|ˈpɒsəbl|可能的|Is it possible to get there by bus?|ant:impossible
+impossible|A2|ɪmˈpɒsəbl|不可能的|It's impossible to finish this today.|
+ready|A2|ˈredi|准备好的|Are you ready to go?|
+## 物体特点
+new|A2|njuː|新的|I got a new phone.|sound:knew
+closed|A2|kləʊzd|关着的|The museum is closed on Mondays.|
+soft|A2|sɒft|软的|This pillow is very soft.|
+smooth|B1|smuːð|光滑的|The stone is smooth.|ant:rough
+rough|B1|rʌf|粗糙的|The sea was rough today.|
+clear|A2|klɪə|清楚的；清澈的|The water is very clear.|
+loud|A2|laʊd|大声的|The music is too loud.|ant:quiet
+broken|A2|ˈbrəʊkən|破的；坏的|My phone is broken.|
+same|A2|seɪm|相同的|We have the same shoes!|ant:different
+different|A2|ˈdɪfrənt|不同的|We're twins but we look different.|
+similar|B1|ˈsɪmələ|相似的|Our bags are similar.|syn:same
+quick|A2|kwɪk|快的|Let's have a quick lunch.|syn:fast;ant:slow
+interesting|A2|ˈɪntrəstɪŋ|有趣的|This book is very interesting.|ant:boring
+scary|A2|ˈskeəri|吓人的|That film was really scary.|
+## 描述程度
+very|A2|ˈveri|非常|It's very cold today.|
+really|A2|ˈrɪəli|真的；非常|I really like your dress.|
+too|A2|tuː|太；也|It's too hot to go out.|sound:two
+so|A2|səʊ|如此；所以|I'm so happy!|
+almost|A2|ˈɔːlməʊst|几乎|I almost missed the bus.|syn:nearly
+nearly|A2|ˈnɪəli|几乎|It's nearly nine o'clock.|
+completely|B1|kəmˈpliːtli|完全地|I completely forgot!|
+exactly|B1|ɪɡˈzæktli|确切地|That's exactly what I wanted.|
+especially|B1|ɪˈspeʃəli|特别；尤其|I love fruit, especially strawberries.|
+extremely|B1|ɪkˈstriːmli|极其|It's extremely cold today.|syn:very
+fairly|B1|ˈfeəli|相当地|The test was fairly easy.|syn:quite
+## 描述方式
+quickly|A2|ˈkwɪkli|快速地|He ran quickly to the bus.|ant:slowly
+slowly|A2|ˈsləʊli|慢慢地|Please speak slowly.|
+carefully|A2|ˈkeəfəli|仔细地|Read the question carefully.|
+easily|A2|ˈiːzɪli|容易地|She won the race easily.|
+suddenly|B1|ˈsʌdnli|突然|Suddenly, the lights went out.|
+quietly|A2|ˈkwaɪətli|安静地|Please talk quietly in the library.|ant:loudly
+loudly|B1|ˈlaʊdli|大声地|He laughed loudly.|
+badly|A2|ˈbædli|糟糕地|I played badly today.|
+luckily|B1|ˈlʌkɪli|幸运地|Luckily, it didn't rain.|ant:unfortunately
+unfortunately|B1|ʌnˈfɔːtʃənətli|不幸地|Unfortunately, the shop was closed.|
+probably|A2|ˈprɒbəbli|很可能|It will probably rain tomorrow.|syn:perhaps
+perhaps|A2|pəˈhæps|也许|Perhaps she missed the bus.|syn:maybe
+maybe|A2|ˈmeɪbi|也许|Maybe we can go tomorrow.|
+certainly|B1|ˈsɜːtnli|当然；肯定|I'll certainly come to your party.|
+definitely|B1|ˈdefɪnətli|肯定地|I'll definitely be there.|syn:certainly

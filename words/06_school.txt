@@ -1,0 +1,94 @@
+# 学校与学习 | school
+## 学校
+school|A2|skuːl|学校|I walk to school with my sister.|
+class|A2|klɑːs|班级；课|There are thirty students in my class.|
+classroom|A2|ˈklɑːsruːm|教室|Our classroom is on the first floor.|hyper:room
+lesson|A2|ˈlesn|课|The English lesson starts at nine.|syn:class
+timetable|A2|ˈtaɪmteɪbl|课程表；时刻表|Check the timetable for tomorrow's lessons.|
+term|B1|tɜːm|学期|The summer term ends in July.|
+break|A2|breɪk|课间休息；打破|We play football at break.|
+playground|A2|ˈpleɪɡraʊnd|操场|The children are running in the playground.|
+library|A2|ˈlaɪbrəri|图书馆|I borrow books from the library.|
+laboratory|B1|ləˈbɒrətri|实验室|We do experiments in the laboratory.|syn:lab
+lab|B1|læb|实验室|The science lab is on the second floor.|
+gym|A2|dʒɪm|体育馆|We have PE in the gym when it rains.|
+primary|B1|ˈpraɪməri|小学的；主要的|My brother goes to primary school.|ant:secondary
+secondary|B1|ˈsekəndri|中学的|She started secondary school this year.|
+college|A2|ˈkɒlɪdʒ|学院；大学|My cousin studies art at college.|syn:university
+university|A2|ˌjuːnɪˈvɜːsəti|大学|She wants to go to university.|
+## 人
+student|A2|ˈstjuːdənt|学生|Every student needs a dictionary.|syn:pupil;ant:teacher
+pupil|A2|ˈpjuːpl|小学生；学生|The new pupil sits next to me.|
+teacher|A2|ˈtiːtʃə|老师|Our teacher gives us lots of homework.|
+head teacher|A2|ˌhed ˈtiːtʃə|校长|The head teacher spoke to the whole school.|hyper:teacher
+classmate|A2|ˈklɑːsmeɪt|同班同学|My classmate helped me with my maths.|
+## 科目
+subject|A2|ˈsʌbdʒɪkt|科目；主题|What's your favourite subject?|
+maths|A2|mæθs|数学|I'm good at maths.|hyper:subject
+science|A2|ˈsaɪəns|科学|We learn about plants in science.|hyper:subject
+history|A2|ˈhɪstri|历史|I love reading about history.|hyper:subject
+geography|A2|dʒiˈɒɡrəfi|地理|In geography we study rivers and mountains.|hyper:subject
+art|A2|ɑːt|美术；艺术|We painted pictures in art.|hyper:subject
+music|A2|ˈmjuːzɪk|音乐|We sing songs in music.|hyper:subject
+biology|B1|baɪˈɒlədʒi|生物学|In biology we learned about the heart.|hyper:science
+chemistry|B1|ˈkemɪstri|化学|Chemistry is my hardest subject.|hyper:science
+physics|B1|ˈfɪzɪks|物理|We did an experiment in physics.|hyper:science
+language|A2|ˈlæŋɡwɪdʒ|语言|English is an international language.|
+English|A2|ˈɪŋɡlɪʃ|英语|I have English three times a week.|hyper:language
+## 学习用品
+book|A2|bʊk|书|I'm reading a book about space.|
+notebook|A2|ˈnəʊtbʊk|笔记本|Write the new words in your notebook.|hyper:book
+dictionary|A2|ˈdɪkʃənri|词典|Look up the word in your dictionary.|hyper:book
+textbook|B1|ˈtekstbʊk|课本|Open your textbook at page twenty.|hyper:book
+pen|A2|pen|钢笔；笔|Can I borrow your pen?|syn:pencil
+pencil|A2|ˈpensl|铅笔|Draw it with a pencil first.|
+rubber|A2|ˈrʌbə|橡皮|Can I use your rubber?|
+ruler|A2|ˈruːlə|尺子|Use a ruler to draw a straight line.|
+paper|A2|ˈpeɪpə|纸|Can I have a piece of paper?|
+page|A2|peɪdʒ|页|Turn to page ten.|
+board|A2|bɔːd|黑板；木板|The teacher wrote the date on the board.|
+## 学习
+learn|A2|lɜːn|学习|I want to learn to play the guitar.|syn:study
+study|A2|ˈstʌdi|学习；研究|I study for two hours every evening.|
+teach|A2|tiːtʃ|教|Can you teach me to cook?|ant:learn
+read|A2|riːd|读|I read a story before bed.|
+write|A2|raɪt|写|Please write your name at the top.|sound:right
+spell|A2|spel|拼写|How do you spell your name?|
+spelling|A2|ˈspelɪŋ|拼写|Check your spelling before you finish.|
+homework|A2|ˈhəʊmwɜːk|家庭作业|I always do my homework after dinner.|coll:do homework
+project|A2|ˈprɒdʒekt|项目；课题|We're doing a project on rainforests.|
+exam|A2|ɪɡˈzæm|考试|I passed my English exam!|syn:test
+test|A2|test|测验|We have a spelling test on Friday.|
+quiz|A2|kwɪz|小测验；竞猜|Our class won the quiz.|syn:test
+pass|A2|pɑːs|通过；传递|I hope I pass the test.|ant:fail
+fail|B1|feɪl|不及格；失败|He failed one exam, but he won't fail again.|
+mark|A2|mɑːk|分数；标记|I got a good mark in maths.|syn:grade
+grade|B1|ɡreɪd|成绩；年级|She got the top grade in the class.|
+correct|A2|kəˈrekt|正确的；改正|Tick the correct box.|syn:right
+right|A2|raɪt|正确的；右边|Is this the right answer?|ant:wrong
+wrong|A2|rɒŋ|错误的|Sorry, I took the wrong bus.|
+mistake|A2|mɪˈsteɪk|错误|Check your answers for any mistake before you finish.|syn:wrong
+answer|A2|ˈɑːnsə|回答；答案|Do you know the answer?|ant:question
+question|A2|ˈkwestʃən|问题|Can I ask a question?|
+ask|A2|ɑːsk|问|Ask the teacher if you don't understand.|ant:answer
+explain|A2|ɪkˈspleɪn|解释|Can you explain this word to me?|
+explanation|B1|ˌekspləˈneɪʃn|解释|Thanks for the clear explanation.|
+understand|A2|ˌʌndəˈstænd|理解；懂|I don't understand this question.|
+example|A2|ɪɡˈzɑːmpl|例子|Can you give me an example?|
+practice|B1|ˈpræktɪs|练习|Practice makes perfect.|
+practise|B1|ˈpræktɪs|练习|I practise the piano every day.|
+revise|B1|rɪˈvaɪz|复习|I need to revise for my history test.|
+remember|A2|rɪˈmembə|记得|I can't remember his name.|ant:forget
+forget|A2|fəˈɡet|忘记|Don't forget your homework!|
+knowledge|B1|ˈnɒlɪdʒ|知识|Reading increases your knowledge.|
+know|A2|nəʊ|知道|I know the answer!|
+information|A2|ˌɪnfəˈmeɪʃn|信息|You can find information on the website.|
+course|A2|kɔːs|课程|I'm doing a summer course in art.|
+certificate|B1|səˈtɪfɪkət|证书|I got a certificate for swimming.|
+degree|B1|dɪˈɡriː|学位；度|She has a degree in biology.|
+rule|A2|ruːl|规则|The school rule says no phones in class.|
+absent|B1|ˈæbsənt|缺席的|Three students were absent today.|ant:present
+present|A2|ˈpreznt|在场的；礼物；现在|Everyone is present today.|
+attend|B1|əˈtend|出席；上（学）|All students must attend the meeting.|
+improve|A2|ɪmˈpruːv|提高|I want to improve my English.|
+progress|B1|ˈprəʊɡres|进步|You've made great progress this year.|

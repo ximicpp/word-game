@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1222">
+<title>词网点灯</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Charis+SIL&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: 夜空里的一张词网占满主区域，右侧（手机为下方）是单词与答题面板。单一深色主题。 */
+:root{
+  --sky:#0b1222; --sky-2:#111a2e; --panel:#141e34; --rule:#26324d;
+  --ink:#e9edf6; --muted:#8e9ab5; --dim:#3a4664;
+  --lamp:#ffc95c; --lamp-soft:rgba(255,201,92,.18);
+  --ready:#9fd8ff; --good:#7fe0a3; --bad:#ff7d8f;
+  --t-sound:#6ea8ff; --t-form:#ff9466; --t-syn:#7fe0a3; --t-ant:#ff6f91;
+  --t-root:#c49bff; --t-coll:#4fd6e3; --t-topic:#c7cf6d; --t-hyper:#f0a6d6;
+  --f-word:"Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --f-cn:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --f-ipa:"Charis SIL","Doulos SIL","Lucida Sans Unicode","Times New Roman",serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme:dark;
+}
+html,body{height:100%}
+[hidden]{display:none!important}
+body{background:var(--sky);color:var(--ink);font-family:var(--f-cn);font-size:15px;line-height:1.55;margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--ready);outline-offset:2px}
+.app{height:100%;display:grid;grid-template-rows:auto 1fr;}
+header{padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px;border-bottom:1px solid var(--rule);background:var(--sky-2)}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand h1{margin:0;font-size:20px;font-weight:700;letter-spacing:.04em}
+.brand span{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.prog{flex:1 1 320px;display:flex;align-items:center;gap:14px;min-width:0}
+.bar{flex:1;height:8px;border-radius:99px;background:var(--rule);overflow:hidden;min-width:80px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f6a93b,var(--lamp));box-shadow:0 0 12px var(--lamp);transition:width .6s ease}
+.count{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:13px;white-space:nowrap}
+.count b{color:var(--lamp);font-size:18px}
+.stat{font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.ghost{background:none;border:1px solid var(--rule);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--muted)}
+.ghost:hover{color:var(--ink);border-color:var(--muted)}
+
+main{display:grid;grid-template-columns:minmax(0,1fr) 380px;min-height:0}
+.stage{position:relative;min-width:0;min-height:0;overflow:hidden;
+  background:radial-gradient(1200px 700px at 30% 20%,#16213d 0%,var(--sky) 60%)}
+#net{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#net.dragging{cursor:grabbing}
+.legend{position:absolute;left:max(12px,env(safe-area-inset-left,0px));bottom:12px;display:flex;flex-wrap:wrap;gap:6px;max-width:calc(100% - 90px)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:99px;font-size:12px;
+  background:rgba(20,30,52,.85);border:1px solid var(--rule);color:var(--ink)}
+.chip i{width:14px;height:3px;border-radius:2px;background:var(--c)}
+.chip[aria-pressed="false"]{opacity:.4}
+.chip[aria-pressed="false"] i{background:var(--dim)}
+.zoom{position:absolute;right:max(12px,env(safe-area-inset-right,0px));bottom:12px;display:flex;flex-direction:column;gap:6px}
+.zoom button{width:34px;height:34px;border-radius:8px;background:rgba(20,30,52,.9);border:1px solid var(--rule);font-size:16px}
+
+/* 网络图 */
+.edge{stroke-width:1.2;opacity:.16;transition:opacity .4s,stroke-width .4s}
+.edge.half{opacity:.4}
+.edge.lit{opacity:.95;stroke-width:2}
+.edge.hl{opacity:1;stroke-width:2.6}
+.edge.off{display:none}
+.node{cursor:pointer}
+.node .dot{fill:var(--dim);stroke:none;transition:fill .4s}
+.node .ring{fill:none;stroke:none}
+.node .halo{fill:var(--lamp);opacity:0;transition:opacity .6s}
+.node text{font-family:var(--f-word);font-size:13px;fill:var(--muted);paint-order:stroke;stroke:var(--sky);stroke-width:4px;stroke-linejoin:round;pointer-events:none}
+.node.ready .dot{fill:var(--sky)}
+.node.ready .ring{stroke:var(--ready);stroke-width:2;stroke-dasharray:3 3;animation:spin 6s linear infinite;transform-box:fill-box;transform-origin:center}
+.node.ready text{fill:var(--ink)}
+.node.lit .dot{fill:var(--lamp)}
+.node.lit .halo{opacity:.22}
+.node.lit text{fill:#fff3d6;font-weight:700}
+.node.sel .ring{stroke:#fff;stroke-width:2;stroke-dasharray:none;animation:none}
+.node.dim{opacity:.35}
+.node:focus{outline:none}
+.node:focus-visible .ring{stroke:#fff;stroke-width:2}
+.node.pop .halo{animation:pop 1.2s ease-out}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pop{0%{opacity:.9;transform:scale(.6)}100%{opacity:.22;transform:scale(1)}}
+.node .halo{transform-box:fill-box;transform-origin:center}
+
+/* 面板 */
+aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;min-height:0;
+  padding-block:20px;padding-left:20px;padding-right:max(20px,env(safe-area-inset-right,0px))}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.word{font-family:var(--f-word);font-weight:700;font-size:40px;line-height:1.1;margin:6px 0 2px;letter-spacing:-.01em}
+.ipa{font-family:var(--f-ipa);font-size:18px;color:var(--muted)}
+.cn{font-size:18px;margin-top:8px}
+.hidden-cn{color:var(--muted);font-size:14px;margin-top:8px}
+.ex{margin-top:10px;font-family:var(--f-word);font-weight:500;color:#cfd6e6;font-size:15px;border-left:2px solid var(--rule);padding-left:10px}
+.state{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:12px;padding:3px 10px;border-radius:99px;border:1px solid var(--rule)}
+.state.lit{color:var(--lamp);border-color:rgba(255,201,92,.5)}
+.state.ready{color:var(--ready);border-color:rgba(159,216,255,.45)}
+.state.locked{color:var(--muted)}
+.sec{margin-top:22px;display:flex;flex-direction:column;gap:10px}
+.group{display:grid;grid-template-columns:64px 1fr;gap:8px;align-items:start}
+.group .t{font-size:12px;color:var(--c);padding-top:4px;display:flex;align-items:center;gap:6px}
+.group .t::before{content:"";width:10px;height:3px;border-radius:2px;background:var(--c)}
+.nbs{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.nb{font-family:var(--f-word);font-size:14px;padding:3px 10px;border-radius:8px;background:var(--sky-2);border:1px solid var(--rule)}
+.nb.lit{border-color:rgba(255,201,92,.55);color:var(--lamp)}
+.nb.ready{border-color:rgba(159,216,255,.4)}
+.nb:hover{border-color:var(--ink)}
+.cta{margin-top:22px;width:100%;padding:12px 16px;border-radius:10px;border:none;font-size:16px;font-weight:600;
+  background:var(--lamp);color:#2b1d00;box-shadow:0 0 24px rgba(255,201,92,.35)}
+.cta:disabled{background:var(--rule);color:var(--muted);box-shadow:none;cursor:not-allowed}
+.cta.alt{background:none;border:1px solid var(--rule);color:var(--ink);box-shadow:none}
+.note{font-size:13px;color:var(--muted);margin-top:10px}
+
+.qhead{display:flex;justify-content:space-between;align-items:center}
+.pips{display:flex;gap:6px}
+.pips i{width:22px;height:6px;border-radius:3px;background:var(--rule)}
+.pips i.ok{background:var(--good)}
+.pips i.now{background:var(--ready)}
+.pips i.no{background:var(--bad)}
+.q{font-size:18px;margin:16px 0 14px;text-wrap:balance}
+.q .w{font-family:var(--f-word);font-weight:700;color:var(--ready)}
+.q .sent{display:block;font-family:var(--f-word);font-weight:500;font-size:19px;margin-top:8px;color:var(--ink)}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;padding:12px 14px;border-radius:10px;background:var(--sky-2);border:1px solid var(--rule);font-size:16px;display:flex;justify-content:space-between;gap:10px}
+.opt.en{font-family:var(--f-word);font-weight:500;font-size:18px}
+.opt:hover:not(:disabled){border-color:var(--ready)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--good);background:rgba(127,224,163,.1)}
+.opt.wrong{border-color:var(--bad);background:rgba(255,125,143,.1)}
+.opt small{font-family:var(--f-cn);font-size:13px;color:var(--muted);font-weight:400;align-self:center}
+.explain{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--sky-2);font-size:14px}
+.explain b{color:var(--good)}
+.explain.bad b{color:var(--bad)}
+.big{font-family:var(--f-word);font-size:46px;font-weight:700;color:var(--lamp);text-shadow:0 0 28px rgba(255,201,92,.6);margin:8px 0}
+.unlocked{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+
+.modal{position:fixed;inset:0;background:rgba(5,9,18,.78);display:grid;place-items:center;z-index:20;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:24px;max-width:460px;width:100%}
+.card h2{margin:0 0 6px;font-size:22px}
+.card p{margin:0 0 16px;color:var(--muted);font-size:14px}
+.starts{display:grid;gap:10px}
+.start{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-radius:10px;background:var(--sky-2);border:1px solid var(--rule);text-align:left}
+.start:hover{border-color:var(--lamp)}
+.start b{font-family:var(--f-word);font-size:22px}
+.start span{font-size:12px;color:var(--muted)}
+.row{display:flex;gap:10px;margin-top:8px}
+.row .cta{margin-top:0}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--lamp);color:#2b1d00;
+  padding:8px 16px;border-radius:99px;font-size:14px;font-weight:600;z-index:30;box-shadow:0 0 30px rgba(255,201,92,.5)}
+
+@media (max-width:820px){
+  main{grid-template-columns:1fr;grid-template-rows:minmax(300px,52%) 1fr}
+  aside{border-left:none;border-top:1px solid var(--rule);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .word{font-size:34px}
+  .stat.acc{display:none}
+  .legend{flex-wrap:nowrap;overflow-x:auto;bottom:8px;max-width:calc(100% - 70px);scrollbar-width:none}
+  .chip{flex:none;font-size:11px;padding:2px 8px}
+  .zoom button{width:30px;height:30px}
+  .zoom{bottom:8px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <div class="brand"><h1>词网点灯</h1><span>Word&nbsp;Net · B1–B2</span></div>
+    <div class="prog">
+      <div class="count"><b id="litN">0</b> / <span id="totN">0</span> 已点亮</div>
+      <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+      <div class="stat" id="edgeStat">连线 0 / 0</div>
+      <div class="stat acc" id="accStat">正确率 —</div>
+    </div>
+    <button class="ghost" id="resetBtn" type="button">重新开始</button>
+  </header>
+  <main>
+    <div class="stage">
+      <svg id="net" role="img" aria-label="单词关系网"><g id="vp"><g id="edges"></g><g id="nodes"></g></g></svg>
+      <div class="legend" id="legend"></div>
+      <div class="zoom"><button id="zin" type="button" aria-label="放大">+</button><button id="zout" type="button" aria-label="缩小">−</button><button id="zfit" type="button" aria-label="全部显示">⤢</button></div>
+    </div>
+    <aside id="panel" aria-live="polite"></aside>
+  </main>
+</div>
+<div class="modal" id="modal" hidden></div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="data.js"></script>
+<script>
+(() => {
+const D = window.WORDNET;
+const WORDS = Object.keys(D.words);
+const TYPES = D.types;
+const TYPE_ORDER = ["sound","form","syn","ant","root","coll","topic","hyper"];
+const KEY = "wordnet-progress-v1";
+
+// ---------- 图结构 ----------
+const adj = {}; WORDS.forEach(w => adj[w] = []);
+D.edges.forEach(([a,b,t,note], i) => { adj[a].push({w:b,t,note,i}); adj[b].push({w:a,t,note,i}); });
+const nbSet = w => new Set(adj[w].map(e => e.w));
+function twoHop(w){ const s = new Set(); const one = nbSet(w);
+  one.forEach(n => adj[n].forEach(e => { if (e.w !== w && !one.has(e.w)) s.add(e.w); })); return [...s]; }
+
+// ---------- 状态 ----------
+let S = { start:null, lit:[], answered:0, correct:0 };
+function load(){ try { const v = JSON.parse(localStorage.getItem(KEY)); if (v && Array.isArray(v.lit)) S = Object.assign(S, v); } catch(e){} }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+const isLit = w => S.lit.includes(w);
+function status(w){
+  if (isLit(w)) return "lit";
+  if (!S.start) return "locked";
+  if (w === S.start) return "ready";
+  return adj[w].some(e => isLit(e.w)) ? "ready" : "locked";
+}
+
+// ---------- 布局（固定种子的力导向） ----------
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const P = {};
+WORDS.forEach((w,i) => { const a = i / WORDS.length * Math.PI * 2; P[w] = {x: Math.cos(a)*300 + rnd()*40, y: Math.sin(a)*300 + rnd()*40, vx:0, vy:0}; });
+for (let it = 0; it < 700; it++){
+  const k = 1 - it / 700;
+  for (let i = 0; i < WORDS.length; i++) for (let j = i+1; j < WORDS.length; j++){
+    const a = P[WORDS[i]], b = P[WORDS[j]]; let dx = a.x-b.x, dy = a.y-b.y; let d2 = dx*dx+dy*dy || .01;
+    const f = 5200 / d2; const d = Math.sqrt(d2); dx/=d; dy/=d;
+    a.vx += dx*f; a.vy += dy*f; b.vx -= dx*f; b.vy -= dy*f;
+  }
+  D.edges.forEach(([u,v]) => { const a = P[u], b = P[v]; const dx = b.x-a.x, dy = b.y-a.y; const d = Math.hypot(dx,dy)||.01; const f = (d-78)*0.06;
+    a.vx += dx/d*f; a.vy += dy/d*f; b.vx -= dx/d*f; b.vy -= dy/d*f; });
+  WORDS.forEach(w => { const p = P[w]; p.vx -= p.x*0.004; p.vy -= p.y*0.004;
+    p.x += Math.max(-20,Math.min(20,p.vx))*k; p.y += Math.max(-20,Math.min(20,p.vy))*k; p.vx *= .5; p.vy *= .5; });
+}
+const xs = WORDS.map(w=>P[w].x), ys = WORDS.map(w=>P[w].y);
+const BB = {x: Math.min(...xs)-60, y: Math.min(...ys)-40, w: Math.max(...xs)-Math.min(...xs)+120, h: Math.max(...ys)-Math.min(...ys)+120};
+
+// ---------- 绘制 ----------
+const NS = "http://www.w3.org/2000/svg";
+const svg = document.getElementById("net"), gE = document.getElementById("edges"), gN = document.getElementById("nodes");
+const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+const edgeEls = D.edges.map(([a,b,t]) => { const l = el("line", {x1:P[a].x,y1:P[a].y,x2:P[b].x,y2:P[b].y,class:"edge",stroke:`var(--t-${t})`}); gE.appendChild(l); return l; });
+const nodeEls = {};
+WORDS.forEach(w => {
+  const g = el("g", {class:"node", transform:`translate(${P[w].x},${P[w].y})`, tabindex:"0", role:"button", "aria-label":w});
+  g.appendChild(el("circle",{class:"halo",r:22}));
+  g.appendChild(el("circle",{class:"ring",r:10}));
+  g.appendChild(el("circle",{class:"dot",r:6}));
+  const t = el("text",{y:24,"text-anchor":"middle"}); t.textContent = w; g.appendChild(t);
+  g.dataset.w = w;
+  g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(w); } });
+  gN.appendChild(g); nodeEls[w] = g;
+});
+
+let hidden = new Set();
+const legend = document.getElementById("legend");
+TYPE_ORDER.forEach(t => { const b = document.createElement("button"); b.type="button"; b.className="chip"; b.style.setProperty("--c",`var(--t-${t})`);
+  b.setAttribute("aria-pressed","true"); b.innerHTML = `<i></i>${TYPES[t].name}`;
+  b.onclick = () => { hidden.has(t) ? hidden.delete(t) : hidden.add(t); b.setAttribute("aria-pressed", String(!hidden.has(t))); paint(); };
+  legend.appendChild(b); });
+
+let selected = null;
+function paint(){
+  WORDS.forEach(w => { const g = nodeEls[w]; const s = status(w);
+    g.classList.toggle("lit", s==="lit"); g.classList.toggle("ready", s==="ready"); g.classList.toggle("sel", w===selected); });
+  const near = selected ? nbSet(selected) : null;
+  D.edges.forEach(([a,b,t], i) => { const l = edgeEls[i]; const la = isLit(a), lb = isLit(b);
+    l.classList.toggle("lit", la && lb); l.classList.toggle("half", (la || lb) && !(la && lb));
+    l.classList.toggle("hl", !!selected && (a===selected || b===selected)); l.classList.toggle("off", hidden.has(t)); });
+  WORDS.forEach(w => nodeEls[w].classList.toggle("dim", !!selected && w!==selected && !near.has(w)));
+  // 进度
+  document.getElementById("litN").textContent = S.lit.length;
+  document.getElementById("totN").textContent = WORDS.length;
+  document.getElementById("barFill").style.width = (S.lit.length / WORDS.length * 100) + "%";
+  const le = D.edges.filter(([a,b]) => isLit(a) && isLit(b)).length;
+  document.getElementById("edgeStat").textContent = `连线 ${le} / ${D.edges.length}`;
+  document.getElementById("accStat").textContent = S.answered ? `正确率 ${Math.round(S.correct / S.answered * 100)}%` : "正确率 —";
+}
+
+// ---------- 平移缩放 ----------
+let vb = {...BB};
+function setVB(){ svg.setAttribute("viewBox", `${vb.x} ${vb.y} ${vb.w} ${vb.h}`); }
+function fit(){ vb = {...BB}; setVB(); }
+function zoom(f, cx, cy){ const r = svg.getBoundingClientRect(); const scale = Math.max(vb.w / r.width, vb.h / r.height);
+  // 以屏幕点 (cx,cy) 为中心缩放
+  const ox = vb.x + (vb.w - r.width*scale)/2, oy = vb.y + (vb.h - r.height*scale)/2;
+  const px = cx === undefined ? vb.x + vb.w/2 : ox + (cx - r.left)*scale, py = cy === undefined ? vb.y + vb.h/2 : oy + (cy - r.top)*scale;
+  const nw = Math.min(BB.w*2.5, Math.max(BB.w/6, vb.w*f)), k = nw / vb.w;
+  vb = {x: px - (px - vb.x)*k, y: py - (py - vb.y)*k, w: nw, h: vb.h*k}; setVB(); }
+document.getElementById("zin").onclick = () => zoom(.75);
+document.getElementById("zout").onclick = () => zoom(1.33);
+document.getElementById("zfit").onclick = fit;
+svg.addEventListener("wheel", e => { e.preventDefault(); zoom(e.deltaY > 0 ? 1.12 : .89, e.clientX, e.clientY); }, {passive:false});
+const ptrs = new Map(); let moved = 0, downNode = null, pinch0 = null;
+svg.addEventListener("pointerdown", e => { ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY}); moved = 0;
+  const n = e.target.closest(".node"); downNode = n ? n.dataset.w : null; svg.setPointerCapture(e.pointerId); svg.classList.add("dragging");
+  if (ptrs.size === 2){ const [a,b] = [...ptrs.values()]; pinch0 = Math.hypot(a.x-b.x, a.y-b.y); } });
+svg.addEventListener("pointermove", e => { if (!ptrs.has(e.pointerId)) return; const prev = ptrs.get(e.pointerId); const cur = {x:e.clientX, y:e.clientY};
+  if (ptrs.size === 1){ const r = svg.getBoundingClientRect(); const scale = Math.max(vb.w / r.width, vb.h / r.height);
+    vb.x -= (cur.x-prev.x)*scale; vb.y -= (cur.y-prev.y)*scale; setVB(); moved += Math.abs(cur.x-prev.x)+Math.abs(cur.y-prev.y); }
+  ptrs.set(e.pointerId, cur);
+  if (ptrs.size === 2 && pinch0){ const [a,b] = [...ptrs.values()]; const d = Math.hypot(a.x-b.x, a.y-b.y); zoom(pinch0/d, (a.x+b.x)/2, (a.y+b.y)/2); pinch0 = d; moved = 99; } });
+function up(e){ if (!ptrs.has(e.pointerId)) return; ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch0 = null;
+  if (!ptrs.size){ svg.classList.remove("dragging"); if (moved < 6) { downNode ? select(downNode) : select(null); } } }
+svg.addEventListener("pointerup", up); svg.addEventListener("pointercancel", up);
+
+// ---------- 面板 ----------
+const panel = document.getElementById("panel");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let quiz = null;
+
+function select(w){ if (quiz && !quiz.done) { if (w) toast("先完成这一轮答题"); return; } quiz = null; selected = w; paint(); renderPanel(); panel.scrollTop = 0;
+  if (w && window.innerWidth <= 820) focusOn(w); }
+function focusOn(w){ const r = svg.getBoundingClientRect(); const ww = 340, hh = ww * r.height / r.width;
+  vb = {x: P[w].x - ww/2, y: P[w].y - hh/2, w: ww, h: hh}; setVB(); }
+
+function renderPanel(){
+  if (quiz) return renderQuiz();
+  if (!selected) return renderIntro();
+  const w = selected, d = D.words[w], s = status(w);
+  const stateTxt = {lit:"已点亮", ready:"可以挑战", locked:"未解锁"}[s];
+  let html = `<div class="eyebrow">单词</div><div class="word">${esc(w)}</div><div class="ipa">/${esc(d.ipa)}/</div>`;
+  html += s === "lit" ? `<div class="cn">${esc(d.cn)}</div><div class="ex">${esc(d.ex)}</div>` : `<div class="hidden-cn">点亮后显示中文意思和例句</div>`;
+  html += `<div class="state ${s}">${stateTxt}</div>`;
+  html += `<div class="sec"><div class="eyebrow">相邻单词 · ${adj[w].length}</div>`;
+  TYPE_ORDER.forEach(t => { const list = adj[w].filter(e => e.t === t); if (!list.length) return;
+    html += `<div class="group" style="--c:var(--t-${t})"><div class="t">${TYPES[t].name}</div><div class="nbs">` +
+      list.map(e => `<button type="button" class="nb ${status(e.w)}" data-go="${e.w}" title="${isLit(w)&&isLit(e.w)?esc(e.note):""}">${esc(e.w)}</button>`).join("") + `</div></div>`; });
+  html += `</div>`;
+  if (s === "ready") html += `<button class="cta" id="go" type="button">开始挑战 · 3 题全对点亮</button>`;
+  else if (s === "locked") html += `<button class="cta" type="button" disabled>先点亮一个相邻单词</button>`;
+  else { const lk = adj[w].filter(e => isLit(e.w)); if (lk.length) html += `<div class="sec"><div class="eyebrow">已点亮的连线</div>` + lk.map(e => `<div class="note" style="margin:0">${esc(e.w)}：${esc(e.note)}</div>`).join("") + `</div>`; }
+  panel.innerHTML = html;
+  panel.querySelectorAll("[data-go]").forEach(b => b.onclick = () => select(b.dataset.go));
+  const go = document.getElementById("go"); if (go) go.onclick = () => startQuiz(w);
+}
+
+function renderIntro(){
+  const ready = WORDS.filter(w => status(w) === "ready");
+  panel.innerHTML = `<div class="eyebrow">怎么玩</div>
+    <div class="q" style="margin-top:8px">点一个发光虚线圈的单词，答对 3 道题就能把它点亮。</div>
+    <div class="note">点亮一个词，和它相连的词就能挑战了。连线颜色代表关系：读音、字形、近义、反义、同词根、搭配、同主题、上下位。拖动、滚轮或双指可以移动和缩放。</div>
+    ${ready.length ? `<div class="sec"><div class="eyebrow">现在可以挑战 · ${ready.length}</div><div class="nbs">${ready.map(w=>`<button type="button" class="nb ready" data-go="${w}">${w}</button>`).join("")}</div></div>` : ""}
+    ${S.lit.length === WORDS.length ? `<div class="big">全部点亮！</div>` : ""}`;
+  panel.querySelectorAll("[data-go]").forEach(b => b.onclick = () => select(b.dataset.go));
+}
+
+// ---------- 出题 ----------
+const shuffle = a => { a = a.slice(); for (let i = a.length-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; };
+const pick = a => a[Math.floor(Math.random()*a.length)];
+function fillFrom(target, pools, n, ok){ const out = []; const used = new Set([target]);
+  for (const pool of pools) for (const x of shuffle(pool)) { if (out.length >= n) break; if (used.has(x) || !ok(x, out)) continue; out.push(x); used.add(x); }
+  return out; }
+
+function qMeaning(w){
+  const cn = D.words[w].cn; const seenCn = new Set([cn]);
+  const ok = x => !seenCn.has(D.words[x].cn) && (seenCn.add(D.words[x].cn), true);
+  const close = new Set(adj[w].filter(e => e.t === "syn" || e.t === "hyper").map(e => e.w));
+  const ok2 = x => !close.has(x) && ok(x);
+  const ds = fillFrom(w, [adj[w].filter(e => e.t === "sound" || e.t === "form").map(e=>e.w), adj[w].map(e=>e.w), twoHop(w), WORDS], 3, ok2);
+  const opts = shuffle([w, ...ds]).map(x => ({key:x, label:D.words[x].cn, en:false}));
+  return { html:`<span class="w">${esc(w)}</span> 的中文意思是？`, opts, answer:w,
+    explain:`${esc(w)} /${esc(D.words[w].ipa)}/ 的意思是“${esc(cn)}”。` };
+}
+function qRelation(w){
+  const e = pick(adj[w]); const near = nbSet(w);
+  const ds = fillFrom(w, [twoHop(w), WORDS], 3, x => !near.has(x));
+  const opts = shuffle([e.w, ...ds]).map(x => ({key:x, label:x, en:true}));
+  return { html:`哪个词和 <span class="w">${esc(w)}</span> ${TYPES[e.t].ask}？`, opts, answer:e.w,
+    explain:`<b>${esc(e.w)}</b> · ${TYPES[e.t].name}：${esc(e.note)}`, showCn:true };
+}
+function qBlank(w){
+  const d = D.words[w]; const re = new RegExp(`\\b${w}\\b`, "i");
+  const sent = esc(d.ex.replace(re, "\u0001")).replace("\u0001", "<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>");
+  const banned = new Set(adj[w].filter(e => ["syn","ant","hyper"].includes(e.t)).map(e => e.w));
+  const ok = x => !banned.has(x);
+  const conf = adj[w].filter(e => e.t === "sound" || e.t === "form").map(e => e.w);
+  const other = adj[w].filter(e => !banned.has(e.w)).map(e => e.w);
+  const ds = fillFrom(w, [conf, twoHop(w).filter(x => adj[x].some(e => conf.includes(e.w))), other, twoHop(w), WORDS], 3, ok);
+  const opts = shuffle([w, ...ds]).map(x => ({key:x, label:x, en:true}));
+  return { html:`选词填空<span class="sent">${sent}</span>`, opts, answer:w,
+    explain:`<b>${esc(w)}</b>：${esc(d.ex)}`, showCn:true };
+}
+
+function startQuiz(w){ quiz = { w, qs:[qMeaning(w), qRelation(w), qBlank(w)], i:0, res:[], picked:null, done:false }; renderQuiz(); panel.scrollTop = 0; }
+function renderQuiz(){
+  const z = quiz, w = z.w;
+  if (z.done) return renderResult();
+  const q = z.qs[z.i];
+  const pips = z.qs.map((_,k) => `<i class="${k < z.res.length ? (z.res[k] ? "ok" : "no") : k === z.i ? "now" : ""}"></i>`).join("");
+  let html = `<div class="qhead"><div class="eyebrow">挑战 ${esc(w)} · 第 ${z.i+1} / 3 题</div><div class="pips">${pips}</div></div>
+    <div class="q">${q.html}</div><div class="opts">`;
+  html += q.opts.map((o,k) => { let cls = "opt" + (o.en ? " en" : ""); if (z.picked !== null){ if (o.key === q.answer) cls += " right"; else if (k === z.picked) cls += " wrong"; }
+    const cn = z.picked !== null && q.showCn ? `<small>${esc(D.words[o.key].cn)}</small>` : "";
+    return `<button type="button" class="${cls}" data-k="${k}" ${z.picked !== null ? "disabled" : ""}><span>${esc(o.label)}</span>${cn}</button>`; }).join("");
+  html += `</div>`;
+  if (z.picked !== null){
+    const right = q.opts[z.picked].key === q.answer;
+    html += `<div class="explain ${right ? "" : "bad"}">${right ? "<b>答对了。</b> " : "<b>答错了。</b> 正确答案已标绿。 "}${q.explain}</div>`;
+    html += right ? `<button class="cta" id="next" type="button">${z.i < 2 ? "下一题" : "点亮！"}</button>`
+                  : `<div class="row"><button class="cta" id="retry" type="button">重新挑战（换一组题）</button></div><button class="cta alt" id="leave" type="button">先去看看别的词</button>`;
+  } else html += `<div class="note">3 题全对才能点亮，答错可以马上重来。</div>`;
+  panel.innerHTML = html;
+  panel.querySelectorAll("[data-k]").forEach(b => b.onclick = () => answer(+b.dataset.k));
+  const n = document.getElementById("next"); if (n) { n.onclick = nextQ; n.focus(); }
+  const r = document.getElementById("retry"); if (r) { r.onclick = () => startQuiz(w); r.focus(); }
+  const l = document.getElementById("leave"); if (l) l.onclick = () => { quiz = null; renderPanel(); };
+}
+function answer(k){ const z = quiz, q = z.qs[z.i]; z.picked = k; const ok = q.opts[k].key === q.answer; z.res.push(ok);
+  S.answered++; if (ok) S.correct++; save(); paint(); renderQuiz(); }
+function nextQ(){ const z = quiz; if (z.i < 2){ z.i++; z.picked = null; renderQuiz(); } else lightUp(z.w); }
+
+function lightUp(w){
+  const before = new Set(WORDS.filter(x => status(x) === "ready"));
+  if (!isLit(w)) S.lit.push(w); save();
+  quiz.done = true; quiz.unlocked = WORDS.filter(x => status(x) === "ready" && !before.has(x));
+  paint(); const g = nodeEls[w]; g.classList.remove("pop"); void g.getBBox(); g.classList.add("pop");
+  renderResult();
+}
+function renderResult(){
+  const z = quiz, w = z.w;
+  panel.innerHTML = `<div class="eyebrow">点亮成功</div><div class="big">${esc(w)}</div>
+    <div class="ipa">/${esc(D.words[w].ipa)}/</div><div class="cn">${esc(D.words[w].cn)}</div><div class="ex">${esc(D.words[w].ex)}</div>
+    <div class="sec"><div class="eyebrow">${z.unlocked.length ? `新解锁 ${z.unlocked.length} 个词` : "没有新解锁的词"}</div>
+    <div class="unlocked">${z.unlocked.map(x => `<button type="button" class="nb ready" data-go="${x}">${x}</button>`).join("")}</div></div>
+    <div class="note">已点亮 ${S.lit.length} / ${WORDS.length}</div>
+    <button class="cta alt" id="back" type="button">回到词网</button>`;
+  panel.querySelectorAll("[data-go]").forEach(b => b.onclick = () => { quiz = null; select(b.dataset.go); });
+  document.getElementById("back").onclick = () => { quiz = null; selected = null; paint(); renderPanel(); };
+  if (S.lit.length === WORDS.length) toast("整张词网都点亮了！");
+}
+
+// ---------- 起点与重置 ----------
+const modal = document.getElementById("modal");
+function chooseStart(){
+  modal.innerHTML = `<div class="card"><h2>选一个起点</h2><p>从这个词开始挑战，点亮后它的邻居就能挑战了，整张网会从这里一圈圈亮起来。</p>
+    <div class="starts">${D.starts.map(w => `<button type="button" class="start" data-s="${w}"><b>${w}</b><span>${adj[w].length} 个相邻单词</span></button>`).join("")}</div></div>`;
+  modal.hidden = false;
+  modal.querySelectorAll("[data-s]").forEach(b => b.onclick = () => { S.start = b.dataset.s; save(); modal.hidden = true; select(S.start); });
+}
+document.getElementById("resetBtn").onclick = () => {
+  modal.innerHTML = `<div class="card"><h2>重新开始？</h2><p>会清除已点亮的 ${S.lit.length} 个词和答题记录，不能恢复。</p>
+    <div class="row"><button class="cta" id="yes" type="button" style="background:var(--bad);box-shadow:none">清除并重来</button><button class="cta alt" id="no" type="button" style="margin-top:0">取消</button></div></div>`;
+  modal.hidden = false;
+  document.getElementById("no").onclick = () => modal.hidden = true;
+  document.getElementById("yes").onclick = () => { S = {start:null, lit:[], answered:0, correct:0}; save(); quiz = null; selected = null; paint(); renderPanel(); chooseStart(); };
+};
+
+let tt; function toast(msg){ const t = document.getElementById("toast"); t.textContent = msg; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 2200); }
+
+load(); fit(); paint(); renderPanel();
+if (!S.start) chooseStart();
+window.__wn = { get S(){ return S; }, D, qMeaning, qRelation, qBlank, status, get quiz(){ return quiz; } };
+})();
+</script>
+</body>
+</html>

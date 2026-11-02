@@ -73,6 +73,25 @@ window.WORDNET = {
     rose:       { ipa: "rəʊz",        cn: "玫瑰",            ex: "He gave his mum a red rose." },
     plant:      { ipa: "plɑːnt",      cn: "植物",            ex: "Water the plant once a week." }
   },
+  // 星座：一组相关的词全部点亮后连成一个星座，并可以收起成一颗“星座大星”。
+  // 每个词只属于一个星座（互不重叠），words 里每个星座内部必须连通。
+  constellations: [
+    { name: "安静座", words: ["quiet", "quite", "quit", "noisy", "noise"], note: "quiet 安静、quite 相当、quit 放弃，只差几个字母；quiet 的反义词是 noisy。" },
+    { name: "和平座", words: ["peace", "piece", "war", "calm"], note: "peace 和 piece 同音；peace 和平 ↔ war 战争。" },
+    { name: "听见座", words: ["silent", "listen", "hear", "here"], note: "silent 和 listen 字母完全一样；hear 和 here 同音。" },
+    { name: "同音座", words: ["where", "wear", "whether"], note: "where 和 wear 读 /weə/；whether 和 weather 读 /ˈweðə/。" },
+    { name: "天气座", words: ["weather", "climate", "climb", "storm"], note: "weather 是今天的天气，climate 是长期的气候。" },
+    { name: "接受座", words: ["accept", "except", "expect", "refuse", "invitation"], note: "accept 接受、except 除了、expect 期待，拼写很像，意思完全不同。" },
+    { name: "影响座", words: ["affect", "effect", "effective", "influence"], note: "affect 是动词，effect 是名词，effective 是形容词。" },
+    { name: "有用座", words: ["use", "useful", "useless"], note: "-ful 表示“有”，-less 表示“没有”。" },
+    { name: "沙漠座", words: ["desert", "camel", "dry", "wet"], note: "沙漠 desert 只有一个 s，又干又大，骆驼住在这里。" },
+    { name: "甜点座", words: ["dessert", "sweet", "sour", "cake", "flour"], note: "甜点 dessert 有两个 s，就像甜点总想多吃一份。" },
+    { name: "犯错座", words: ["make", "mistake", "wrong"], note: "make a mistake 犯错，mistake 和 wrong 都和“错”有关。" },
+    { name: "作家座", words: ["right", "correct", "write", "writer"], note: "right 和 write 同音，write 加 -er 就是写作的人。" },
+    { name: "改变座", words: ["change", "chance", "adapt", "adopt"], note: "change 和 chance、adapt 和 adopt 都只差一个字母。" },
+    { name: "输赢座", words: ["miss", "lose", "loose", "win"], note: "lose 输掉读 /luːz/，loose 松的读 /luːs/，多一个 o。" },
+    { name: "花园座", words: ["flower", "rose", "plant"], note: "玫瑰是一种花，花是一种植物；flower 和 flour 同音。" }
+  ],
   // [单词A, 单词B, 关系类型, 说明]
   edges: [
     ["quiet", "quite", "form", "拼写只差最后几个字母的顺序：quiet 是 -iet，quite 是 -ite。"],

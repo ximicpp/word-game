@@ -1,0 +1,97 @@
+# 运动与爱好 | sport
+## 运动
+sport|A2|spɔːt|运动|Football is my favourite sport.|
+football|A2|ˈfʊtbɔːl|足球|We play football every Saturday.|hyper:sport
+basketball|A2|ˈbɑːskɪtbɔːl|篮球|He's tall, so he's good at basketball.|hyper:sport
+tennis|A2|ˈtenɪs|网球|Let's play tennis after school.|hyper:sport
+volleyball|A2|ˈvɒlibɔːl|排球|We played volleyball on the beach.|hyper:sport
+badminton|B1|ˈbædmɪntən|羽毛球|Badminton is popular in China.|hyper:sport
+baseball|A2|ˈbeɪsbɔːl|棒球|Baseball is very popular in America.|hyper:sport
+golf|A2|ɡɒlf|高尔夫|My grandpa plays golf.|hyper:sport
+hockey|A2|ˈhɒki|曲棍球|We play hockey in winter.|hyper:sport
+swimming|A2|ˈswɪmɪŋ|游泳|Swimming is good exercise.|hyper:sport
+cycling|A2|ˈsaɪklɪŋ|骑自行车|Cycling to school is fun.|hyper:sport
+running|A2|ˈrʌnɪŋ|跑步|Running makes me feel good.|hyper:sport
+skiing|A2|ˈskiːɪŋ|滑雪|We went skiing in the mountains.|hyper:sport
+sailing|A2|ˈseɪlɪŋ|帆船运动|Sailing is exciting when it's windy.|hyper:sport
+climbing|A2|ˈklaɪmɪŋ|攀岩|Climbing needs strong arms.|hyper:sport
+skateboarding|A2|ˈskeɪtbɔːdɪŋ|滑板运动|Skateboarding is popular with teenagers.|hyper:sport
+athletics|B1|æθˈletɪks|田径|She is in the school athletics team.|hyper:sport
+swim|A2|swɪm|游泳|Can you swim?|
+run|A2|rʌn|跑|I run in the park every morning.|syn:jog
+jog|B1|dʒɒɡ|慢跑|My dad likes to jog before work.|
+ride|A2|raɪd|骑|I ride my bike to school.|
+ski|A2|skiː|滑雪|I learned to ski last winter.|
+skate|A2|skeɪt|滑冰|Can you skate on ice?|
+dive|B1|daɪv|跳水；潜水|He can dive into the pool.|
+kick|A2|kɪk|踢|Kick the ball to me!|
+throw|A2|θrəʊ|扔|Throw the ball to your partner.|ant:catch
+catch|A2|kætʃ|接住；抓住|Catch the ball!|
+hit|A2|hɪt|打；击|He hit the ball very hard.|
+score|A2|skɔː|得分；比分|What's the score?|
+goal|A2|ɡəʊl|进球；目标|He scored a goal in the last minute.|
+win|A2|wɪn|赢|Our team hopes to win the cup.|ant:lose
+lose|A2|luːz|输掉；丢失|Don't lose your ticket.|form:loose
+beat|B1|biːt|打败|Our team beat the best team in town.|syn:win
+draw|A2|drɔː|平局；画|The match ended in a draw.|
+match|A2|mætʃ|比赛|The match starts at three.|syn:game
+game|A2|ɡeɪm|游戏；比赛|Let's play a game.|
+competition|A2|ˌkɒmpəˈtɪʃn|比赛；竞争|She won a painting competition.|
+race|A2|reɪs|赛跑|He came first in the race.|
+team|A2|tiːm|队|I'm in the school football team.|
+player|A2|ˈpleɪə|运动员；选手|He's the best player in the team.|
+coach|A2|kəʊtʃ|教练；长途汽车|Our coach makes us train hard.|
+champion|B1|ˈtʃæmpiən|冠军|She is the national swimming champion.|syn:winner
+winner|A2|ˈwɪnə|获胜者|The winner gets a gold medal.|ant:loser
+loser|B1|ˈluːzə|失败者|Don't be a bad loser.|
+prize|A2|praɪz|奖品|She won first prize.|
+medal|B1|ˈmedl|奖牌|He won a gold medal.|syn:prize
+ball|A2|bɔːl|球|Throw me the ball.|
+bat|A2|bæt|球拍；蝙蝠|Hit the ball with the bat.|
+racket|B1|ˈrækɪt|球拍|I need a new tennis racket.|
+net|B1|net|网|The ball went into the net.|
+pitch|B1|pɪtʃ|球场|The players ran onto the pitch.|
+court|B1|kɔːt|球场（网球等）|We booked a tennis court.|
+pool|A2|puːl|游泳池|The pool is open until eight.|
+stadium|A2|ˈsteɪdiəm|体育场|The stadium holds fifty thousand people.|
+helmet|B1|ˈhelmɪt|头盔|Always wear a helmet on your bike.|
+fan|A2|fæn|粉丝；扇子|He's a big fan of that football team.|
+train|A2|treɪn|训练；火车|The team trains three times a week. They train hard.|
+training|B1|ˈtreɪnɪŋ|训练|Football training is on Tuesdays.|
+## 爱好
+hobby|A2|ˈhɒbi|爱好|My hobby is collecting stamps.|
+free time|A2|ˌfriː ˈtaɪm|空闲时间|What do you do in your free time?|
+leisure|B1|ˈleʒə|闲暇|Leisure activities include reading and sport.|
+activity|A2|ækˈtɪvəti|活动|Swimming is my favourite activity.|
+play|A2|pleɪ|玩；演奏|Let's play outside.|
+chess|A2|tʃes|国际象棋|Grandpa taught me to play chess.|
+card|A2|kɑːd|卡片；纸牌|Let's play a card game.|
+collect|A2|kəˈlekt|收集|I collect old coins.|
+collection|B1|kəˈlekʃn|收藏品|He has a big collection of comics.|
+stamp|A2|stæmp|邮票|I need a stamp for this letter.|
+camping|A2|ˈkæmpɪŋ|露营|We go camping every summer.|
+tent|A2|tent|帐篷|We put up the tent by the lake.|
+fishing|A2|ˈfɪʃɪŋ|钓鱼|My dad and I go fishing on Sundays.|
+paint|A2|peɪnt|绘画；油漆|I like to paint flowers.|syn:draw
+painting|A2|ˈpeɪntɪŋ|绘画；油画|That painting is beautiful.|
+drawing|A2|ˈdrɔːɪŋ|图画|Look at my drawing of a horse.|
+photography|B1|fəˈtɒɡrəfi|摄影|Photography is my hobby.|
+dance|A2|dɑːns|跳舞|Do you want to dance?|
+sing|A2|sɪŋ|唱歌|She sings in the school choir and loves to sing.|
+song|A2|sɒŋ|歌曲|This is my favourite song.|
+guitar|A2|ɡɪˈtɑː|吉他|He plays the guitar in a band.|
+piano|A2|piˈænəʊ|钢琴|I have piano lessons on Fridays.|
+violin|A2|ˌvaɪəˈlɪn|小提琴|She plays the violin very well.|
+drum|A2|drʌm|鼓|He plays the drum in the school band.|
+band|A2|bænd|乐队|My brother is in a rock band.|
+club|A2|klʌb|俱乐部|I joined the drama club.|
+join|A2|dʒɔɪn|加入|Do you want to join our team?|
+puzzle|B1|ˈpʌzl|谜；拼图|I like doing puzzles on rainy days. This puzzle is hard.|
+toy|A2|tɔɪ|玩具|The baby is playing with a toy.|
+doll|A2|dɒl|玩偶|My sister has a doll with long hair.|hyper:toy
+kite|A2|kaɪt|风筝|Let's fly a kite on the beach.|
+party|A2|ˈpɑːti|派对|Are you coming to my party?|
+celebrate|B1|ˈselɪbreɪt|庆祝|We celebrate New Year with fireworks.|
+festival|A2|ˈfestɪvl|节日；音乐节|The music festival is in July.|
+holiday|A2|ˈhɒlədeɪ|假期|We're going on holiday to Spain.|syn:vacation
+relax|A2|rɪˈlæks|放松|I relax by listening to music.|

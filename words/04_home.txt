@@ -1,0 +1,100 @@
+# 家与居住 | home
+## 房子
+home|A2|həʊm|家|I usually get home at five.|syn:house
+house|A2|haʊs|房子|They live in a big house with a garden.|
+flat|A2|flæt|公寓；平的|We live in a flat on the fifth floor.|syn:apartment
+apartment|A2|əˈpɑːtmənt|公寓|Her apartment has a great view.|
+building|A2|ˈbɪldɪŋ|建筑物|That building is a hundred years old.|
+address|A2|əˈdres|地址|Write your address on the form.|
+room|A2|ruːm|房间|My room is small but cosy.|
+bedroom|A2|ˈbedruːm|卧室|I share a bedroom with my brother.|hyper:room
+bathroom|A2|ˈbɑːθruːm|浴室；卫生间|The bathroom is upstairs.|hyper:room
+kitchen|A2|ˈkɪtʃɪn|厨房|Mum is cooking in the kitchen.|hyper:room
+living room|A2|ˈlɪvɪŋ ruːm|客厅|We watch TV in the living room.|
+hall|A2|hɔːl|门厅；大厅|Leave your shoes in the hall.|
+toilet|A2|ˈtɔɪlət|厕所|Where is the toilet, please?|
+garage|A2|ˈɡærɑːʒ|车库|Dad keeps his bike in the garage.|
+garden|A2|ˈɡɑːdn|花园|We grow tomatoes in our garden.|
+balcony|B1|ˈbælkəni|阳台|We have breakfast on the balcony.|
+roof|A2|ruːf|屋顶|There is a bird on the roof.|
+wall|A2|wɔːl|墙|There are photos on the wall.|
+floor|A2|flɔː|地板；楼层|Don't leave your clothes on the floor.|
+ceiling|B1|ˈsiːlɪŋ|天花板|There's a spider on the ceiling.|ant:floor
+door|A2|dɔː|门|Please close the door.|
+window|A2|ˈwɪndəʊ|窗户|Open the window, it's hot in here.|
+stairs|A2|steəz|楼梯|Run up the stairs and get your coat.|
+upstairs|A2|ˌʌpˈsteəz|在楼上|My bedroom is upstairs.|ant:downstairs
+downstairs|A2|ˌdaʊnˈsteəz|在楼下|Breakfast is ready, come downstairs.|
+lift|A2|lɪft|电梯；举起|Take the lift to the tenth floor.|
+gate|A2|ɡeɪt|大门|Shut the gate so the dog can't get out.|
+fence|B1|fens|篱笆|The cat jumped over the fence.|
+key|A2|kiː|钥匙；关键的|I can't find my house key.|
+lock|B1|lɒk|锁|Don't forget to lock the door.|
+## 家具
+furniture|A2|ˈfɜːnɪtʃə|家具|We need new furniture for the living room.|
+bed|A2|bed|床|It's late, go to bed.|hyper:furniture
+table|A2|ˈteɪbl|桌子|Put the plates on the table.|hyper:furniture
+desk|A2|desk|书桌|I do my homework at my desk.|syn:table
+chair|A2|tʃeə|椅子|Please take a chair and sit down.|hyper:furniture
+armchair|A2|ˈɑːmtʃeə|扶手椅|Grandpa sleeps in his armchair.|hyper:chair
+sofa|A2|ˈsəʊfə|沙发|The cat is sleeping on the sofa.|
+shelf|A2|ʃelf|架子|Put the books back on the shelf.|
+cupboard|A2|ˈkʌbəd|橱柜|The cups are in the cupboard.|
+wardrobe|A2|ˈwɔːdrəʊb|衣柜|Hang your clothes in the wardrobe.|
+drawer|B1|drɔː|抽屉|My socks are in the top drawer.|
+mirror|A2|ˈmɪrə|镜子|She looked at herself in the mirror.|
+lamp|A2|læmp|灯|Turn on the lamp, it's dark.|
+light|A2|laɪt|灯；光；轻的|Turn off the light when you leave.|ant:dark
+carpet|A2|ˈkɑːpɪt|地毯|We have a red carpet in the hall.|syn:rug
+rug|B1|rʌɡ|小地毯|The dog sleeps on the rug.|
+curtain|A2|ˈkɜːtn|窗帘|Close the curtains, the sun is too bright. Open the curtain now.|
+pillow|B1|ˈpɪləʊ|枕头|I like a soft pillow.|
+blanket|B1|ˈblæŋkɪt|毯子|It's cold, take another blanket.|
+sheet|B1|ʃiːt|床单；一张|Put a clean sheet on the bed.|
+## 厨房用品
+fridge|A2|frɪdʒ|冰箱|Put the milk back in the fridge.|
+freezer|B1|ˈfriːzə|冰柜|There's ice cream in the freezer.|
+cooker|A2|ˈkʊkə|炉灶|Don't touch the cooker, it's hot.|syn:oven
+oven|A2|ˈʌvn|烤箱|Bake the cake in the oven for an hour.|
+microwave|A2|ˈmaɪkrəweɪv|微波炉|Heat the soup in the microwave.|
+dishwasher|B1|ˈdɪʃwɒʃə|洗碗机|Put the dirty plates in the dishwasher.|
+washing machine|A2|ˈwɒʃɪŋ məʃiːn|洗衣机|The washing machine is broken.|
+sink|B1|sɪŋk|水槽|Leave the dirty cups in the sink.|
+tap|B1|tæp|水龙头|Turn off the tap when you brush your teeth.|
+plate|A2|pleɪt|盘子|Put the cake on a plate.|syn:dish
+dish|A2|dɪʃ|盘子；一道菜|Can you wash the dishes? Start with this dish.|
+bowl|A2|bəʊl|碗|I eat cereal from a bowl.|
+cup|A2|kʌp|杯子|Would you like a cup of tea?|syn:mug
+mug|A2|mʌɡ|马克杯|He drinks coffee from a big mug.|
+glass|A2|ɡlɑːs|玻璃杯；玻璃|Can I have a glass of water?|
+knife|A2|naɪf|刀|Cut the bread with a knife.|
+fork|A2|fɔːk|叉子|Hold the fork in your left hand.|
+spoon|A2|spuːn|勺子|Stir your tea with a spoon.|
+pan|A2|pæn|平底锅|Fry the eggs in a pan.|
+## 家务与日常
+housework|B1|ˈhaʊswɜːk|家务|I help with the housework at the weekend.|
+clean|A2|kliːn|干净的；打扫|Please clean your room.|ant:dirty
+dirty|A2|ˈdɜːti|脏的|My shoes are dirty after the football match.|
+tidy|A2|ˈtaɪdi|整洁的；整理|Your room is very tidy today.|ant:untidy
+untidy|B1|ʌnˈtaɪdi|凌乱的|His desk is always untidy.|syn:messy
+messy|B1|ˈmesi|凌乱的|The kitchen is messy after the party.|
+wash|A2|wɒʃ|洗|Wash your hands before lunch.|
+iron|B1|ˈaɪən|熨斗；熨|Can you iron my shirt?|
+sweep|B1|swiːp|扫|Sweep the floor after dinner.|
+rubbish|A2|ˈrʌbɪʃ|垃圾|Take the rubbish out, please.|
+bin|A2|bɪn|垃圾桶|Put the paper in the recycling bin.|
+broom|B1|bruːm|扫帚|The witch flew on a broom.|
+towel|A2|ˈtaʊəl|毛巾|Take a towel to the swimming pool.|
+soap|A2|səʊp|肥皂|Wash your hands with soap.|
+shampoo|A2|ʃæmˈpuː|洗发水|This shampoo smells of apples.|
+toothbrush|A2|ˈtuːθbrʌʃ|牙刷|I need a new toothbrush.|
+toothpaste|A2|ˈtuːθpeɪst|牙膏|Put some toothpaste on your toothbrush.|
+shower|A2|ˈʃaʊə|淋浴|I have a shower every morning.|syn:bath
+bath|A2|bɑːθ|浴缸；洗澡|The baby loves having a bath.|
+comfortable|A2|ˈkʌmftəbl|舒服的|This sofa is really comfortable.|ant:uncomfortable
+uncomfortable|B1|ʌnˈkʌmftəbl|不舒服的|The seats on the bus are uncomfortable.|
+cosy|B1|ˈkəʊzi|温暖舒适的|Our living room is warm and cosy.|syn:comfortable
+neighbourhood|B1|ˈneɪbəhʊd|街区；四邻|It's a quiet neighbourhood with lots of parks.|
+move|A2|muːv|搬家；移动|We're going to move to a bigger house.|
+rent|B1|rent|租；租金|They rent a flat near the station.|
+own|A2|əʊn|拥有；自己的|Do you own a bike?|

@@ -1,0 +1,89 @@
+# 小词大用 | words
+## 介词
+about|A2|əˈbaʊt|关于；大约|This book is about animals.|
+above|A2|əˈbʌv|在……上方|The light is above the table.|ant:below
+below|A2|bɪˈləʊ|在……下方|Write your name below the line.|
+under|A2|ˈʌndə|在……下面|The cat is under the bed.|ant:over
+over|A2|ˈəʊvə|在……上方；越过|The plane flew over the city.|
+across|A2|əˈkrɒs|穿过|We swam across the river.|syn:through
+through|A2|θruː|穿过；通过|We walked through the forest.|sound:threw
+along|A2|əˈlɒŋ|沿着|We walked along the beach.|
+around|A2|əˈraʊnd|围绕；到处|We walked around the lake.|
+among|B1|əˈmʌŋ|在……之中|I found my ring among the leaves.|syn:between
+inside|A2|ˌɪnˈsaɪd|在里面|It's raining, let's go inside.|ant:outside
+outside|A2|ˌaʊtˈsaɪd|在外面|The children are playing outside.|
+into|A2|ˈɪntə|进入|He jumped into the pool.|ant:out of
+out of|A2|ˈaʊt əv|从……出来|She took the cake out of the oven.|
+towards|B1|təˈwɔːdz|朝着|The dog ran towards me.|
+against|B1|əˈɡenst|反对；靠着|We played against a strong team.|
+without|A2|wɪˈðaʊt|没有|I can't live without music.|
+beside|B1|bɪˈsaɪd|在……旁边|Come and sit beside me.|syn:next to
+## 连词
+and|A2|ænd|和|I like cats and dogs.|
+but|A2|bʌt|但是|I'm tired but happy.|syn:however
+or|A2|ɔː|或者|Tea or coffee?|
+because|A2|bɪˈkɒz|因为|I stayed home because I was ill.|ant:so
+if|A2|ɪf|如果|If it rains, we'll stay at home.|ant:unless
+unless|B1|ənˈles|除非|You won't pass unless you study.|
+although|B1|ɔːlˈðəʊ|虽然|Although it was cold, we went swimming.|syn:though
+though|B1|ðəʊ|虽然|I like him, though he's a bit noisy.|
+however|B1|haʊˈevə|然而|It was sunny. However, it was cold.|
+when|A2|wen|当……时|Call me when you get home.|
+before|A2|bɪˈfɔː|在……之前|Wash your hands before lunch.|ant:after
+after|A2|ˈɑːftə|在……之后|We went to the park after school.|
+as|A2|æz|作为；当……时|She works as a nurse.|
+than|A2|ðæn|比|He is taller than me.|
+either|B1|ˈaɪðə|也（不）；任一|I don't like it either.|ant:neither
+neither|B1|ˈnaɪðə|两者都不|Neither of them came.|
+both|A2|bəʊθ|两者都|Both my parents are teachers.|
+instead|B1|ɪnˈsted|代替|Let's walk instead of taking the bus.|
+also|A2|ˈɔːlsəʊ|也|I also like swimming.|syn:too
+even|A2|ˈiːvn|甚至|Even my grandma uses a smartphone.|
+only|A2|ˈəʊnli|只有；仅仅|I only have one pound.|
+just|A2|dʒʌst|刚刚；只是|I've just finished my homework.|
+again|A2|əˈɡen|再一次|Try again!|
+## 疑问与指代
+what|A2|wɒt|什么|What's your name?|
+who|A2|huː|谁|Who is that girl?|
+why|A2|waɪ|为什么|Why are you late?|
+how|A2|haʊ|怎样|How do you get to school?|
+which|A2|wɪtʃ|哪一个|Which colour do you like?|sound:witch
+whose|A2|huːz|谁的|Whose bag is this?|
+everyone|A2|ˈevriwʌn|每个人|Everyone loves ice cream.|syn:everybody;ant:nobody
+everybody|A2|ˈevribɒdi|每个人|Everybody was happy.|
+nobody|A2|ˈnəʊbədi|没有人|Nobody knows the answer.|syn:no one
+someone|A2|ˈsʌmwʌn|某人|Someone is at the door.|syn:somebody
+somebody|A2|ˈsʌmbədi|某人|Somebody left their bag here.|
+anyone|A2|ˈeniwʌn|任何人|Is anyone home?|
+everything|A2|ˈevriθɪŋ|一切|Everything is ready.|ant:nothing
+nothing|A2|ˈnʌθɪŋ|没有东西|There's nothing in the fridge.|
+something|A2|ˈsʌmθɪŋ|某事；某物|I have something for you.|
+anything|A2|ˈeniθɪŋ|任何事物|Do you need anything?|
+everywhere|A2|ˈevriweə|到处|I looked everywhere for my keys.|ant:nowhere
+somewhere|A2|ˈsʌmweə|某处|Let's go somewhere warm.|
+nowhere|B1|ˈnəʊweə|无处|There's nowhere to sit.|
+anywhere|A2|ˈeniweə|任何地方|You can sit anywhere.|
+other|A2|ˈʌðə|其他的|Where are the other students?|
+another|A2|əˈnʌðə|另一个|Can I have another biscuit?|
+each|A2|iːtʃ|每个|Each student has a book.|syn:every
+every|A2|ˈevri|每个|I go swimming every day.|
+all|A2|ɔːl|所有的|All my friends came.|ant:none
+none|B1|nʌn|一个也没有|None of the answers were right.|
+## 表达与回应
+yes|A2|jes|是的|Yes, I'd love to come.|ant:no
+no|A2|nəʊ|不；没有|No, thank you.|sound:know
+please|A2|pliːz|请|Can I have some water, please?|
+thanks|A2|θæŋks|谢谢|Thanks for your help.|
+hello|A2|həˈləʊ|你好|Hello, how are you?|ant:goodbye
+goodbye|A2|ˌɡʊdˈbaɪ|再见|Say goodbye to your friends.|syn:bye
+bye|A2|baɪ|再见|Bye, see you tomorrow!|sound:buy
+welcome|A2|ˈwelkəm|欢迎|Welcome to our school!|
+congratulations|A2|kənˌɡrætʃuˈleɪʃnz|祝贺|Congratulations on passing your exam!|
+excuse|A2|ɪkˈskjuːz|原谅；借口|Excuse me, where is the station?|
+pardon|A2|ˈpɑːdn|请再说一遍|Pardon? I didn't hear you.|
+cheers|B1|tʃɪəz|干杯；谢谢|Cheers for the lift!|
+well done|A2|ˌwel ˈdʌn|做得好|Well done, you won!|
+of course|A2|əv ˈkɔːs|当然|Of course you can come.|
+anyway|B1|ˈeniweɪ|不管怎样|Anyway, let's go home.|
+actually|B1|ˈæktʃuəli|实际上|Actually, I don't like coffee.|
+even if|B1|ˈiːvn ɪf|即使|I'll go even if it rains.|

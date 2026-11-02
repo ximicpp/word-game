@@ -1,0 +1,125 @@
+# 交流与科技 | media
+## 交流
+communicate|B1|kəˈmjuːnɪkeɪt|交流|We communicate by email.|
+communication|B1|kəˌmjuːnɪˈkeɪʃn|交流|Good communication is important.|
+contact|B1|ˈkɒntækt|联系|Contact me if you need help.|
+announce|B1|əˈnaʊns|宣布|They will announce the winner tonight.|
+announcement|B1|əˈnaʊnsmənt|通告|Listen to the announcement.|
+express|B1|ɪkˈspres|表达|It's hard to express my feelings.|
+gesture|B1|ˈdʒestʃə|手势|He made a friendly gesture.|
+accent|B1|ˈæksent|口音|She has a Scottish accent.|
+pronounce|B1|prəˈnaʊns|发音|How do you pronounce this word?|
+pronunciation|B1|prəˌnʌnsiˈeɪʃn|发音|Your pronunciation is very good.|
+repeat|A2|rɪˈpiːt|重复|Can you repeat that, please?|
+request|B1|rɪˈkwest|请求|I have a request.|
+respond|B1|rɪˈspɒnd|回应|He didn't respond to my message.|syn:reply
+response|B1|rɪˈspɒns|回应|I'm waiting for a response.|
+greet|B1|ɡriːt|问候|She came to greet us at the door.|
+interrupt|B1|ˌɪntəˈrʌpt|打断|Don't interrupt me!|
+gossip|B1|ˈɡɒsɪp|闲话|Don't listen to gossip.|
+rumour|B1|ˈruːmə|谣言|I heard a rumour about her.|
+secret|B1|ˈsiːkrət|秘密|Can you keep a secret?|
+## 科技
+connect|B1|kəˈnekt|连接|Connect your phone to the speaker.|
+connection|B1|kəˈnekʃn|连接|The internet connection is slow.|
+device|B1|dɪˈvaɪs|设备|Turn off every device before you sleep.|
+gadget|B1|ˈɡædʒɪt|小玩意|He loves new gadgets. This gadget opens bottles.|
+headphones|B1|ˈhedfəʊnz|耳机|I listen to music with headphones.|
+speaker|B1|ˈspiːkə|扬声器；演讲者|The speaker is too loud.|
+smartphone|B1|ˈsmɑːtfəʊn|智能手机|Almost everyone has a smartphone.|hyper:phone
+software|B1|ˈsɒftweə|软件|Install the new software.|ant:hardware
+hardware|B1|ˈhɑːdweə|硬件|The hardware is old.|
+install|B1|ɪnˈstɔːl|安装|Install the app on your phone.|
+update|B1|ˌʌpˈdeɪt|更新|Update your software.|
+wifi|B1|ˈwaɪfaɪ|无线网络|What's the wifi password?|
+social media|B1|ˌsəʊʃl ˈmiːdiə|社交媒体|She spends hours on social media.|
+user|B1|ˈjuːzə|用户|The app has a million users. Each user has a profile.|
+profile|B1|ˈprəʊfaɪl|个人资料|Update your profile picture.|
+log in|B1|ˌlɒɡ ˈɪn|登录|Log in with your password.|ant:log out
+log out|B1|ˌlɒɡ ˈaʊt|退出登录|Remember to log out.|
+## 媒体
+broadcast|B1|ˈbrɔːdkɑːst|广播；播放|The match will be broadcast live.|
+series|B1|ˈsɪəriːz|系列（节目）|I'm watching a new TV series.|
+episode|B1|ˈepɪsəʊd|一集|I watched the last episode.|
+documentary|B1|ˌdɒkjuˈmentri|纪录片|We watched a documentary about whales.|
+reality show|B1|rɪˈæləti ʃəʊ|真人秀|I don't like reality shows. This reality show is silly.|
+quiz show|B1|ˈkwɪz ʃəʊ|智力竞赛节目|My grandpa loves quiz shows. His favourite quiz show is on at six.|
+presenter|B1|prɪˈzentə|节目主持人|The presenter is very funny.|syn:host
+celebrity|B1|səˈlebrəti|名人|She's a TV celebrity.|syn:star
+# 娱乐与文化 | culture
+## 娱乐
+admire|B1|ədˈmaɪə|钦佩|I admire my grandmother.|
+applaud|B1|əˈplɔːd|鼓掌|The audience began to applaud.|syn:clap
+clap|B1|klæp|鼓掌|Everyone clapped. Clap your hands!|
+cartoonist|B1|kɑːˈtuːnɪst|漫画家|The cartoonist drew a funny picture.|
+circus|B1|ˈsɜːkəs|马戏团|We saw a clown at the circus.|
+clown|B1|klaʊn|小丑|The clown made the children laugh.|
+director|B1|dəˈrektə|导演|The director won an award.|
+award|B1|əˈwɔːd|奖|She won an award for her book.|syn:prize
+review|B1|rɪˈvjuː|评论|The film got good reviews. I wrote a review.|
+plot|B1|plɒt|情节|The plot of the film was very exciting.|
+cast|B1|kɑːst|演员阵容|The cast of the film is amazing.|
+lyrics|B1|ˈlɪrɪks|歌词|I know all the lyrics to this song.|
+album|B1|ˈælbəm|专辑；相册|Their new album is great.|
+rehearsal|B1|rɪˈhɜːsl|排练|We have a rehearsal before the show.|
+musical|B1|ˈmjuːzɪkl|音乐剧；音乐的|We saw a musical in London.|
+opera|B1|ˈɒprə|歌剧|My aunt loves opera.|
+orchestra|B1|ˈɔːkɪstrə|管弦乐团|She plays violin in an orchestra.|
+## 文学艺术
+literature|B1|ˈlɪtrətʃə|文学|I'm studying English literature.|
+fiction|B1|ˈfɪkʃn|小说；虚构|I like science fiction.|ant:non-fiction
+non-fiction|B1|ˌnɒn ˈfɪkʃn|非虚构作品|I prefer non-fiction books.|
+biography|B1|baɪˈɒɡrəfi|传记|I'm reading a biography of Einstein.|
+publish|B1|ˈpʌblɪʃ|出版|They will publish her book next year.|
+legend|B1|ˈledʒənd|传说|It's an old legend.|syn:myth
+myth|B1|mɪθ|神话|We read Greek myths. This myth is about a hero.|
+image|B1|ˈɪmɪdʒ|图像|The image on the screen was clear.|syn:picture
+portrait|B1|ˈpɔːtrət|肖像|The artist painted a portrait of the queen.|
+# 日常动作 | actions
+## 更多动作
+arrange|B1|əˈreɪndʒ|安排|Let's arrange a meeting.|syn:organise
+attack|B1|əˈtæk|攻击|The dog might attack.|
+avoid|B1|əˈvɔɪd|避免|Avoid eating too much sugar.|
+blow|B1|bləʊ|吹|Blow out the candles!|
+bend|B1|bend|弯曲|Bend your knees.|
+burn|B1|bɜːn|燃烧；烧伤|Be careful, don't burn yourself.|
+burst|B1|bɜːst|爆裂|The balloon will burst.|
+calm down|B1|ˌkɑːm ˈdaʊn|平静下来|Calm down and tell me what happened.|
+consider|B1|kənˈsɪdə|考虑|I'll consider your idea.|syn:think
+contain|B1|kənˈteɪn|包含|This drink doesn't contain sugar.|
+copy|A2|ˈkɒpi|复印；抄|Don't copy your friend's homework.|
+cover|B1|ˈkʌvə|覆盖|Cover the food with a plate.|
+create|B1|kriˈeɪt|创造|Let's create a new game.|
+depend|B1|dɪˈpend|取决于；依靠|It depends on the weather. You can depend on me.|
+develop|B1|dɪˈveləp|发展|Children develop very fast.|
+dig|B1|dɪɡ|挖|The dog likes to dig in the garden.|
+disturb|B1|dɪˈstɜːb|打扰|Please don't disturb me.|
+exist|B1|ɪɡˈzɪst|存在|Do dragons exist?|
+float|B1|fləʊt|漂浮|Wood can float on water.|ant:sink
+gather|B1|ˈɡæðə|聚集|People gather in the square.|
+include|B1|ɪnˈkluːd|包括|The price doesn't include drinks.|
+kill|B1|kɪl|杀死|Smoking can kill you.|
+mend|B1|mend|修补|Can you mend my jeans?|syn:fix
+obey|B1|əˈbeɪ|服从|Dogs should obey their owners.|
+participate|B1|pɑːˈtɪsɪpeɪt|参加|Everyone can participate.|syn:join
+pretend|B1|prɪˈtend|假装|Let's pretend we're pirates.|
+prevent|B1|prɪˈvent|阻止；预防|Washing your hands can prevent illness.|syn:stop
+provide|B1|prəˈvaɪd|提供|The school will provide lunch.|syn:offer
+realise|B1|ˈrɪəlaɪz|意识到|I didn't realise it was so late.|
+remove|B1|rɪˈmuːv|移除|Remove your shoes, please.|
+replace|B1|rɪˈpleɪs|代替；更换|Replace the old battery.|
+rise|B1|raɪz|上升|The sun will rise at six.|ant:fall
+roll|B1|rəʊl|滚动|The ball began to roll down the hill.|
+scream|B1|skriːm|尖叫|Don't scream!|syn:shout
+select|B1|sɪˈlekt|挑选|Select one answer.|syn:choose
+separate|B1|ˈseprət|分开的|Keep the two groups separate.|
+serve|B1|sɜːv|服务；上菜|The restaurant will serve lunch at twelve.|
+set|B1|set|设置；布置|Set your alarm for seven.|
+shine|B1|ʃaɪn|照耀|The sun began to shine.|
+smash|B1|smæʃ|打碎|Don't smash the glass.|syn:break
+spill|B1|spɪl|洒出|Don't spill your drink.|
+spread|B1|spred|传播；涂|Spread the butter on the bread.|
+stick|B1|stɪk|粘贴；棍子|Stick the picture on the wall.|
+suffer|B1|ˈsʌfə|受苦|Many animals suffer in the heat.|
+surround|B1|səˈraʊnd|包围|Trees surround the lake.|
+threaten|B1|ˈθretn|威胁|Pollution can threaten wildlife.|

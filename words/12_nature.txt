@@ -1,0 +1,123 @@
+# 自然与天气 | nature
+## 天气
+weather|A2|ˈweðə|天气|The weather is lovely today.|syn:climate
+climate|B1|ˈklaɪmət|气候|Britain has a mild climate.|form:climb
+sun|A2|sʌn|太阳|The sun is shining.|
+sunny|A2|ˈsʌni|晴朗的|It's a sunny day.|ant:cloudy
+cloud|A2|klaʊd|云|There isn't a cloud in the sky.|
+cloudy|A2|ˈklaʊdi|多云的|It's cloudy, but it isn't raining.|
+rain|A2|reɪn|雨；下雨|It's going to rain this afternoon.|
+rainy|A2|ˈreɪni|下雨的|I stay at home on rainy days.|
+snow|A2|snəʊ|雪；下雪|We built a snowman in the snow.|
+snowy|B1|ˈsnəʊi|下雪的|It was a cold, snowy morning.|
+wind|A2|wɪnd|风|The wind blew my hat off.|
+windy|A2|ˈwɪndi|有风的|It's too windy to fly a kite.|
+storm|A2|stɔːm|暴风雨|The storm knocked down several trees.|hyper:weather
+thunder|B1|ˈθʌndə|雷|The dog is scared of thunder.|coll:thunder and lightning
+lightning|B1|ˈlaɪtnɪŋ|闪电|We saw lightning over the sea.|
+fog|A2|fɒɡ|雾|The plane was late because of the fog.|
+foggy|A2|ˈfɒɡi|有雾的|Drive slowly, it's foggy.|
+ice|A2|aɪs|冰|Be careful, there's ice on the road.|
+icy|B1|ˈaɪsi|结冰的|The roads are icy this morning.|
+warm|A2|wɔːm|温暖的|It's warm enough to swim.|ant:cool
+cool|A2|kuːl|凉爽的；酷|It's cool in the evening.|
+wet|A2|wet|湿的|My shoes got wet in the rain.|ant:dry
+dry|A2|draɪ|干燥的|Keep your phone dry.|
+forecast|B1|ˈfɔːkɑːst|预报|The forecast says it will snow.|
+rainbow|A2|ˈreɪnbəʊ|彩虹|Look, there's a rainbow!|
+## 季节与天空
+season|A2|ˈsiːzn|季节|Summer is my favourite season.|
+spring|A2|sprɪŋ|春天|Flowers grow in spring.|hyper:season
+summer|A2|ˈsʌmə|夏天|We go to the beach in summer.|hyper:season;ant:winter
+autumn|A2|ˈɔːtəm|秋天|Leaves fall in autumn.|hyper:season
+winter|A2|ˈwɪntə|冬天|It snows in winter.|hyper:season
+sky|A2|skaɪ|天空|The sky is blue today.|
+star|A2|stɑː|星星|I can see a star in the sky.|
+moon|A2|muːn|月亮|There's a full moon tonight.|
+planet|A2|ˈplænɪt|行星|Mars is a red planet.|
+earth|B1|ɜːθ|地球；泥土|The earth goes round the sun.|
+space|A2|speɪs|太空；空间|I want to travel into space.|
+## 地貌
+nature|A2|ˈneɪtʃə|自然|I love walking in nature.|
+countryside|A2|ˈkʌntrisaɪd|乡村|We live in the countryside.|ant:city
+mountain|A2|ˈmaʊntən|山|We climbed the mountain.|syn:hill
+hill|A2|hɪl|小山|The castle is on a hill.|
+valley|B1|ˈvæli|山谷|The village is in a green valley.|
+river|A2|ˈrɪvə|河|We swam in the river.|
+lake|A2|leɪk|湖|There's a boat on the lake.|
+sea|A2|siː|海|I love swimming in the sea.|syn:ocean
+ocean|A2|ˈəʊʃn|海洋|The Pacific is the biggest ocean.|
+beach|A2|biːtʃ|海滩|We played on the beach all day.|
+coast|B1|kəʊst|海岸|We drove along the coast.|
+island|A2|ˈaɪlənd|岛|They live on a small island.|
+forest|A2|ˈfɒrɪst|森林|Bears live in the forest.|syn:wood
+wood|A2|wʊd|树林；木头|We went for a walk in the wood.|
+jungle|A2|ˈdʒʌŋɡl|丛林|Tigers live in the jungle.|
+desert|A2|ˈdezət|沙漠|It hardly ever rains in the desert.|form:dessert;coll:desert is dry
+field|A2|fiːld|田野|The cows are in the field.|
+cave|B1|keɪv|洞穴|We explored a dark cave.|
+rock|A2|rɒk|岩石|He sat on a big rock.|syn:stone
+stone|A2|stəʊn|石头|The house is made of stone.|
+sand|A2|sænd|沙子|The children played in the sand.|
+grass|A2|ɡrɑːs|草|Don't walk on the grass.|
+tree|A2|triː|树|There's a bird in the tree.|hyper:plant
+leaf|A2|liːf|叶子|A leaf fell from the tree.|
+flower|A2|ˈflaʊə|花|She picked a flower from the garden.|sound:flour;hyper:plant
+rose|A2|rəʊz|玫瑰|He gave his mum a red rose.|hyper:flower
+plant|A2|plɑːnt|植物；种植|Water the plant once a week.|
+seed|B1|siːd|种子|Plant the seed in the spring.|
+wildlife|B1|ˈwaɪldlaɪf|野生动物|The park is full of wildlife.|
+## 动物
+animal|A2|ˈænɪml|动物|What's your favourite animal?|
+pet|A2|pet|宠物|Do you have a pet?|
+dog|A2|dɒɡ|狗|Our dog loves running in the park.|hyper:pet
+cat|A2|kæt|猫|The cat is sleeping on my bed.|hyper:pet
+rabbit|A2|ˈræbɪt|兔子|My rabbit eats carrots.|hyper:pet
+mouse|A2|maʊs|老鼠；鼠标|The cat is chasing a mouse.|
+bird|A2|bɜːd|鸟|A bird is singing outside.|
+horse|A2|hɔːs|马|She rides a horse every weekend.|
+cow|A2|kaʊ|奶牛|Cows give us milk, and that cow is brown.|
+sheep|A2|ʃiːp|绵羊|The farmer has a hundred sheep.|
+pig|A2|pɪɡ|猪|The pig is rolling in the mud.|
+duck|A2|dʌk|鸭子|We fed the duck on the lake.|
+goat|A2|ɡəʊt|山羊|The goat ate my hat!|
+lion|A2|ˈlaɪən|狮子|The lion is the king of the jungle.|
+tiger|A2|ˈtaɪɡə|老虎|A tiger has black and orange stripes.|
+elephant|A2|ˈelɪfənt|大象|An elephant has a long nose.|
+monkey|A2|ˈmʌŋki|猴子|The monkey is eating a banana.|
+bear|A2|beə|熊|The bear was looking for honey.|
+wolf|B1|wʊlf|狼|The wolf was hungry.|
+fox|A2|fɒks|狐狸|A fox ran across the road.|
+giraffe|A2|dʒɪˈrɑːf|长颈鹿|The giraffe eats leaves from tall trees.|
+camel|A2|ˈkæml|骆驼|A camel can walk for days without water.|
+dolphin|A2|ˈdɒlfɪn|海豚|We saw a dolphin from the boat.|
+whale|A2|weɪl|鲸|The whale is the biggest animal in the world.|
+shark|A2|ʃɑːk|鲨鱼|Sharks have lots of teeth. That shark is huge.|
+snake|A2|sneɪk|蛇|Don't touch the snake!|
+frog|A2|frɒɡ|青蛙|A frog jumped into the pond.|
+insect|A2|ˈɪnsekt|昆虫|An ant is a small insect.|
+bee|A2|biː|蜜蜂|A bee is making honey.|hyper:insect
+butterfly|A2|ˈbʌtəflaɪ|蝴蝶|A butterfly landed on my hand.|hyper:insect
+spider|A2|ˈspaɪdə|蜘蛛|There's a spider in the bath.|
+ant|A2|ænt|蚂蚁|An ant can carry heavy things.|hyper:insect
+mosquito|B1|məˈskiːtəʊ|蚊子|A mosquito bit me last night.|hyper:insect
+tail|A2|teɪl|尾巴|The dog wagged its tail.|
+wing|B1|wɪŋ|翅膀|The bird hurt its wing.|
+feather|B1|ˈfeðə|羽毛|I found a white feather.|
+fur|B1|fɜː|毛皮|The cat has soft fur.|
+nest|B1|nest|鸟巢|The bird built a nest in the tree.|
+## 环境
+environment|A2|ɪnˈvaɪrənmənt|环境|We must protect the environment.|
+pollution|B1|pəˈluːʃn|污染|Cars cause air pollution.|
+pollute|B1|pəˈluːt|污染|Factories pollute the river.|
+recycle|B1|ˌriːˈsaɪkl|回收利用|We recycle paper and bottles.|
+plastic|A2|ˈplæstɪk|塑料|Plastic is bad for the sea.|
+protect|B1|prəˈtekt|保护|We should protect wild animals.|
+energy|B1|ˈenədʒi|能源；精力|Solar energy comes from the sun.|
+waste|B1|weɪst|浪费；废物|Don't waste water.|ant:save
+air|A2|eə|空气|The air in the mountains is clean.|
+fire|A2|ˈfaɪə|火|We sat around the fire.|
+flood|B1|flʌd|洪水|The flood destroyed many houses.|
+earthquake|B1|ˈɜːθkweɪk|地震|The earthquake shook the city.|
+heat|B1|hiːt|炎热；热|I can't sleep in this heat.|
+wild|B1|waɪld|野生的|Wild animals live in the forest.|

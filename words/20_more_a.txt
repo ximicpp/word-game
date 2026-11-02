@@ -1,0 +1,181 @@
+# 人物与家庭 | people
+## 性格
+active|B1|ˈæktɪv|活跃的|My grandmother is still very active.|ant:lazy
+ambitious|B1|æmˈbɪʃəs|有雄心的|She is ambitious and wants to be a doctor.|
+anxious|B1|ˈæŋkʃəs|焦虑的|He felt anxious about the interview.|syn:worried
+annoyed|B1|əˈnɔɪd|恼怒的|I was annoyed because the bus was late.|syn:angry
+annoying|B1|əˈnɔɪɪŋ|令人恼火的|That noise is really annoying.|
+amused|B1|əˈmjuːzd|觉得好笑的|We were amused by his story.|
+ashamed|B1|əˈʃeɪmd|羞愧的|He felt ashamed of his rude words.|
+confused|B1|kənˈfjuːzd|困惑的|I'm confused, can you explain again?|
+confusing|B1|kənˈfjuːzɪŋ|令人困惑的|The map was confusing.|
+curious|B1|ˈkjʊəriəs|好奇的|Cats are very curious animals.|
+delighted|B1|dɪˈlaɪtɪd|高兴的|I was delighted with my present.|syn:pleased
+disappointed|B1|ˌdɪsəˈpɔɪntɪd|失望的|I was disappointed with my score.|
+disappointing|B1|ˌdɪsəˈpɔɪntɪŋ|令人失望的|The end of the film was disappointing.|
+pleasant|B1|ˈpleznt|令人愉快的|We had a pleasant walk.|syn:nice;ant:unpleasant
+unpleasant|B1|ʌnˈpleznt|令人不快的|The smell was very unpleasant.|
+relaxing|B1|rɪˈlæksɪŋ|令人放松的|A hot bath is very relaxing.|
+satisfied|B1|ˈsætɪsfaɪd|满意的|Are you satisfied with the room?|
+shocked|B1|ʃɒkt|震惊的|We were shocked by the news.|
+terrified|B1|ˈterɪfaɪd|吓坏的|She is terrified of snakes.|syn:afraid
+thankful|B1|ˈθæŋkfl|感激的|I'm thankful for your help.|syn:grateful
+grateful|B1|ˈɡreɪtfl|感激的|I'm grateful to my teachers.|
+gentle|B1|ˈdʒentl|温和的|Be gentle with the baby.|
+romantic|B1|rəʊˈmæntɪk|浪漫的|They had a romantic dinner.|
+sensitive|B1|ˈsensətɪv|敏感的|She is sensitive and cries easily.|
+sociable|B1|ˈsəʊʃəbl|好交际的|He's very sociable and has many friends.|syn:friendly
+talented|B1|ˈtæləntɪd|有天赋的|She is a talented singer.|
+reliable|B1|rɪˈlaɪəbl|可靠的|He's reliable, he always arrives on time.|
+independent|B1|ˌɪndɪˈpendənt|独立的|She's very independent for her age.|
+creative|B1|kriˈeɪtɪv|有创造力的|Artists are creative people.|
+cruel|B1|ˈkruːəl|残忍的|It's cruel to keep a dog in a small cage.|ant:kind
+fair|A2|feə|公平的；浅色的|It's not fair!|ant:unfair
+unfair|B1|ʌnˈfeə|不公平的|The rules are unfair.|
+crazy|B1|ˈkreɪzi|疯狂的|That's a crazy idea!|
+mad|B1|mæd|疯的；生气的|My mum will be mad if I'm late.|
+## 人生阶段
+childhood|B1|ˈtʃaɪldhʊd|童年|I had a happy childhood.|
+teenage|B1|ˈtiːneɪdʒ|青少年的|He's in his teenage years.|
+life|A2|laɪf|生活；生命|I've lived here all my life.|
+lifestyle|B1|ˈlaɪfstaɪl|生活方式|He has a healthy lifestyle.|
+grown-up|B1|ˈɡrəʊn ʌp|成年人|Ask a grown-up to help you.|syn:adult
+elder|B1|ˈeldə|年长的|My elder sister is at university.|
+youth|B1|juːθ|青年时期|In his youth, he was a great runner.|
+background|B1|ˈbækɡraʊnd|背景|Students from every background are welcome.|
+nationality|B1|ˌnæʃəˈnæləti|国籍|What nationality are you?|
+# 身体与健康 | body
+## 健康
+bandage|B1|ˈbændɪdʒ|绷带|The nurse put a bandage on my arm.|
+plaster|B1|ˈplɑːstə|创可贴；石膏|Put a plaster on your finger.|
+blind|B1|blaɪnd|盲的|The blind man has a guide dog.|
+deaf|B1|def|聋的|My grandpa is a little deaf.|
+sore|B1|sɔː|疼痛的|I have a sore throat.|
+throat|B1|θrəʊt|喉咙|My throat hurts when I swallow.|
+bleed|B1|bliːd|流血|My nose started to bleed.|
+swallow|B1|ˈswɒləʊ|吞咽|It hurts when I swallow.|
+sneeze|B1|sniːz|打喷嚏|Pollen makes me sneeze.|
+faint|B1|feɪnt|昏倒|He felt hot and thought he might faint.|
+wound|B1|wuːnd|伤口|The wound took weeks to heal.|syn:injury
+heal|B1|hiːl|愈合|The cut will heal quickly.|
+cure|B1|kjʊə|治愈|There's no cure for the common cold.|
+treatment|B1|ˈtriːtmənt|治疗|He is getting treatment for his back.|
+check-up|B1|ˈtʃek ʌp|体检|I go to the dentist for a check-up.|
+clinic|B1|ˈklɪnɪk|诊所|The clinic opens at eight.|
+surgery|B1|ˈsɜːdʒəri|手术；诊所|He needs surgery on his knee.|syn:operation
+virus|B1|ˈvaɪrəs|病毒|A virus can spread quickly.|
+allergic|B1|əˈlɜːdʒɪk|过敏的|I'm allergic to cats.|
+fitness|B1|ˈfɪtnəs|健康；体能|Swimming is good for fitness.|
+yoga|B1|ˈjəʊɡə|瑜伽|My mum does yoga every morning.|
+stretch|B1|stretʃ|伸展|Stretch your arms before you run.|
+sweat|B1|swet|出汗|You will sweat a lot in this heat.|
+pale|B1|peɪl|苍白的|You look pale, are you OK?|
+shape|B1|ʃeɪp|形状；状态|I'm in good shape after training.|
+## 身体部位
+chest|B1|tʃest|胸部|He has a pain in his chest.|
+elbow|B1|ˈelbəʊ|肘|I hit my elbow on the door.|
+wrist|B1|rɪst|手腕|She wears a watch on her wrist.|
+ankle|B1|ˈæŋkl|脚踝|I twisted my ankle playing football.|
+hip|B1|hɪp|臀部；髋|My grandma had a hip operation.|
+cheek|B1|tʃiːk|脸颊|She kissed him on the cheek.|
+chin|B1|tʃɪn|下巴|He has a beard on his chin.|
+eyebrow|B1|ˈaɪbraʊ|眉毛|He raised one eyebrow.|
+forehead|B1|ˈfɔːhed|额头|She touched his forehead to check for fever.|
+# 衣服与打扮 | clothes
+## 衣服
+raincoat|A2|ˈreɪnkəʊt|雨衣|Wear a raincoat, it's raining.|hyper:coat
+hood|B1|hʊd|兜帽|Put your hood up, it's raining.|
+sleeve|B1|sliːv|袖子|The shirt has long sleeves. One sleeve is torn.|
+collar|B1|ˈkɒlə|衣领|The dog has a red collar.|
+outfit|B1|ˈaʊtfɪt|全套服装|I love your new outfit.|
+vest|B1|vest|背心|Wear a vest under your shirt.|
+cardigan|B1|ˈkɑːdɪɡən|开襟毛衣|Grandma knitted me a cardigan.|hyper:sweater
+tracksuit|B1|ˈtræksuːt|运动服|He wore a tracksuit to the gym.|
+bracelet|B1|ˈbreɪslət|手镯|She wears a silver bracelet.|
+make-up|B1|ˈmeɪk ʌp|化妆品|She doesn't wear make-up.|
+perfume|B1|ˈpɜːfjuːm|香水|What perfume are you wearing?|
+comb|B1|kəʊm|梳子|I need a comb for my hair.|
+gold|A2|ɡəʊld|金；金色的|She has a gold ring.|ant:silver
+silver|A2|ˈsɪlvə|银；银色的|He won a silver medal.|
+# 家与居住 | home
+## 房子
+basement|B1|ˈbeɪsmənt|地下室|We keep old toys in the basement.|
+attic|B1|ˈætɪk|阁楼|There are old boxes in the attic.|ant:basement
+chimney|B1|ˈtʃɪmni|烟囱|Smoke came out of the chimney.|
+doorbell|B1|ˈdɔːbel|门铃|The doorbell rang.|
+step|B1|step|台阶；步|Mind the step!|
+corridor|B1|ˈkɒrɪdɔː|走廊|Don't run in the corridor.|
+dining room|A2|ˈdaɪnɪŋ ruːm|餐厅|We eat in the dining room.|
+cottage|B1|ˈkɒtɪdʒ|小屋|They rented a cottage by the sea.|hyper:house
+detached|B1|dɪˈtætʃt|独立式的|They live in a detached house.|
+heating|B1|ˈhiːtɪŋ|供暖|Turn the heating on, it's cold.|
+air conditioning|B1|ˈeə kəndɪʃənɪŋ|空调|The hotel has air conditioning.|
+electricity|B1|ɪˌlekˈtrɪsəti|电|The storm cut off the electricity.|
+## 家里的东西
+alarm clock|A2|əˈlɑːm klɒk|闹钟|My alarm clock rings at seven.|
+bookcase|B1|ˈbʊkkeɪs|书柜|The bookcase is full.|
+cushion|B1|ˈkʊʃn|靠垫|There's a cushion on the sofa.|
+frame|B1|freɪm|框架；相框|I put the photo in a frame.|
+heater|B1|ˈhiːtə|暖气|Turn on the heater.|
+kettle|B1|ˈketl|水壶|Put the kettle on for tea.|
+saucepan|B1|ˈsɔːspən|炖锅|Boil the eggs in a saucepan.|syn:pan
+tin|B1|tɪn|罐头；锡|Open a tin of beans.|syn:can
+jar|B1|dʒɑː|罐子|Put the jam in a jar.|
+tray|B1|treɪ|托盘|Bring the cups on a tray.|
+vase|B1|vɑːz|花瓶|Put the flowers in a vase.|
+candle|B1|ˈkændl|蜡烛|Light a candle.|
+torch|B1|tɔːtʃ|手电筒|Take a torch, it's dark.|
+scissors|A2|ˈsɪzəz|剪刀|Cut the paper with scissors.|
+tool|B1|tuːl|工具|A hammer is a useful tool.|
+hammer|B1|ˈhæmə|锤子|Hit the nail with a hammer.|hyper:tool
+ladder|B1|ˈlædə|梯子|Climb the ladder carefully.|
+rope|B1|rəʊp|绳子|Tie the boat with a rope.|
+bucket|B1|ˈbʌkɪt|桶|Fill the bucket with water.|
+# 食物与饮料 | food
+## 更多食物
+cabbage|B1|ˈkæbɪdʒ|卷心菜|Cabbage is good for you.|hyper:vegetable
+cucumber|B1|ˈkjuːkʌmbə|黄瓜|Add a cucumber to the salad.|hyper:vegetable
+lettuce|B1|ˈletɪs|生菜|Wash the lettuce.|hyper:vegetable
+garlic|B1|ˈɡɑːlɪk|大蒜|I don't like garlic.|
+peach|B1|piːtʃ|桃子|This peach is very sweet.|hyper:fruit
+cherry|B1|ˈtʃeri|樱桃|There's a cherry on top of the cake.|hyper:fruit
+nut|B1|nʌt|坚果|Squirrels eat nuts. I'm allergic to this nut.|
+crisps|A2|krɪsps|薯片|I'd like a packet of crisps.|
+toast|A2|təʊst|吐司|I have toast for breakfast.|
+pancake|B1|ˈpænkeɪk|煎饼|We made pancakes. I ate one pancake.|
+steak|B1|steɪk|牛排|He ordered a steak.|
+seafood|B1|ˈsiːfuːd|海鲜|I love seafood.|
+yoghurt|A2|ˈjɒɡət|酸奶|I have yoghurt with fruit.|
+cream|B1|kriːm|奶油|Strawberries and cream.|
+oil|B1|ɔɪl|油|Fry it in a little oil.|
+vinegar|B1|ˈvɪnɪɡə|醋|Put salt and vinegar on your chips.|
+flavour|B1|ˈfleɪvə|味道|What flavour is this ice cream?|syn:taste
+bitter|B1|ˈbɪtə|苦的|This coffee is too bitter.|ant:sweet
+salty|B1|ˈsɔːlti|咸的|The soup is too salty.|
+portion|B1|ˈpɔːʃn|一份|The portion was very big.|
+takeaway|B1|ˈteɪkəweɪ|外卖|Let's get a takeaway tonight.|
+tip|B1|tɪp|小费；提示|We left a tip for the waiter.|
+chopsticks|B1|ˈtʃɒpstɪks|筷子|Can you eat with chopsticks?|
+napkin|B1|ˈnæpkɪn|餐巾|Put a napkin on your lap.|
+# 学校与学习 | school
+## 学习
+academic|B1|ˌækəˈdemɪk|学术的|The academic year starts in September.|
+assignment|B1|əˈsaɪnmənt|作业|I have an assignment to finish.|syn:homework
+essay|B1|ˈeseɪ|文章；作文|Write an essay about your holiday.|
+instructions|B1|ɪnˈstrʌkʃnz|说明|Follow the instructions carefully.|
+level|B1|ˈlevl|水平；级别|What level is your English?|
+memorise|B1|ˈmeməraɪz|记住|Try to memorise ten new words a day.|
+underline|B1|ˌʌndəˈlaɪn|在……下划线|Underline the new words.|
+translate|B1|trænzˈleɪt|翻译|Can you translate this into English?|
+translation|B1|trænzˈleɪʃn|翻译|The translation was very good.|
+vocabulary|B1|vəˈkæbjələri|词汇|I want to improve my vocabulary.|
+grammar|B1|ˈɡræmə|语法|English grammar isn't easy.|
+sentence|A2|ˈsentəns|句子|Write a sentence with this word.|
+word|A2|wɜːd|单词|What does this word mean?|
+alphabet|B1|ˈælfəbet|字母表|Can you say the alphabet?|
+paragraph|B1|ˈpærəɡrɑːf|段落|Read the first paragraph.|
+headteacher|A2|ˈhedtiːtʃə|校长|The headteacher came into our class.|
+principal|B1|ˈprɪnsəpl|校长；主要的|The principal spoke to the parents.|
+scholarship|B1|ˈskɒləʃɪp|奖学金|She won a scholarship to study abroad.|
+cheat|B1|tʃiːt|作弊|It's wrong to cheat in exams.|
+concentrate|B1|ˈkɒnsntreɪt|集中注意力|I can't concentrate with this noise.|

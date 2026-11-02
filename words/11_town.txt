@@ -1,0 +1,72 @@
+# 城镇与地点 | town
+## 城镇
+city|A2|ˈsɪti|城市|London is a big city.|syn:town
+town|A2|taʊn|城镇|I live in a small town.|
+village|A2|ˈvɪlɪdʒ|村庄|My grandparents live in a village.|
+capital|A2|ˈkæpɪtl|首都；大写字母|Paris is the capital of France.|
+centre|A2|ˈsentə|中心|The museum is in the city centre.|
+street|A2|striːt|街道|I live on a quiet street.|
+area|A2|ˈeəriə|地区|This area has lots of parks.|
+place|A2|pleɪs|地方|This is a great place for a picnic.|
+local|B1|ˈləʊkl|当地的|We buy food from local farms.|
+## 建筑
+post office|A2|ˈpəʊst ɒfɪs|邮局|I posted the letter at the post office.|
+museum|A2|mjuˈziːəm|博物馆|The science museum is free.|
+gallery|A2|ˈɡæləri|美术馆|We saw famous paintings at the gallery.|
+cinema|A2|ˈsɪnəmə|电影院|Let's go to the cinema tonight.|
+theatre|A2|ˈθɪətə|剧院|We saw a play at the theatre.|
+castle|A2|ˈkɑːsl|城堡|The castle is on top of the hill.|
+church|A2|tʃɜːtʃ|教堂|There's an old church in the village.|
+temple|B1|ˈtempl|寺庙|We visited a beautiful temple.|
+palace|B1|ˈpæləs|宫殿|The king lives in a palace.|syn:castle
+tower|B1|ˈtaʊə|塔|You can see the whole city from the tower.|
+bridge|A2|brɪdʒ|桥|We walked across the bridge.|
+police station|A2|pəˈliːs steɪʃn|警察局|He took the wallet to the police station.|
+fire station|A2|ˈfaɪə steɪʃn|消防站|The fire station is near our school.|
+sports centre|A2|ˈspɔːts sentə|体育中心|I swim at the sports centre.|
+swimming pool|A2|ˈswɪmɪŋ puːl|游泳池|The swimming pool is open all year.|
+zoo|A2|zuː|动物园|We saw lions at the zoo.|
+square|A2|skweə|广场；正方形|People meet in the main square.|
+car park|A2|ˈkɑː pɑːk|停车场|The car park is full.|
+skyscraper|B1|ˈskaɪskreɪpə|摩天大楼|New York has many skyscrapers. That skyscraper is very tall.|hyper:building
+monument|B1|ˈmɒnjumənt|纪念碑|There's a monument in the park.|
+## 方向与位置
+way|A2|weɪ|路；方式|Can you tell me the way to the station?|
+direction|B1|dəˈrekʃn|方向|We walked in the wrong direction.|
+left|A2|left|左边；离开了|Turn left at the corner.|ant:right
+straight|A2|streɪt|直的；直接|Go straight on.|ant:curly
+corner|A2|ˈkɔːnə|角落；拐角|The café is on the corner.|
+opposite|A2|ˈɒpəzɪt|对面；相反的|The bank is opposite the park.|
+next to|A2|ˈnekst tə|在……旁边|Sit next to me.|
+near|A2|nɪə|近的；在附近|Is there a bank near here?|ant:far
+far|A2|fɑː|远的|Is it far to the station?|
+behind|A2|bɪˈhaɪnd|在……后面|The garden is behind the house.|ant:in front of
+in front of|A2|ɪn ˈfrʌnt əv|在……前面|Wait in front of the school.|
+between|A2|bɪˈtwiːn|在……之间|The shop is between the bank and the café.|
+north|A2|nɔːθ|北方|Scotland is in the north of Britain.|ant:south
+south|A2|saʊθ|南方|We drove south to the beach.|
+east|A2|iːst|东方|The sun rises in the east.|ant:west
+west|A2|west|西方|The sun goes down in the west.|
+traffic lights|A2|ˈtræfɪk laɪts|红绿灯|Turn right at the traffic lights.|
+pavement|B1|ˈpeɪvmənt|人行道|Walk on the pavement, not the road.|
+crossing|B1|ˈkrɒsɪŋ|人行横道|Use the zebra crossing.|
+entrance|A2|ˈentrəns|入口|Meet me at the main entrance.|ant:exit
+exit|A2|ˈeɡzɪt|出口|Where is the exit?|
+## 城市生活
+noise|B1|nɔɪz|噪音；声响|A strange noise woke me up.|
+crowded|B1|ˈkraʊdɪd|拥挤的|The bus is always crowded in the morning.|
+modern|A2|ˈmɒdn|现代的|They live in a modern flat.|ant:ancient
+ancient|B1|ˈeɪnʃənt|古代的|We visited an ancient city.|
+historic|B1|hɪˈstɒrɪk|有历史意义的|The town has many historic buildings.|
+population|B1|ˌpɒpjuˈleɪʃn|人口|The population of the city is two million.|
+citizen|B1|ˈsɪtɪzn|公民；市民|Every citizen can vote.|
+public|B1|ˈpʌblɪk|公共的|This is a public park.|ant:private
+private|B1|ˈpraɪvət|私人的|This is a private beach.|
+safe|A2|seɪf|安全的|Is it safe to swim here?|ant:dangerous
+dangerous|A2|ˈdeɪndʒərəs|危险的|It's dangerous to play near the road.|
+danger|B1|ˈdeɪndʒə|危险|Danger! Don't touch!|
+crime|B1|kraɪm|犯罪|There is very little crime in our town.|
+thief|B1|θiːf|小偷|The thief stole her bag.|
+steal|B1|stiːl|偷|Someone tried to steal my bike.|
+rob|B1|rɒb|抢劫|Two men tried to rob the bank.|syn:steal
+lost|A2|lɒst|迷路的；丢失的|We got lost in the old town.|

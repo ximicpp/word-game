@@ -1,0 +1,105 @@
+# 食物与饮料 | food
+## 吃饭
+food|A2|fuːd|食物|I love Italian food.|
+meal|A2|miːl|一餐|Breakfast is the most important meal of the day.|
+breakfast|A2|ˈbrekfəst|早餐|I have eggs for breakfast.|hyper:meal
+lunch|A2|lʌntʃ|午餐|We have lunch at school.|hyper:meal
+dinner|A2|ˈdɪnə|晚餐|What's for dinner tonight?|hyper:meal;syn:supper
+supper|B1|ˈsʌpə|晚饭|We had soup for supper.|
+snack|A2|snæk|零食|I have a snack after school.|
+picnic|A2|ˈpɪknɪk|野餐|Let's have a picnic in the park.|
+menu|A2|ˈmenjuː|菜单|Can I see the menu, please?|
+restaurant|A2|ˈrestrɒnt|餐馆|We went to a Chinese restaurant.|
+cafe|A2|ˈkæfeɪ|咖啡馆|Let's meet at the cafe on the corner.|
+canteen|B1|kænˈtiːn|食堂|The school canteen serves hot lunches.|
+waiter|A2|ˈweɪtə|服务员|The waiter brought us the bill.|
+bill|A2|bɪl|账单|Can we have the bill, please?|
+order|A2|ˈɔːdə|点菜；顺序|Are you ready to order?|
+hungry|A2|ˈhʌŋɡri|饿的|I'm hungry, let's eat.|ant:full
+thirsty|A2|ˈθɜːsti|渴的|I'm thirsty after the run.|
+full|A2|fʊl|饱的；满的|No more cake for me, I'm full.|ant:empty
+delicious|A2|dɪˈlɪʃəs|美味的|This soup is delicious.|syn:tasty
+tasty|B1|ˈteɪsti|好吃的|These cookies are really tasty.|
+taste|A2|teɪst|尝；味道|Taste the sauce and add some salt.|
+## 主食与肉类
+bread|A2|bred|面包|Can you buy some bread on the way home?|
+rice|A2|raɪs|米饭|We eat rice almost every day.|
+pasta|A2|ˈpæstə|意大利面|I cook pasta with tomato sauce.|
+noodle|A2|ˈnuːdl|面条|He ate a bowl of noodle soup.|
+pizza|A2|ˈpiːtsə|比萨|Let's order a pizza.|
+sandwich|A2|ˈsænwɪtʃ|三明治|I made a cheese sandwich for lunch.|
+burger|A2|ˈbɜːɡə|汉堡|He ordered a burger and chips.|
+chips|A2|tʃɪps|薯条|Fish and chips is a British meal.|
+soup|A2|suːp|汤|Hot soup is perfect on a cold day.|
+salad|A2|ˈsæləd|沙拉|I'll have a green salad, please.|
+cereal|A2|ˈsɪəriəl|麦片|I have cereal with milk every morning.|
+meat|A2|miːt|肉|Vegetarians don't eat meat.|
+beef|A2|biːf|牛肉|We had roast beef on Sunday.|hyper:meat
+chicken|A2|ˈtʃɪkɪn|鸡肉；鸡|We had chicken and rice for dinner.|hyper:meat
+lamb|B1|læm|羊肉；小羊|The lamb in this dish is very soft.|hyper:meat
+sausage|A2|ˈsɒsɪdʒ|香肠|I'd like a sausage with my eggs.|
+fish|A2|fɪʃ|鱼|We eat fish on Fridays.|
+egg|A2|eɡ|鸡蛋|Can you boil an egg for me?|
+cheese|A2|tʃiːz|奶酪|I'd like a cheese sandwich.|
+butter|A2|ˈbʌtə|黄油|Put some butter on your toast.|
+## 水果蔬菜
+fruit|A2|fruːt|水果|Eat more fruit and vegetables.|
+apple|A2|ˈæpl|苹果|She ate an apple after lunch.|hyper:fruit
+banana|A2|bəˈnɑːnə|香蕉|Monkeys love bananas, and I love a banana too.|hyper:fruit
+orange|A2|ˈɒrɪndʒ|橙子；橙色的|I'd like an orange juice, please.|hyper:fruit
+lemon|A2|ˈlemən|柠檬|Lemons taste sour, so add sugar to the lemon.|hyper:fruit
+grape|A2|ɡreɪp|葡萄|These grapes are sweet. Try this grape.|hyper:fruit
+strawberry|A2|ˈstrɔːbəri|草莓|I love strawberry ice cream.|hyper:fruit
+pear|A2|peə|梨|This pear is very juicy.|hyper:fruit
+pineapple|A2|ˈpaɪnæpl|菠萝|Pineapple on pizza? No, thanks!|hyper:fruit
+melon|A2|ˈmelən|甜瓜|We had melon for dessert.|hyper:fruit
+vegetable|A2|ˈvedʒtəbl|蔬菜|Carrots are my favourite vegetable.|
+carrot|A2|ˈkærət|胡萝卜|Rabbits like carrots, but my rabbit hates this carrot.|hyper:vegetable
+potato|A2|pəˈteɪtəʊ|土豆|I'd like a baked potato with cheese.|hyper:vegetable
+tomato|A2|təˈmɑːtəʊ|西红柿|Add a tomato to the salad.|hyper:vegetable
+onion|A2|ˈʌnjən|洋葱|Cutting an onion makes me cry.|hyper:vegetable
+bean|A2|biːn|豆|We had beans on toast. Every bean was hot.|hyper:vegetable
+pea|A2|piː|豌豆|My brother won't eat a single pea.|hyper:vegetable
+mushroom|A2|ˈmʌʃrʊm|蘑菇|I'd like a mushroom pizza.|
+## 甜点零食
+dessert|A2|dɪˈzɜːt|甜点|We had ice cream for dessert.|form:desert
+cake|A2|keɪk|蛋糕|Mum made a chocolate cake for my birthday.|hyper:dessert;sound:make;coll:piece of cake
+biscuit|A2|ˈbɪskɪt|饼干|Would you like a biscuit with your tea?|syn:cookie
+cookie|A2|ˈkʊki|曲奇饼|She baked a cookie for each of us.|
+chocolate|A2|ˈtʃɒklət|巧克力|Chocolate is my favourite sweet.|
+sweet|A2|swiːt|甜的；糖果|This cake is too sweet for me.|ant:sour;coll:sweet dessert
+sour|B1|ˈsaʊə|酸的|Lemons taste sour.|
+ice cream|A2|ˌaɪs ˈkriːm|冰淇淋|Let's buy an ice cream.|
+sugar|A2|ˈʃʊɡə|糖|Do you take sugar in your tea?|
+salt|A2|sɔːlt|盐|Pass the salt, please.|ant:pepper
+pepper|A2|ˈpepə|胡椒；辣椒|Add a little salt and pepper.|
+sauce|B1|sɔːs|酱汁|This pasta sauce is delicious.|
+jam|A2|dʒæm|果酱|I like toast with strawberry jam.|
+honey|A2|ˈhʌni|蜂蜜|Bees make honey.|
+flour|A2|ˈflaʊə|面粉|You need flour, eggs and sugar for this cake.|
+## 饮料
+drink|A2|drɪŋk|喝；饮料|Drink plenty of water every day.|
+water|A2|ˈwɔːtə|水|Can I have a glass of water?|
+milk|A2|mɪlk|牛奶|Babies drink milk.|
+juice|A2|dʒuːs|果汁|I'd like an apple juice.|
+tea|A2|tiː|茶|My mum drinks tea every morning.|
+coffee|A2|ˈkɒfi|咖啡|Dad needs coffee to wake up.|
+lemonade|A2|ˌleməˈneɪd|柠檬汽水|Two glasses of lemonade, please.|
+bottle|A2|ˈbɒtl|瓶子|I always carry a bottle of water.|
+## 做饭
+cook|A2|kʊk|做饭；厨师|My dad loves to cook on Sundays.|
+cooking|A2|ˈkʊkɪŋ|烹饪|Cooking is my favourite hobby.|
+recipe|B1|ˈresəpi|食谱|Can you give me the recipe for this cake?|
+bake|B1|beɪk|烘烤|Let's bake some bread.|
+boil|B1|bɔɪl|煮沸|Boil the water before you make the tea.|
+fry|B1|fraɪ|油炸；煎|Fry the onions for five minutes.|
+roast|B1|rəʊst|烤|We roast a chicken on Sundays.|
+mix|A2|mɪks|混合|Mix the flour and the eggs.|
+cut|A2|kʌt|切|Cut the apple in half.|
+slice|B1|slaɪs|一片；切片|Can I have a slice of cake?|syn:piece
+ingredient|B1|ɪnˈɡriːdiənt|配料|Flour is the main ingredient.|
+fresh|A2|freʃ|新鲜的|We buy fresh fish at the market.|
+raw|B1|rɔː|生的|You shouldn't eat raw chicken.|
+vegetarian|B1|ˌvedʒəˈteəriən|素食者；素食的|My sister is a vegetarian.|
+hot|A2|hɒt|热的；辣的|Be careful, the soup is hot.|
+spicy|B1|ˈspaɪsi|辣的|I love spicy food.|syn:hot

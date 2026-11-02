@@ -1,0 +1,189 @@
+# 人物与家庭 | people
+## 家人
+family|A2|ˈfæməli|家庭；家人|My family lives in a small flat in the city.|coll:family name
+parent|A2|ˈpeərənt|父亲或母亲|Each parent got a letter from the school.|
+mother|A2|ˈmʌðə|母亲|My mother works at the hospital.|syn:mum;ant:father
+father|A2|ˈfɑːðə|父亲|My father is teaching me to swim.|syn:dad
+mum|A2|mʌm|妈妈|Mum made pancakes for breakfast.|ant:dad
+dad|A2|dæd|爸爸|Dad drives me to school every morning.|
+brother|A2|ˈbrʌðə|兄弟|My little brother is five years old.|ant:sister
+sister|A2|ˈsɪstə|姐妹|My sister is two years older than me.|
+son|A2|sʌn|儿子|Their son plays the violin.|ant:daughter
+daughter|A2|ˈdɔːtə|女儿|The doctor's daughter is in my class.|
+grandmother|A2|ˈɡrænmʌðə|（外）祖母|My grandmother tells the best stories.|syn:grandma
+grandfather|A2|ˈɡrænfɑːðə|（外）祖父|My grandfather grows vegetables in his garden.|syn:grandpa;ant:grandmother
+grandma|A2|ˈɡrænmɑː|奶奶；外婆|Grandma always gives us sweets.|
+grandpa|A2|ˈɡrænpɑː|爷爷；外公|Grandpa taught me how to play chess.|
+grandparent|A2|ˈɡrænpeərənt|祖父母；外祖父母|I visit my grandparent in the village every summer.|
+grandson|A2|ˈɡrænsʌn|孙子；外孙|Their grandson lives in Australia.|ant:granddaughter
+granddaughter|A2|ˈɡrændɔːtə|孙女；外孙女|She is very proud of her granddaughter.|
+aunt|A2|ɑːnt|姑妈；姨妈；舅妈|My aunt lives next to the sea.|ant:uncle
+uncle|A2|ˈʌŋkl|叔叔；舅舅|My uncle is a pilot.|
+cousin|A2|ˈkʌzn|堂/表兄弟姐妹|My cousin and I were born on the same day.|
+husband|A2|ˈhʌzbənd|丈夫|Her husband cooks dinner every night.|ant:wife
+wife|A2|waɪf|妻子|His wife is a famous writer.|
+child|A2|tʃaɪld|孩子|Every child needs enough sleep.|ant:adult
+children|A2|ˈtʃɪldrən|孩子们|The children are playing in the park.|
+baby|A2|ˈbeɪbi|婴儿|The baby is sleeping, so please be quiet.|
+twin|B1|twɪn|双胞胎之一|Can you tell which twin is Anna?|
+relative|B1|ˈrelətɪv|亲戚|My closest relative lives in Canada.|
+nephew|B1|ˈnefjuː|侄子；外甥|My nephew loves dinosaurs.|ant:niece
+niece|B1|niːs|侄女；外甥女|My niece just started school.|
+stepmother|B1|ˈstepmʌðə|继母|His stepmother is very kind to him.|
+married|A2|ˈmærid|已婚的|My parents have been married for twenty years.|ant:single
+marry|B1|ˈmæri|结婚；嫁；娶|They plan to marry next spring.|
+wedding|A2|ˈwedɪŋ|婚礼|We danced all night at the wedding.|
+single|B1|ˈsɪŋɡl|单身的；单个的|My uncle is still single.|
+divorced|B1|dɪˈvɔːst|离婚的|Her parents are divorced but they are still friends.|
+## 人
+person|A2|ˈpɜːsn|人|She is the kindest person I know.|
+people|A2|ˈpiːpl|人们|Lots of people came to the concert.|
+man|A2|mæn|男人|A tall man opened the door.|ant:woman
+woman|A2|ˈwʊmən|女人|The woman at the desk gave me a map.|
+boy|A2|bɔɪ|男孩|The boy next door has a big dog.|ant:girl
+girl|A2|ɡɜːl|女孩|That girl is the best runner in our school.|
+adult|B1|ˈædʌlt|成年人|Each adult must pay ten pounds.|
+teenager|A2|ˈtiːneɪdʒə|青少年|Every teenager in my class has a bike.|
+kid|A2|kɪd|小孩|The kid next door plays football all day.|syn:child
+gentleman|B1|ˈdʒentlmən|绅士；先生|He always opens the door for others like a real gentleman.|ant:lady
+lady|A2|ˈleɪdi|女士|An old lady asked me the way to the station.|
+guy|B1|ɡaɪ|家伙；小伙子|He's a really nice guy.|
+neighbour|A2|ˈneɪbə|邻居|Our neighbour feeds our cat when we are away.|
+friend|A2|frend|朋友|My best friend lives in the next street.|ant:enemy;coll:make friends
+friendship|B1|ˈfrendʃɪp|友谊|Their friendship started at primary school.|
+enemy|B1|ˈenəmi|敌人|In the story, the dragon is the enemy of the king.|
+partner|B1|ˈpɑːtnə|搭档；伴侣|Work with a partner and check your answers.|
+member|A2|ˈmembə|成员|I'm a member of the school chess club.|
+guest|B1|ɡest|客人|Our guest is staying for the whole weekend.|ant:host
+host|B1|həʊst|主人；主持人|The host welcomed everyone at the door.|
+stranger|B1|ˈstreɪndʒə|陌生人|Never get into a car with a stranger.|
+crowd|B1|kraʊd|人群|A huge crowd waited outside the stadium.|
+group|A2|ɡruːp|组；群|We worked in a group of four.|
+couple|B1|ˈkʌpl|一对；夫妻|A young couple moved in next door.|
+generation|B1|ˌdʒenəˈreɪʃn|一代人|My generation grew up with smartphones.|
+## 名字与年龄
+name|A2|neɪm|名字|What's the name of your dog?|
+surname|A2|ˈsɜːneɪm|姓|Please write your surname in capital letters.|syn:name
+age|A2|eɪdʒ|年龄|At the age of six, she could already read.|
+birthday|A2|ˈbɜːθdeɪ|生日|My birthday is in July.|coll:birthday party
+born|A2|bɔːn|出生|I was born in Shanghai.|
+young|A2|jʌŋ|年轻的|My mum looks very young.|ant:old
+old|A2|əʊld|老的；旧的|My grandfather is ninety years old.|ant:new
+elderly|B1|ˈeldəli|上了年纪的|We help an elderly man with his shopping.|syn:old
+grow|A2|ɡrəʊ|长大；种植|Children grow very fast.|coll:grow up
+## 外貌
+appearance|B1|əˈpɪərəns|外貌|He cares a lot about his appearance.|
+tall|A2|tɔːl|高的|My brother is very tall for his age.|ant:short
+short|A2|ʃɔːt|矮的；短的|She has short black hair.|ant:long
+fat|A2|fæt|胖的|The cat got fat because it ate too much.|ant:thin
+thin|A2|θɪn|瘦的；薄的|He looks thin after his illness.|
+slim|B1|slɪm|苗条的|She is slim because she runs every day.|syn:thin
+beautiful|A2|ˈbjuːtɪfl|美丽的|What a beautiful garden!|ant:ugly
+pretty|A2|ˈprɪti|漂亮的；相当|She looks pretty in that dress.|syn:beautiful
+handsome|B1|ˈhænsəm|英俊的|The actor is very handsome.|
+ugly|B1|ˈʌɡli|丑的|I think that building is really ugly.|
+good-looking|A2|ˌɡʊd ˈlʊkɪŋ|好看的|Her brother is very good-looking.|syn:handsome
+blonde|A2|blɒnd|金发的|The girl with blonde hair is my cousin.|
+curly|A2|ˈkɜːli|卷曲的|He has short curly hair.|ant:straight
+beard|A2|bɪəd|胡须（下巴上的）|My uncle has a long grey beard.|syn:moustache
+moustache|A2|məˈstɑːʃ|小胡子|The man had a thin moustache.|
+## 性格
+character|B1|ˈkærəktə|性格；角色|She has a strong character.|
+personality|B1|ˌpɜːsəˈnæləti|个性|My sister has a very friendly personality.|syn:character
+kind|A2|kaɪnd|友好的；种类|It was kind of you to help me.|ant:unkind;syn:nice
+unkind|B1|ʌnˈkaɪnd|不友善的|Don't be unkind to new students.|
+nice|A2|naɪs|好的；友好的|Our new teacher is really nice.|
+friendly|A2|ˈfrendli|友好的|The people here are very friendly.|ant:unfriendly
+unfriendly|B1|ʌnˈfrendli|不友好的|The shop assistant was a bit unfriendly.|
+polite|B1|pəˈlaɪt|有礼貌的|It's polite to say thank you.|ant:rude
+rude|B1|ruːd|粗鲁的|It's rude to talk with food in your mouth.|
+honest|B1|ˈɒnɪst|诚实的|To be honest, I didn't like the film.|ant:dishonest
+dishonest|B1|dɪsˈɒnɪst|不诚实的|It was dishonest to copy his homework.|
+brave|B1|breɪv|勇敢的|The brave firefighter saved the child.|syn:courage
+clever|A2|ˈklevə|聪明的|She is clever enough to solve any puzzle.|syn:intelligent;ant:stupid
+intelligent|B1|ɪnˈtelɪdʒənt|聪明的；有智慧的|Dolphins are very intelligent animals.|
+stupid|A2|ˈstjuːpɪd|愚蠢的|It was a stupid mistake.|
+funny|A2|ˈfʌni|好笑的；奇怪的|He told us a funny story.|coll:funny story
+serious|B1|ˈsɪəriəs|严肃的；严重的|Why do you look so serious?|ant:funny
+shy|B1|ʃaɪ|害羞的|He is too shy to sing in front of the class.|
+lazy|A2|ˈleɪzi|懒惰的|My cat is lazy and sleeps all day.|ant:hard-working
+hard-working|A2|ˌhɑːd ˈwɜːkɪŋ|勤奋的|She is a hard-working student.|
+patient|B1|ˈpeɪʃnt|有耐心的；病人|Be patient, the bus will come soon.|ant:impatient
+impatient|B1|ɪmˈpeɪʃnt|不耐烦的|Don't be impatient, it's nearly your turn.|
+careful|A2|ˈkeəfl|小心的|Be careful when you cross the road.|ant:careless
+careless|B1|ˈkeələs|粗心的|I lost marks because of careless mistakes.|
+generous|B1|ˈdʒenərəs|慷慨的|It was generous of you to share your lunch.|ant:mean
+mean|B1|miːn|吝啬的；意思是|Don't be mean, give him a sweet.|
+confident|B1|ˈkɒnfɪdənt|自信的|She felt confident before the exam.|
+calm|A2|kɑːm|平静的；冷静的|Stay calm and read the question again.|
+quiet|A2|ˈkwaɪət|安静的|Please be quiet in the library.|syn:calm,silent;ant:noisy;form:quite;coll:peace and quiet
+noisy|A2|ˈnɔɪzi|吵闹的|The canteen is always noisy at lunchtime.|
+cheerful|B1|ˈtʃɪəfl|快活的|He is always cheerful in the morning.|syn:happy
+selfish|B1|ˈselfɪʃ|自私的|It's selfish to eat all the cake yourself.|ant:generous
+sensible|B1|ˈsensəbl|明智的|Wearing a helmet is a sensible idea.|syn:wise
+wise|B1|waɪz|明智的；有智慧的|My grandmother is a very wise woman.|
+strict|B1|strɪkt|严格的|Our maths teacher is strict but fair.|
+## 感受
+feel|A2|fiːl|感觉|I feel tired after the long walk.|
+feeling|B1|ˈfiːlɪŋ|感觉；感情|I have a feeling that it will rain.|
+happy|A2|ˈhæpi|快乐的|I'm happy to see you.|ant:sad,unhappy
+unhappy|A2|ʌnˈhæpi|不开心的|He was unhappy with his test result.|
+happiness|B1|ˈhæpinəs|幸福；快乐|Money can't buy happiness.|
+sad|A2|sæd|难过的|The end of the film was very sad.|
+glad|A2|ɡlæd|高兴的|I'm glad you came.|syn:happy
+pleased|A2|pliːzd|满意的；高兴的|My teacher was pleased with my work.|syn:glad
+angry|A2|ˈæŋɡri|生气的|Mum was angry because I came home late.|syn:cross
+cross|B1|krɒs|生气的；穿过|Dad gets cross when we don't tidy up.|
+afraid|A2|əˈfreɪd|害怕的|Are you afraid of spiders?|syn:frightened,scared
+frightened|A2|ˈfraɪtnd|受惊的；害怕的|The little boy was frightened of the dark.|
+scared|A2|skeəd|害怕的|I'm scared of big dogs.|
+worried|A2|ˈwʌrid|担心的|She was worried about her exam.|
+worry|A2|ˈwʌri|担心|Don't worry, everything will be fine.|
+nervous|B1|ˈnɜːvəs|紧张的|I always feel nervous before a test.|ant:relaxed
+relaxed|B1|rɪˈlækst|放松的|I feel relaxed after a hot bath.|
+tired|A2|ˈtaɪəd|累的|I'm too tired to do my homework.|
+bored|A2|bɔːd|感到无聊的|I'm bored, let's play a game.|ant:interested
+boring|A2|ˈbɔːrɪŋ|无聊的|The film was so boring that I fell asleep.|ant:interesting
+interested|A2|ˈɪntrəstɪd|感兴趣的|Are you interested in history?|
+excited|A2|ɪkˈsaɪtɪd|兴奋的|The children are excited about the trip.|
+exciting|A2|ɪkˈsaɪtɪŋ|令人兴奋的|The football match was really exciting.|
+surprised|A2|səˈpraɪzd|惊讶的|I was surprised to see snow in April.|
+surprise|A2|səˈpraɪz|惊喜；使惊讶|We planned a surprise party for Dad.|
+embarrassed|B1|ɪmˈbærəst|尴尬的|I was embarrassed when I fell over.|
+upset|B1|ʌpˈset|难过的；心烦的|She was upset because she lost her ring.|syn:sad
+lonely|B1|ˈləʊnli|孤独的|He felt lonely in the new city.|
+proud|B1|praʊd|自豪的|My parents are proud of me.|
+jealous|B1|ˈdʒeləs|嫉妒的|He was jealous of his brother's new bike.|
+mood|B1|muːd|心情|Dad is in a good mood today.|
+fun|A2|fʌn|乐趣；有趣的|We had lots of fun at the beach.|syn:enjoy
+love|A2|lʌv|爱|I love my family very much.|ant:hate
+hate|A2|heɪt|讨厌；恨|I hate getting up early.|
+like|A2|laɪk|喜欢；像|I like reading comics.|ant:dislike
+dislike|B1|dɪsˈlaɪk|不喜欢|I dislike cold weather.|
+enjoy|A2|ɪnˈdʒɔɪ|享受；喜欢|Did you enjoy the party?|
+smile|A2|smaɪl|微笑|She gave me a big smile.|syn:laugh
+laugh|A2|lɑːf|笑|His jokes always make me laugh.|ant:cry
+cry|A2|kraɪ|哭|The baby started to cry.|
+tear|B1|tɪə|眼泪|A tear ran down her face.|
+## 关系与交往
+meet|A2|miːt|遇见；见面|Let's meet outside the cinema at six.|
+visit|A2|ˈvɪzɪt|拜访；参观|We visit our grandparents every Sunday.|
+introduce|B1|ˌɪntrəˈdjuːs|介绍|Let me introduce my friend Tom.|
+invite|A2|ɪnˈvaɪt|邀请|I want to invite all my class to my party.|
+invitation|A2|ˌɪnvɪˈteɪʃn|邀请；请柬|We got an invitation to her birthday party.|coll:accept an invitation
+together|A2|təˈɡeðə|一起|We walk to school together.|ant:alone
+alone|A2|əˈləʊn|独自|She lives alone with her cat.|syn:lonely
+share|A2|ʃeə|分享；合用|Can I share your umbrella?|
+help|A2|help|帮助|Can you help me carry this box?|
+helpful|A2|ˈhelpfl|有帮助的|The guide was very helpful.|
+argue|B1|ˈɑːɡjuː|争吵；争论|My brother and I argue about the TV.|
+argument|B1|ˈɑːɡjumənt|争吵；论点|They had an argument about money.|
+agree|A2|əˈɡriː|同意|I agree with you.|ant:disagree
+disagree|B1|ˌdɪsəˈɡriː|不同意|I disagree, I think the book is better.|
+trust|B1|trʌst|信任|You can trust her with a secret.|
+promise|A2|ˈprɒmɪs|承诺；答应|I promise I'll be home by ten.|coll:keep a promise
+apologise|B1|əˈpɒlədʒaɪz|道歉|You should apologise to your sister.|syn:sorry
+sorry|A2|ˈsɒri|对不起；难过的|I'm sorry I broke your pen.|
+thank|A2|θæŋk|感谢|I want to thank you for your help.|
+care|A2|keə|关心；照顾|She takes care of her little brother.|coll:take care
+relationship|B1|rɪˈleɪʃnʃɪp|关系|I have a good relationship with my parents.|

@@ -1,0 +1,82 @@
+# 工作与职业 | work
+## 工作
+job|A2|dʒɒb|工作|My sister has a new job in a bank.|syn:work
+work|A2|wɜːk|工作|My parents work in the city.|
+worker|A2|ˈwɜːkə|工人|The factory has two hundred workers. Each worker gets a break.|
+career|B1|kəˈrɪə|职业生涯|She had a long career as a teacher.|
+office|A2|ˈɒfɪs|办公室|Dad's office is on the tenth floor.|
+factory|A2|ˈfæktri|工厂|They make cars in that factory.|
+company|A2|ˈkʌmpəni|公司|She works for a computer company.|syn:business
+business|A2|ˈbɪznəs|生意；商业|My uncle runs a small business.|
+boss|A2|bɒs|老板|My boss is very friendly.|syn:manager
+manager|A2|ˈmænɪdʒə|经理|I'd like to speak to the manager.|
+employ|B1|ɪmˈplɔɪ|雇用|The shop employs ten people. They plan to employ more.|
+employee|B1|ˌemplɔɪˈiː|雇员|Every employee gets a free lunch.|ant:employer
+employer|B1|ɪmˈplɔɪə|雇主|My employer gave me a day off.|
+colleague|B1|ˈkɒliːɡ|同事|I go to lunch with a colleague.|
+interview|B1|ˈɪntəvjuː|面试；采访|I have a job interview tomorrow.|
+salary|B1|ˈsæləri|工资|The job has a good salary.|syn:wage
+wage|B1|weɪdʒ|工资（按小时/周）|He earns a weekly wage.|
+earn|B1|ɜːn|挣（钱）|She wants to earn money by washing cars.|
+experience|B1|ɪkˈspɪəriəns|经验；经历|Do you have any experience with children?|
+skill|B1|skɪl|技能|Cooking is a useful skill.|
+retire|B1|rɪˈtaɪə|退休|My grandfather wants to retire next year.|
+unemployed|B1|ˌʌnɪmˈplɔɪd|失业的|He was unemployed for six months.|
+meeting|A2|ˈmiːtɪŋ|会议|The meeting starts at ten.|
+busy|A2|ˈbɪzi|忙的|I'm too busy to talk now.|ant:free
+free|A2|friː|空闲的；免费的|Are you free on Saturday?|
+## 职业
+actor|A2|ˈæktə|演员|The actor won a prize for his film.|ant:actress
+actress|B1|ˈæktrəs|女演员|She is a famous actress.|
+artist|A2|ˈɑːtɪst|艺术家；画家|The artist painted a picture of the sea.|
+builder|A2|ˈbɪldə|建筑工人|The builder is fixing our roof.|
+chef|A2|ʃef|厨师|The chef made a delicious meal.|syn:cook
+dancer|A2|ˈdɑːnsə|舞者|She wants to be a dancer.|
+designer|B1|dɪˈzaɪnə|设计师|He is a fashion designer.|
+driver|A2|ˈdraɪvə|司机|The bus driver said hello.|
+engineer|A2|ˌendʒɪˈnɪə|工程师|My mum is an engineer.|
+farmer|A2|ˈfɑːmə|农民|The farmer has lots of cows.|
+firefighter|A2|ˈfaɪəfaɪtə|消防员|The firefighter saved the cat.|
+guide|A2|ɡaɪd|导游；指南|Our guide showed us the old castle.|
+journalist|A2|ˈdʒɜːnəlɪst|记者|The journalist wrote about the match.|syn:reporter
+reporter|B1|rɪˈpɔːtə|记者|A reporter asked the player some questions.|
+lawyer|B1|ˈlɔːjə|律师|You should talk to a lawyer.|
+mechanic|B1|məˈkænɪk|机修工|The mechanic fixed our car.|
+musician|A2|mjuˈzɪʃn|音乐家|He is a talented musician.|
+painter|A2|ˈpeɪntə|画家；油漆工|The painter painted our kitchen white.|
+photographer|A2|fəˈtɒɡrəfə|摄影师|The photographer took pictures at the wedding.|
+pilot|A2|ˈpaɪlət|飞行员|The pilot landed the plane safely.|
+police officer|A2|pəˈliːs ˌɒfɪsə|警察|A police officer helped us find our way.|
+police|A2|pəˈliːs|警察（总称）|Call the police!|
+receptionist|A2|rɪˈsepʃənɪst|接待员|The receptionist gave us our room key.|
+scientist|A2|ˈsaɪəntɪst|科学家|The scientist is studying the ocean.|
+secretary|A2|ˈsekrətri|秘书|The secretary answered the phone.|
+shop assistant|A2|ˈʃɒp əsɪstənt|店员|The shop assistant helped me find a size.|
+singer|A2|ˈsɪŋə|歌手|She is my favourite singer.|
+soldier|B1|ˈsəʊldʒə|士兵|The soldier stood at the gate.|
+tour guide|A2|ˈtʊə ɡaɪd|导游|The tour guide spoke three languages.|hyper:guide
+vet|A2|vet|兽医|We took our dog to the vet.|
+waitress|A2|ˈweɪtrəs|女服务员|The waitress brought our drinks.|syn:waiter
+writer|A2|ˈraɪtə|作家|Roald Dahl is my favourite writer.|
+author|B1|ˈɔːθə|作者|Who is the author of this book?|syn:writer
+programmer|B1|ˈprəʊɡræmə|程序员|She works as a computer programmer.|
+politician|B1|ˌpɒləˈtɪʃn|政治家|The politician gave a long speech.|
+cleaner|A2|ˈkliːnə|清洁工|The cleaner comes every Monday.|
+hairdresser|A2|ˈheədresə|理发师|My hairdresser cut my hair very short.|
+## 办公
+computer|A2|kəmˈpjuːtə|电脑|I use a computer for my homework.|
+email|A2|ˈiːmeɪl|电子邮件|I'll send you an email.|
+printer|B1|ˈprɪntə|打印机|The printer is out of paper.|
+file|B1|faɪl|文件；文件夹|Save the file on your computer.|
+document|B1|ˈdɒkjumənt|文件|Please read this document carefully.|
+form|A2|fɔːm|表格；形式|Fill in this form, please.|
+report|B1|rɪˈpɔːt|报告|I have to write a report about the trip.|
+contract|B1|ˈkɒntrækt|合同|She signed a two-year contract.|
+sign|A2|saɪn|签名；标志|Please sign here.|
+deal|B1|diːl|交易；处理|We made a deal: I cook, you wash up.|
+organise|B1|ˈɔːɡənaɪz|组织|Who will organise the party?|
+manage|B1|ˈmænɪdʒ|管理；设法做到|Did you manage to finish your work?|
+plan|A2|plæn|计划|Let's make a plan for the weekend.|
+succeed|B1|səkˈsiːd|成功|If you work hard, you will succeed.|ant:fail
+success|B1|səkˈses|成功|The party was a big success.|
+successful|B1|səkˈsesfl|成功的|She is a successful businesswoman.|

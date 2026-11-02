@@ -1,0 +1,84 @@
+# 思考与观点 | mind
+## 思考
+think|A2|θɪŋk|想；认为|I think it will rain.|
+thought|B1|θɔːt|想法|I had a sudden thought.|syn:idea
+idea|A2|aɪˈdɪə|主意；想法|That's a great idea!|
+believe|A2|bɪˈliːv|相信|I believe you.|
+imagine|B1|ɪˈmædʒɪn|想象|Imagine you can fly.|
+imagination|B1|ɪˌmædʒɪˈneɪʃn|想象力|Children have a lot of imagination.|
+dream|A2|driːm|梦；梦想|I had a strange dream last night.|
+wonder|B1|ˈwʌndə|想知道|I wonder what time it is.|
+guess|A2|ɡes|猜|Guess what's in the box!|
+meaning|B1|ˈmiːnɪŋ|意思|What's the meaning of this word?|
+memory|B1|ˈmeməri|记忆|I have a good memory for faces.|
+mind|B1|maɪnd|头脑；介意|Do you mind if I open the window?|
+reason|A2|ˈriːzn|理由；原因|What's the reason for being late?|syn:cause
+cause|B1|kɔːz|原因；导致|What was the cause of the fire?|ant:result
+result|A2|rɪˈzʌlt|结果|I'm happy with my test result.|
+problem|A2|ˈprɒbləm|问题|There's a problem with my computer.|ant:solution
+solution|B1|səˈluːʃn|解决办法|We need to find a solution.|
+solve|B1|sɒlv|解决|Can you solve this puzzle?|
+fact|A2|fækt|事实|Is that a fact or an opinion?|ant:opinion
+opinion|B1|əˈpɪnjən|观点|In my opinion, the book is better.|syn:view
+truth|B1|truːθ|真相|Tell me the truth.|ant:lie
+sure|A2|ʃɔː|确定的|Are you sure?|syn:certain
+certain|B1|ˈsɜːtn|确定的；某个|I'm certain I locked the door.|
+doubt|B1|daʊt|怀疑|I doubt he'll come.|
+prefer|A2|prɪˈfɜː|更喜欢|I prefer tea to coffee.|
+interest|A2|ˈɪntrəst|兴趣|I have an interest in music.|
+## 感受与状态
+fear|B1|fɪə|恐惧|She has a fear of heights.|
+anger|B1|ˈæŋɡə|愤怒|He couldn't hide his anger.|
+joy|B1|dʒɔɪ|喜悦|She cried with joy.|syn:happiness
+pleasure|B1|ˈpleʒə|愉快；荣幸|It's a pleasure to meet you.|
+luck|A2|lʌk|运气|Good luck in your exam!|
+lucky|A2|ˈlʌki|幸运的|You're lucky to have such a nice family.|ant:unlucky
+unlucky|B1|ʌnˈlʌki|不幸的|We were unlucky to lose.|
+stress|B1|stres|压力|Exams cause a lot of stress.|
+stressed|B1|strest|紧张的；有压力的|I feel stressed before tests.|
+courage|B1|ˈkʌrɪdʒ|勇气|It takes courage to say sorry.|syn:brave
+attitude|B1|ˈætɪtjuːd|态度|She has a positive attitude.|
+positive|B1|ˈpɒzətɪv|积极的|Try to stay positive.|ant:negative
+negative|B1|ˈneɡətɪv|消极的|Don't be so negative.|
+## 能力与机会
+can|A2|kæn|能够|I can swim.|
+able|B1|ˈeɪbl|能够的|Will you be able to come?|ant:unable
+unable|B1|ʌnˈeɪbl|不能的|I'm unable to come tomorrow.|
+ability|B1|əˈbɪləti|能力|She has the ability to learn fast.|
+talent|B1|ˈtælənt|天赋|He has a talent for music.|
+opportunity|B1|ˌɒpəˈtjuːnəti|机会|It's a great opportunity to learn.|syn:chance
+aim|B1|eɪm|目标；瞄准|The aim of the game is to win.|
+challenge|B1|ˈtʃælɪndʒ|挑战|Learning Chinese is a big challenge.|
+effort|B1|ˈefət|努力|Thanks for your effort.|
+attempt|B1|əˈtempt|尝试|This is my first attempt.|syn:try
+## 表达观点
+advice|B1|ədˈvaɪs|建议|Can you give me some advice?|
+suggestion|B1|səˈdʒestʃən|建议|Do you have any suggestion?|syn:advice
+complain|B1|kəmˈpleɪn|抱怨|Stop complaining! Don't complain all the time.|
+complaint|B1|kəmˈpleɪnt|投诉|I want to make a complaint.|
+describe|A2|dɪˈskraɪb|描述|Can you describe the man?|
+description|B1|dɪˈskrɪpʃn|描述|Write a description of your room.|
+mention|B1|ˈmenʃn|提到|Did she mention the party?|
+admit|B1|ədˈmɪt|承认|He didn't admit his mistake. I admit I was wrong.|
+deny|B1|dɪˈnaɪ|否认|He tried to deny it.|ant:admit
+claim|B1|kleɪm|声称|They claim the water is safe.|
+prove|B1|pruːv|证明|Can you prove it?|
+compare|B1|kəmˈpeə|比较|Compare the two pictures.|
+difference|A2|ˈdɪfrəns|差别|What's the difference between these words?|
+## 社会
+society|B1|səˈsaɪəti|社会|We live in a modern society.|
+government|B1|ˈɡʌvənmənt|政府|The government is building new schools.|
+law|B1|lɔː|法律|It's against the law to steal.|
+duty|B1|ˈdjuːti|责任|It's our duty to help.|
+responsible|B1|rɪˈspɒnsəbl|负责的|Who is responsible for this?|
+vote|B1|vəʊt|投票|Let's vote for the class leader.|
+election|B1|ɪˈlekʃn|选举|The election is next month.|
+nation|B1|ˈneɪʃn|国家；民族|The whole nation watched the match.|syn:country
+national|B1|ˈnæʃnəl|国家的|It's a national holiday.|
+world|A2|wɜːld|世界|She wants to travel around the world.|
+charity|B1|ˈtʃærəti|慈善机构|We raised money for charity.|
+volunteer|B1|ˌvɒlənˈtɪə|志愿者|She works as a volunteer at the hospital.|
+experiment|B1|ɪkˈsperɪmənt|实验|We did an experiment with water.|
+discover|B1|dɪˈskʌvə|发现|Who discovered America? Scientists hope to discover new planets.|
+discovery|B1|dɪˈskʌvəri|发现|It was an important discovery.|
+research|B1|rɪˈsɜːtʃ|研究|She does research on whales.|

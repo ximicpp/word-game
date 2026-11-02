@@ -1,0 +1,123 @@
+# 时间与数量 | time
+## 时间
+time|A2|taɪm|时间；次|What time is it?|
+moment|A2|ˈməʊmənt|片刻|Wait a moment, please.|syn:minute
+second|A2|ˈsekənd|秒；第二|The race was won by one second.|
+minute|A2|ˈmɪnɪt|分钟|I'll be there in five minutes. Give me a minute.|
+hour|A2|ˈaʊə|小时|The film lasts two hours. One hour is enough.|sound:our
+day|A2|deɪ|天；白天|What day is it today?|ant:night
+night|A2|naɪt|夜晚|I sleep well at night.|
+week|A2|wiːk|星期|I go swimming twice a week.|
+weekend|A2|ˌwiːkˈend|周末|What are you doing at the weekend?|
+month|A2|mʌnθ|月|My birthday is next month.|
+year|A2|jɪə|年|I started school last year.|
+century|B1|ˈsentʃəri|世纪|The castle was built in the twelfth century.|
+morning|A2|ˈmɔːnɪŋ|早上|I go running in the morning.|ant:evening
+afternoon|A2|ˌɑːftəˈnuːn|下午|We have sport in the afternoon.|
+evening|A2|ˈiːvnɪŋ|晚上|I do my homework in the evening.|
+midnight|A2|ˈmɪdnaɪt|午夜|The party ended at midnight.|ant:midday
+midday|B1|ˌmɪdˈdeɪ|正午|We have lunch at midday.|
+today|A2|təˈdeɪ|今天|Today is my birthday!|
+tomorrow|A2|təˈmɒrəʊ|明天|See you tomorrow.|ant:yesterday
+yesterday|A2|ˈjestədeɪ|昨天|I saw her yesterday.|
+tonight|A2|təˈnaɪt|今晚|What's on TV tonight?|
+date|A2|deɪt|日期|What's the date today?|
+calendar|A2|ˈkælɪndə|日历|I marked the date on the calendar.|
+diary|A2|ˈdaɪəri|日记；日程本|I write in my diary every night.|
+clock|A2|klɒk|时钟|The clock in the kitchen is slow.|syn:watch
+alarm|B1|əˈlɑːm|闹钟；警报|My alarm goes off at seven.|
+o'clock|A2|əˈklɒk|……点钟|School starts at nine o'clock.|
+half|A2|hɑːf|一半|I'll meet you at half past four.|
+quarter|A2|ˈkwɔːtə|一刻钟；四分之一|It's a quarter to ten.|
+past|A2|pɑːst|过去；经过|It's ten past three.|ant:future
+future|A2|ˈfjuːtʃə|将来|What do you want to do in the future?|
+early|A2|ˈɜːli|早的|I get up early on school days.|ant:late
+late|A2|leɪt|晚的；迟到|Sorry I'm late.|
+soon|A2|suːn|很快|See you soon!|
+already|A2|ɔːlˈredi|已经|I've already finished my homework.|ant:yet
+yet|A2|jet|还（没）；已经|Have you finished yet?|
+still|A2|stɪl|仍然|Are you still hungry?|
+ago|A2|əˈɡəʊ|以前|I met him two years ago.|
+recently|B1|ˈriːsntli|最近|I've recently started learning the piano.|
+now|A2|naʊ|现在|I'm busy now.|ant:then
+then|A2|ðen|然后；那时|We had lunch and then went to the park.|
+always|A2|ˈɔːlweɪz|总是|I always walk to school.|ant:never
+usually|A2|ˈjuːʒuəli|通常|I usually have toast for breakfast.|
+often|A2|ˈɒfn|经常|I often go swimming.|syn:usually
+sometimes|A2|ˈsʌmtaɪmz|有时|Sometimes I go to school by bus.|
+never|A2|ˈnevə|从不|I never drink coffee.|
+once|A2|wʌns|一次；曾经|I go to the cinema once a month.|ant:twice
+twice|A2|twaɪs|两次|Brush your teeth twice a day.|
+during|A2|ˈdjʊərɪŋ|在……期间|Don't talk during the test.|
+while|A2|waɪl|当……时；一会儿|I listen to music while I cook.|
+until|A2|ənˈtɪl|直到|Wait until I come back.|
+since|B1|sɪns|自从|I've lived here since 2015.|
+ever|A2|ˈevə|曾经|Have you ever been to Japan?|
+last|A2|lɑːst|最后的；上一个；持续|I saw her last week.|ant:first;ant:next
+next|A2|nekst|下一个|See you next week.|
+first|A2|fɜːst|第一；首先|First, read the question.|
+finally|A2|ˈfaɪnəli|最后；终于|Finally, the bus arrived.|
+end|A2|end|结束；末尾|The film has a happy end.|ant:start;ant:beginning
+start|A2|stɑːt|开始|The lesson starts at nine. Let's start now.|syn:begin
+begin|A2|bɪˈɡɪn|开始|The concert will begin at eight.|
+beginning|A2|bɪˈɡɪnɪŋ|开始|At the beginning of the book, the boy is lost.|
+finish|A2|ˈfɪnɪʃ|完成；结束|Have you finished? Finish your dinner, please.|
+## 星期与月份
+Monday|A2|ˈmʌndeɪ|星期一|I have swimming on Monday.|
+Tuesday|A2|ˈtjuːzdeɪ|星期二|We have art on Tuesday.|
+Wednesday|A2|ˈwenzdeɪ|星期三|The library is closed on Wednesday.|
+Thursday|A2|ˈθɜːzdeɪ|星期四|My piano lesson is on Thursday.|
+Friday|A2|ˈfraɪdeɪ|星期五|We watch a film every Friday.|
+Saturday|A2|ˈsætədeɪ|星期六|I play football on Saturday.|
+Sunday|A2|ˈsʌndeɪ|星期日|We visit Grandma on Sunday.|
+January|A2|ˈdʒænjuəri|一月|It's very cold in January.|
+February|A2|ˈfebruəri|二月|February is the shortest month.|
+March|A2|mɑːtʃ|三月|Spring starts in March.|
+April|A2|ˈeɪprəl|四月|It often rains in April.|
+May|A2|meɪ|五月|My birthday is in May.|
+June|A2|dʒuːn|六月|School finishes in June.|
+July|A2|dʒuˈlaɪ|七月|We go on holiday in July.|
+August|A2|ˈɔːɡəst|八月|August is the hottest month.|
+September|A2|sepˈtembə|九月|School starts again in September.|
+October|A2|ɒkˈtəʊbə|十月|Halloween is in October.|
+November|A2|nəʊˈvembə|十一月|It gets dark early in November.|
+December|A2|dɪˈsembə|十二月|Christmas is in December.|
+## 数与量
+number|A2|ˈnʌmbə|数字；号码|What's your phone number?|
+hundred|A2|ˈhʌndrəd|百|There are a hundred students in our year.|
+thousand|A2|ˈθaʊznd|千|A thousand people came to the concert.|
+million|A2|ˈmɪljən|百万|The city has two million people. One million is a lot.|
+dozen|B1|ˈdʌzn|一打（十二个）|I bought a dozen eggs.|
+pair|A2|peə|一双；一对|I need a new pair of shoes.|sound:pear
+amount|B1|əˈmaʊnt|数量|A small amount of sugar is fine.|
+total|B1|ˈtəʊtl|总数|The total is fifty pounds.|
+count|A2|kaʊnt|数|Can you count to ten in French?|
+add|A2|æd|加|Add two and three.|
+plus|B1|plʌs|加|Two plus two is four.|ant:minus
+minus|B1|ˈmaɪnəs|减|Ten minus three is seven.|
+percent|B1|pəˈsent|百分之……|Ninety percent of the class passed.|
+measure|B1|ˈmeʒə|测量|Measure the table before you buy it.|
+length|B1|leŋθ|长度|What's the length of the river?|
+height|B1|haɪt|高度|What's your height?|
+metre|A2|ˈmiːtə|米|The pool is twenty-five metres long. Each metre counts.|
+kilometre|A2|ˈkɪləmiːtə|千米|The school is one kilometre from my house.|
+centimetre|A2|ˈsentɪmiːtə|厘米|This line is ten centimetres long. One centimetre is small.|
+kilo|A2|ˈkiːləʊ|公斤|A kilo of apples, please.|
+gram|A2|ɡræm|克|Add a hundred grams of sugar. Every gram matters.|
+litre|A2|ˈliːtə|升|Buy a litre of milk.|
+enough|A2|ɪˈnʌf|足够的|Do you have enough money?|
+whole|B1|həʊl|整个的|I ate the whole pizza.|
+part|A2|pɑːt|部分|The first part of the film was boring.|
+piece|A2|piːs|一块；一片|Can I have a piece of paper?|
+bit|A2|bɪt|一点儿|I'm a bit tired.|
+lot|A2|lɒt|许多|I have a lot of homework.|
+few|A2|fjuː|少数；几个|A few friends came to my party.|ant:many
+many|A2|ˈmeni|许多|How many brothers do you have?|
+much|A2|mʌtʃ|许多（不可数）|How much is this?|
+more|A2|mɔː|更多|Can I have more cake?|ant:less
+less|B1|les|更少|Eat less sugar.|
+most|A2|məʊst|最多；大多数|Most students walk to school.|
+least|B1|liːst|最少|At least ten people came.|
+extra|B1|ˈekstrə|额外的|I need extra time.|
+double|B1|ˈdʌbl|两倍的；双的|I'd like a double room.|
+average|B1|ˈævərɪdʒ|平均的|The average age of the class is twelve.|

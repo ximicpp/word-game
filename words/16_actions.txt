@@ -1,0 +1,134 @@
+# 日常动作 | actions
+## 移动
+go|A2|ɡəʊ|去|Let's go to the park.|ant:come
+come|A2|kʌm|来|Can you come to my party?|
+walk|A2|wɔːk|走；散步|I walk to school every day.|
+jump|A2|dʒʌmp|跳|The cat can jump onto the table.|
+climb|A2|klaɪm|攀爬|Let's climb to the top of the hill.|
+fall|A2|fɔːl|落下；摔倒|Be careful, don't fall!|
+hurry|A2|ˈhʌri|赶快|Hurry up, we're late!|syn:rush
+rush|B1|rʌʃ|冲；匆忙|Don't rush your homework.|
+follow|A2|ˈfɒləʊ|跟随|Follow me, I know the way.|ant:lead
+lead|B1|liːd|带领|Can you lead the group?|
+enter|A2|ˈentə|进入|Please knock before you enter.|
+escape|B1|ɪˈskeɪp|逃跑|The bird tried to escape from the cage.|
+chase|B1|tʃeɪs|追赶|Dogs love to chase cats.|
+hide|A2|haɪd|躲藏；隐藏|Let's hide behind the tree.|ant:find
+lie|B1|laɪ|躺；说谎|Lie down and rest.|
+sit|A2|sɪt|坐|Please sit down.|ant:stand
+stand|A2|stænd|站|Stand in a line, please.|
+wake|A2|weɪk|醒来|I wake up at seven.|
+get up|A2|ˌɡet ˈʌp|起床|I get up early on Mondays.|
+turn|A2|tɜːn|转动；轮到|Turn left at the bank.|
+## 手的动作
+give|A2|ɡɪv|给|Give me the ball, please.|
+bring|A2|brɪŋ|带来|Bring your swimsuit tomorrow.|
+carry|A2|ˈkæri|搬；携带|Can you carry this bag for me?|
+hold|A2|həʊld|拿着；举行|Hold my hand when we cross the road.|
+push|A2|pʊʃ|推|Push the door to open it.|ant:pull
+pull|A2|pʊl|拉|Pull the rope hard.|
+drop|A2|drɒp|掉落|Don't drop the glass!|
+pick up|A2|ˌpɪk ˈʌp|捡起；接人|Please pick up your toys.|
+touch|A2|tʌtʃ|触摸|Don't touch the paint, it's wet.|
+open|A2|ˈəʊpən|打开|Open your books at page five.|ant:close;ant:shut
+close|A2|kləʊz|关闭|Close the window, please.|syn:shut
+shut|A2|ʃʌt|关上|Shut the door behind you.|
+fill|A2|fɪl|装满|Fill the bottle with water.|ant:empty
+empty|A2|ˈempti|空的；倒空|The fridge is empty.|
+pour|B1|pɔː|倒（液体）|Pour the milk into the bowl.|
+fold|B1|fəʊld|折叠|Fold the paper in half.|
+wrap|B1|ræp|包裹|Let's wrap the present.|
+build|A2|bɪld|建造|They want to build a new school.|
+fix|A2|fɪks|修理|Dad can fix my bike.|syn:repair
+repair|B1|rɪˈpeə|修理|The man came to repair the TV.|
+destroy|B1|dɪˈstrɔɪ|毁坏|The storm will destroy the old bridge.|
+damage|B1|ˈdæmɪdʒ|损坏|The rain can damage your phone.|
+use|A2|juːz|使用|Can I use your pen?|
+useful|A2|ˈjuːsfl|有用的|This dictionary is really useful.|ant:useless
+useless|B1|ˈjuːsləs|没用的|An umbrella is useless in such strong wind.|
+## 看与听
+see|A2|siː|看见|I can see the sea from my window.|sound:sea
+look|A2|lʊk|看|Look at the board.|
+notice|B1|ˈnəʊtɪs|注意到|Did you notice her new haircut?|
+recognise|B1|ˈrekəɡnaɪz|认出|I didn't recognise you with glasses!|
+smell|A2|smel|闻；气味|The flowers smell lovely.|
+sound|A2|saʊnd|听起来；声音|Your plan does sound like fun.|
+seem|A2|siːm|似乎|You seem tired.|syn:appear
+appear|B1|əˈpɪə|出现；似乎|A rainbow will appear after the rain.|ant:disappear
+disappear|B1|ˌdɪsəˈpɪə|消失|My keys seem to disappear every morning.|
+## 做事
+do|A2|duː|做|What do you do at weekends?|
+make|A2|meɪk|做；制作|Let's make a plan for the weekend.|coll:make a mistake,make a change
+need|A2|niːd|需要|I need a new pencil.|
+want|A2|wɒnt|想要|I want to be a doctor.|
+hope|A2|həʊp|希望|I hope you feel better soon.|
+wish|A2|wɪʃ|希望；祝愿|I wish I could fly.|
+decide|A2|dɪˈsaɪd|决定|I can't decide what to wear.|
+decision|B1|dɪˈsɪʒn|决定|It was a difficult decision.|
+prepare|A2|prɪˈpeə|准备|I need to prepare for the test.|
+check|A2|tʃek|检查|Check your answers.|
+find|A2|faɪnd|找到|I can't find my keys.|ant:lose
+look for|A2|ˈlʊk fə|寻找|I'm looking for my glasses. Help me look for them.|
+keep|A2|kiːp|保持；保留|Keep the change.|
+let|A2|let|让|Let me help you.|
+allow|B1|əˈlaʊ|允许|My parents allow me to stay up late on Saturdays.|syn:let
+stop|A2|stɒp|停止|Stop talking, please.|ant:continue
+continue|A2|kənˈtɪnjuː|继续|Please continue reading.|
+wait|A2|weɪt|等待|Wait for me!|sound:weight
+happen|A2|ˈhæpən|发生|What will happen next?|
+become|A2|bɪˈkʌm|成为|She wants to become a pilot.|
+get|A2|ɡet|得到；变得|Can you get me a glass of water?|
+have|A2|hæv|有|I have two sisters.|
+send|A2|send|发送；寄|Send me a photo.|ant:receive
+receive|B1|rɪˈsiːv|收到|Did you receive my letter?|
+complete|B1|kəmˈpliːt|完成；完整的|Complete the sentence with one word.|
+achieve|B1|əˈtʃiːv|实现；达到|You can achieve anything if you try.|
+## 帮助与照顾
+look after|A2|ˌlʊk ˈɑːftə|照顾|Can you look after my cat?|syn:care
+feed|A2|fiːd|喂|Don't forget to feed the fish.|
+rescue|B1|ˈreskjuː|营救|They came to rescue the climbers.|syn:save
+support|B1|səˈpɔːt|支持|My parents always support me.|
+encourage|B1|ɪnˈkʌrɪdʒ|鼓励|My teacher encourages me to read. Parents should encourage children.|
+suggest|B1|səˈdʒest|建议|I suggest we take the bus.|
+advise|B1|ədˈvaɪz|劝告；建议|The doctor will advise you to rest.|
+warn|B1|wɔːn|警告|I must warn you, the dog bites.|
+## 生活中的动作
+live|A2|lɪv|居住；生活|I live in Beijing.|
+eat|A2|iːt|吃|What do you want to eat?|
+brush|A2|brʌʃ|刷|Brush your teeth before bed.|
+belong|B1|bɪˈlɒŋ|属于|Does this bag belong to you?|
+remind|B1|rɪˈmaɪnd|提醒|Remind me to buy milk.|syn:remember
+knock|B1|nɒk|敲|Knock on the door before you come in.|
+press|B1|pres|按|Press the green button.|
+switch|B1|swɪtʃ|开关；转换|Switch off the light.|
+turn on|A2|ˌtɜːn ˈɒn|打开（电器）|Turn on the TV.|ant:turn off
+turn off|A2|ˌtɜːn ˈɒf|关掉（电器）|Turn off the lights when you go out.|
+plug|B1|plʌɡ|插头|Put the plug in the wall.|
+lay|B1|leɪ|放；下（蛋）|Hens lay eggs. Lay the table for dinner.|
+hang|B1|hæŋ|挂|Hang your coat on the hook.|
+shake|B1|ʃeɪk|摇动|Shake the bottle before you open it.|
+bite|B1|baɪt|咬|Does your dog bite?|
+kiss|A2|kɪs|亲吻|She gave her mum a kiss.|
+hug|B1|hʌɡ|拥抱|Give me a hug!|
+wave|B1|weɪv|挥手；波浪|Wave goodbye to Grandma.|
+point|B1|pɔɪnt|指；要点|Don't point at people.|
+pack|A2|pæk|打包|Pack your suitcase tonight.|
+accept|A2|əkˈsept|接受|I'm happy to accept your offer.|sound:except;ant:refuse;coll:accept an invitation
+refuse|B1|rɪˈfjuːz|拒绝|Why did you refuse to help?|
+except|A2|ɪkˈsept|除了|Everyone passed except Tom.|form:expect
+expect|A2|ɪkˈspekt|预料；期待|I expect the bus will be late again.|form:effect
+affect|B1|əˈfekt|影响（动词）|Too little sleep can affect your memory.|form:effect;syn:influence
+effect|B1|ɪˈfekt|效果；作用（名词）|The new rule had a big effect on us.|
+effective|B1|ɪˈfektɪv|有效的|Drawing word maps is an effective way to learn.|syn:useful
+influence|B1|ˈɪnfluəns|影响；作用|Good friends can influence you in a good way.|
+adapt|B1|əˈdæpt|适应|It takes time to adapt to a new school.|form:adopt;syn:change
+adopt|B1|əˈdɒpt|收养；采用|They decided to adopt a dog from the shelter.|syn:accept
+quit|B1|kwɪt|放弃；退出|He wants to quit the football team.|
+quite|A2|kwaɪt|相当；十分|The test was quite easy.|form:quit
+chance|A2|tʃɑːns|机会|This is your last chance to enter the competition.|coll:miss a chance
+peace|A2|piːs|和平；安宁|My grandparents enjoy the peace of the countryside.|sound:piece;ant:war;coll:peace and quiet
+war|B1|wɔː|战争|My grandfather told us stories about the war.|
+silent|B1|ˈsaɪlənt|沉默的；无声的|The hall went silent when the head teacher came in.|syn:quiet
+here|A2|hɪə|这里|Put your bag here.|form:where
+where|A2|weə|在哪里|Where did you put my keys?|sound:wear
+whether|B1|ˈweðə|是否|I'm not sure whether she will come.|sound:weather

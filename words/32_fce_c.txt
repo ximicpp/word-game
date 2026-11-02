@@ -1,0 +1,82 @@
+# 自然与天气 | nature
+## 环境（FCE）
+emission|B2|iˈmɪʃn|排放|We must cut carbon emissions. Every emission counts.|
+greenhouse|B2|ˈɡriːnhaʊs|温室|Tomatoes grow well in a greenhouse.|
+renewable|B2|rɪˈnjuːəbl|可再生的|Wind is a renewable energy source.|
+sustainable|B2|səˈsteɪnəbl|可持续的|We need sustainable farming.|
+conservation|B2|ˌkɒnsəˈveɪʃn|保护|Conservation of forests is important.|
+endangered|B2|ɪnˈdeɪndʒəd|濒危的|The tiger is an endangered species.|
+species|B2|ˈspiːʃiːz|物种|There are many species of birds here.|
+habitat|B2|ˈhæbɪtæt|栖息地|The forest is the natural habitat of the panda.|
+ecosystem|B2|ˈiːkəʊsɪstəm|生态系统|Pollution damages the ecosystem.|
+drought|B2|draʊt|干旱|The drought killed the crops.|ant:flood
+hurricane|B2|ˈhʌrɪkən|飓风|The hurricane hit the coast.|syn:storm
+erosion|B2|ɪˈrəʊʒn|侵蚀|Trees prevent soil erosion.|
+deforestation|B2|ˌdiːˌfɒrɪˈsteɪʃn|森林砍伐|Deforestation is a global problem.|
+## 自然（FCE）
+horizon|B2|həˈraɪzn|地平线|The sun set below the horizon.|
+glacier|B2|ˈɡlæsiə|冰川|The glacier is melting.|
+coastline|B2|ˈkəʊstlaɪn|海岸线|The coastline is rocky.|
+tide|B2|taɪd|潮汐|The tide is coming in.|
+moss|B2|mɒs|苔藓|Moss grows on the north side of trees.|
+blossom|B2|ˈblɒsəm|花（果树）|The cherry blossom is beautiful in spring.|
+predator|B2|ˈpredətə|捕食者|The lion is a predator.|ant:prey
+prey|B2|preɪ|猎物|The eagle caught its prey.|sound:pray
+migrate|B2|ˈmaɪɡreɪt|迁徙|Some birds migrate south in winter.|
+# 时间与数量 | time
+## 时间（FCE）
+punctual|B2|ˈpʌŋktʃuəl|准时的|She is always punctual.|
+previous|B2|ˈpriːviəs|以前的|I met him on a previous visit.|ant:following
+following|B2|ˈfɒləʊɪŋ|接下来的|We left the following day.|
+current|B2|ˈkʌrənt|当前的|What is your current address?|
+contemporary|B2|kənˈtemprəri|当代的|I like contemporary art.|syn:modern
+era|B2|ˈɪərə|时代|It was the end of an era.|syn:age
+annual|B2|ˈænjuəl|每年的|The annual festival is in June.|syn:yearly
+frequent|B2|ˈfriːkwənt|频繁的|There are frequent buses to the airport.|
+constantly|B2|ˈkɒnstəntli|不断地|He is constantly late.|
+gradually|B2|ˈɡrædʒuəli|逐渐地|The weather gradually improved.|ant:suddenly
+postpone|B2|pəˈspəʊn|推迟|They had to postpone the match.|syn:delay
+schedule|B2|ˈʃedjuːl|日程|I have a busy schedule this week.|
+## 数量（FCE）
+approximately|B2|əˈprɒksɪmətli|大约|It costs approximately fifty pounds.|syn:about
+majority|B2|məˈdʒɒrəti|大多数|The majority of students agreed.|ant:minority
+minority|B2|maɪˈnɒrəti|少数|Only a minority of people voted.|
+proportion|B2|prəˈpɔːʃn|比例|A large proportion of the class passed.|
+percentage|B2|pəˈsentɪdʒ|百分比|What percentage of people own a car?|
+maximum|B2|ˈmæksɪməm|最大量|The maximum speed is seventy.|ant:minimum
+minimum|B2|ˈmɪnɪməm|最小量|You need a minimum of five points.|
+countless|B2|ˈkaʊntləs|无数的|I've told you countless times.|
+# 交流与科技 | media
+## 媒体（FCE）
+editor|B2|ˈedɪtə|编辑|The editor checked the story.|
+publication|B2|ˌpʌblɪˈkeɪʃn|出版物|It is a weekly publication.|
+journalism|B2|ˈdʒɜːnəlɪzəm|新闻业|She studied journalism at university.|
+coverage|B2|ˈkʌvərɪdʒ|报道|The coverage of the election was huge.|
+censorship|B2|ˈsensəʃɪp|审查制度|Censorship limits free speech.|
+subscribe|B2|səbˈskraɪb|订阅|Subscribe to our channel.|
+## 科技（FCE）
+innovation|B2|ˌɪnəˈveɪʃn|创新|The phone is a great innovation.|
+artificial intelligence|B2|ˌɑːtɪfɪʃl ɪnˈtelɪdʒəns|人工智能|Artificial intelligence is changing our lives.|
+algorithm|B2|ˈælɡərɪðəm|算法|The app uses an algorithm to suggest songs.|
+database|B2|ˈdeɪtəbeɪs|数据库|The names are stored in a database.|
+browser|B2|ˈbraʊzə|浏览器|Open the website in your browser.|
+cyberbullying|B2|ˈsaɪbəbʊliɪŋ|网络欺凌|Cyberbullying is a serious problem.|
+privacy|B2|ˈprɪvəsi|隐私|Protect your privacy online.|
+hacker|B2|ˈhækə|黑客|A hacker stole the passwords.|
+breakthrough|B2|ˈbreɪkθruː|突破|Scientists made a breakthrough.|
+obsolete|B2|ˈɒbsəliːt|过时的|This technology is now obsolete.|syn:old-fashioned
+# 娱乐与文化 | culture
+## 艺术（FCE）
+masterpiece|B2|ˈmɑːstəpiːs|杰作|The painting is a masterpiece.|
+critic|B2|ˈkrɪtɪk|评论家|The critic liked the film.|
+genre|B2|ˈʒɒnrə|体裁；类型|What genre of music do you like?|
+novelist|B2|ˈnɒvəlɪst|小说家|She is a famous novelist.|
+playwright|B2|ˈpleɪraɪt|剧作家|Shakespeare was a playwright.|
+premiere|B2|ˈpremieə|首映|The premiere is next week.|
+soundtrack|B2|ˈsaʊndtræk|原声音乐|The soundtrack of the film is great.|
+## 文化（FCE）
+heritage|B2|ˈherɪtɪdʒ|遗产|The castle is part of our heritage.|
+ritual|B2|ˈrɪtʃuəl|仪式|Morning tea is a daily ritual.|
+celebration|B2|ˌselɪˈbreɪʃn|庆祝|There was a big celebration.|
+diversity|B2|daɪˈvɜːsəti|多样性|We celebrate cultural diversity.|
+multicultural|B2|ˌmʌltiˈkʌltʃərəl|多元文化的|London is a multicultural city.|

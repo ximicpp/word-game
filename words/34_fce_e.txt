@@ -1,0 +1,119 @@
+# 日常动作 | actions
+## 动作（FCE 二）
+alter|B2|ˈɔːltə|改变|We had to alter our plans.|syn:change
+anticipate|B2|ænˈtɪsɪpeɪt|预料|We anticipate a busy weekend.|syn:expect
+approve|B2|əˈpruːv|批准；赞成|My parents don't approve of my plan.|
+assess|B2|əˈses|评估|The teacher will assess your work.|syn:evaluate
+bother|B2|ˈbɒðə|打扰|Sorry to bother you.|syn:disturb
+commit|B2|kəˈmɪt|犯（罪）；承诺|He did not commit the crime.|
+comply|B2|kəmˈplaɪ|遵守|You must comply with the rules.|syn:obey
+conceal|B2|kənˈsiːl|隐藏|She tried to conceal her feelings.|syn:hide
+confront|B2|kənˈfrʌnt|面对|You need to confront your fears.|
+consume|B2|kənˈsjuːm|消耗|Cars consume a lot of fuel.|
+contribute|B2|kənˈtrɪbjuːt|贡献|Everyone can contribute an idea.|
+cope|B2|kəʊp|应付|How do you cope with stress?|
+dedicate|B2|ˈdedɪkeɪt|献给|She will dedicate the book to her mother.|
+devote|B2|dɪˈvəʊt|投入|He wants to devote more time to music.|
+distract|B2|dɪˈstrækt|使分心|Don't distract the driver.|
+dominate|B2|ˈdɒmɪneɪt|支配|One team began to dominate the game.|
+eliminate|B2|ɪˈlɪmɪneɪt|消除；淘汰|We must eliminate mistakes.|
+encounter|B2|ɪnˈkaʊntə|遇到|You may encounter some problems.|syn:meet
+enhance|B2|ɪnˈhɑːns|提高|Music can enhance your mood.|syn:improve
+exaggerate|B2|ɪɡˈzædʒəreɪt|夸大|Don't exaggerate!|
+exceed|B2|ɪkˈsiːd|超过|Do not exceed the speed limit.|
+exclude|B2|ɪkˈskluːd|排除|The price does exclude drinks.|ant:include
+generate|B2|ˈdʒenəreɪt|产生|Wind can generate electricity.|syn:produce
+grab|B2|ɡræb|抓住|Grab your coat, we're leaving.|
+highlight|B2|ˈhaɪlaɪt|突出；强调|Highlight the key words.|
+inspire|B2|ɪnˈspaɪə|激励|Good teachers inspire their students.|
+interfere|B2|ˌɪntəˈfɪə|干涉|Don't interfere in their argument.|
+investigate|B2|ɪnˈvestɪɡeɪt|调查|The police will investigate the crime.|
+launch|B2|lɔːntʃ|发布；发射|They will launch a new phone.|
+locate|B2|ləʊˈkeɪt|找到位置|Can you locate the city on the map?|syn:find
+monitor|B2|ˈmɒnɪtə|监测|Doctors monitor his heart.|
+nominate|B2|ˈnɒmɪneɪt|提名|They will nominate her for the prize.|
+oppose|B2|əˈpəʊz|反对|Many people oppose the new road.|ant:support
+overlook|B2|ˌəʊvəˈlʊk|忽视；俯瞰|Don't overlook the small details.|
+predict|B2|prɪˈdɪkt|预测|It's hard to predict the weather.|
+preserve|B2|prɪˈzɜːv|保存；保护|We must preserve old buildings.|syn:protect
+proceed|B2|prəˈsiːd|继续进行|Please proceed to gate ten.|
+prohibit|B2|prəˈhɪbɪt|禁止|The rules prohibit smoking.|syn:ban
+ban|B2|bæn|禁止|The city will ban cars from the centre.|
+recall|B2|rɪˈkɔːl|回忆起|I can't recall his name.|syn:remember
+reflect|B2|rɪˈflekt|反射；反思|Take time to reflect on your work.|
+reinforce|B2|ˌriːɪnˈfɔːs|加强|Practice will reinforce what you learn.|
+resolve|B2|rɪˈzɒlv|解决|We need to resolve the problem.|syn:solve
+retain|B2|rɪˈteɪn|保留|Try to retain the information.|syn:keep
+seek|B2|siːk|寻找|You should seek advice.|syn:look for
+stimulate|B2|ˈstɪmjuleɪt|刺激|Games stimulate the brain.|
+undergo|B2|ˌʌndəˈɡəʊ|经历|He will undergo an operation.|
+utilise|B2|ˈjuːtəlaɪz|利用|We should utilise the space better.|syn:use
+# 描述事物 | describe
+## 描述（FCE 二）
+absurd|B2|əbˈsɜːd|荒谬的|That's an absurd idea.|syn:ridiculous
+ridiculous|B2|rɪˈdɪkjələs|可笑的|You look ridiculous in that hat.|
+alternative|B2|ɔːlˈtɜːnətɪv|另一选择|Is there an alternative?|
+bizarre|B2|bɪˈzɑː|离奇的|It was a bizarre dream.|syn:strange
+competent|B2|ˈkɒmpɪtənt|能干的|She is a competent driver.|
+convenient|B2|kənˈviːniənt|方便的|Is Monday convenient for you?|ant:inconvenient
+inconvenient|B2|ˌɪnkənˈviːniənt|不方便的|It's an inconvenient time.|
+desperate|B2|ˈdespərət|绝望的；极度渴望的|He was desperate for water.|
+excessive|B2|ɪkˈsesɪv|过度的|Excessive noise is not allowed.|
+flexible|B2|ˈfleksəbl|灵活的|My working hours are flexible.|
+hostile|B2|ˈhɒstaɪl|敌对的|The crowd was hostile.|ant:friendly
+identical|B2|aɪˈdentɪkl|完全相同的|The twins are identical.|syn:same
+inadequate|B2|ɪnˈædɪkwət|不足的|The food was inadequate.|
+intense|B2|ɪnˈtens|强烈的|The heat was intense.|
+legal|B2|ˈliːɡl|合法的|Is it legal to park here?|ant:illegal
+illegal|B2|ɪˈliːɡl|违法的|It is illegal to drive without a licence.|
+mysterious|B2|mɪˈstɪəriəs|神秘的|A mysterious man knocked on the door.|
+precise|B2|prɪˈsaɪs|精确的|Give me the precise time.|syn:exact
+exact|B2|ɪɡˈzækt|确切的|What is the exact date?|
+rapid|B2|ˈræpɪd|迅速的|There was a rapid change.|syn:fast
+reluctant|B2|rɪˈlʌktənt|不情愿的|He was reluctant to help.|ant:willing
+willing|B2|ˈwɪlɪŋ|愿意的|Are you willing to help?|
+superficial|B2|ˌsuːpəˈfɪʃl|肤浅的|It was only a superficial cut.|
+tedious|B2|ˈtiːdiəs|乏味的|The work is tedious.|syn:boring
+thorough|B2|ˈθʌrə|彻底的|The police did a thorough search.|
+transparent|B2|trænsˈpærənt|透明的|The box is made of transparent plastic.|
+unique|B2|juˈniːk|独特的|Every person is unique.|
+valid|B2|ˈvælɪd|有效的|Your ticket is valid for a week.|
+worthwhile|B2|ˌwɜːθˈwaɪl|值得的|It was a worthwhile trip.|
+# 思考与观点 | mind
+## 思维（FCE 二）
+awareness|B2|əˈweənəs|意识|We need more awareness of the problem.|
+belief|B2|bɪˈliːf|信念|It is my belief that he is honest.|root:believe
+concept|B2|ˈkɒnsept|概念|It's a difficult concept.|syn:idea
+consciousness|B2|ˈkɒnʃəsnəs|意识|He lost consciousness after the fall.|
+dilemma|B2|dɪˈlemə|进退两难|I'm in a dilemma.|
+hypothesis|B2|haɪˈpɒθəsɪs|假设|Test your hypothesis.|
+insight|B2|ˈɪnsaɪt|洞察|The book gives an insight into her life.|
+intention|B2|ɪnˈtenʃn|意图|I have no intention of leaving.|
+judgement|B2|ˈdʒʌdʒmənt|判断|Use your own judgement.|
+motive|B2|ˈməʊtɪv|动机|What was his motive?|
+priority|B2|praɪˈɒrəti|优先事项|Safety is our priority.|
+principle|B2|ˈprɪnsəpl|原则|It's against my principles. That principle is important.|
+theory|B2|ˈθɪəri|理论|Do you know the theory of evolution?|
+wisdom|B2|ˈwɪzdəm|智慧|Grandparents have a lot of wisdom.|root:wise
+curiosity|B2|ˌkjʊəriˈɒsəti|好奇心|Curiosity helps you learn.|root:curious
+concentration|B2|ˌkɒnsnˈtreɪʃn|专注|This game needs concentration.|root:concentrate
+# 交流与科技 | media
+## 交流（FCE 二）
+clarify|B2|ˈklærəfaɪ|澄清|Can you clarify what you mean?|syn:explain
+emphasise|B2|ˈemfəsaɪz|强调|I want to emphasise this point.|syn:stress
+negotiation|B2|nɪˌɡəʊʃiˈeɪʃn|谈判|The negotiation took hours.|root:negotiate
+persuasive|B2|pəˈsweɪsɪv|有说服力的|She gave a persuasive speech.|root:persuade
+statement|B2|ˈsteɪtmənt|声明|The police made a statement.|
+summarise|B2|ˈsʌməraɪz|总结|Summarise the story in three lines.|
+testimony|B2|ˈtestɪməni|证词|Her testimony was important.|
+verbal|B2|ˈvɜːbl|口头的|It was only a verbal agreement.|
+# 人物与家庭 | people
+## 社会（FCE）
+poverty|B2|ˈpɒvəti|贫穷|Many people live in poverty.|ant:wealth
+wealth|B2|welθ|财富|He made his wealth in business.|
+equality|B2|iˈkwɒləti|平等|We believe in equality.|
+justice|B2|ˈdʒʌstɪs|正义|They want justice.|
+criminal|B2|ˈkrɪmɪnl|罪犯|The criminal was sent to prison.|
+victim|B2|ˈvɪktɪm|受害者|The victim was taken to hospital.|
+witness|B2|ˈwɪtnəs|目击者|A witness saw the accident.|
+protest|B2|ˈprəʊtest|抗议|There was a protest outside the factory.|

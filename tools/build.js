@@ -33,7 +33,7 @@ for (const f of files){
     const [w, lv, ipa, cn, ex, rel=""] = p.map(s => s.trim());
     if (!/^[A-Za-z][A-Za-z' -]*$/.test(w)){ errors.push(`${where} 单词格式不对：${w}`); return; }
     if (words[w]){ errors.push(`${where} 重复：${w}（已在 ${words[w].where}）`); return; }
-    if (!["A2","B1"].includes(lv)) errors.push(`${where} 级别应为 A2/B1：${w}`);
+    if (!["A2","B1","B2"].includes(lv)) errors.push(`${where} 级别应为 A2/B1/B2：${w}`);
     const re = new RegExp(`\\b${w.replace(/[-']/g, m => "\\" + m)}\\b`, "i");
     if (!re.test(ex)) errors.push(`${where} 例句没有原词 ${w}：${ex}`);
     if (!sub){ sub = {name: gal.name, words:[]}; gal.subs.push(sub); }
@@ -133,22 +133,29 @@ for (const g of galaxies) for (const s of g.subs){ const ws = s.words;
   for (let i = 0; i < ws.length; i++){ const w = ws[i]; if (deg(w) >= 2 && i) continue;
     const nb = ws[(i + 1) % ws.length]; if (ws.length > 1) add(w, nb, "topic", `${w} 和 ${nb} 都属于“${s.name}”这个话题。`); } }
 
-// 6) 保证每个星系内部连通：从起点出发能一路点亮整个星系
-for (const g of galaxies){
-  const set = new Set(g.words), par = {}; g.words.forEach(w => par[w] = w);
+// 6) 保证每个星系内部连通：每种词库组合（KET、PET、KET+PET、KET+PET+FCE）都能从起点一路点亮整个星系
+const BANKS = [["A2"], ["B1"], ["A2","B1"], ["A2","B1","B2"]];
+for (const lvs of BANKS) for (const g of galaxies){
+  const inLv = w => lvs.includes(words[w].lv);
+  const gw = g.words.filter(inLv); if (gw.length < 2) continue;
+  const set = new Set(gw), par = {}; gw.forEach(w => par[w] = w);
   const find = w => par[w] === w ? w : (par[w] = find(par[w]));
   const join = (a, b) => { par[find(a)] = find(b); };
   edges.forEach(([a,b]) => { if (set.has(a) && set.has(b)) join(a, b); });
-  // 先在同一小话题里，把相邻的两个不同分块连起来
-  for (const s of g.subs){ const ws = s.words;
+  const subs = g.subs.map(s => ({name: s.name, words: s.words.filter(inLv)})).filter(s => s.words.length);
+  for (const s of subs){ const ws = s.words;
     for (let i = 1; i < ws.length; i++){ const a = ws[i-1], b = ws[i];
       if (find(a) !== find(b) && add(a, b, "topic", `${a} 和 ${b} 都属于“${s.name}”这个话题。`)) join(a, b); } }
-  // 再把各小话题串起来：每个小话题里连线最少的词，连到上一个小话题
-  for (let k = 1; k < g.subs.length; k++){ const A = g.subs[k-1], B = g.subs[k];
-    if (!A.words.length || !B.words.length) continue;
+  for (let k = 1; k < subs.length; k++){ const A = subs[k-1], B = subs[k];
     const a = A.words.slice().sort((x, y) => deg(x) - deg(y))[0], b = B.words.slice().sort((x, y) => deg(x) - deg(y))[0];
     if (find(a) !== find(b) && add(a, b, "topic", `${a}（${A.name}）和 ${b}（${B.name}）都属于“${g.name}”。`)) join(a, b); }
-  const roots = new Set(g.words.map(find)); if (roots.size > 1) warns.push(`${g.name} 仍有 ${roots.size} 个分块`);
+  // 小话题名字一样的分块可能仍分开（比如两个文件各写了一段），最后按分块逐个接到最大的块上
+  const roots = () => [...new Set(gw.map(find))];
+  let rs = roots();
+  while (rs.length > 1){ const big = gw.filter(w => find(w) === rs[0]), other = gw.filter(w => find(w) === rs[1]);
+    const a = big.slice().sort((x, y) => deg(x) - deg(y))[0], b = other.slice().sort((x, y) => deg(x) - deg(y))[0];
+    if (!add(a, b, "topic", `${a} 和 ${b} 都属于“${g.name}”。`)) { warns.push(`${g.name} ${lvs.join("+")} 无法连通`); break; }
+    join(a, b); rs = roots(); }
 }
 
 // ---------- 星座：每个星系里，按强关系把词分成 3–6 个的连通小组 ----------
@@ -210,7 +217,7 @@ for (const g of galaxies){
 // ---------- 检查 ----------
 const lonely = order.filter(w => !adj[w].length);
 lonely.forEach(w => errors.push(`${words[w].where} 孤立的词（没有任何连线）：${w}`));
-const lvCnt = {A2:0, B1:0}; order.forEach(w => lvCnt[words[w].lv]++);
+const lvCnt = {A2:0, B1:0, B2:0}; order.forEach(w => lvCnt[words[w].lv]++);
 
 // ---------- 输出 ----------
 const outWords = {}; order.forEach(w => { const d = words[w]; outWords[w] = { ipa:d.ipa, cn:d.cn, ex:d.ex, lv:d.lv, g:d.gal, p:pos[w] }; });
@@ -225,7 +232,7 @@ const data = {
 const banner = `// 本文件由 tools/build.js 根据 words/*.txt 自动生成，请改源文件后重新运行 node tools/build.js。\n`;
 fs.writeFileSync(path.join(ROOT, "data.js"), banner + "window.WORDNET = " + JSON.stringify(data) + ";\n");
 const tc = {}; edges.forEach(e => tc[e[2]] = (tc[e[2]]||0) + 1);
-console.log(`单词 ${order.length}（A2 ${lvCnt.A2} · B1 ${lvCnt.B1}）  连线 ${edges.length} ${JSON.stringify(tc)}  星座 ${constellations.length}  星系 ${galaxies.length}`);
+console.log(`单词 ${order.length}（A2 ${lvCnt.A2} · B1 ${lvCnt.B1} · B2 ${lvCnt.B2}）  连线 ${edges.length} ${JSON.stringify(tc)}  星座 ${constellations.length}  星系 ${galaxies.length}`);
 console.log(`在星座里的词 ${Object.keys(consOf).filter(w => consOf[w] >= 0).length}`);
 if (warns.length) console.log(`提醒 ${warns.length} 条：\n  ` + warns.slice(0, 40).join("\n  "));
 if (errors.length){ console.log(`错误 ${errors.length} 条：\n  ` + errors.slice(0, 60).join("\n  ")); process.exitCode = 1; }

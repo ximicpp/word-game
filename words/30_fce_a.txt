@@ -1,0 +1,106 @@
+# 人物与家庭 | people
+## 性格（FCE）
+arrogant|B2|ˈærəɡənt|傲慢的|He is too arrogant to say sorry.|ant:modest
+modest|B2|ˈmɒdɪst|谦虚的|She is very modest about her success.|
+stubborn|B2|ˈstʌbən|固执的|My brother is as stubborn as a mule.|
+generosity|B2|ˌdʒenəˈrɒsəti|慷慨|Thank you for your generosity.|root:generous
+loyal|B2|ˈlɔɪəl|忠诚的|A dog is a loyal friend.|syn:faithful
+faithful|B2|ˈfeɪθfl|忠实的|He remained faithful to his team.|
+sincere|B2|sɪnˈsɪə|真诚的|Please accept my sincere thanks.|syn:honest
+optimistic|B2|ˌɒptɪˈmɪstɪk|乐观的|I'm optimistic about the future.|ant:pessimistic
+pessimistic|B2|ˌpesɪˈmɪstɪk|悲观的|Don't be so pessimistic!|
+cautious|B2|ˈkɔːʃəs|谨慎的|Be cautious when you cross the road.|syn:careful
+mature|B2|məˈtʃʊə|成熟的|She is very mature for her age.|ant:immature
+immature|B2|ˌɪməˈtʃʊə|不成熟的|His behaviour was immature.|
+determined|B2|dɪˈtɜːmɪnd|坚定的|She was determined to win.|
+enthusiastic|B2|ɪnˌθjuːziˈæstɪk|热情的|The fans were very enthusiastic.|
+eccentric|B2|ɪkˈsentrɪk|古怪的|My uncle is a bit eccentric.|syn:strange
+sympathetic|B2|ˌsɪmpəˈθetɪk|同情的|She was sympathetic when I was ill.|
+tolerant|B2|ˈtɒlərənt|宽容的|We should be tolerant of other views.|
+outgoing|B2|ˌaʊtˈɡəʊɪŋ|外向的|She is outgoing and makes friends easily.|ant:shy
+reserved|B2|rɪˈzɜːvd|含蓄的|He is quiet and reserved.|
+considerate|B2|kənˈsɪdərət|体贴的|It was considerate of you to call.|syn:kind
+self-confident|B2|ˌself ˈkɒnfɪdənt|自信的|She is a self-confident speaker.|syn:confident
+## 人际关系（FCE）
+acquaintance|B2|əˈkweɪntəns|熟人|He is an acquaintance, not a close friend.|
+ancestor|B2|ˈænsestə|祖先|My ancestor came from Ireland.|
+sibling|B2|ˈsɪblɪŋ|兄弟姐妹|Do you have a sibling?|
+spouse|B2|spaʊs|配偶|Employees can bring their spouse.|
+bride|B2|braɪd|新娘|The bride wore a white dress.|ant:groom
+groom|B2|ɡruːm|新郎|The groom looked nervous.|
+upbringing|B2|ˈʌpbrɪŋɪŋ|教养|She had a strict upbringing.|
+bond|B2|bɒnd|纽带|There is a strong bond between the twins.|
+rivalry|B2|ˈraɪvlri|竞争|There is a friendly rivalry between them.|
+admiration|B2|ˌædməˈreɪʃn|钦佩|I have great admiration for her.|
+reputation|B2|ˌrepjuˈteɪʃn|名声|The school has a good reputation.|
+# 身体与健康 | body
+## 健康（FCE）
+symptom|B2|ˈsɪmptəm|症状|A high temperature is a symptom of flu.|
+infection|B2|ɪnˈfekʃn|感染|She has an ear infection.|
+recovery|B2|rɪˈkʌvəri|康复|We wish you a quick recovery.|
+prescription|B2|prɪˈskrɪpʃn|处方|The doctor gave me a prescription.|
+injection|B2|ɪnˈdʒekʃn|注射|The nurse gave me an injection.|
+nutrition|B2|njuˈtrɪʃn|营养|Good nutrition is important for children.|
+exhausted|B2|ɪɡˈzɔːstɪd|筋疲力尽的|I was exhausted after the race.|syn:tired
+breath|B2|breθ|呼吸；气息|Take a deep breath.|root:breathe
+pulse|B2|pʌls|脉搏|The nurse checked my pulse.|
+bruise|B2|bruːz|瘀伤|I have a bruise on my leg.|
+scar|B2|skɑː|伤疤|He has a scar on his face.|
+dizzy|B2|ˈdɪzi|头晕的|I feel dizzy when I stand up.|
+vaccine|B2|ˈvæksiːn|疫苗|The vaccine protects you from the disease.|
+mental|B2|ˈmentl|精神的|Mental health is as important as physical health.|ant:physical
+physical|B2|ˈfɪzɪkl|身体的|Physical exercise is good for you.|
+wellbeing|B2|ˌwelˈbiːɪŋ|健康幸福|Sleep is important for your wellbeing.|
+# 衣服与打扮 | clothes
+## 时尚（FCE）
+old-fashioned|B2|ˌəʊld ˈfæʃnd|过时的|My dad's glasses are old-fashioned.|
+trendy|B2|ˈtrendi|时尚的|It's a trendy café.|syn:fashionable
+casual|B2|ˈkæʒuəl|休闲的|Wear casual clothes on Friday.|ant:formal
+formal|B2|ˈfɔːml|正式的|You need formal clothes for the dinner.|
+elegant|B2|ˈelɪɡənt|优雅的|She looked elegant in her black dress.|
+fabric|B2|ˈfæbrɪk|布料|This fabric is soft.|syn:material
+pattern|B2|ˈpætn|图案|I like the pattern on your shirt.|
+accessory|B2|əkˈsesəri|配饰|A belt is a useful accessory.|
+hairstyle|B2|ˈheəstaɪl|发型|I love your new hairstyle.|
+# 家与居住 | home
+## 居住（FCE）
+landlord|B2|ˈlændlɔːd|房东|The landlord fixed the heating.|ant:tenant
+tenant|B2|ˈtenənt|房客|The tenant pays rent every month.|
+mortgage|B2|ˈmɔːɡɪdʒ|按揭贷款|They have a mortgage on their house.|
+property|B2|ˈprɒpəti|房产；财产|Property prices are rising.|
+furnished|B2|ˈfɜːnɪʃt|带家具的|We rented a furnished flat.|
+spacious|B2|ˈspeɪʃəs|宽敞的|The living room is very spacious.|ant:cramped
+cramped|B2|kræmpt|狭窄的|The kitchen is a bit cramped.|
+renovate|B2|ˈrenəveɪt|翻新|They want to renovate the old house.|
+decorate|B2|ˈdekəreɪt|装饰|We will decorate the room for the party.|
+appliance|B2|əˈplaɪəns|家用电器|A fridge is a kitchen appliance.|
+household|B2|ˈhaʊshəʊld|家庭的；一家人|Who does the household jobs?|
+chore|B2|tʃɔː|家务|Washing up is my least favourite chore.|
+residential|B2|ˌrezɪˈdenʃl|住宅的|We live in a residential area.|
+# 食物与饮料 | food
+## 烹饪（FCE）
+grill|B2|ɡrɪl|烧烤|Grill the fish for five minutes.|
+stir|B2|stɜː|搅拌|Stir the soup slowly.|
+chop|B2|tʃɒp|切碎|Chop the carrots into small pieces.|
+peel|B2|piːl|削皮|Peel the potatoes.|
+cooked|B2|kʊkt|煮熟的|Eat cooked vegetables.|
+bland|B2|blænd|无味的|The soup was bland.|
+vegan|B2|ˈviːɡən|严格素食者|A vegan doesn't eat eggs or milk.|
+appetite|B2|ˈæpɪtaɪt|食欲|Swimming gives me a big appetite.|
+starter|B2|ˈstɑːtə|开胃菜|I'll have soup as a starter.|
+cuisine|B2|kwɪˈziːn|菜系|I love Italian cuisine.|
+leftovers|B2|ˈleftəʊvəz|剩饭|We ate the leftovers for lunch.|
+# 学校与学习 | school
+## 学习（FCE）
+curriculum|B2|kəˈrɪkjələm|课程|Music is part of the curriculum.|
+revision|B2|rɪˈvɪʒn|复习|I did three hours of revision.|
+graduate|B2|ˈɡrædʒueɪt|毕业|She will graduate next year.|
+lecture|B2|ˈlektʃə|讲座|The lecture was very interesting.|
+lecturer|B2|ˈlektʃərə|讲师|The lecturer spoke for an hour.|
+tutor|B2|ˈtjuːtə|导师|My tutor helps me with maths.|
+achievement|B2|əˈtʃiːvmənt|成就|Passing the exam was a great achievement.|
+attendance|B2|əˈtendəns|出勤|Attendance is checked every morning.|
+qualify|B2|ˈkwɒlɪfaɪ|取得资格|She will qualify as a teacher next year.|
+fluent|B2|ˈfluːənt|流利的|He is fluent in three languages.|
+literacy|B2|ˈlɪtərəsi|读写能力|Literacy is taught in primary school.|
+plagiarism|B2|ˈpleɪdʒərɪzəm|抄袭|Plagiarism is not allowed.|

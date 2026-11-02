@@ -1,0 +1,113 @@
+# 日常动作 | actions
+## 动作（FCE）
+abandon|B2|əˈbændən|放弃；遗弃|They had to abandon the car.|
+accomplish|B2|əˈkʌmplɪʃ|完成|We can accomplish a lot together.|syn:achieve
+acquire|B2|əˈkwaɪə|获得|You will acquire new skills.|syn:get
+adjust|B2|əˈdʒʌst|调整|Adjust your seat before you drive.|
+assist|B2|əˈsɪst|协助|Can I assist you?|syn:help
+cease|B2|siːs|停止|The noise did not cease.|syn:stop
+cooperate|B2|kəʊˈɒpəreɪt|合作|We must cooperate to finish on time.|
+demolish|B2|dɪˈmɒlɪʃ|拆毁|They will demolish the old factory.|ant:build
+emerge|B2|iˈmɜːdʒ|出现|The sun began to emerge from the clouds.|
+ensure|B2|ɪnˈʃʊə|确保|Please ensure the door is locked.|
+establish|B2|ɪˈstæblɪʃ|建立|They want to establish a new club.|
+expand|B2|ɪkˈspænd|扩大|The company plans to expand.|
+extend|B2|ɪkˈstend|延长|We decided to extend our stay.|
+handle|B2|ˈhændl|处理|She can handle difficult customers.|
+hesitate|B2|ˈhezɪteɪt|犹豫|Don't hesitate to ask.|
+ignore|B2|ɪɡˈnɔː|忽视|Don't ignore the warning.|
+imply|B2|ɪmˈplaɪ|暗示|What do you imply?|
+indicate|B2|ˈɪndɪkeɪt|表明|The signs indicate the way out.|syn:show
+insist|B2|ɪnˈsɪst|坚持|I insist on paying.|
+maintain|B2|meɪnˈteɪn|维持|Maintain a steady speed.|
+modify|B2|ˈmɒdɪfaɪ|修改|We need to modify the plan.|syn:change
+neglect|B2|nɪˈɡlekt|忽略|Don't neglect your health.|
+obtain|B2|əbˈteɪn|获得|You must obtain a visa.|syn:get
+occupy|B2|ˈɒkjupaɪ|占据|The children occupy the whole sofa.|
+overcome|B2|ˌəʊvəˈkʌm|克服|She will overcome her fear.|
+persuade|B2|pəˈsweɪd|说服|Try to persuade him to come.|syn:convince
+convince|B2|kənˈvɪns|使确信|I can't convince her.|
+pursue|B2|pəˈsjuː|追求|She wants to pursue a career in law.|
+reject|B2|rɪˈdʒekt|拒绝|They will reject the offer.|ant:accept
+restore|B2|rɪˈstɔː|恢复；修复|They want to restore the old church.|
+reveal|B2|rɪˈviːl|揭示|He refused to reveal the secret.|syn:show
+seize|B2|siːz|抓住|Seize the chance!|
+tackle|B2|ˈtækl|处理；对付|We must tackle the problem.|
+withdraw|B2|wɪðˈdrɔː|撤回；取款|I need to withdraw some money.|
+# 描述事物 | describe
+## 描述（FCE）
+accurate|B2|ˈækjərət|准确的|The report is accurate.|ant:inaccurate
+inaccurate|B2|ɪnˈækjərət|不准确的|The map was inaccurate.|
+adequate|B2|ˈædɪkwət|足够的|The food was adequate.|syn:enough
+appropriate|B2|əˈprəʊpriət|合适的|Jeans are not appropriate for the wedding.|syn:suitable
+suitable|B2|ˈsuːtəbl|合适的|This film is suitable for children.|
+complex|B2|ˈkɒmpleks|复杂的|It is a complex problem.|ant:simple
+considerable|B2|kənˈsɪdərəbl|相当大的|It cost a considerable amount of money.|
+crucial|B2|ˈkruːʃl|关键的|This is a crucial game.|syn:important
+distinct|B2|dɪˈstɪŋkt|明显的；不同的|There is a distinct smell of gas.|
+essential|B2|ɪˈsenʃl|必要的|Water is essential for life.|syn:necessary
+evident|B2|ˈevɪdənt|明显的|It was evident that he was tired.|syn:obvious
+obvious|B2|ˈɒbviəs|明显的|The answer is obvious.|
+genuine|B2|ˈdʒenjuɪn|真正的|Is this a genuine diamond?|syn:real
+inevitable|B2|ɪnˈevɪtəbl|不可避免的|Change is inevitable.|
+massive|B2|ˈmæsɪv|巨大的|They live in a massive house.|syn:huge
+minor|B2|ˈmaɪnə|次要的|It's only a minor problem.|ant:major
+major|B2|ˈmeɪdʒə|主要的|Traffic is a major problem.|
+reasonable|B2|ˈriːznəbl|合理的|The price is reasonable.|
+remarkable|B2|rɪˈmɑːkəbl|非凡的|She made a remarkable recovery.|
+severe|B2|sɪˈvɪə|严重的|There was a severe storm.|syn:serious
+significant|B2|sɪɡˈnɪfɪkənt|重要的|It was a significant change.|
+subtle|B2|ˈsʌtl|微妙的|There is a subtle difference.|
+tremendous|B2|trəˈmendəs|巨大的|It was a tremendous success.|
+vague|B2|veɪɡ|模糊的|His answer was vague.|ant:clear
+vivid|B2|ˈvɪvɪd|生动的|I have a vivid memory of that day.|
+fragile|B2|ˈfrædʒaɪl|易碎的|Be careful, the vase is fragile.|
+durable|B2|ˈdjʊərəbl|耐用的|These boots are very durable.|
+# 思考与观点 | mind
+## 观点（FCE）
+debate|B2|dɪˈbeɪt|辩论|We had a debate about school uniforms.|
+viewpoint|B2|ˈvjuːpɔɪnt|观点|Try to see it from my viewpoint.|syn:opinion
+perspective|B2|pəˈspektɪv|视角|It gives a new perspective.|
+assumption|B2|əˈsʌmpʃn|假设|That is a wrong assumption.|
+assume|B2|əˈsjuːm|假定|I assume you are coming.|
+conclude|B2|kənˈkluːd|得出结论|We conclude that the plan works.|
+conclusion|B2|kənˈkluːʒn|结论|What is your conclusion?|
+evidence|B2|ˈevɪdəns|证据|There is no evidence.|syn:proof
+justify|B2|ˈdʒʌstɪfaɪ|证明……合理|How can you justify the cost?|
+criticise|B2|ˈkrɪtɪsaɪz|批评|Don't criticise your friends.|ant:praise
+praise|B2|preɪz|表扬|The teacher will praise good work.|
+suspect|B2|səˈspekt|怀疑|I suspect he is lying.|
+analyse|B2|ˈænəlaɪz|分析|We need to analyse the results.|
+evaluate|B2|ɪˈvæljueɪt|评估|Evaluate your progress every week.|
+interpret|B2|ɪnˈtɜːprət|解释；理解|How do you interpret this poem?|
+logical|B2|ˈlɒdʒɪkl|合乎逻辑的|That is a logical answer.|
+rational|B2|ˈræʃnəl|理性的|Try to be rational.|
+biased|B2|ˈbaɪəst|有偏见的|The report is biased.|ant:fair
+prejudice|B2|ˈpredʒudɪs|偏见|We must fight prejudice.|
+## 情绪（FCE）
+anxiety|B2|æŋˈzaɪəti|焦虑|Exams cause anxiety.|root:anxious
+frustrated|B2|frʌˈstreɪtɪd|沮丧的|I feel frustrated when I can't do it.|
+frustration|B2|frʌˈstreɪʃn|挫败感|He shouted in frustration.|
+overwhelmed|B2|ˌəʊvəˈwelmd|不知所措的|She felt overwhelmed by the work.|
+relieved|B2|rɪˈliːvd|宽慰的|I was relieved to hear the news.|
+envious|B2|ˈenviəs|嫉妒的|He was envious of his brother.|syn:jealous
+furious|B2|ˈfjʊəriəs|狂怒的|Dad was furious with me.|syn:angry
+thrilled|B2|θrɪld|非常兴奋的|I was thrilled with my present.|syn:delighted
+devastated|B2|ˈdevəsteɪtɪd|极度悲痛的|She was devastated by the news.|
+nostalgic|B2|nɒˈstældʒɪk|怀旧的|Old songs make me nostalgic.|
+motivated|B2|ˈməʊtɪveɪtɪd|有动力的|She is very motivated to learn.|
+# 小词大用 | words
+## 连接词（FCE）
+furthermore|B2|ˌfɜːðəˈmɔː|此外|Furthermore, the hotel is cheap.|syn:moreover
+moreover|B2|mɔːrˈəʊvə|而且|Moreover, it was raining.|
+nevertheless|B2|ˌnevəðəˈles|然而|It was cold. Nevertheless, we went out.|syn:however
+whereas|B2|ˌweərˈæz|然而；鉴于|He likes tea, whereas I like coffee.|
+therefore|B2|ˈðeəfɔː|因此|He was ill, therefore he stayed at home.|
+consequently|B2|ˈkɒnsɪkwəntli|因此|Consequently, the trip was cancelled.|syn:therefore
+despite|B2|dɪˈspaɪt|尽管|Despite the rain, we had fun.|syn:although
+otherwise|B2|ˈʌðəwaɪz|否则|Hurry, otherwise we'll be late.|
+regardless|B2|rɪˈɡɑːdləs|不管怎样|We went regardless of the weather.|
+hence|B2|hens|因此|It's late, hence the hurry.|
+thus|B2|ðʌs|因此|Thus, the plan failed.|
+whenever|B2|wenˈevə|每当|Call me whenever you like.|
+wherever|B2|weərˈevə|无论哪里|Sit wherever you like.|

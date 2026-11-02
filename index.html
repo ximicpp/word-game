@@ -197,6 +197,21 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .linkrow{font-size:13px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .linkrow b{font-family:var(--f-word);color:var(--ink);font-weight:500}
 .linkrow i{font-style:normal;color:var(--c)}
+.node .gain{font-family:var(--f-mono);font-size:10px;fill:var(--ready);stroke:var(--sky);stroke-width:3px;paint-order:stroke;opacity:0;pointer-events:none}
+.node.ready .gain{opacity:1}
+.diff{display:inline-flex;gap:3px;vertical-align:middle}
+.diff i{width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.diff i.on{background:var(--t-form)}
+.dust{color:var(--lamp);font-family:var(--f-mono);font-size:12px;white-space:nowrap}
+.preview{margin-top:16px;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:13px;color:var(--muted);padding:12px 14px;border-radius:10px;background:var(--sky-2);border:1px solid var(--rule)}
+.preview b{color:var(--ink);font-weight:600}
+.cands{display:grid;gap:6px}
+.cand{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:center;padding:7px 10px;border-radius:8px;background:var(--sky-2);border:1px solid rgba(159,216,255,.4);text-align:left;font-size:12px;color:var(--muted)}
+.cand b{font-family:var(--f-word);font-size:15px;color:var(--ink);font-weight:500}
+.tools{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.tool{background:none;border:1px dashed rgba(255,201,92,.5);color:var(--lamp);border-radius:8px;padding:6px 10px;font-size:13px}
+.tool:disabled{opacity:.4;cursor:not-allowed}
+.opt.cut{opacity:.28;text-decoration:line-through}
 .meteor{position:absolute;width:140px;height:2px;border-radius:2px;pointer-events:none;
   background:linear-gradient(90deg,rgba(255,243,214,0),#fff3d6);box-shadow:0 0 10px #ffc95c;transform:rotate(-24deg);animation:fly 1.1s ease-in forwards}
 @keyframes fly{0%{opacity:0;translate:0 0}15%{opacity:1}100%{opacity:0;translate:-420px 190px}}
@@ -228,6 +243,7 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
       <div class="stat edges" id="edgeStat">连线 0 / 0</div>
       <div class="stat acc" id="accStat">正确率 —</div>
     </div>
+    <div class="dust" id="dustStat" title="星尘：点亮单词获得，可以换道具">✦ 0</div>
     <div class="combo" id="comboStat" hidden></div>
     <button class="ghost polish" id="polishBtn" type="button" hidden></button>
     <button class="ghost" id="resetBtn" type="button">重新开始</button>
@@ -258,6 +274,8 @@ const INTERVALS = [1, 3, 7, 14, 30];          // 复习间隔（天）：点亮�
 // 网址加 ?days=N 可以模拟 N 天之后，方便试玩“星光变暗”
 const SHIFT = (parseFloat(new URLSearchParams(location.search).get("days")) || 0) * DAY;
 const now = () => Date.now() + SHIFT;
+const COST = { hint: 30, scope: 20 };          // 道具价格（星尘）
+const CONS_BONUS = 30;                          // 连成星座的额外星尘
 
 // ---------- 图结构 ----------
 const adj = {}; WORDS.forEach(w => adj[w] = []);
@@ -266,9 +284,14 @@ const nbSet = w => new Set(adj[w].map(e => e.w));
 function twoHop(w){ const s = new Set(); const one = nbSet(w);
   one.forEach(n => adj[n].forEach(e => { if (e.w !== w && !one.has(e.w)) s.add(e.w); })); return [...s]; }
 const consOf = {}; CONS.forEach((c, i) => c.words.forEach(w => consOf[w] = i));
+// 难度 1–3：data.js 里写了 lv 就用它；否则按读音/字形易混的邻居数量：0 个 1 级，1 个 2 级，2 个以上 3 级
+const DIFF = {}; WORDS.forEach(w => { const n = adj[w].filter(e => e.t === "sound" || e.t === "form").length;
+  DIFF[w] = D.words[w].lv || (n === 0 ? 1 : n === 1 ? 2 : 3); });
+const dustFor = (w, stars) => DIFF[w] * 10 + stars * 5;    // 点亮奖励：难度 ×10 + 星级 ×5
+const diffHtml = w => `<span class="diff" title="难度 ${DIFF[w]}">${[1,2,3].map(k => `<i class="${k <= DIFF[w] ? "on" : ""}"></i>`).join("")}</span>`;
 
 // ---------- 状态 ----------
-const fresh = () => ({ start:null, lit:[], answered:0, correct:0, stars:{}, mem:{}, combo:0, best:0, folded:[] });
+const fresh = () => ({ start:null, lit:[], answered:0, correct:0, stars:{}, mem:{}, combo:0, best:0, folded:[], dust:30, peek:[] });   // 开局送一张提示卡的星尘
 let S = fresh();
 function load(){ try { const v = JSON.parse(localStorage.getItem(KEY)); if (v && Array.isArray(v.lit)) S = Object.assign(S, v); } catch(e){}
   // 旧存档：已点亮的词补上星级和复习时间
@@ -286,6 +309,9 @@ function status(w){
   if (w === S.start) return "ready";
   return adj[w].some(e => isLit(e.w)) ? "ready" : "locked";
 }
+// 收益预览：点亮 w 后新解锁的词、它所在星座还差几个
+const gainOf = w => adj[w].filter(e => status(e.w) === "locked" && e.w !== w).map(e => e.w).filter((x, i, a) => a.indexOf(x) === i);
+const consLeft = w => consOf[w] === undefined ? null : CONS[consOf[w]].words.filter(x => x !== w && !isLit(x)).length;
 const starHtml = n => `<span class="stars" aria-label="${n} 颗星">${"★".repeat(n)}<i>${"★".repeat(3-n)}</i></span>`;
 function dueText(w){ const m = S.mem[w]; if (!m) return ""; const d = Math.ceil((m.due - now()) / DAY);
   return d <= 0 ? "星光变暗了，答 1 题就能擦亮" : d === 1 ? "明天需要擦亮一次" : `${d} 天后需要擦亮`; }
@@ -328,6 +354,7 @@ WORDS.forEach(w => {
   g.appendChild(el("circle",{class:"ring",r:10}));
   g.appendChild(el("circle",{class:"dot",r:6}));
   const t = el("text",{y:24,"text-anchor":"middle"}); t.textContent = w; g.appendChild(t);
+  const gt = el("text",{y:-14,"text-anchor":"middle",class:"gain"}); g.appendChild(gt);
   g.dataset.w = w;
   g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(w); } });
   gN.appendChild(g); nodeEls[w] = g;
@@ -374,7 +401,8 @@ function paint(){
   WORDS.forEach(w => { const g = nodeEls[w]; const s = status(w);
     g.classList.toggle("lit", s==="lit"); g.classList.toggle("ready", s==="ready"); g.classList.toggle("sel", w===selected);
     [1,2,3].forEach(n => g.classList.toggle("s"+n, s==="lit" && (S.stars[w]||3) === n));
-    g.classList.toggle("fade", isFading(w)); g.classList.toggle("gone", rep(w) !== w); });
+    g.classList.toggle("fade", isFading(w)); g.classList.toggle("gone", rep(w) !== w);
+    if (s === "ready"){ const n = gainOf(w).length, cl = consLeft(w); g.querySelector(".gain").textContent = (n ? "+" + n : "") + (cl === 0 ? " ✦" : ""); } });
   const near = selected ? new Set([...nbSet(selected)].map(rep)) : null;
   const selId = selected || (selCons !== null ? "c" + selCons : null);
   D.edges.forEach(([a,b,t], i) => { const l = edgeEls[i]; const la = isLit(a), lb = isLit(b);
@@ -405,6 +433,7 @@ function paint(){
   document.getElementById("edgeStat").textContent = `连线 ${le} / ${D.edges.length}`;
   document.getElementById("consStat").textContent = `星座 ${CONS.filter((_,i) => consDone(i)).length} / ${CONS.length}`;
   document.getElementById("accStat").textContent = S.answered ? `正确率 ${Math.round(S.correct / S.answered * 100)}%` : "正确率 —";
+  document.getElementById("dustStat").textContent = `✦ ${S.dust}`;
   const cb = document.getElementById("comboStat"); cb.hidden = S.combo < 2; cb.textContent = `连击 ×${S.combo}`;
   const pb = document.getElementById("polishBtn"), nf = fadingWords().length; pb.hidden = !nf; pb.textContent = `待擦亮 ${nf}`;
 }
@@ -466,8 +495,16 @@ function renderPanel(){
   const w = selected, d = D.words[w], s = status(w);
   const stateTxt = {lit:"已点亮", ready:"可以挑战", locked:"未解锁"}[s];
   let html = `<div class="eyebrow">单词</div><div class="word">${esc(w)}</div><div class="ipa">/${esc(d.ipa)}/</div>`;
-  html += s === "lit" ? `<div class="cn">${esc(d.cn)}</div><div class="ex">${esc(d.ex)}</div>` : `<div class="hidden-cn">点亮后显示中文意思和例句</div>`;
-  html += `<div class="state ${s}">${stateTxt}</div>`;
+  const peeked = S.peek.includes(w);
+  html += s === "lit" ? `<div class="cn">${esc(d.cn)}</div><div class="ex">${esc(d.ex)}</div>`
+    : peeked ? `<div class="cn">${esc(d.cn)} <span class="note">（望远镜）</span></div>`
+    : `<div class="hidden-cn">点亮后显示中文意思和例句</div><div class="tools"><button type="button" class="tool" id="scope" ${S.dust < COST.scope ? "disabled" : ""}>望远镜：先看意思 · ✦${COST.scope}</button></div>`;
+  html += `<div class="state ${s}">${stateTxt}</div> ${diffHtml(w)}`;
+  if (s === "ready"){ const g = gainOf(w), cl = consLeft(w);
+    html += `<div class="preview"><span>难度</span><b>${DIFF[w]} 级</b>
+      <span>奖励</span><b>✦${dustFor(w,1)}–${dustFor(w,3)}${cl === 0 ? ` + 星座 ✦${CONS_BONUS}` : ""}</b>
+      <span>解锁</span><b>${g.length ? `${g.length} 个新词` : "没有新词"}</b>
+      ${cl !== null ? `<span>星座</span><b>${esc(CONS[consOf[w]].name)}${cl === 0 ? "，点亮就连成！" : `，点亮后还差 ${cl} 个`}</b>` : ""}</div>`; }
   if (s === "lit") html += ` ${starHtml(S.stars[w]||3)}<div class="note">${dueText(w)}</div>`;
   const ci = consOf[w];
   if (ci !== undefined){ const c = CONS[ci], n = c.words.filter(isLit).length;
@@ -487,6 +524,7 @@ function renderPanel(){
   bindGo(panel);
   const go = document.getElementById("go"); if (go) go.onclick = () => startQuiz(w, "light");
   const po = document.getElementById("polish"); if (po) po.onclick = () => startQuiz(w, "review");
+  const sc = document.getElementById("scope"); if (sc) sc.onclick = () => { if (S.dust < COST.scope) return; S.dust -= COST.scope; S.peek.push(w); save(); paint(); renderPanel(); };
 }
 
 function renderCons(){
@@ -514,9 +552,10 @@ function renderIntro(){
   const doneCons = CONS.map((_,i) => i).filter(consDone), openCons = doneCons.filter(i => !isFolded(i));
   panel.innerHTML = `<div class="eyebrow">怎么玩</div>
     <div class="q" style="margin-top:8px">点一个发光虚线圈的单词，答完 3 道题就能把它点亮。</div>
-    <div class="note">一次全对得 3 颗星，星越多越亮。点亮的星过几天会变暗，答 1 题就能擦亮。一组相关的词全部点亮会连成星座，还可以收起成一颗大星。</div>
+    <div class="note">先想好下一颗点哪个：看它的难度、能解锁几个新词、离星座还差几个。越难的词奖励越多星尘，星尘可以换提示卡和望远镜。一次全对得 3 颗星，星越多越亮。点亮的星过几天会变暗，答 1 题就能擦亮。一组相关的词全部点亮会连成星座，还可以收起成一颗大星。</div>
     ${fades.length ? `<div class="sec"><div class="eyebrow">需要擦亮 · ${fades.length}</div><div class="nbs">${fades.map(w=>`<button type="button" class="nb lit" data-go="${w}">${w}</button>`).join("")}</div></div>` : ""}
-    ${ready.length ? `<div class="sec"><div class="eyebrow">现在可以挑战 · ${ready.length}</div><div class="nbs">${ready.map(w=>`<button type="button" class="nb ready" data-go="${w}">${w}</button>`).join("")}</div></div>` : ""}
+    ${ready.length ? `<div class="sec"><div class="eyebrow">现在可以挑战 · ${ready.length}</div><div class="cands">${ready.map(w => { const g = gainOf(w).length, cl = consLeft(w);
+      return `<button type="button" class="cand" data-go="${w}"><b>${w}</b>${diffHtml(w)}<span>${g ? "解锁 +" + g : "—"}</span><span>${cl === 0 ? "✦ 连成星座" : cl !== null ? "星座还差 " + cl : ""}</span></button>`; }).join("")}</div></div>` : ""}
     ${S.lit.length === WORDS.length ? `<div class="big">全部点亮！</div>` : ""}
     <div class="sec"><div class="eyebrow">星座 · ${doneCons.length} / ${CONS.length}</div><div class="conslist">${CONS.map((c,i) => { const n = c.words.filter(isLit).length;
       return `<button type="button" class="consrow ${n === c.words.length ? "done" : ""}" data-cons="${i}">${esc(c.name)}${isFolded(i) ? " · 已收起" : ""}<span>${n} / ${c.words.length}</span></button>`; }).join("")}</div></div>
@@ -584,22 +623,27 @@ function renderQuiz(){
   const pips = z.qs.map((_,k) => `<i class="${k < z.i ? "ok" : k === z.i ? (z.picked === null ? "now" : right ? "ok" : "no") : ""}"></i>`).join("");
   let html = `<div class="qhead"><div class="eyebrow">${z.mode === "review" ? "擦亮" : "挑战"} ${esc(w)}${N > 1 ? ` · 第 ${z.i+1} / ${N} 题` : ""}</div><div class="pips">${pips}</div></div>
     <div class="q">${q.html}</div><div class="opts">`;
-  html += q.opts.map((o,k) => { let cls = "opt" + (o.en ? " en" : ""); if (z.picked !== null){ if (o.key === q.answer) cls += " right"; else if (k === z.picked) cls += " wrong"; }
+  html += q.opts.map((o,k) => { let cls = "opt" + (o.en ? " en" : "") + (q.cut && q.cut.includes(k) && z.picked === null ? " cut" : ""); if (z.picked !== null){ if (o.key === q.answer) cls += " right"; else if (k === z.picked) cls += " wrong"; }
     const cn = z.picked !== null && q.showCn ? `<small>${esc(D.words[o.key].cn)}</small>` : "";
-    return `<button type="button" class="${cls}" data-k="${k}" ${z.picked !== null ? "disabled" : ""}><span>${esc(o.label)}</span>${cn}</button>`; }).join("");
+    return `<button type="button" class="${cls}" data-k="${k}" ${z.picked !== null || (q.cut && q.cut.includes(k)) ? "disabled" : ""}><span>${esc(o.label)}</span>${cn}</button>`; }).join("");
   html += `</div>`;
   if (z.picked !== null){
     html += `<div class="explain ${right ? "" : "bad"}">${right ? "<b>答对了。</b> " : "<b>答错了。</b> 正确答案已标绿。 "}${q.explain}</div>`;
     const last = z.i === N - 1;
     html += right ? `<button class="cta" id="next" type="button">${!last ? "下一题" : z.mode === "review" ? "擦亮！" : "点亮！"}</button>`
                   : `<button class="cta" id="retry" type="button">再答一次（换一道同类题）</button><button class="cta alt" id="leave" type="button">先去看看别的词</button>`;
-  } else if (z.mode === "review") html += `<div class="note">答对就能把这颗星擦亮。</div>`;
-  else html += `<div class="note">${z.miss ? `已经答错 ${z.miss} 次，这颗星会暗一些。` : "一次全对得 3 颗星。"}</div>`;
+  } else {
+    html += z.mode === "review" ? `<div class="note">答对就能把这颗星擦亮。</div>`
+      : `<div class="note">${z.miss ? `已经答错 ${z.miss} 次，这颗星会暗一些。` : "一次全对得 3 颗星。"}</div>`;
+    if (!q.cut) html += `<div class="tools"><button type="button" class="tool" id="hint" ${S.dust < COST.hint ? "disabled" : ""}>提示卡：去掉两个错误选项 · ✦${COST.hint}</button></div>`;
+  }
   panel.innerHTML = html;
   panel.querySelectorAll("[data-k]").forEach(b => b.onclick = () => answer(+b.dataset.k));
   const n = document.getElementById("next"); if (n) { n.onclick = nextQ; n.focus(); }
   const r = document.getElementById("retry"); if (r) { r.onclick = retryQ; r.focus(); }
   const l = document.getElementById("leave"); if (l) l.onclick = () => { quiz = null; renderPanel(); };
+  const h = document.getElementById("hint"); if (h) h.onclick = () => { if (S.dust < COST.hint) return; S.dust -= COST.hint;
+    q.cut = shuffle(q.opts.map((o,k) => k).filter(k => q.opts[k].key !== q.answer)).slice(0, 2); save(); paint(); renderQuiz(); };
 }
 function answer(k){ const z = quiz, q = z.qs[z.i]; z.picked = k; const ok = q.opts[k].key === q.answer;
   S.answered++;
@@ -620,9 +664,10 @@ function lightUp(w){
   if (!isLit(w)) S.lit.push(w);
   S.stars[w] = Math.max(stars, S.stars[w] || 0);
   S.mem[w] = {lv:0, due: now() + INTERVALS[0] * DAY};
-  save();
   z.done = true; z.stars = stars; z.unlocked = WORDS.filter(x => status(x) === "ready" && !before.has(x));
   const ci = consOf[w]; z.newCons = ci !== undefined && consDone(ci) ? ci : null;
+  z.dust = dustFor(w, stars) + (z.newCons !== null ? CONS_BONUS : 0); S.dust += z.dust;
+  save();
   paint(); pop(w);
   if (z.newCons !== null) meteor(5); else if (stars === 3) meteor(1);
   renderResult();
@@ -630,7 +675,7 @@ function lightUp(w){
 function renderResult(){
   const z = quiz, w = z.w;
   const c = z.newCons !== null ? CONS[z.newCons] : null;
-  panel.innerHTML = `<div class="eyebrow">点亮成功</div><div class="big">${esc(w)}</div>${starHtml(z.stars)}
+  panel.innerHTML = `<div class="eyebrow">点亮成功</div><div class="big">${esc(w)}</div>${starHtml(z.stars)} <span class="dust">+✦${z.dust}</span>
     <div class="ipa">/${esc(D.words[w].ipa)}/</div><div class="cn">${esc(D.words[w].cn)}</div><div class="ex">${esc(D.words[w].ex)}</div>
     ${c ? `<div class="badge"><b>新星座：${esc(c.name)}</b><p>${esc(c.note)}</p><button class="cta" id="foldNew" type="button" style="margin-top:12px">收起成星座大星</button></div>` : ""}
     ${z.stars < 3 ? `<div class="note">之后擦亮它时一次答对，可以再加一颗星。</div>` : ""}
@@ -648,13 +693,14 @@ function finishReview(){
   const z = quiz, w = z.w, m = S.mem[w] || (S.mem[w] = {lv:0, due:now()});
   if (z.wasDue){ if (z.miss === 0) m.lv = Math.min(m.lv + 1, INTERVALS.length - 1); m.due = now() + INTERVALS[m.lv] * DAY; }
   z.gain = z.miss === 0 && (S.stars[w] || 3) < 3; if (z.gain) S.stars[w] = (S.stars[w] || 3) + 1;
+  z.dust = z.wasDue && z.miss === 0 ? 5 : 0; S.dust += z.dust;
   save(); z.done = true; paint(); pop(w); if (z.miss === 0) meteor(1); renderReviewDone();
 }
 function renderReviewDone(){
   const z = quiz, w = z.w; const d = Math.round((S.mem[w].due - now()) / DAY);
   panel.innerHTML = `<div class="eyebrow">擦亮成功</div><div class="big">${esc(w)}</div>${starHtml(S.stars[w]||3)}
     <div class="cn">${esc(D.words[w].cn)}</div>
-    <div class="note">${z.gain ? "一次答对，多了一颗星！" : ""}${z.wasDue ? `记得很牢，下次 ${d} 天后再来看看它。` : ""}</div>
+    <div class="note">${z.dust ? `+✦${z.dust} ` : ""}${z.gain ? "一次答对，多了一颗星！" : ""}${z.wasDue ? `记得很牢，下次 ${d} 天后再来看看它。` : ""}</div>
     ${fadingWords().length ? `<button class="cta" id="nextFade" type="button">擦亮下一颗（还有 ${fadingWords().length} 颗）</button>` : ""}
     <button class="cta alt" id="back" type="button">回到词网</button>`;
   document.getElementById("back").onclick = () => { quiz = null; selected = null; paint(); renderPanel(); };

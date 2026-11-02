@@ -197,7 +197,7 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .linkrow{font-size:13px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .linkrow b{font-family:var(--f-word);color:var(--ink);font-weight:500}
 .linkrow i{font-style:normal;color:var(--c)}
-.node .gain{font-family:var(--f-mono);font-size:10px;fill:var(--ready);stroke:var(--sky);stroke-width:3px;paint-order:stroke;opacity:0;pointer-events:none}
+.node .gain{font-family:var(--f-cn);font-size:11px;font-weight:600;fill:var(--ready);stroke:var(--sky);stroke-width:3px;paint-order:stroke;opacity:0;pointer-events:none}
 .node.ready .gain{opacity:1}
 .diff{display:inline-flex;gap:3px;vertical-align:middle}
 .diff i{width:7px;height:7px;border-radius:50%;background:var(--dim)}
@@ -211,6 +211,12 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .tools{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .tool{background:none;border:1px dashed rgba(255,201,92,.5);color:var(--lamp);border-radius:8px;padding:6px 10px;font-size:13px}
 .tool:disabled{opacity:.4;cursor:not-allowed}
+.ctabar .cta{margin-top:16px}
+.tip{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(64px + env(safe-area-inset-bottom,0px));z-index:25;width:min(440px,calc(100% - 32px));
+  background:#1b2742;border:1px solid rgba(255,201,92,.6);border-radius:12px;padding:14px 16px;box-shadow:0 10px 40px rgba(0,0,0,.5);display:flex;gap:12px;align-items:flex-start}
+.tip p{margin:0;font-size:15px;flex:1}
+.tip p b{color:var(--lamp)}
+.tip button{flex:none;background:var(--lamp);color:#2b1d00;border:none;border-radius:8px;padding:6px 12px;font-weight:600;font-size:14px}
 .opt.cut{opacity:.28;text-decoration:line-through}
 .meteor{position:absolute;width:140px;height:2px;border-radius:2px;pointer-events:none;
   background:linear-gradient(90deg,rgba(255,243,214,0),#fff3d6);box-shadow:0 0 10px #ffc95c;transform:rotate(-24deg);animation:fly 1.1s ease-in forwards}
@@ -220,7 +226,8 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
   main{grid-template-columns:1fr;grid-template-rows:minmax(300px,52%) 1fr}
   aside{border-left:none;border-top:1px solid var(--rule);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
   .word{font-size:34px}
-  .stat.acc,.stat.edges{display:none}
+  .ctabar{position:sticky;bottom:0;margin:0 -16px;padding:0 16px 12px;background:linear-gradient(transparent,var(--panel) 30%);z-index:2}
+  .tip{bottom:auto;top:calc(12px + env(safe-area-inset-top,0px))}
   .legend{flex-wrap:nowrap;overflow-x:auto;bottom:8px;max-width:calc(100% - 70px);scrollbar-width:none}
   .chip{flex:none;font-size:11px;padding:2px 8px}
   .zoom button{width:30px;height:30px}
@@ -240,10 +247,8 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
       <div class="count"><b id="litN">0</b> / <span id="totN">0</span> 已点亮</div>
       <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
       <div class="stat" id="consStat">星座 0 / 0</div>
-      <div class="stat edges" id="edgeStat">连线 0 / 0</div>
-      <div class="stat acc" id="accStat">正确率 —</div>
     </div>
-    <div class="dust" id="dustStat" title="星尘：点亮单词获得，可以换道具">✦ 0</div>
+    <div class="dust" id="dustStat" title="星尘：点亮单词获得，可以换道具">星尘 0</div>
     <div class="combo" id="comboStat" hidden></div>
     <button class="ghost polish" id="polishBtn" type="button" hidden></button>
     <button class="ghost" id="resetBtn" type="button">重新开始</button>
@@ -259,6 +264,7 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 </div>
 <div class="modal" id="modal" hidden></div>
 <div class="toast" id="toast" hidden></div>
+<div class="tip" id="tip" role="status" hidden><p></p><button type="button">知道了</button></div>
 
 <script src="data.js"></script>
 <script>
@@ -291,7 +297,7 @@ const dustFor = (w, stars) => DIFF[w] * 10 + stars * 5;    // 点亮奖励：难
 const diffHtml = w => `<span class="diff" title="难度 ${DIFF[w]}">${[1,2,3].map(k => `<i class="${k <= DIFF[w] ? "on" : ""}"></i>`).join("")}</span>`;
 
 // ---------- 状态 ----------
-const fresh = () => ({ start:null, lit:[], answered:0, correct:0, stars:{}, mem:{}, combo:0, best:0, folded:[], dust:30, peek:[] });   // 开局送一张提示卡的星尘
+const fresh = () => ({ tips:{}, start:null, lit:[], answered:0, correct:0, stars:{}, mem:{}, combo:0, best:0, folded:[], dust:30, peek:[] });   // 开局送一张提示卡的星尘
 let S = fresh();
 function load(){ try { const v = JSON.parse(localStorage.getItem(KEY)); if (v && Array.isArray(v.lit)) S = Object.assign(S, v); } catch(e){}
   // 旧存档：已点亮的词补上星级和复习时间
@@ -354,7 +360,7 @@ WORDS.forEach(w => {
   g.appendChild(el("circle",{class:"ring",r:10}));
   g.appendChild(el("circle",{class:"dot",r:6}));
   const t = el("text",{y:24,"text-anchor":"middle"}); t.textContent = w; g.appendChild(t);
-  const gt = el("text",{y:-14,"text-anchor":"middle",class:"gain"}); g.appendChild(gt);
+  const gt = el("text",{y:-15,"text-anchor":"middle",class:"gain"}); g.appendChild(gt);
   g.dataset.w = w;
   g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(w); } });
   gN.appendChild(g); nodeEls[w] = g;
@@ -402,7 +408,7 @@ function paint(){
     g.classList.toggle("lit", s==="lit"); g.classList.toggle("ready", s==="ready"); g.classList.toggle("sel", w===selected);
     [1,2,3].forEach(n => g.classList.toggle("s"+n, s==="lit" && (S.stars[w]||3) === n));
     g.classList.toggle("fade", isFading(w)); g.classList.toggle("gone", rep(w) !== w);
-    if (s === "ready"){ const n = gainOf(w).length, cl = consLeft(w); g.querySelector(".gain").textContent = (n ? "+" + n : "") + (cl === 0 ? " ✦" : ""); } });
+    if (s === "ready"){ const n = gainOf(w).length, cl = consLeft(w); g.querySelector(".gain").textContent = cl === 0 ? "连成星座" : n ? "解锁" + n : ""; } });
   const near = selected ? new Set([...nbSet(selected)].map(rep)) : null;
   const selId = selected || (selCons !== null ? "c" + selCons : null);
   D.edges.forEach(([a,b,t], i) => { const l = edgeEls[i]; const la = isLit(a), lb = isLit(b);
@@ -429,11 +435,10 @@ function paint(){
   document.getElementById("litN").textContent = S.lit.length;
   document.getElementById("totN").textContent = WORDS.length;
   document.getElementById("barFill").style.width = (S.lit.length / WORDS.length * 100) + "%";
-  const le = D.edges.filter(([a,b]) => isLit(a) && isLit(b)).length;
-  document.getElementById("edgeStat").textContent = `连线 ${le} / ${D.edges.length}`;
+
   document.getElementById("consStat").textContent = `星座 ${CONS.filter((_,i) => consDone(i)).length} / ${CONS.length}`;
-  document.getElementById("accStat").textContent = S.answered ? `正确率 ${Math.round(S.correct / S.answered * 100)}%` : "正确率 —";
-  document.getElementById("dustStat").textContent = `✦ ${S.dust}`;
+
+  document.getElementById("dustStat").textContent = `星尘 ${S.dust}`;
   const cb = document.getElementById("comboStat"); cb.hidden = S.combo < 2; cb.textContent = `连击 ×${S.combo}`;
   const pb = document.getElementById("polishBtn"), nf = fadingWords().length; pb.hidden = !nf; pb.textContent = `待擦亮 ${nf}`;
 }
@@ -476,6 +481,7 @@ const busy = () => quiz && !quiz.done;
 function select(w){ if (busy()) { if (w) toast("先完成这一轮答题"); return; }
   if (w && rep(w) !== w) { S.folded = S.folded.filter(i => i !== consOf[w]); save(); }   // 选中收起的词：先展开它的星座
   quiz = null; selected = w; selCons = null; paint(); renderPanel(); panel.scrollTop = 0;
+  if (w && status(w) === "ready" && !S.lit.length) tip("first");
   if (w && window.innerWidth <= 820) focusOn(P[w]); }
 function selectCons(i){ if (busy()) { toast("先完成这一轮答题"); return; }
   quiz = null; selected = null; selCons = i; paint(); renderPanel(); panel.scrollTop = 0;
@@ -498,13 +504,16 @@ function renderPanel(){
   const peeked = S.peek.includes(w);
   html += s === "lit" ? `<div class="cn">${esc(d.cn)}</div><div class="ex">${esc(d.ex)}</div>`
     : peeked ? `<div class="cn">${esc(d.cn)} <span class="note">（望远镜）</span></div>`
-    : `<div class="hidden-cn">点亮后显示中文意思和例句</div><div class="tools"><button type="button" class="tool" id="scope" ${S.dust < COST.scope ? "disabled" : ""}>望远镜：先看意思 · ✦${COST.scope}</button></div>`;
+    : `<div class="hidden-cn">点亮后显示中文意思和例句</div>`;
   html += `<div class="state ${s}">${stateTxt}</div> ${diffHtml(w)}`;
   if (s === "ready"){ const g = gainOf(w), cl = consLeft(w);
     html += `<div class="preview"><span>难度</span><b>${DIFF[w]} 级</b>
-      <span>奖励</span><b>✦${dustFor(w,1)}–${dustFor(w,3)}${cl === 0 ? ` + 星座 ✦${CONS_BONUS}` : ""}</b>
+      <span>奖励</span><b>星尘 ${dustFor(w,1)}–${dustFor(w,3)}${cl === 0 ? `，连成星座再加 ${CONS_BONUS}` : ""}</b>
       <span>解锁</span><b>${g.length ? `${g.length} 个新词` : "没有新词"}</b>
-      ${cl !== null ? `<span>星座</span><b>${esc(CONS[consOf[w]].name)}${cl === 0 ? "，点亮就连成！" : `，点亮后还差 ${cl} 个`}</b>` : ""}</div>`; }
+      ${cl !== null ? `<span>星座</span><b>${esc(CONS[consOf[w]].name)}${cl === 0 ? "，点亮就连成！" : `，点亮后还差 ${cl} 个`}</b>` : ""}</div>
+    <div class="ctabar"><button class="cta" id="go" type="button">开始挑战 · 3 题</button></div>
+    <div class="note">一次全对得 3 颗星；答错只要重做那一题，但星星会暗一些。</div>`; }
+  if (s !== "lit" && !peeked && S.lit.length) html += `<div class="tools"><button type="button" class="tool" id="scope" ${S.dust < COST.scope ? "disabled" : ""}>望远镜：先偷看中文意思 · 星尘 ${COST.scope}</button></div>`;
   if (s === "lit") html += ` ${starHtml(S.stars[w]||3)}<div class="note">${dueText(w)}</div>`;
   const ci = consOf[w];
   if (ci !== undefined){ const c = CONS[ci], n = c.words.filter(isLit).length;
@@ -514,8 +523,7 @@ function renderPanel(){
     html += `<div class="group" style="--c:var(--t-${t})"><div class="t">${TYPES[t].name}</div><div class="nbs">` +
       list.map(e => `<button type="button" class="nb ${status(e.w)}" data-go="${e.w}" title="${isLit(w)&&isLit(e.w)?esc(e.note):""}">${esc(e.w)}</button>`).join("") + `</div></div>`; });
   html += `</div>`;
-  if (s === "ready") html += `<button class="cta" id="go" type="button">开始挑战 · 3 题</button><div class="note">一次全对得 3 颗星；答错只要重做那一题，但星星会暗一些。</div>`;
-  else if (s === "locked") html += `<button class="cta" type="button" disabled>先点亮一个相邻单词</button>`;
+  if (s === "locked") html += `<button class="cta" type="button" disabled>先点亮一个相邻单词</button>`;
   else {
     if (isFading(w)) html += `<button class="cta" id="polish" type="button">擦亮它 · 1 题</button>`;
     else if ((S.stars[w]||3) < 3) html += `<button class="cta alt" id="polish" type="button">再擦亮一次，让它更亮 · 1 题</button>`;
@@ -551,16 +559,15 @@ function renderIntro(){
   const fades = fadingWords();
   const doneCons = CONS.map((_,i) => i).filter(consDone), openCons = doneCons.filter(i => !isFolded(i));
   panel.innerHTML = `<div class="eyebrow">怎么玩</div>
-    <div class="q" style="margin-top:8px">点一个发光虚线圈的单词，答完 3 道题就能把它点亮。</div>
-    <div class="note">先想好下一颗点哪个：看它的难度、能解锁几个新词、离星座还差几个。越难的词奖励越多星尘，星尘可以换提示卡和望远镜。一次全对得 3 颗星，星越多越亮。点亮的星过几天会变暗，答 1 题就能擦亮。一组相关的词全部点亮会连成星座，还可以收起成一颗大星。</div>
+    <div class="q" style="margin-top:8px">点一颗闪着虚线圈的星，答对题目就能点亮它，旁边的星就能挑战了。</div>
     ${fades.length ? `<div class="sec"><div class="eyebrow">需要擦亮 · ${fades.length}</div><div class="nbs">${fades.map(w=>`<button type="button" class="nb lit" data-go="${w}">${w}</button>`).join("")}</div></div>` : ""}
     ${ready.length ? `<div class="sec"><div class="eyebrow">现在可以挑战 · ${ready.length}</div><div class="cands">${ready.map(w => { const g = gainOf(w).length, cl = consLeft(w);
-      return `<button type="button" class="cand" data-go="${w}"><b>${w}</b>${diffHtml(w)}<span>${g ? "解锁 +" + g : "—"}</span><span>${cl === 0 ? "✦ 连成星座" : cl !== null ? "星座还差 " + cl : ""}</span></button>`; }).join("")}</div></div>` : ""}
+      return `<button type="button" class="cand" data-go="${w}"><b>${w}</b>${diffHtml(w)}<span>${g ? "解锁 " + g : "—"}</span><span>${cl === 0 ? "连成星座！" : cl !== null ? "星座还差 " + cl : ""}</span></button>`; }).join("")}</div></div>` : ""}
     ${S.lit.length === WORDS.length ? `<div class="big">全部点亮！</div>` : ""}
     <div class="sec"><div class="eyebrow">星座 · ${doneCons.length} / ${CONS.length}</div><div class="conslist">${CONS.map((c,i) => { const n = c.words.filter(isLit).length;
       return `<button type="button" class="consrow ${n === c.words.length ? "done" : ""}" data-cons="${i}">${esc(c.name)}${isFolded(i) ? " · 已收起" : ""}<span>${n} / ${c.words.length}</span></button>`; }).join("")}</div></div>
     ${openCons.length ? `<button class="cta alt" id="foldAll" type="button">收起全部完成的星座（${openCons.length}）</button>` : ""}
-    <div class="note">最高连击 ${S.best}</div>
+    <div class="note">最高连击 ${S.best} · 答题正确率 ${S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "—"} · 点亮连线 ${D.edges.filter(([a,b]) => isLit(a) && isLit(b)).length} / ${D.edges.length}</div>
     <div class="note">拖动、滚轮或双指可以移动和缩放。连线颜色代表关系：读音、字形、近义、反义、同词根、搭配、同主题、上下位。</div>`;
   bindGo(panel);
   const fa = document.getElementById("foldAll"); if (fa) fa.onclick = () => { openCons.forEach(i => fold(i, true)); paint(); renderIntro(); };
@@ -614,6 +621,7 @@ function qLink(w){
 function startQuiz(w, mode){
   const gens = mode === "review" ? [pick([qMeaning, qBlank, qLink])] : [qMeaning, qRelation, qBlank];
   quiz = { w, mode, gens, qs: gens.map(g => g(w)), i:0, miss:0, picked:null, done:false, wasDue: isFading(w) };
+  if (S.lit.length && S.dust >= COST.hint) tip("hint");
   renderQuiz(); panel.scrollTop = 0; }
 function renderQuiz(){
   const z = quiz, w = z.w;
@@ -635,7 +643,7 @@ function renderQuiz(){
   } else {
     html += z.mode === "review" ? `<div class="note">答对就能把这颗星擦亮。</div>`
       : `<div class="note">${z.miss ? `已经答错 ${z.miss} 次，这颗星会暗一些。` : "一次全对得 3 颗星。"}</div>`;
-    if (!q.cut) html += `<div class="tools"><button type="button" class="tool" id="hint" ${S.dust < COST.hint ? "disabled" : ""}>提示卡：去掉两个错误选项 · ✦${COST.hint}</button></div>`;
+    if (!q.cut) html += `<div class="tools"><button type="button" class="tool" id="hint" ${S.dust < COST.hint ? "disabled" : ""}>提示卡：去掉两个错误选项 · 星尘 ${COST.hint}</button></div>`;
   }
   panel.innerHTML = html;
   panel.querySelectorAll("[data-k]").forEach(b => b.onclick = () => answer(+b.dataset.k));
@@ -670,12 +678,13 @@ function lightUp(w){
   save();
   paint(); pop(w);
   if (z.newCons !== null) meteor(5); else if (stars === 3) meteor(1);
+  tip("stars"); if (z.unlocked.length) tip("choose"); if (z.newCons !== null) tip("cons");
   renderResult();
 }
 function renderResult(){
   const z = quiz, w = z.w;
   const c = z.newCons !== null ? CONS[z.newCons] : null;
-  panel.innerHTML = `<div class="eyebrow">点亮成功</div><div class="big">${esc(w)}</div>${starHtml(z.stars)} <span class="dust">+✦${z.dust}</span>
+  panel.innerHTML = `<div class="eyebrow">点亮成功</div><div class="big">${esc(w)}</div>${starHtml(z.stars)} <span class="dust">星尘 +${z.dust}</span>
     <div class="ipa">/${esc(D.words[w].ipa)}/</div><div class="cn">${esc(D.words[w].cn)}</div><div class="ex">${esc(D.words[w].ex)}</div>
     ${c ? `<div class="badge"><b>新星座：${esc(c.name)}</b><p>${esc(c.note)}</p><button class="cta" id="foldNew" type="button" style="margin-top:12px">收起成星座大星</button></div>` : ""}
     ${z.stars < 3 ? `<div class="note">之后擦亮它时一次答对，可以再加一颗星。</div>` : ""}
@@ -684,7 +693,7 @@ function renderResult(){
     <div class="note">已点亮 ${S.lit.length} / ${WORDS.length}</div>
     <button class="cta alt" id="back" type="button">回到词网</button>`;
   bindGo(panel);
-  document.getElementById("back").onclick = () => { quiz = null; selected = null; paint(); renderPanel(); };
+  document.getElementById("back").onclick = () => { quiz = null; selected = null; paint(); renderPanel(); panel.scrollTop = 0; };
   const fn = document.getElementById("foldNew"); if (fn) fn.onclick = () => { fold(z.newCons, true); quiz = null; selectCons(z.newCons); };
   if (S.lit.length === WORDS.length) toast("整张词网都点亮了！");
   else if (c) toast(`连成了${c.name}！`);
@@ -700,10 +709,10 @@ function renderReviewDone(){
   const z = quiz, w = z.w; const d = Math.round((S.mem[w].due - now()) / DAY);
   panel.innerHTML = `<div class="eyebrow">擦亮成功</div><div class="big">${esc(w)}</div>${starHtml(S.stars[w]||3)}
     <div class="cn">${esc(D.words[w].cn)}</div>
-    <div class="note">${z.dust ? `+✦${z.dust} ` : ""}${z.gain ? "一次答对，多了一颗星！" : ""}${z.wasDue ? `记得很牢，下次 ${d} 天后再来看看它。` : ""}</div>
+    <div class="note">${z.dust ? `星尘 +${z.dust}。` : ""}${z.gain ? "一次答对，多了一颗星！" : ""}${z.wasDue ? `记得很牢，下次 ${d} 天后再来看看它。` : ""}</div>
     ${fadingWords().length ? `<button class="cta" id="nextFade" type="button">擦亮下一颗（还有 ${fadingWords().length} 颗）</button>` : ""}
     <button class="cta alt" id="back" type="button">回到词网</button>`;
-  document.getElementById("back").onclick = () => { quiz = null; selected = null; paint(); renderPanel(); };
+  document.getElementById("back").onclick = () => { quiz = null; selected = null; paint(); renderPanel(); panel.scrollTop = 0; };
   const nf = document.getElementById("nextFade"); if (nf) nf.onclick = () => { quiz = null; select(fadingWords()[0]); };
 }
 
@@ -727,13 +736,29 @@ document.getElementById("resetBtn").onclick = () => {
     <div class="row"><button class="cta" id="yes" type="button" style="background:var(--bad);box-shadow:none">清除并重来</button><button class="cta alt" id="no" type="button" style="margin-top:0">取消</button></div></div>`;
   modal.hidden = false;
   document.getElementById("no").onclick = () => modal.hidden = true;
-  document.getElementById("yes").onclick = () => { S = fresh(); save(); quiz = null; selected = null; selCons = null; paint(); renderPanel(); chooseStart(); };
+  document.getElementById("yes").onclick = () => { S = Object.assign(fresh(), {tips: S.tips || {}}); save(); quiz = null; selected = null; selCons = null; paint(); renderPanel(); chooseStart(); };
 };
 document.getElementById("polishBtn").onclick = () => { const f = fadingWords(); if (f.length) select(f[0]); };
+
+// 新手提示：每条只在第一次遇到时出现一次
+const TIPS = {
+  first:  "这是你的第一颗星。点<b>开始挑战</b>，答对 3 道题就能点亮它。",
+  stars:  "点亮了！一次全对得 <b>3 颗星</b>，答错会暗一些。你还拿到了<b>星尘</b>，可以换道具。",
+  choose: "旁边的星能挑战了。地图上的“<b>解锁 3</b>”表示点亮它能再打开 3 颗星。先点哪颗，你来决定。",
+  hint:   "星尘够了！答题时可以用<b>提示卡</b>去掉两个错误选项。",
+  cons:   "连成<b>星座</b>了！星座全亮后可以收起成一颗大星，地图会更清爽。",
+  fade:   "有的星<b>变暗</b>了，说明该复习了。答对 1 题就能把它擦亮。"
+};
+const tipQ = [];
+function tip(key){ if (!S.tips) S.tips = {}; if (S.tips[key] || tipQ.includes(key)) return; tipQ.push(key); showTip(); }
+function showTip(){ const box = document.getElementById("tip"); if (!box.hidden || !tipQ.length) return;
+  const key = tipQ[0]; box.querySelector("p").innerHTML = TIPS[key]; box.hidden = false;
+  box.querySelector("button").onclick = () => { S.tips[key] = 1; save(); tipQ.shift(); box.hidden = true; showTip(); }; }
 
 let tt; function toast(msg){ const t = document.getElementById("toast"); t.textContent = msg; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 2200); }
 
 load(); fit(); paint(); renderPanel();
+if (fadingWords().length) tip("fade");
 if (!S.start) chooseStart();
 window.__wn = { get S(){ return S; }, set S(v){ S = v; }, D, qMeaning, qRelation, qBlank, qLink, status, get quiz(){ return quiz; },
   refresh(){ paint(); renderPanel(); }, save, CONS };

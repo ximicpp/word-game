@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>词宝小队</title>
+<style>
+:root{
+  --bg:#e8f6ff; --panel:#ffffff; --ink:#26303d; --soft:#6a7685; --line:#d6e6f2;
+  --grass:#c9efb6; --grass2:#b6e4a0; --enemy:#ffe3d6; --enemy2:#ffd2bf;
+  --n:#5b8def; --v:#ff7f50; --adj:#a070f0; --adv:#19b5c9;
+  --ok:#2fb36d; --warn:#e8590c; --gold:#f5b301;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.wrap{max-width:560px;margin:0 auto;padding:10px 12px 28px}
+.hidden{display:none!important}
+.btn{background:var(--gold);color:#3b2a00;font-weight:800;border-radius:14px;padding:10px 16px;box-shadow:0 3px 0 #c98f00}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #c98f00}
+.btn.blue{background:#5b8def;color:#fff;box-shadow:0 3px 0 #3a63b8}
+.btn.green{background:var(--ok);color:#fff;box-shadow:0 3px 0 #1d8048}
+.btn.ghost{background:#fff;border:2px solid var(--line);box-shadow:none}
+.btn:disabled{opacity:.45}
+
+/* home */
+.home h1{font-size:30px;text-align:center;margin:18px 0 4px}
+.home .sub{text-align:center;color:var(--soft);margin-bottom:14px}
+.mascots{display:flex;justify-content:center;gap:10px;font-size:42px;margin:6px 0 12px}
+.mascots span{animation:bob 2s ease-in-out infinite}
+.mascots span:nth-child(2){animation-delay:.3s}.mascots span:nth-child(3){animation-delay:.6s}.mascots span:nth-child(4){animation-delay:.9s}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:12px;line-height:1.6}
+.card h3{margin:0 0 6px;font-size:16px}
+.types{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:14px}
+.types div{display:flex;gap:6px;align-items:center}
+.home .actions{display:flex;gap:10px;justify-content:center;margin:14px 0}
+.stats{display:flex;gap:8px;justify-content:space-around;text-align:center;font-size:13px;color:var(--soft)}
+.stats b{display:block;font-size:20px;color:var(--ink)}
+
+/* top bar */
+.top{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.pill{background:#fff;border:2px solid var(--line);border-radius:999px;padding:3px 10px;font-weight:700;font-size:14px;white-space:nowrap}
+.top .sp{flex:1}
+.iconbtn{background:#fff;border:2px solid var(--line);border-radius:12px;padding:3px 8px;font-size:15px}
+
+/* field */
+.field{position:relative;border-radius:18px;padding:6px;background:var(--grass2)}
+.half{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.half.enemy{margin-bottom:8px}
+.half .cell{height:66px;border-radius:12px;background:var(--grass);position:relative;display:flex;align-items:center;justify-content:center}
+.half.enemy .cell{background:var(--enemy)}
+.half .cell.locked{background:repeating-linear-gradient(45deg,#bfe3ac,#bfe3ac 6px,#c9efb6 6px,#c9efb6 12px);opacity:.6}
+.half .cell.target{outline:3px dashed #fff;outline-offset:-4px}
+.mid{display:flex;justify-content:space-between;font-size:12px;color:#3d5c2f;padding:2px 4px 4px}
+.mid.vs{color:#8a3b1b}
+.unit{width:100%;height:100%;border-radius:12px;background:#fff;border:3px solid var(--c);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;transition:opacity .4s,transform .15s}
+.unit .face{font-size:20px;line-height:1}
+.unit .w{font-weight:800;font-size:13px;line-height:1.1;max-width:100%;padding:0 2px;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.unit .st{position:absolute;top:1px;left:3px;font-size:10px;color:var(--gold);letter-spacing:-1px}
+.unit .crown{position:absolute;top:-2px;right:2px;font-size:13px}
+.unit .hp{position:absolute;left:4px;right:4px;bottom:3px;height:5px;background:#e6e6e6;border-radius:3px;overflow:hidden}
+.unit .hp i{display:block;height:100%;background:var(--ok);width:100%;transition:width .2s}
+.unit .hp b{position:absolute;left:0;top:0;height:100%;background:#9fd4ff;opacity:.9}
+.unit.sel{transform:scale(1.06);box-shadow:0 0 0 3px #fff,0 0 0 6px var(--gold)}
+.unit.rest{opacity:.35}
+.unit.rest::after{content:"💤";position:absolute;right:3px;bottom:8px;font-size:14px}
+.unit.hit{animation:hit .25s}
+@keyframes hit{30%{transform:translateX(-3px) scale(.96)}60%{transform:translateX(3px)}}
+.unit.pop{animation:pop .5s}
+@keyframes pop{40%{transform:scale(1.18)}}
+.t-n{--c:var(--n)}.t-v{--c:var(--v)}.t-adj{--c:var(--adj)}.t-adv{--c:var(--adv)}
+.proj{position:absolute;font-size:16px;pointer-events:none;transition:transform .28s linear,opacity .28s;z-index:5}
+.float{position:absolute;pointer-events:none;font-size:12px;font-weight:800;background:#fff;border-radius:8px;padding:1px 6px;white-space:nowrap;z-index:6;animation:rise 1.8s forwards;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+@keyframes rise{0%{opacity:0;transform:translate(-50%,4px)}15%{opacity:1;transform:translate(-50%,0)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-22px)}}
+.dmg{position:absolute;pointer-events:none;font-size:12px;font-weight:800;color:#e8590c;z-index:6;animation:dmg .7s forwards}
+@keyframes dmg{to{opacity:0;transform:translate(-50%,-18px)}}
+
+/* bench */
+.benchrow{display:flex;align-items:center;gap:6px;margin:8px 0 4px}
+.benchrow .lbl{font-size:12px;color:var(--soft);writing-mode:vertical-rl;letter-spacing:2px}
+.bench{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;flex:1}
+.bench .cell{height:54px;border-radius:10px;background:#fff;border:2px dashed var(--line);position:relative}
+.bench .unit{border-width:2px}
+.bench .unit .face{font-size:15px}.bench .unit .w{font-size:11px}
+
+/* combos */
+.combos{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
+.chip{font-size:12px;background:#fff;border:2px solid var(--line);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.chip.on{border-color:var(--ok);background:#eafbea;font-weight:700}
+.chip.hint{border-color:#f0b400;background:#fff8dd}
+.chip .boost{color:var(--warn)}
+
+/* info bar */
+.info{background:#fff;border:2px solid var(--line);border-radius:14px;padding:8px 10px;margin:6px 0;font-size:13px;display:flex;align-items:center;gap:8px;min-height:44px}
+.info .txt{flex:1;line-height:1.45}
+.info .btn{padding:6px 10px;font-size:13px}
+
+/* shop */
+.shophead{display:flex;align-items:center;gap:6px;margin-top:8px}
+.shophead h2{font-size:16px;margin:0;flex:1}
+.shop{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:6px}
+.sc{background:#fff;border:3px solid var(--c);border-radius:14px;height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative;padding:2px}
+.sc .face{font-size:22px}
+.sc .w{font-weight:800;font-size:13px;white-space:nowrap}
+.sc .pos{font-size:10px;color:var(--soft)}
+.sc .cost{position:absolute;top:2px;right:4px;font-size:11px;font-weight:800;color:#a57800}
+.sc .up{position:absolute;top:2px;left:4px;font-size:10px;color:var(--warn);font-weight:800}
+.sc .th{font-size:11px}
+.sc.empty{border:2px dashed var(--line);background:transparent}
+.sc.lock{opacity:.4;filter:grayscale(1)}
+.sc.poor{opacity:.6}
+.shopbtns{display:flex;gap:6px;margin-top:8px}
+.shopbtns .btn{flex:1;padding:10px 6px;font-size:14px}
+.hint{font-size:13px;color:var(--soft);text-align:center;margin-top:8px;min-height:20px}
+
+/* modal */
+.mask{position:fixed;inset:0;background:rgba(20,30,45,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal{background:#fff;border-radius:22px;width:100%;max-width:440px;padding:18px 16px;max-height:92vh;overflow:auto;animation:up .25s ease-out}
+@keyframes up{from{opacity:0;transform:translateY(16px)}}
+.modal h3{margin:0 0 4px;font-size:15px;color:var(--soft);font-weight:600}
+.qword{font-size:30px;font-weight:800;text-align:center;margin:6px 0 2px}
+.qsub{text-align:center;color:var(--soft);font-size:13px;margin-bottom:10px}
+.qsent{font-size:18px;line-height:1.5;text-align:center;margin:10px 0 12px;background:#f5f9ff;border-radius:12px;padding:10px}
+.opts{display:grid;gap:8px}
+.opt{background:#f4f7fb;border:2px solid var(--line);border-radius:14px;padding:11px 12px;font-size:16px;text-align:left}
+.opt.right{background:#e3f8ea;border-color:var(--ok)}
+.opt.wrong{background:#ffe9e2;border-color:var(--warn)}
+.spell{display:flex;justify-content:center;gap:4px;margin:8px 0 12px;flex-wrap:wrap;min-height:44px}
+.spell span{width:30px;height:40px;border-bottom:3px solid var(--ink);font-size:24px;font-weight:800;text-align:center;line-height:40px}
+.tiles{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.tile{width:42px;height:46px;border-radius:10px;background:#fff3c4;border:2px solid #f2b705;font-size:22px;font-weight:800}
+.tile:disabled{opacity:.25}
+.fb{margin-top:12px;border-radius:14px;padding:10px 12px;line-height:1.55;font-size:14px}
+.fb.ok{background:#e3f8ea}.fb.no{background:#fff1e8}
+.fb .ex{color:var(--soft);font-size:13px}
+.mrow{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.teacher{font-size:44px;text-align:center}
+.list{display:grid;gap:6px;margin-top:8px}
+.li{background:#f6f9fc;border-radius:12px;padding:8px 10px;font-size:14px;line-height:1.5}
+.li b{font-size:16px}
+.li .ex{color:var(--soft);font-size:12px}
+.result{text-align:center}
+.result .big{font-size:48px}
+.result h2{margin:4px 0}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#26303d;color:#fff;border-radius:999px;padding:7px 14px;font-size:14px;z-index:80;max-width:92vw;text-align:center;animation:pop .3s}
+.ver{position:fixed;right:6px;bottom:4px;font-size:10px;color:#9fb0c0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- 首页 -->
+<section id="home" class="home">
+  <h1>词宝小队</h1>
+  <div class="sub">答对题请来单词小精灵，排好队形，自动比赛！</div>
+  <div class="mascots"><span>🐻</span><span>🐰</span><span>🦄</span><span>🐦</span></div>
+  <div class="actions"><button class="btn" id="startBtn" style="font-size:20px;padding:12px 34px">开始一局</button></div>
+  <div class="card stats" id="homeStats"></div>
+  <div class="card">
+    <h3>怎么玩</h3>
+    1. 点<b>词宝小屋</b>里的词卡，答对题才能请到词宝（答错不扣词币）。<br>
+    2. 同一个词请 3 次会升到 3 星，戴上小皇冠 👑。<br>
+    3. 把有关系的词宝放上草地，触发<b>组合</b>：同主题、同词根、反义词挨着站。<br>
+    4. 点“开始比赛”，两队自动扔星星泡泡。坚持 8 回合就通关！
+  </div>
+  <div class="card">
+    <h3>四种词宝</h3>
+    <div class="types">
+      <div>🐻 <span><b>盾盾宝</b>（名词）能量多</span></div>
+      <div>🐰 <span><b>冲冲宝</b>（动词）力气大</span></div>
+      <div>🦄 <span><b>魔法宝</b>（形容词）一次砸一片</span></div>
+      <div>🐦 <span><b>闪闪宝</b>（副词）最快，专找后排</span></div>
+    </div>
+  </div>
+  <div class="actions"><button class="btn ghost" id="bookBtn">📒 错词本</button><button class="btn ghost" id="dexBtn">👑 皇冠词</button></div>
+</section>
+
+<!-- 游戏 -->
+<section id="game" class="hidden">
+  <div class="top">
+    <span class="pill" id="roundP"></span>
+    <span class="pill" id="heartP"></span>
+    <span class="pill" id="coinP"></span>
+    <span class="sp"></span>
+    <button class="iconbtn" id="soundBtn">🔊</button>
+    <button class="iconbtn" id="quitBtn">🏠</button>
+  </div>
+  <div class="field" id="field">
+    <div id="enemyWrap" class="hidden">
+      <div class="mid vs"><span id="enemyName"></span><span id="enemyCount"></span></div>
+      <div class="half enemy" id="enemyHalf"></div>
+    </div>
+    <div class="mid"><span>我的草地（前排在上）</span><span id="capP"></span></div>
+    <div class="half" id="myHalf"></div>
+  </div>
+  <div id="prep">
+    <div class="benchrow"><span class="lbl">长椅</span><div class="bench" id="bench"></div></div>
+    <div class="combos" id="combos"></div>
+    <div class="info hidden" id="info"></div>
+    <div class="shophead"><h2>🏡 词宝小屋</h2><span class="pill" id="streakP"></span></div>
+    <div class="shop" id="shop"></div>
+    <div class="shopbtns">
+      <button class="btn ghost" id="rollBtn">🔄 换一批 1🪙</button>
+      <button class="btn ghost" id="lvlBtn"></button>
+      <button class="btn green" id="fightBtn">开始比赛 ▶</button>
+    </div>
+    <div class="hint" id="hint"></div>
+  </div>
+  <div id="battleBar" class="hidden" style="display:flex;gap:8px;justify-content:center;margin-top:10px">
+    <button class="btn ghost" id="speedBtn">⏩ 2 倍速</button>
+  </div>
+</section>
+
+</div>
+<div id="modalRoot"></div>
+<div class="ver">v0.1</div>
+
+<script>
+/*DATA*/const DATA = {"themes":{"travel":{"name":"旅行","icon":"🧳"},"food":{"name":"美食","icon":"🍰"},"school":{"name":"学校","icon":"🏫"},"nature":{"name":"自然","icon":"🌳"},"sport":{"name":"运动","icon":"⚽"},"home":{"name":"家","icon":"🏠"},"feel":{"name":"心情","icon":"😊"},"shop":{"name":"购物","icon":"🛍️"}},"fams":{"port":{"note":"port = 搬、运"},"help":{"note":"help = 帮助"},"happy":{"note":"happy = 开心"},"care":{"note":"care = 小心、在意"},"play":{"note":"play = 玩"},"friend":{"note":"friend = 朋友"},"sun":{"note":"sun = 太阳"},"rain":{"note":"rain = 雨"},"use":{"note":"use = 用"},"er":{"note":"-er = 做某事的人"},"ly":{"note":"-ly = ……地"}},"words":[{"w":"ticket","pos":"n","th":"travel","lv":"A2","cn":"票","ex":"I bought a ticket for the train.","fam":[],"ant":null},{"w":"luggage","pos":"n","th":"travel","lv":"A2","cn":"行李","ex":"How much luggage do you have?","fam":[],"ant":null},{"w":"passport","pos":"n","th":"travel","lv":"A2","cn":"护照","ex":"Don't forget your passport.","fam":["port"],"ant":null},{"w":"airport","pos":"n","th":"travel","lv":"A2","cn":"机场","ex":"We got to the airport early.","fam":["port"],"ant":null},{"w":"hotel","pos":"n","th":"travel","lv":"A2","cn":"酒店","ex":"Our hotel is near the beach.","fam":[],"ant":null},{"w":"map","pos":"n","th":"travel","lv":"A2","cn":"地图","ex":"Let's look at the map.","fam":[],"ant":null},{"w":"journey","pos":"n","th":"travel","lv":"A2","cn":"旅程","ex":"The journey took three hours.","fam":[],"ant":null},{"w":"trip","pos":"n","th":"travel","lv":"A2","cn":"旅行；短途旅行","ex":"We went on a school trip to the zoo.","fam":[],"ant":null},{"w":"transport","pos":"n","th":"travel","lv":"A2","cn":"交通","ex":"Public transport in this city is very good.","fam":["port"],"ant":null},{"w":"travel","pos":"v","th":"travel","lv":"A2","cn":"旅行","ex":"I love to travel to new places.","fam":[],"ant":null},{"w":"arrive","pos":"v","th":"travel","lv":"A2","cn":"到达","ex":"What time does the train arrive?","fam":[],"ant":"leave"},{"w":"leave","pos":"v","th":"travel","lv":"A2","cn":"离开","ex":"The bus will leave in five minutes.","fam":[],"ant":"arrive"},{"w":"visit","pos":"v","th":"travel","lv":"A2","cn":"拜访；参观","ex":"We visit our grandparents every Sunday.","fam":[],"ant":null},{"w":"visitor","pos":"n","th":"travel","lv":"A2","cn":"游客；访客","ex":"A visitor from London came to our class.","fam":["er"],"ant":null},{"w":"pack","pos":"v","th":"travel","lv":"A2","cn":"打包","ex":"Pack your suitcase tonight.","fam":[],"ant":null},{"w":"delay","pos":"n","th":"travel","lv":"B1","cn":"延误","ex":"There is a delay of twenty minutes.","fam":[],"ant":null},{"w":"abroad","pos":"adv","th":"travel","lv":"B1","cn":"在国外","ex":"She wants to study abroad.","fam":[],"ant":null},{"w":"early","pos":"adv","th":"travel","lv":"A2","cn":"早的","ex":"I get up early on school days.","fam":[],"ant":"late"},{"w":"late","pos":"adv","th":"travel","lv":"A2","cn":"晚的；迟到","ex":"Sorry I'm late.","fam":[],"ant":"early"},{"w":"apple","pos":"n","th":"food","lv":"A2","cn":"苹果","ex":"She ate an apple after lunch.","fam":[],"ant":null},{"w":"bread","pos":"n","th":"food","lv":"A2","cn":"面包","ex":"Can you buy some bread on the way home?","fam":[],"ant":null},{"w":"cheese","pos":"n","th":"food","lv":"A2","cn":"奶酪","ex":"I'd like a cheese sandwich.","fam":[],"ant":null},{"w":"soup","pos":"n","th":"food","lv":"A2","cn":"汤","ex":"Hot soup is perfect on a cold day.","fam":[],"ant":null},{"w":"breakfast","pos":"n","th":"food","lv":"A2","cn":"早餐","ex":"I have eggs for breakfast.","fam":[],"ant":null},{"w":"cooker","pos":"n","th":"food","lv":"A2","cn":"炉灶","ex":"Don't touch the cooker, it's hot.","fam":[],"ant":null},{"w":"cook","pos":"v","th":"food","lv":"A2","cn":"做饭；厨师","ex":"My dad loves to cook on Sundays.","fam":[],"ant":null},{"w":"eat","pos":"v","th":"food","lv":"A2","cn":"吃","ex":"What do you want to eat?","fam":[],"ant":null},{"w":"drink","pos":"v","th":"food","lv":"A2","cn":"喝；饮料","ex":"Drink plenty of water every day.","fam":[],"ant":null},{"w":"taste","pos":"v","th":"food","lv":"A2","cn":"尝；味道","ex":"Taste the sauce and add some salt.","fam":[],"ant":null},{"w":"delicious","pos":"adj","th":"food","lv":"A2","cn":"美味的","ex":"This soup is delicious.","fam":[],"ant":null},{"w":"hungry","pos":"adj","th":"food","lv":"A2","cn":"饿的","ex":"I'm hungry, let's eat.","fam":[],"ant":null},{"w":"sweet","pos":"adj","th":"food","lv":"A2","cn":"甜的；糖果","ex":"This cake is too sweet for me.","fam":[],"ant":null},{"w":"fresh","pos":"adj","th":"food","lv":"A2","cn":"新鲜的","ex":"We buy fresh fish at the market.","fam":[],"ant":null},{"w":"hot","pos":"adj","th":"food","lv":"A2","cn":"热的；辣的","ex":"Be careful, the soup is hot.","fam":[],"ant":"cold"},{"w":"cold","pos":"adj","th":"food","lv":"A2","cn":"感冒；冷的","ex":"I caught a cold at the weekend.","fam":[],"ant":"hot"},{"w":"teacher","pos":"n","th":"school","lv":"A2","cn":"老师","ex":"Our teacher gives us lots of homework.","fam":["er"],"ant":null},{"w":"student","pos":"n","th":"school","lv":"A2","cn":"学生","ex":"Every student needs a dictionary.","fam":[],"ant":null},{"w":"lesson","pos":"n","th":"school","lv":"A2","cn":"课","ex":"The English lesson starts at nine.","fam":[],"ant":null},{"w":"homework","pos":"n","th":"school","lv":"A2","cn":"家庭作业","ex":"I always do my homework after dinner.","fam":[],"ant":null},{"w":"library","pos":"n","th":"school","lv":"A2","cn":"图书馆","ex":"I borrow books from the library.","fam":[],"ant":null},{"w":"exam","pos":"n","th":"school","lv":"A2","cn":"考试","ex":"I passed my English exam!","fam":[],"ant":null},{"w":"pencil","pos":"n","th":"school","lv":"A2","cn":"铅笔","ex":"Draw it with a pencil first.","fam":[],"ant":null},{"w":"report","pos":"n","th":"school","lv":"B1","cn":"报告","ex":"I have to write a report about the trip.","fam":["port"],"ant":null},{"w":"teach","pos":"v","th":"school","lv":"A2","cn":"教","ex":"Can you teach me to cook?","fam":[],"ant":"learn"},{"w":"learn","pos":"v","th":"school","lv":"A2","cn":"学习","ex":"I want to learn to play the guitar.","fam":[],"ant":"teach"},{"w":"study","pos":"v","th":"school","lv":"A2","cn":"学习；研究","ex":"I study for two hours every evening.","fam":[],"ant":null},{"w":"read","pos":"v","th":"school","lv":"A2","cn":"读","ex":"I read a story before bed.","fam":[],"ant":null},{"w":"reader","pos":"n","th":"school","lv":"A2","cn":"读者","ex":"She is a fast reader and loves comics.","fam":["er"],"ant":null},{"w":"write","pos":"v","th":"school","lv":"A2","cn":"写","ex":"Please write your name at the top.","fam":[],"ant":null},{"w":"clever","pos":"adj","th":"school","lv":"A2","cn":"聪明的","ex":"She is clever enough to solve any puzzle.","fam":[],"ant":null},{"w":"quietly","pos":"adv","th":"school","lv":"A2","cn":"安静地","ex":"Please talk quietly in the library.","fam":["ly"],"ant":"loudly"},{"w":"loudly","pos":"adv","th":"school","lv":"B1","cn":"大声地","ex":"He laughed loudly.","fam":["ly"],"ant":"quietly"},{"w":"carefully","pos":"adv","th":"school","lv":"A2","cn":"仔细地","ex":"Read the question carefully.","fam":["care","ly"],"ant":null},{"w":"sun","pos":"n","th":"nature","lv":"A2","cn":"太阳","ex":"The sun is shining.","fam":["sun"],"ant":null},{"w":"sunshine","pos":"n","th":"nature","lv":"B1","cn":"阳光","ex":"Let's sit in the sunshine.","fam":["sun"],"ant":null},{"w":"rain","pos":"n","th":"nature","lv":"A2","cn":"雨；下雨","ex":"It's going to rain this afternoon.","fam":["rain"],"ant":null},{"w":"rainbow","pos":"n","th":"nature","lv":"A2","cn":"彩虹","ex":"Look, there's a rainbow!","fam":["rain"],"ant":null},{"w":"snow","pos":"n","th":"nature","lv":"A2","cn":"雪；下雪","ex":"We built a snowman in the snow.","fam":[],"ant":null},{"w":"river","pos":"n","th":"nature","lv":"A2","cn":"河","ex":"We swam in the river.","fam":[],"ant":null},{"w":"mountain","pos":"n","th":"nature","lv":"A2","cn":"山","ex":"We climbed the mountain.","fam":[],"ant":null},{"w":"forest","pos":"n","th":"nature","lv":"A2","cn":"森林","ex":"Bears live in the forest.","fam":[],"ant":null},{"w":"grow","pos":"v","th":"nature","lv":"A2","cn":"长大；种植","ex":"Children grow very fast.","fam":[],"ant":null},{"w":"sunny","pos":"adj","th":"nature","lv":"A2","cn":"晴朗的","ex":"It's a sunny day.","fam":["sun"],"ant":null},{"w":"rainy","pos":"adj","th":"nature","lv":"A2","cn":"下雨的","ex":"I stay at home on rainy days.","fam":["rain"],"ant":null},{"w":"windy","pos":"adj","th":"nature","lv":"A2","cn":"有风的","ex":"It's too windy to fly a kite.","fam":[],"ant":null},{"w":"cloudy","pos":"adj","th":"nature","lv":"A2","cn":"多云的","ex":"It's cloudy, but it isn't raining.","fam":[],"ant":null},{"w":"wet","pos":"adj","th":"nature","lv":"A2","cn":"湿的","ex":"My shoes got wet in the rain.","fam":[],"ant":"dry"},{"w":"dry","pos":"adj","th":"nature","lv":"A2","cn":"干燥的","ex":"Keep your phone dry.","fam":[],"ant":"wet"},{"w":"outside","pos":"adv","th":"nature","lv":"A2","cn":"在外面","ex":"The children are playing outside.","fam":[],"ant":null},{"w":"football","pos":"n","th":"sport","lv":"A2","cn":"足球","ex":"We play football every Saturday.","fam":[],"ant":null},{"w":"team","pos":"n","th":"sport","lv":"A2","cn":"队","ex":"I'm in the school football team.","fam":[],"ant":null},{"w":"player","pos":"n","th":"sport","lv":"A2","cn":"运动员；选手","ex":"He's the best player in the team.","fam":["play","er"],"ant":null},{"w":"match","pos":"n","th":"sport","lv":"A2","cn":"比赛","ex":"The match starts at three.","fam":[],"ant":null},{"w":"playground","pos":"n","th":"sport","lv":"A2","cn":"操场","ex":"The children are running in the playground.","fam":["play"],"ant":null},{"w":"play","pos":"v","th":"sport","lv":"A2","cn":"玩；演奏","ex":"Let's play outside.","fam":["play"],"ant":null},{"w":"run","pos":"v","th":"sport","lv":"A2","cn":"跑","ex":"I run in the park every morning.","fam":[],"ant":null},{"w":"swim","pos":"v","th":"sport","lv":"A2","cn":"游泳","ex":"Can you swim?","fam":[],"ant":null},{"w":"swimmer","pos":"n","th":"sport","lv":"A2","cn":"游泳的人","ex":"My brother is a very good swimmer.","fam":["er"],"ant":null},{"w":"jump","pos":"v","th":"sport","lv":"A2","cn":"跳","ex":"The cat can jump onto the table.","fam":[],"ant":null},{"w":"win","pos":"v","th":"sport","lv":"A2","cn":"赢","ex":"Our team hopes to win the cup.","fam":[],"ant":"lose"},{"w":"lose","pos":"v","th":"sport","lv":"A2","cn":"输掉；丢失","ex":"Don't lose your ticket.","fam":[],"ant":"win"},{"w":"fast","pos":"adj","th":"sport","lv":"A2","cn":"快的","ex":"This is a fast train.","fam":[],"ant":"slow"},{"w":"slow","pos":"adj","th":"sport","lv":"A2","cn":"慢的","ex":"The bus is very slow.","fam":[],"ant":"fast"},{"w":"strong","pos":"adj","th":"sport","lv":"A2","cn":"强壮的","ex":"You need strong legs to climb this hill.","fam":[],"ant":"weak"},{"w":"weak","pos":"adj","th":"sport","lv":"A2","cn":"虚弱的；弱的","ex":"I felt weak after I was ill.","fam":[],"ant":"strong"},{"w":"quickly","pos":"adv","th":"sport","lv":"A2","cn":"快速地","ex":"He ran quickly to the bus.","fam":["ly"],"ant":"slowly"},{"w":"slowly","pos":"adv","th":"sport","lv":"A2","cn":"慢慢地","ex":"Please speak slowly.","fam":["ly"],"ant":"quickly"},{"w":"house","pos":"n","th":"home","lv":"A2","cn":"房子","ex":"They live in a big house with a garden.","fam":[],"ant":null},{"w":"bedroom","pos":"n","th":"home","lv":"A2","cn":"卧室","ex":"I share a bedroom with my brother.","fam":[],"ant":null},{"w":"door","pos":"n","th":"home","lv":"A2","cn":"门","ex":"Please close the door.","fam":[],"ant":null},{"w":"window","pos":"n","th":"home","lv":"A2","cn":"窗户","ex":"Open the window, it's hot in here.","fam":[],"ant":null},{"w":"sofa","pos":"n","th":"home","lv":"A2","cn":"沙发","ex":"The cat is sleeping on the sofa.","fam":[],"ant":null},{"w":"clean","pos":"v","th":"home","lv":"A2","cn":"干净的；打扫","ex":"Please clean your room.","fam":[],"ant":"dirty"},{"w":"wash","pos":"v","th":"home","lv":"A2","cn":"洗","ex":"Wash your hands before lunch.","fam":[],"ant":null},{"w":"open","pos":"v","th":"home","lv":"A2","cn":"打开","ex":"Open your books at page five.","fam":[],"ant":"close"},{"w":"close","pos":"v","th":"home","lv":"A2","cn":"关闭","ex":"Close the window, please.","fam":[],"ant":"open"},{"w":"tidy","pos":"adj","th":"home","lv":"A2","cn":"整洁的；整理","ex":"Your room is very tidy today.","fam":[],"ant":"messy"},{"w":"messy","pos":"adj","th":"home","lv":"B1","cn":"凌乱的","ex":"The kitchen is messy after the party.","fam":[],"ant":"tidy"},{"w":"dirty","pos":"adj","th":"home","lv":"A2","cn":"脏的","ex":"My shoes are dirty after the football match.","fam":[],"ant":"clean"},{"w":"comfortable","pos":"adj","th":"home","lv":"A2","cn":"舒服的","ex":"This sofa is really comfortable.","fam":[],"ant":null},{"w":"upstairs","pos":"adv","th":"home","lv":"A2","cn":"在楼上","ex":"My bedroom is upstairs.","fam":[],"ant":"downstairs"},{"w":"downstairs","pos":"adv","th":"home","lv":"A2","cn":"在楼下","ex":"Breakfast is ready, come downstairs.","fam":[],"ant":"upstairs"},{"w":"together","pos":"adv","th":"home","lv":"A2","cn":"一起","ex":"We walk to school together.","fam":[],"ant":null},{"w":"friend","pos":"n","th":"feel","lv":"A2","cn":"朋友","ex":"My best friend lives in the next street.","fam":["friend"],"ant":null},{"w":"friendship","pos":"n","th":"feel","lv":"B1","cn":"友谊","ex":"Their friendship started at primary school.","fam":["friend"],"ant":null},{"w":"happiness","pos":"n","th":"feel","lv":"B1","cn":"幸福；快乐","ex":"Money can't buy happiness.","fam":["happy"],"ant":null},{"w":"smile","pos":"v","th":"feel","lv":"A2","cn":"微笑","ex":"She gave me a big smile.","fam":[],"ant":null},{"w":"laugh","pos":"v","th":"feel","lv":"A2","cn":"笑","ex":"His jokes always make me laugh.","fam":[],"ant":"cry"},{"w":"cry","pos":"v","th":"feel","lv":"A2","cn":"哭","ex":"The baby started to cry.","fam":[],"ant":"laugh"},{"w":"help","pos":"v","th":"feel","lv":"A2","cn":"帮助","ex":"Can you help me carry this box?","fam":["help"],"ant":null},{"w":"helper","pos":"n","th":"feel","lv":"A2","cn":"帮手","ex":"Tom is a good helper in the kitchen.","fam":["help","er"],"ant":null},{"w":"happy","pos":"adj","th":"feel","lv":"A2","cn":"快乐的","ex":"I'm happy to see you.","fam":["happy"],"ant":"sad"},{"w":"unhappy","pos":"adj","th":"feel","lv":"A2","cn":"不开心的","ex":"He was unhappy with his test result.","fam":["happy"],"ant":null},{"w":"sad","pos":"adj","th":"feel","lv":"A2","cn":"难过的","ex":"The end of the film was very sad.","fam":[],"ant":"happy"},{"w":"friendly","pos":"adj","th":"feel","lv":"A2","cn":"友好的","ex":"The people here are very friendly.","fam":["friend"],"ant":"unfriendly"},{"w":"unfriendly","pos":"adj","th":"feel","lv":"B1","cn":"不友好的","ex":"The shop assistant was a bit unfriendly.","fam":["friend"],"ant":"friendly"},{"w":"kind","pos":"adj","th":"feel","lv":"A2","cn":"友好的；种类","ex":"It was kind of you to help me.","fam":[],"ant":null},{"w":"brave","pos":"adj","th":"feel","lv":"B1","cn":"勇敢的","ex":"The brave firefighter saved the child.","fam":[],"ant":null},{"w":"afraid","pos":"adj","th":"feel","lv":"A2","cn":"害怕的","ex":"Are you afraid of spiders?","fam":[],"ant":null},{"w":"helpful","pos":"adj","th":"feel","lv":"A2","cn":"有帮助的","ex":"The guide was very helpful.","fam":["help"],"ant":null},{"w":"careful","pos":"adj","th":"feel","lv":"A2","cn":"小心的","ex":"Be careful when you cross the road.","fam":["care"],"ant":"careless"},{"w":"careless","pos":"adj","th":"feel","lv":"B1","cn":"粗心的","ex":"I lost marks because of careless mistakes.","fam":["care"],"ant":"careful"},{"w":"happily","pos":"adv","th":"feel","lv":"A2","cn":"开心地","ex":"The children played happily in the garden.","fam":["happy","ly"],"ant":"sadly"},{"w":"sadly","pos":"adv","th":"feel","lv":"B1","cn":"难过地","ex":"She looked sadly at the broken toy.","fam":["ly"],"ant":"happily"},{"w":"shop","pos":"n","th":"shop","lv":"A2","cn":"商店；购物","ex":"The shop opens at nine.","fam":[],"ant":null},{"w":"money","pos":"n","th":"shop","lv":"A2","cn":"钱","ex":"I don't have enough money.","fam":[],"ant":null},{"w":"price","pos":"n","th":"shop","lv":"A2","cn":"价格","ex":"The price of this book is ten pounds.","fam":[],"ant":null},{"w":"present","pos":"n","th":"shop","lv":"A2","cn":"在场的；礼物；现在","ex":"Everyone is present today.","fam":[],"ant":null},{"w":"customer","pos":"n","th":"shop","lv":"A2","cn":"顾客","ex":"The shop is full of customers today. One customer is waiting.","fam":[],"ant":null},{"w":"buy","pos":"v","th":"shop","lv":"A2","cn":"买","ex":"I want to buy a new bike.","fam":[],"ant":"sell"},{"w":"sell","pos":"v","th":"shop","lv":"A2","cn":"卖","ex":"They sell ice cream at the beach.","fam":[],"ant":"buy"},{"w":"pay","pos":"v","th":"shop","lv":"A2","cn":"付钱","ex":"Can I pay by card?","fam":[],"ant":null},{"w":"borrow","pos":"v","th":"shop","lv":"A2","cn":"借（入）","ex":"Can I borrow your pencil?","fam":[],"ant":"lend"},{"w":"lend","pos":"v","th":"shop","lv":"A2","cn":"借（出）","ex":"Can you lend me five pounds?","fam":[],"ant":"borrow"},{"w":"import","pos":"v","th":"shop","lv":"B2","cn":"进口","ex":"We import oil.","fam":["port"],"ant":"export"},{"w":"export","pos":"v","th":"shop","lv":"B2","cn":"出口","ex":"China exports many goods. We export cars.","fam":["port"],"ant":"import"},{"w":"cheap","pos":"adj","th":"shop","lv":"A2","cn":"便宜的","ex":"This T-shirt is very cheap.","fam":[],"ant":"expensive"},{"w":"expensive","pos":"adj","th":"shop","lv":"A2","cn":"昂贵的","ex":"That watch is too expensive.","fam":[],"ant":"cheap"},{"w":"useful","pos":"adj","th":"shop","lv":"A2","cn":"有用的","ex":"This dictionary is really useful.","fam":["use"],"ant":"useless"},{"w":"useless","pos":"adj","th":"shop","lv":"B1","cn":"没用的","ex":"An umbrella is useless in such strong wind.","fam":["use"],"ant":"useful"}]};/*END DATA*/
+</script>
+<script>
+"use strict";
+// ================= 基础 =================
+const $ = id => document.getElementById(id);
+const W = DATA.words;
+const IDX = Object.fromEntries(W.map((e, i) => [e.w, i]));
+const TYPE = {
+  n:   { name: "盾盾宝", face: "🐻", pos: "名词", hp: 125, atk: 8,  cd: 1.2 },
+  v:   { name: "冲冲宝", face: "🐰", pos: "动词", hp: 85,  atk: 14, cd: 1.0 },
+  adj: { name: "魔法宝", face: "🦄", pos: "形容词", hp: 75, atk: 8, cd: 1.4 },
+  adv: { name: "闪闪宝", face: "🐦", pos: "副词", hp: 62,  atk: 9,  cd: 0.75 },
+};
+const STAR_MUL = [0, 1, 1.8, 3];
+const ROUNDS = 8, ROWS = 3, COLS = 4, BENCH = 6, SHOP = 5;
+const THEME_TIERS = [2, 4, 6], FAM_TIERS = [2, 3, 4];
+const SHIELD = [0, .2, .35, .5, .65], FAMBUFF = [0, .2, .4, .7, .9];
+const cost = i => (W[i].lv === "A2" ? 1 : 2);
+const rnd = n => Math.floor(Math.random() * n);
+const pick = a => a[rnd(a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const today = () => Math.floor(Date.now() / 864e5);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+// ================= 存档（只存本机）=================
+const KEY = "word-buddies-v1";
+let SAVE = { mem: {}, book: {}, crowned: {}, runs: 0, clears: 0, bestWins: 0, ghosts: {}, sound: true, tut: 0 };
+try { Object.assign(SAVE, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) {}
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(SAVE)); } catch (e) {} };
+function remember(i, ok){
+  const w = W[i].w, m = SAVE.mem[w] || { lv: 0, due: 0 };
+  if (ok){ m.lv = Math.min(5, m.lv + 1); m.due = today() + [0, 1, 2, 4, 7, 15][m.lv]; }
+  else { m.lv = Math.max(0, m.lv - 1); m.due = today(); SAVE.book[w] = (SAVE.book[w] || 0) + 1; }
+  SAVE.mem[w] = m; persist();
+}
+
+// ================= 声音 =================
+let AC = null;
+function beep(kind){
+  if (!SAVE.sound) return;
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    const seq = { ok: [660, 880], no: [300, 220], up: [523, 659, 784, 1047], pop: [900], fire: [400, 800, 1200], win: [523, 659, 784], lose: [392, 330] }[kind] || [600];
+    seq.forEach((f, k) => {
+      const o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + k * .09;
+      o.type = kind === "pop" ? "triangle" : "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.15, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + .16);
+      o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + .18);
+    });
+  } catch (e) {}
+}
+function toast(msg, ms = 1800){
+  const d = document.createElement("div"); d.className = "toast"; d.textContent = msg; document.body.appendChild(d);
+  setTimeout(() => d.remove(), ms);
+}
+
+// ================= 一局的状态 =================
+let S = null;
+function newRun(){
+  const themes = shuffle(Object.keys(DATA.themes)).slice(0, 5);
+  S = {
+    round: 1, hearts: 10, coins: 5, lvl: 1, streak: 0, bonus: 0, wins: 0,
+    board: Array(ROWS * COLS).fill(null), bench: Array(BENCH).fill(null),
+    shop: [], lock: new Set(), wrongRound: [], runWrong: new Set(), runCrown: new Set(),
+    asked: new Set(), boosted: new Set(), themes, sel: null, phase: "prep", queue: [],
+    pool: W.map((e, i) => i).filter(i => themes.includes(W[i].th)),
+  };
+  rollShop(true);
+}
+const cap = () => Math.min(ROWS * COLS, S.lvl + 2);
+const lvlCost = () => S.lvl + 3;
+const allUnits = () => [...S.board, ...S.bench].filter(Boolean);
+const owned = i => allUnits().find(u => u.w === i);
+const onBoard = () => S.board.filter(Boolean).length;
+
+// 小屋抽卡：一部分抽“和你已有词宝有关系”的词，方便凑组合；其余按记忆情况加权
+function rollShop(free){
+  const have = allUnits(), haveSet = new Set(have.map(u => u.w));
+  const maxed = new Set(have.filter(u => u.star >= 3).map(u => u.w));
+  const pool = S.pool.filter(i => !maxed.has(i));
+  const partners = new Set();
+  for (const u of have){
+    const e = W[u.w];
+    if (e.ant && IDX[e.ant] !== undefined) partners.add(IDX[e.ant]);
+    for (const j of pool){ if (j === u.w) continue; const f = W[j]; if (f.th === e.th || f.fam.some(x => e.fam.includes(x))) partners.add(j); }
+    if (u.star < 3) partners.add(u.w);
+  }
+  const partnerList = pool.filter(i => partners.has(i));
+  const weight = i => { const m = SAVE.mem[W[i].w]; if (!m) return 2; if (m.due <= today() && m.lv < 4) return 3; return m.lv >= 4 ? 1 : 2; };
+  const out = [];
+  let guard = 0;
+  while (out.length < SHOP && guard++ < 200){
+    let i;
+    if (partnerList.length && Math.random() < .45) i = pick(partnerList);
+    else { const tot = pool.reduce((s, j) => s + weight(j), 0); let r = Math.random() * tot; i = pool.find(j => (r -= weight(j)) < 0) ?? pick(pool); }
+    if (!out.includes(i)) out.push(i);
+  }
+  // 有能升星的词宝时，保证小屋里至少有一张升星卡
+  const upg = shuffle(have.filter(u => u.star < 3).map(u => u.w));
+  if (upg.length && !out.some(i => haveSet.has(i))) out[rnd(SHOP)] = upg[0];
+  S.shop = out; S.lock = new Set();
+  if (!free) S.coins -= 1;
+}
+
+// ================= 组合 =================
+function adjacent(a, b){ const ra = Math.floor(a / COLS), ca = a % COLS, rb = Math.floor(b / COLS), cb = b % COLS; return Math.abs(ra - rb) + Math.abs(ca - cb) === 1; }
+// 输入：长度 12 的格子数组（单位或 null）；输出所有组合（包括还没凑齐的，供提示）
+function combosOf(board, boosted = new Set()){
+  const res = [], cells = board.map((u, k) => u && { ...u, k }).filter(Boolean);
+  const byTheme = {}, byFam = {};
+  for (const u of cells){
+    const e = W[u.w];
+    (byTheme[e.th] = byTheme[e.th] || new Set()).add(u.w);
+    for (const f of e.fam) (byFam[f] = byFam[f] || new Set()).add(u.w);
+  }
+  for (const [t, set] of Object.entries(byTheme)){
+    const n = set.size; let tier = THEME_TIERS.filter(x => n >= x).length;
+    const key = "th:" + t; if (tier && boosted.has(key)) tier++;
+    res.push({ kind: "theme", key, id: t, n, tier, next: THEME_TIERS.find(x => x > n), members: [...set] });
+  }
+  for (const [f, set] of Object.entries(byFam)){
+    if (set.size < 2) continue;
+    const n = set.size; let tier = FAM_TIERS.filter(x => n >= x).length;
+    const key = "fam:" + f; if (tier && boosted.has(key)) tier++;
+    res.push({ kind: "fam", key, id: f, n, tier, next: FAM_TIERS.find(x => x > n), members: [...set] });
+  }
+  const seen = new Set();
+  for (const u of cells){
+    const e = W[u.w]; if (!e.ant) continue;
+    const j = IDX[e.ant]; const key = "ant:" + [e.w, e.ant].sort().join("-");
+    if (seen.has(key)) continue;
+    const other = cells.filter(c => c.w === j);
+    if (!other.length) continue;
+    seen.add(key);
+    const mine = cells.filter(c => c.w === u.w);
+    const touching = mine.some(a => other.some(b => adjacent(a.k, b.k)));
+    res.push({ kind: "ant", key, a: u.w, b: j, tier: touching ? (boosted.has(key) ? 2 : 1) : 0, members: [u.w, j] });
+  }
+  return res;
+}
+function comboLabel(c){
+  if (c.kind === "theme"){ const t = DATA.themes[c.id]; return `${t.icon} ${t.name}·同班同学 ${c.n}${c.next ? "/" + c.next : ""}`; }
+  if (c.kind === "fam") return `👨‍👩‍👧 ${c.id}·一家人 ${c.n}${c.next ? "/" + c.next : ""}`;
+  return `🎆 ${W[c.a].w}↔${W[c.b].w}·对对碰${c.tier ? "" : "（要挨着）"}`;
+}
+
+// ================= 比赛模拟（纯计算，返回事件表）=================
+// side: 0 = 我方，1 = 对手；网格 6 行：对手 0–2（第 2 行是前排），我方 3–5（第 3 行是前排）
+function makeFighters(board, side, boosted){
+  const combos = combosOf(board, boosted).filter(c => c.tier > 0);
+  const F = [];
+  board.forEach((u, k) => {
+    if (!u) return;
+    const e = W[u.w], T = TYPE[e.pos], mul = STAR_MUL[u.star] * (cost(u.w) === 2 ? 1.2 : 1);
+    const r = Math.floor(k / COLS), c = k % COLS;
+    const f = { id: side + ":" + k, side, w: u.w, star: u.star, pos: e.pos, row: side === 0 ? 3 + r : 2 - r, col: c,
+      hp: Math.round(T.hp * mul), atk: T.atk * mul, cd: T.cd, shield: 0, timer: T.cd * (0.35 + Math.random() * 0.3) };
+    f.max = f.hp;
+    F.push(f);
+  });
+  for (const c of combos){
+    const ms = F.filter(f => c.members.includes(f.w));
+    if (c.kind === "theme") ms.forEach(f => f.shield = Math.max(f.shield, Math.round(f.max * SHIELD[c.tier])));
+    if (c.kind === "fam") ms.forEach(f => f.atk *= 1 + FAMBUFF[c.tier]);
+  }
+  return { F, combos };
+}
+function simulate(myBoard, enBoard, myBoost, enBoost){
+  const A = makeFighters(myBoard, 0, myBoost), B = makeFighters(enBoard, 1, enBoost || new Set());
+  const all = [...A.F, ...B.F], ev = [];
+  const alive = s => all.filter(f => f.side === s && f.hp > 0);
+  const dist = (a, b) => Math.abs(a.row - b.row) + Math.abs(a.col - b.col) * 0.6;
+  ev.push({ t: 0, type: "start", combos: [A.combos, B.combos] });
+  const fireAt = 3, fired = new Set();
+  const hurt = (target, dmg, t, from) => {
+    dmg = Math.max(1, Math.round(dmg));
+    let s = Math.min(target.shield, dmg); target.shield -= s; target.hp -= (dmg - s);
+    ev.push({ t, type: "hit", from: from && from.id, to: target.id, dmg, hp: Math.max(0, target.hp), shield: target.shield, max: target.max });
+    if (target.hp <= 0){ target.hp = 0; ev.push({ t, type: "rest", id: target.id }); }
+  };
+  let t = 0;
+  const DT = 0.05, END = 25;
+  while (t < END && alive(0).length && alive(1).length){
+    t = +(t + DT).toFixed(2);
+    // 对对碰烟花
+    if (t >= fireAt){
+      for (const [side, pack] of [[0, A], [1, B]]){
+        for (const c of pack.combos.filter(c => c.kind === "ant")){
+          if (fired.has(side + c.key)) continue; fired.add(side + c.key);
+          const ms = pack.F.filter(f => c.members.includes(f.w) && f.hp > 0);
+          if (!ms.length) continue;
+          const foes = alive(1 - side);
+          if (!foes.length) continue;
+          const power = ms.reduce((s, f) => s + f.atk, 0) * 2.2 * (c.tier >= 2 ? 1.5 : 1);
+          const tgt = foes.slice().sort((x, y) => dist(ms[0], x) - dist(ms[0], y)).slice(0, 3);
+          ev.push({ t, type: "fire", side, from: ms[0].id, label: `${W[c.a].w} ↔ ${W[c.b].w}`, to: tgt.map(f => f.id) });
+          tgt.forEach(f => hurt(f, power / tgt.length + 6, t, null));
+        }
+      }
+    }
+    for (const f of all){
+      if (f.hp <= 0) continue;
+      f.timer -= DT;
+      if (f.timer > 0) continue;
+      f.timer += f.cd;
+      const foes = alive(1 - f.side);
+      if (!foes.length) break;
+      let target;
+      if (f.pos === "adv") target = foes.slice().sort((x, y) => dist(f, y) - dist(f, x) || x.hp - y.hp)[0];
+      else target = foes.slice().sort((x, y) => dist(f, x) - dist(f, y) || x.hp - y.hp)[0];
+      ev.push({ t, type: "atk", from: f.id, to: target.id, pos: f.pos });
+      hurt(target, f.atk, t, f);
+      if (f.pos === "adj"){
+        foes.filter(x => x !== target && x.hp > 0 && Math.abs(x.row - target.row) + Math.abs(x.col - target.col) === 1)
+          .forEach(x => hurt(x, f.atk * 0.5, t, f));
+      }
+    }
+  }
+  const left = s => alive(s).reduce((sum, f) => sum + f.hp / f.max, 0);
+  const a = alive(0).length, b = alive(1).length;
+  let win;
+  if (a && !b) win = 1; else if (b && !a) win = -1;
+  else { const la = left(0), lb = left(1); win = la > lb + 0.05 ? 1 : lb > la + 0.05 ? -1 : 0; }
+  ev.push({ t: t + 0.4, type: "end", win, mine: a, theirs: b });
+  return { ev, win, mine: a, theirs: b, dur: t };
+}
+
+// ================= 对手：练习队 / 你以前的队伍 =================
+const ENEMY_N = [0, 2, 3, 3, 4, 5, 5, 6, 7];
+function enemyFor(round){
+  const ghost = SAVE.ghosts[round];
+  if (ghost && Math.random() < 0.4){
+    const b = Array(ROWS * COLS).fill(null);
+    ghost.forEach(g => { if (IDX[g.w] !== undefined) b[g.k] = { w: IDX[g.w], star: g.star }; });
+    if (b.some(Boolean)) return { board: b, name: "你以前的队伍" };
+  }
+  const th = pick(S.themes), n = ENEMY_N[round];
+  let words = shuffle(S.pool.filter(i => W[i].th === th)).slice(0, Math.ceil(n * 0.6));
+  words = words.concat(shuffle(S.pool.filter(i => !words.includes(i))).slice(0, n - words.length));
+  const b = Array(ROWS * COLS).fill(null);
+  const order = { n: 0, v: 1, adj: 2, adv: 2 };
+  const sorted = words.slice().sort((x, y) => order[W[x].pos] - order[W[y].pos]);
+  const slots = [1, 2, 0, 3, 5, 6, 4, 7, 9, 10, 8, 11];
+  // 前排给盾盾宝和冲冲宝，后排给魔法宝和闪闪宝
+  const front = sorted.filter(i => order[W[i].pos] < 2), back = sorted.filter(i => order[W[i].pos] === 2);
+  let fs = slots.filter(k => k < 8), bs = [9, 10, 8, 11, 5, 6, 4, 7];
+  front.forEach(i => { const k = fs.shift(); b[k] = { w: i, star: 1 }; bs = bs.filter(x => x !== k); });
+  back.forEach(i => { const k = bs.shift(); b[k] = { w: i, star: 1 }; });
+  // 星级随回合提高
+  b.forEach(u => { if (!u) return; const r = Math.random(); u.star = round >= 6 && r < 0.12 ? 3 : r < 0.1 + round * 0.09 ? 2 : 1; });
+  return { board: b, name: `练习队·${DATA.themes[th].icon}${DATA.themes[th].name}` };
+}
+
+// ================= 画面 =================
+function unitHTML(u, opts = {}){
+  const e = W[u.w], T = TYPE[e.pos];
+  const len = e.w.length, fs = len > 10 ? 10 : len > 8 ? 11 : len > 6 ? 12 : 13;
+  return `<div class="unit t-${e.pos}${opts.sel ? " sel" : ""}" data-id="${opts.id || ""}">
+    <span class="st">${"★".repeat(u.star)}</span>${u.star >= 3 ? '<span class="crown">👑</span>' : ""}
+    <span class="face">${T.face}</span><span class="w" style="font-size:${fs}px">${esc(e.w)}</span>
+    ${opts.hp ? '<span class="hp"><i></i><b></b></span>' : ""}</div>`;
+}
+function show(id){ for (const s of ["home", "game"]) $(s).classList.toggle("hidden", s !== id); }
+
+function renderHome(){
+  const crowned = Object.keys(SAVE.crowned).length, book = Object.keys(SAVE.book).length;
+  $("homeStats").innerHTML = `<div><b>${SAVE.runs}</b>玩过几局</div><div><b>${SAVE.clears}</b>通关次数</div><div><b>${crowned}</b>👑 皇冠词</div><div><b>${book}</b>错词本</div>`;
+  show("home");
+}
+
+function render(){
+  if (!S) return;
+  $("roundP").textContent = `第 ${S.round}/${ROUNDS} 回合`;
+  $("heartP").textContent = `❤️ ${S.hearts}`;
+  $("coinP").textContent = `🪙 ${S.coins}`;
+  $("capP").textContent = `草地 ${onBoard()}/${cap()} 只`;
+  $("soundBtn").textContent = SAVE.sound ? "🔊" : "🔇";
+  const battle = S.phase === "battle";
+  $("prep").classList.toggle("hidden", battle);
+  $("battleBar").classList.toggle("hidden", !battle);
+  $("enemyWrap").classList.toggle("hidden", !battle);
+  if (battle) return;
+  // 我的草地
+  const my = $("myHalf"); my.innerHTML = "";
+  S.board.forEach((u, k) => {
+    const c = document.createElement("div"); c.className = "cell";
+    if (S.sel && !u) c.classList.add("target");
+    if (u) c.innerHTML = unitHTML(u, { sel: S.sel && S.sel.where === "board" && S.sel.k === k });
+    c.onclick = () => tapCell("board", k);
+    my.appendChild(c);
+  });
+  const bench = $("bench"); bench.innerHTML = "";
+  S.bench.forEach((u, k) => {
+    const c = document.createElement("div"); c.className = "cell";
+    if (u) c.innerHTML = unitHTML(u, { sel: S.sel && S.sel.where === "bench" && S.sel.k === k });
+    c.onclick = () => tapCell("bench", k);
+    bench.appendChild(c);
+  });
+  // 组合
+  const cs = combosOf(S.board, S.boosted).sort((a, b) => (b.tier > 0) - (a.tier > 0));
+  $("combos").innerHTML = cs.length ? cs.map(c => `<span class="chip ${c.tier ? "on" : c.kind === "ant" ? "hint" : ""}">${esc(comboLabel(c))}${S.boosted.has(c.key) && c.tier ? ' <span class="boost">+加强</span>' : ""}</span>`).join("")
+    : `<span class="chip">还没有组合：同主题 2 只、同词根 2 只、反义词挨着站都会触发</span>`;
+  // 选中信息
+  renderInfo();
+  // 小屋
+  const shop = $("shop"); shop.innerHTML = "";
+  S.shop.forEach((i, k) => {
+    const d = document.createElement("button");
+    if (i === null){ d.className = "sc empty"; shop.appendChild(d); return; }
+    const e = W[i], T = TYPE[e.pos], o = owned(i);
+    d.className = `sc t-${e.pos}${S.lock.has(k) ? " lock" : ""}${S.coins < cost(i) ? " poor" : ""}`;
+    d.innerHTML = `<span class="cost">${cost(i)}🪙</span>${o ? `<span class="up">升${o.star + 1}★</span>` : ""}<span class="face">${T.face}</span><span class="w" style="font-size:${e.w.length > 9 ? 11 : 13}px">${esc(e.w)}</span><span class="pos">${T.pos}</span><span class="th">${DATA.themes[e.th].icon}</span>`;
+    d.onclick = () => buy(k);
+    shop.appendChild(d);
+  });
+  $("streakP").textContent = `连对 ${S.streak % 3}/3 ⭐${S.bonus ? "×" + S.bonus : ""}`;
+  $("rollBtn").disabled = S.coins < 1;
+  $("lvlBtn").textContent = S.lvl + 2 >= ROWS * COLS ? "草地已最大" : `⬆️ 扩建草地 ${lvlCost()}🪙`;
+  $("lvlBtn").disabled = S.coins < lvlCost() || S.lvl + 2 >= ROWS * COLS;
+  $("fightBtn").disabled = onBoard() === 0;
+  $("hint").textContent = hintText();
+}
+function hintText(){
+  if (!allUnits().length) return "👇 点一张词卡，答对就能请到这只词宝";
+  if (onBoard() === 0) return "点长椅上的词宝，再点草地，把它放上去";
+  if (S.round === 1 && onBoard() < cap() && S.coins > 0) return "还有词币，可以再请一只；草地最多放 " + cap() + " 只";
+  const cs = combosOf(S.board, S.boosted);
+  const near = cs.find(c => c.kind === "ant" && !c.tier);
+  if (near) return `把 ${W[near.a].w} 和 ${W[near.b].w} 挨着放，就能放对对碰烟花 🎆`;
+  if (S.coins >= 5) return "存钱罐：回合结束时每存 5 个词币多给 1 个（最多 2 个）";
+  return "准备好了就点“开始比赛”";
+}
+function renderInfo(){
+  const box = $("info");
+  if (!S.sel){ box.classList.add("hidden"); return; }
+  const u = S.sel.where === "board" ? S.board[S.sel.k] : S.bench[S.sel.k];
+  if (!u){ S.sel = null; box.classList.add("hidden"); return; }
+  const e = W[u.w], T = TYPE[e.pos];
+  const fams = e.fam.map(f => DATA.fams[f].note).join("；");
+  const refund = cost(u.w) * u.star;
+  box.classList.remove("hidden");
+  box.innerHTML = `<div class="txt"><b>${esc(e.w)}</b> ${esc(e.cn)} · ${T.name}（${T.pos}）${"★".repeat(u.star)}<br><span style="color:var(--soft)">${DATA.themes[e.th].icon}${DATA.themes[e.th].name}${fams ? " · " + esc(fams) : ""}${e.ant ? " · 反义：" + esc(e.ant) : ""}</span></div><button class="btn ghost" id="sellBtn">送回小屋 +${refund}🪙</button>`;
+  $("sellBtn").onclick = ev => { ev.stopPropagation(); sell(); };
+}
+
+// ================= 摆放 =================
+function tapCell(where, k){
+  const arr = where === "board" ? S.board : S.bench;
+  if (!S.sel){
+    if (arr[k]){ S.sel = { where, k }; beep("pop"); }
+    render(); return;
+  }
+  const from = S.sel.where === "board" ? S.board : S.bench, fk = S.sel.k;
+  if (from === arr && fk === k){ S.sel = null; render(); return; }
+  // 放上草地会超出上限：只允许交换
+  if (where === "board" && S.sel.where === "bench" && !arr[k] && onBoard() >= cap()){
+    toast(`草地最多放 ${cap()} 只，可以升级草地，或者和草地上的词宝交换`); return;
+  }
+  const tmp = arr[k]; arr[k] = from[fk]; from[fk] = tmp;
+  S.sel = null; beep("pop");
+  render();
+  checkNewCombos();
+}
+function sell(){
+  const arr = S.sel.where === "board" ? S.board : S.bench, u = arr[S.sel.k];
+  S.coins += cost(u.w) * u.star; arr[S.sel.k] = null; S.sel = null; render();
+}
+function place(u){
+  // 新请到的词宝：草地有空位就上草地，否则去长椅
+  if (onBoard() < cap()){
+    const order = [1, 2, 0, 3, 5, 6, 4, 7, 9, 10, 8, 11];
+    const pref = (W[u.w].pos === "adj" || W[u.w].pos === "adv") ? [9, 10, 8, 11, 5, 6, 4, 7, 1, 2, 0, 3] : order;
+    const k = pref.find(x => !S.board[x]);
+    if (k !== undefined){ S.board[k] = u; return true; }
+  }
+  const b = S.bench.findIndex(x => !x);
+  if (b >= 0){ S.bench[b] = u; return true; }
+  return false;
+}
+
+// ================= 请词宝 = 答题 =================
+function buy(k){
+  if (S.phase !== "prep" || modalOpen()) return;
+  const i = S.shop[k]; if (i === null) return;
+  if (S.lock.has(k)){ toast("这张卡这回合先休息，下回合换个问法再来"); return; }
+  if (S.coins < cost(i)){ toast("词币不够啦"); return; }
+  const o = owned(i);
+  if (!o && onBoard() >= cap() && S.bench.every(Boolean)){ toast("草地和长椅都满了，先送回一只词宝吧"); return; }
+  const kind = !o ? "meaning" : o.star === 1 ? "sentence" : "spell";
+  ask(i, kind, ok => {
+    if (ok){
+      S.coins -= cost(i); S.shop[k] = null; S.streak++;
+      if (S.streak % 3 === 0){ S.bonus++; toast("⭐ 连对 3 题！回合结束多 1 个词币"); }
+      if (o){
+        o.star++; beep("up");
+        if (o.star === 3){ S.runCrown.add(i); SAVE.crowned[W[i].w] = 1; persist(); toast(`👑 ${W[i].w} 戴上了皇冠！`); }
+        else toast(`${W[i].w} 升到 ${o.star} 星！`);
+      } else place({ w: i, star: 1 });
+    } else {
+      S.lock.add(k); S.streak = 0; S.runWrong.add(i); S.wrongRound.push(i);
+    }
+    render();
+    if (!ok && S.wrongRound.length === 3) teacher();
+    else checkNewCombos();
+  });
+}
+
+// ---------- 弹窗 ----------
+function modalOpen(){ return !!$("modalRoot").firstChild; }
+function openModal(html){ $("modalRoot").innerHTML = `<div class="mask"><div class="modal">${html}</div></div>`; return $("modalRoot").querySelector(".modal"); }
+function closeModal(){ $("modalRoot").innerHTML = ""; }
+
+function distractors(i, n, field){
+  const e = W[i];
+  const same = shuffle(W.map((x, j) => j).filter(j => j !== i && W[j][field] !== e[field] && W[j].th === e.th && W[j].w !== e.ant));
+  const rest = shuffle(W.map((x, j) => j).filter(j => j !== i && W[j][field] !== e[field] && W[j].th !== e.th));
+  const out = [];
+  for (const j of [...same.slice(0, 2), ...rest]) if (out.length < n && !out.some(x => W[x][field] === W[j][field])) out.push(j);
+  return out;
+}
+function blank(e){ return esc(e.ex).replace(new RegExp(`\\b${e.w}\\b`, "i"), "<b>______</b>"); }
+
+function ask(i, kind, done){
+  const e = W[i], T = TYPE[e.pos];
+  const finish = (ok, chosenText) => {
+    remember(i, ok); beep(ok ? "ok" : "no");
+    const fb = document.createElement("div");
+    fb.className = "fb " + (ok ? "ok" : "no");
+    fb.innerHTML = (ok ? `✅ 答对了！<b>${esc(e.w)}</b> ${esc(e.cn)}` : `再记一下：<b>${esc(e.w)}</b> = ${esc(e.cn)}`) + `<div class="ex">${esc(e.ex)}</div>`;
+    m.appendChild(fb);
+    const row = document.createElement("div"); row.className = "mrow";
+    row.innerHTML = `<button class="btn ${ok ? "green" : "blue"}">${ok ? `请到 ${T.face}` : "知道了"}</button>`;
+    row.firstChild.onclick = () => { closeModal(); done(ok); };
+    m.appendChild(row);
+    m.querySelectorAll(".opt,.tile,#bk").forEach(b => b.disabled = true);
+    if (ok) setTimeout(() => { if (row.isConnected) row.firstChild.click(); }, 1100);
+  };
+  let m;
+  if (kind === "meaning"){
+    const opts = shuffle([i, ...distractors(i, 3, "cn")]);
+    m = openModal(`<h3>第 1 次请：选出意思</h3><div class="qword">${esc(e.w)}</div><div class="qsub">${T.face} ${T.pos}</div><div class="opts">${opts.map(j => `<button class="opt" data-j="${j}">${esc(W[j].cn)}</button>`).join("")}</div>`);
+    m.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+      const j = +b.dataset.j, ok = j === i;
+      b.classList.add(ok ? "right" : "wrong");
+      if (!ok) m.querySelector(`.opt[data-j="${i}"]`).classList.add("right");
+      finish(ok);
+    });
+  } else if (kind === "sentence"){
+    const pool = W.map((x, j) => j).filter(j => j !== i && W[j].pos === e.pos && W[j].w !== e.ant);
+    // 干扰项只取别的主题，避免“也说得通”的词
+    const opts = shuffle([i, ...shuffle(pool.filter(j => W[j].th !== e.th)).slice(0, 3)]);
+    m = openModal(`<h3>第 2 次请：选词填空（升 2 星）</h3><div class="qsent">${blank(e)}</div><div class="qsub">提示：${esc(e.cn)}</div><div class="opts">${opts.map(j => `<button class="opt" data-j="${j}">${esc(W[j].w)}</button>`).join("")}</div>`);
+    m.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+      const j = +b.dataset.j, ok = j === i;
+      b.classList.add(ok ? "right" : "wrong");
+      if (!ok) m.querySelector(`.opt[data-j="${i}"]`).classList.add("right");
+      finish(ok);
+    });
+  } else {
+    const letters = e.w.split("");
+    const extra = "aeioustrnl".split("").filter(c => !letters.includes(c));
+    const tiles = shuffle([...letters, ...shuffle(extra).slice(0, 2)]);
+    m = openModal(`<h3>第 3 次请：拼出单词（升 3 星 👑）</h3><div class="qsent">${blank(e)}</div><div class="qsub">${esc(e.cn)} · ${letters.length} 个字母</div><div class="spell" id="sp">${letters.map(() => "<span></span>").join("")}</div><div class="tiles">${tiles.map((c, k) => `<button class="tile" data-k="${k}">${c}</button>`).join("")}</div><div class="mrow"><button class="btn ghost" id="bk">⌫ 退一格</button></div>`);
+    const typed = [];
+    const draw = () => m.querySelectorAll("#sp span").forEach((s, k) => s.textContent = typed[k] ? tiles[typed[k]] : "");
+    m.querySelectorAll(".tile").forEach(b => b.onclick = () => {
+      if (typed.length >= letters.length) return;
+      typed.push(+b.dataset.k); b.disabled = true; draw();
+      if (typed.length === letters.length){
+        const word = typed.map(k => tiles[k]).join("");
+        finish(word === e.w);
+      }
+    });
+    $("bk").onclick = () => { const k = typed.pop(); if (k !== undefined) m.querySelector(`.tile[data-k="${k}"]`).disabled = false; draw(); };
+  }
+}
+
+function teacher(){
+  const ws = S.wrongRound.slice(0, 3);
+  const m = openModal(`<div class="teacher">🦉</div><h2 style="text-align:center;margin:0 0 4px">词宝老师来啦</h2><div class="qsub">这 3 个词有点难，我们一起再看一遍，记住了再继续！</div><div class="list">${ws.map(i => `<div class="li"><b>${esc(W[i].w)}</b> ${esc(W[i].cn)}<div class="ex">${esc(W[i].ex)}</div></div>`).join("")}</div><div class="mrow"><button class="btn green" id="tOk">记住了</button></div>`);
+  $("tOk").onclick = () => { closeModal(); S.wrongRound = []; checkNewCombos(); };
+}
+
+// ---------- 新组合出现时：问一道关系题，答对本局加强 ----------
+function checkNewCombos(){
+  if (modalOpen()) return;
+  const c = combosOf(S.board, S.boosted).find(c => c.tier > 0 && !S.asked.has(c.key));
+  if (!c) return;
+  S.asked.add(c.key);
+  let a, b, why;
+  if (c.kind === "theme"){ [a, b] = c.members; why = `都和“${DATA.themes[c.id].name}”有关`; }
+  else if (c.kind === "fam"){ [a, b] = c.members; why = DATA.fams[c.id].note; }
+  else { a = c.a; b = c.b; why = `${W[a].w} ${W[a].cn} ↔ ${W[b].w} ${W[b].cn}`; }
+  const A = W[a], B = W[b];
+  const isAnt = A.ant === B.w || A.w === "un" + B.w || B.w === "un" + A.w;
+  // 每个选项都按这一对词真实判断：说得对的都算对，避免一对词同时满足两种关系时判错
+  const TRUTH = {
+    "都属于同一个主题": A.th === B.th,
+    "来自同一个词根家族": A.fam.some(f => B.fam.includes(f)),
+    "意思相反（反义词）": isAnt,
+    "读音完全相同": false,
+  };
+  const right = { theme: "都属于同一个主题", fam: "来自同一个词根家族", ant: "意思相反（反义词）" }[c.kind];
+  const opts = shuffle(Object.keys(TRUTH));
+  const name = c.kind === "theme" ? "同班同学" : c.kind === "fam" ? "一家人" : "对对碰";
+  const m = openModal(`<h3>新组合「${name}」出现了！答对本局加强</h3><div class="qword" style="font-size:24px">${esc(A.w)} 和 ${esc(B.w)}</div><div class="qsub">它们是什么关系？（选一个对的就行）</div><div class="opts">${opts.map(o => `<button class="opt">${o}</button>`).join("")}</div>`);
+  m.querySelectorAll(".opt").forEach(btn => btn.onclick = () => {
+    const ok = TRUTH[btn.textContent];
+    btn.classList.add(ok ? "right" : "wrong");
+    if (!ok) [...m.querySelectorAll(".opt")].filter(x => TRUTH[x.textContent]).forEach(x => x.classList.add("right"));
+    m.querySelectorAll(".opt").forEach(x => x.disabled = true);
+    beep(ok ? "up" : "no");
+    if (ok){ S.boosted.add(c.key); S.coins += 1; }
+    const fb = document.createElement("div"); fb.className = "fb " + (ok ? "ok" : "no");
+    fb.innerHTML = (ok ? `✅ 答对了！「${name}」本局加强一档，还送 1 个词币。` : `组合照样有效，只是没有加强。`) + `<div class="ex">${esc(why)}</div>`;
+    m.appendChild(fb);
+    const row = document.createElement("div"); row.className = "mrow"; row.innerHTML = `<button class="btn green">好的</button>`;
+    row.firstChild.onclick = () => { closeModal(); render(); checkNewCombos(); };
+    m.appendChild(row);
+  });
+}
+
+// ================= 比赛 =================
+let speed = 1;
+function fight(){
+  if (modalOpen() || !onBoard()) return;
+  S.sel = null;
+  const en = enemyFor(S.round);
+  S.enemy = en;
+  const result = simulate(S.board, en.board, S.boosted);
+  S.phase = "battle"; render();
+  $("enemyName").textContent = "对面：" + en.name;
+  $("enemyCount").textContent = "";
+  const eh = $("enemyHalf"), mh = $("myHalf");
+  eh.innerHTML = ""; mh.innerHTML = "";
+  // 对手显示时前排靠下（贴近我方）
+  for (let r = 2; r >= 0; r--) for (let c = 0; c < COLS; c++){
+    const k = r * COLS + c, u = en.board[k], d = document.createElement("div"); d.className = "cell";
+    if (u) d.innerHTML = unitHTML(u, { hp: true, id: "1:" + k });
+    eh.appendChild(d);
+  }
+  S.board.forEach((u, k) => { const d = document.createElement("div"); d.className = "cell"; if (u) d.innerHTML = unitHTML(u, { hp: true, id: "0:" + k }); mh.appendChild(d); });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  play(result);
+}
+function el(id){ return document.querySelector(`.unit[data-id="${id}"]`); }
+function center(node){ const f = $("field").getBoundingClientRect(), r = node.getBoundingClientRect(); return { x: r.left - f.left + r.width / 2, y: r.top - f.top + r.height / 2 }; }
+function floatText(node, text, color){
+  if (!node) return;
+  const p = center(node), d = document.createElement("div");
+  d.className = "float"; d.textContent = text; d.style.left = p.x + "px"; d.style.top = (p.y - 44) + "px"; if (color) d.style.color = color;
+  $("field").appendChild(d); setTimeout(() => d.remove(), 1900);
+}
+function projectile(fromN, toN, sym){
+  if (!fromN || !toN) return;
+  const a = center(fromN), b = center(toN), d = document.createElement("div");
+  d.className = "proj"; d.textContent = sym; d.style.left = (a.x - 8) + "px"; d.style.top = (a.y - 10) + "px";
+  $("field").appendChild(d);
+  requestAnimationFrame(() => requestAnimationFrame(() => { d.style.transform = `translate(${b.x - a.x}px,${b.y - a.y}px)`; }));
+  setTimeout(() => d.remove(), 300 / speed + 40);
+}
+function play(result){
+  const SYM = { n: "⭐", v: "💫", adj: "✨", adv: "🌟" };
+  const shieldDraw = () => {
+    for (const side of [0, 1]){
+      const board = side ? S.enemy.board : S.board;
+      const F = makeFighters(board, side, side ? new Set() : S.boosted).F;
+      F.forEach(f => { const n = el(f.id); if (n && f.shield) n.querySelector(".hp b").style.width = Math.min(100, f.shield / f.max * 100) + "%"; });
+    }
+  };
+  shieldDraw();
+  const start = result.ev[0];
+  // 开场：组合小字
+  let delay = 0;
+  start.combos[0].forEach(c => {
+    const id = S.board.findIndex(u => u && c.members.includes(u.w));
+    const txt = c.kind === "theme" ? `${DATA.themes[c.id].icon} 同班同学：护盾泡泡` : c.kind === "fam" ? `👨‍👩‍👧 ${DATA.fams[c.id].note}` : null;
+    if (txt) setTimeout(() => floatText(el("0:" + id), txt, "#2b7a3d"), delay += 350);
+  });
+  const t0 = performance.now() + 500;
+  let k = 1;
+  const tick = () => {
+    if (S.phase !== "battle") return;
+    const now = (performance.now() - t0) / 1000 * speed;
+    while (k < result.ev.length && result.ev[k].t <= now){
+      const e = result.ev[k++];
+      if (e.type === "atk"){ projectile(el(e.from), el(e.to), SYM[e.pos]); }
+      else if (e.type === "hit"){
+        const n = el(e.to); if (!n) continue;
+        n.querySelector(".hp i").style.width = (e.hp / e.max * 100) + "%";
+        n.querySelector(".hp b").style.width = Math.min(100, e.shield / e.max * 100) + "%";
+        n.classList.remove("hit"); void n.offsetWidth; n.classList.add("hit");
+      }
+      else if (e.type === "rest"){ const n = el(e.id); if (n) n.classList.add("rest"); }
+      else if (e.type === "fire"){ beep("fire"); floatText(el(e.from), "🎆 " + e.label, "#c2410c"); e.to.forEach(id => projectile(el(e.from), el(id), "🎆")); }
+      else if (e.type === "end"){ setTimeout(() => endBattle(result), 500); return; }
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+function endBattle(r){
+  const win = r.win;
+  let lost = 0;
+  if (win > 0){ S.wins++; beep("win"); SAVE.ghosts[S.round] = S.board.map((u, k) => u && { w: W[u.w].w, star: u.star, k }).filter(Boolean); persist(); }
+  else if (win < 0){ lost = r.theirs >= 3 ? 2 : 1; S.hearts -= lost; beep("lose"); }
+  // 回合收入
+  const base = 5, piggy = Math.min(2, Math.floor(S.coins / 5)), winB = win > 0 ? 1 : 0, star = S.bonus;
+  const title = win > 0 ? "赢啦！" : win < 0 ? "这场输了" : "平局";
+  const face = win > 0 ? "🎉" : win < 0 ? "🌧️" : "🤝";
+  const m = openModal(`<div class="result"><div class="big">${face}</div><h2>${title}</h2>
+    <div class="qsub">${win < 0 ? `对面还剩 ${r.theirs} 只，少了 ${lost} 颗爱心 ❤️` : win > 0 ? `我方还剩 ${r.mine} 只` : "双方都还有能量"}</div>
+    <div class="li" style="text-align:left">下回合词币：基础 +${base}${piggy ? `，存钱罐 +${piggy}` : ""}${winB ? "，获胜 +1" : ""}${star ? `，连对小星星 +${star}` : ""}</div>
+    <div class="mrow" style="justify-content:center"><button class="btn green" id="nextBtn">${S.hearts <= 0 || S.round >= ROUNDS ? "看看这局学了什么" : "下一回合"}</button></div></div>`);
+  $("nextBtn").onclick = () => {
+    closeModal();
+    S.coins += base + piggy + winB + star; S.bonus = 0;
+    if (S.hearts <= 0 || S.round >= ROUNDS){ finishRun(); return; }
+    S.round++; S.phase = "prep"; S.wrongRound = []; rollShop(true); render();
+  };
+}
+function finishRun(){
+  S.phase = "over";
+  const cleared = S.hearts > 0;
+  SAVE.runs++; if (cleared) SAVE.clears++; SAVE.bestWins = Math.max(SAVE.bestWins, S.wins); persist();
+  const stars = !cleared ? 0 : S.wins >= 6 ? 3 : S.wins >= 4 ? 2 : 1;
+  const crown = [...S.runCrown], wrong = [...S.runWrong];
+  const cheer = cleared ? "坚持到最后，真棒！" : "爱心用完了，不过这局的词都学到啦！";
+  openModal(`<div class="result"><div class="big">${cleared ? "🏆" : "🌈"}</div><h2>${cleared ? "通关！" : "这局结束了"}</h2>
+    <div style="font-size:28px">${cleared ? "⭐".repeat(stars) + "☆".repeat(3 - stars) : ""}</div>
+    <div class="qsub">赢了 ${S.wins} 场 · ${cheer}</div></div>
+    <h3>👑 这局戴上皇冠的词（${crown.length}）</h3><div class="list">${crown.length ? crown.map(i => `<div class="li"><b>${esc(W[i].w)}</b> ${esc(W[i].cn)}</div>`).join("") : '<div class="li">把同一个词请 3 次，就能戴上皇冠哦</div>'}</div>
+    <h3 style="margin-top:12px">📒 这局答错的词（${wrong.length}，已放进错词本）</h3><div class="list">${wrong.length ? wrong.map(i => `<div class="li"><b>${esc(W[i].w)}</b> ${esc(W[i].cn)}${S.runCrown.has(i) ? ' <span style="color:var(--ok);font-size:12px">✅ 后来学会了</span>' : ""}<div class="ex">${esc(W[i].ex)}</div></div>`).join("") : '<div class="li">一题都没错，太厉害了！</div>'}</div>
+    <div class="mrow"><button class="btn ghost" id="homeBtn">回首页</button><button class="btn" id="againBtn">再来一局</button></div>`);
+  $("homeBtn").onclick = () => { closeModal(); S = null; renderHome(); };
+  $("againBtn").onclick = () => { closeModal(); startRun(); };
+}
+
+// ================= 首页按钮 =================
+function startRun(){
+  newRun(); show("game"); render();
+  const names = S.themes.map(t => DATA.themes[t].icon + DATA.themes[t].name).join(" ");
+  toast("本局主题：" + names, 2600);
+}
+$("startBtn").onclick = startRun;
+$("quitBtn").onclick = () => {
+  if (!S || S.phase === "battle" || modalOpen()) return;
+  openModal(`<h2 style="margin:0 0 6px">回首页？</h2><div class="qsub" style="text-align:left">这一局会结束，答过的题已经记进错词本和皇冠词里。</div><div class="mrow"><button class="btn ghost" id="qNo">继续玩</button><button class="btn" id="qYes">回首页</button></div>`);
+  $("qNo").onclick = closeModal;
+  $("qYes").onclick = () => { closeModal(); S = null; renderHome(); };
+};
+$("soundBtn").onclick = () => { SAVE.sound = !SAVE.sound; persist(); render(); };
+$("rollBtn").onclick = () => { if (S.coins >= 1 && !modalOpen()){ rollShop(false); render(); } };
+$("lvlBtn").onclick = () => { if (S.coins >= lvlCost() && !modalOpen()){ S.coins -= lvlCost(); S.lvl++; beep("up"); toast(`草地变大了，现在能放 ${cap()} 只`); render(); } };
+$("fightBtn").onclick = fight;
+$("speedBtn").onclick = () => { speed = speed === 1 ? 2 : 1; $("speedBtn").textContent = speed === 1 ? "⏩ 2 倍速" : "▶ 正常速度"; };
+$("bookBtn").onclick = () => {
+  const ws = Object.entries(SAVE.book).sort((a, b) => b[1] - a[1]).map(([w]) => IDX[w]).filter(i => i !== undefined);
+  openModal(`<h2 style="margin:0">📒 错词本</h2><div class="qsub" style="text-align:left">答错过的词都在这里，下一局小屋会更常请它们回来。</div><div class="list">${ws.length ? ws.map(i => `<div class="li"><b>${esc(W[i].w)}</b> ${esc(W[i].cn)} <span style="color:var(--soft);font-size:12px">错过 ${SAVE.book[W[i].w]} 次</span><div class="ex">${esc(W[i].ex)}</div></div>`).join("") : '<div class="li">还是空的</div>'}</div><div class="mrow"><button class="btn" onclick="closeModal()">关闭</button></div>`);
+};
+$("dexBtn").onclick = () => {
+  const ws = Object.keys(SAVE.crowned).map(w => IDX[w]).filter(i => i !== undefined);
+  openModal(`<h2 style="margin:0">👑 皇冠词 ${ws.length}/${W.length}</h2><div class="qsub" style="text-align:left">同一个词答对 3 种题（意思、填空、拼写），就会戴上皇冠。</div><div class="list">${ws.length ? ws.map(i => `<div class="li">${TYPE[W[i].pos].face} <b>${esc(W[i].w)}</b> ${esc(W[i].cn)}</div>`).join("") : '<div class="li">还没有，快去请词宝吧</div>'}</div><div class="mrow"><button class="btn" onclick="closeModal()">关闭</button></div>`);
+};
+renderHome();
+</script>
+</body>
+</html>

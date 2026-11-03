@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>星星小饭馆</title>
+<style>
+:root{
+  --bg:#141a3a; --bg2:#1f2856; --card:#26306a; --card2:#303c80; --line:#3d4a94;
+  --ink:#f4f1ff; --mute:#b6b9e0; --warm:#ffb648; --warm2:#ff8f5a; --ok:#57d98c; --soft:#ff9fb8; --sky:#7fd1ff;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:radial-gradient(ellipse at top,#2a2f6e 0%,var(--bg) 60%) fixed;color:var(--ink);
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.55;
+  background-image:radial-gradient(1px 1px at 12% 18%,#fff,transparent),radial-gradient(1px 1px at 72% 8%,#fff,transparent),
+  radial-gradient(1.5px 1.5px at 40% 30%,#ffe9a8,transparent),radial-gradient(1px 1px at 88% 40%,#fff,transparent),
+  radial-gradient(1px 1px at 22% 66%,#fff,transparent),radial-gradient(1.5px 1.5px at 60% 80%,#cfe6ff,transparent),
+  radial-gradient(1px 1px at 92% 90%,#fff,transparent),radial-gradient(1px 1px at 6% 92%,#fff,transparent)}
+button{font:inherit;color:inherit;border:0;cursor:pointer}
+.wrap{max-width:760px;margin:0 auto;padding:12px 16px 40px;position:relative}
+.hidden{display:none!important}
+
+/* 标题页 */
+.title{text-align:center;padding-top:6vh}
+.title .logo{font-size:64px;line-height:1}
+.title h1{font-size:34px;margin:8px 0 4px;letter-spacing:2px;color:var(--warm)}
+.title p.tag{color:var(--mute);margin:0 0 24px}
+.lv{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 0 20px}
+.lv button{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px 14px;min-width:150px;text-align:left}
+.lv button b{display:block;font-size:18px}
+.lv button span{font-size:13px;color:var(--mute)}
+.lv button.on{border-color:var(--warm);background:var(--card2)}
+.big{background:linear-gradient(180deg,var(--warm),var(--warm2));color:#3a1d00;font-weight:700;font-size:20px;border-radius:999px;padding:12px 36px;box-shadow:0 6px 0 #b8582c}
+.big:active{transform:translateY(3px);box-shadow:0 3px 0 #b8582c}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.ghost{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:15px}
+.ghost .dot{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--soft);color:#3a0016;font-size:12px;font-weight:700;margin-left:4px}
+.hint-small{color:var(--mute);font-size:13px;margin-top:22px}
+
+/* 顶栏 */
+.top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.top .name{font-weight:700;color:var(--warm);margin-right:auto}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:14px;white-space:nowrap}
+.decor{font-size:18px;letter-spacing:2px}
+
+/* 餐桌 */
+.tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:12px}
+.seat{background:linear-gradient(180deg,#3a2f5e,#2b2352);border:2px solid #4c3f7c;border-radius:18px;padding:10px;min-height:150px;position:relative;transition:border-color .15s,transform .15s}
+.seat.empty{display:flex;align-items:center;justify-content:center;color:#8a83b5;font-size:14px;border-style:dashed}
+.seat.sel{border-color:var(--warm);box-shadow:0 0 0 3px rgba(255,182,72,.25)}
+.seat.happy{border-color:var(--ok)}
+.seat .who{display:flex;align-items:center;gap:8px}
+.seat .ava{font-size:36px;line-height:1}
+.seat .nm{font-weight:700;font-size:15px}
+.seat .tagline{font-size:12px;color:var(--soft)}
+.bubble{background:#fff;color:#21194a;border-radius:14px;padding:8px 10px;margin-top:8px;font-size:15px;line-height:1.4;position:relative}
+.bubble::before{content:"";position:absolute;left:18px;top:-7px;border:7px solid transparent;border-top:0;border-bottom-color:#fff}
+.react{margin-top:6px;font-size:13px;color:#ffe08a;min-height:18px}
+.react.good{color:var(--ok)}
+.pat{height:6px;border-radius:3px;background:#1a1640;margin-top:8px;overflow:hidden}
+.pat i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),var(--warm));transition:width .25s linear}
+.seat .tap{position:absolute;right:10px;top:10px;font-size:11px;color:var(--mute)}
+.seat.sel .tap{color:var(--warm)}
+
+/* 输入与货架 */
+.type{display:flex;gap:8px;margin-bottom:8px}
+.type input{flex:1;min-width:0;background:#0f1430;border:2px solid var(--line);border-radius:12px;color:var(--ink);font-size:18px;padding:8px 12px;outline:none}
+.type input:focus{border-color:var(--sky)}
+.sugg{display:flex;gap:6px;flex-wrap:wrap;min-height:34px;margin-bottom:8px}
+.sugg button{background:#173a5a;border:1px solid var(--sky);border-radius:999px;padding:3px 12px;font-size:15px}
+.sugg .tip{color:var(--mute);font-size:13px;align-self:center}
+.tabs{display:flex;gap:6px;margin-bottom:8px;overflow-x:auto}
+.tabs button{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 14px;white-space:nowrap;font-size:15px}
+.tabs button.on{background:var(--warm);color:#3a1d00;border-color:var(--warm);font-weight:700}
+.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;background:#5a3a24;border-radius:14px;padding:10px;box-shadow:inset 0 -6px 0 #46301f}
+.food{background:#f8ecd6;color:#3a2410;border-radius:12px;padding:6px 4px;text-align:center;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 3px 0 #c9b38f}
+.food:active{transform:translateY(2px);box-shadow:0 1px 0 #c9b38f}
+.food .em{font-size:26px;line-height:1.1}
+.food .w{font-size:14px;font-weight:600}
+.food.flash{animation:flash .5s}
+@keyframes flash{50%{background:#ffd27a}}
+
+/* 弹层 */
+.mask{position:fixed;inset:0;background:rgba(8,10,30,.72);display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto;z-index:20}
+.panel{background:var(--bg2);border:1px solid var(--line);border-radius:20px;padding:18px;width:100%;max-width:560px;position:relative}
+.panel h2{margin:0 0 10px;font-size:22px;color:var(--warm)}
+.panel h3{margin:16px 0 6px;font-size:16px}
+.close{position:absolute;right:12px;top:10px;background:none;font-size:22px;color:var(--mute)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.stats div{background:var(--card);border-radius:12px;padding:8px}
+.stats b{display:block;font-size:22px;color:var(--warm)}
+.stats span{font-size:12px;color:var(--mute)}
+.wl{display:flex;flex-wrap:wrap;gap:6px}
+.wl span{background:var(--card);border-radius:10px;padding:3px 9px;font-size:14px}
+.wl span em{font-style:normal;color:var(--mute);margin-left:4px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+.shop-item{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:14px;padding:10px;margin-bottom:8px}
+.shop-item .ic{font-size:30px}
+.shop-item .tx{flex:1}
+.shop-item .tx b{display:block}
+.shop-item .tx span{font-size:13px;color:var(--mute)}
+.buy{background:var(--warm);color:#3a1d00;font-weight:700;border-radius:999px;padding:6px 14px;white-space:nowrap}
+.buy[disabled]{background:#4a4f80;color:#9da0c9;cursor:default}
+.letter-list button{display:flex;width:100%;text-align:left;gap:10px;align-items:center;background:var(--card);border-radius:14px;padding:10px;margin-bottom:8px}
+.letter-list .ic{font-size:28px}
+.letter-list .tx{flex:1}
+.letter-list .tx span{display:block;font-size:13px;color:var(--mute)}
+.paper{background:#fff8e8;color:#3a2a10;border-radius:14px;padding:14px 16px;font-size:16px;line-height:1.6;box-shadow:0 4px 0 #d9c7a0}
+.paper .from{font-size:13px;color:#8a6b3a;margin-bottom:6px}
+.paper mark{background:#ffe08a;border-radius:4px;padding:0 2px}
+.replies button{display:block;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:8px;font-size:15px}
+.replies button.right{border-color:var(--ok);background:#1e4a3a}
+.replies button.wrong{opacity:.55}
+.fb{min-height:24px;margin-top:10px;font-size:15px}
+.fb.good{color:var(--ok)}
+.fb.try{color:#ffe08a}
+.friends{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.friend{background:var(--card);border-radius:14px;padding:10px;font-size:13px}
+.friend .top2{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:700}
+.friend .top2 span{font-size:28px}
+.friend .hearts{color:var(--soft);margin:4px 0}
+.friend p{margin:4px 0;color:var(--mute)}
+.friend p.lock{opacity:.6}
+.toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:#0e1330;border:1px solid var(--warm);border-radius:999px;padding:6px 16px;font-size:15px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none;max-width:92vw;text-align:center}
+.toast.show{opacity:1}
+.set{display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:15px}
+.switch{width:46px;height:26px;border-radius:13px;background:#4a4f80;position:relative}
+.switch.on{background:var(--ok)}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}
+.switch.on::after{left:23px}
+.ver{position:fixed;right:8px;bottom:6px;font-size:11px;color:#6d71a8}
+@media (max-width:480px){
+  .tables{grid-template-columns:1fr 1fr}
+  .seat{min-height:140px;padding:8px}
+  .seat .ava{font-size:28px}
+  .bubble{font-size:14px}
+  .shelf{grid-template-columns:repeat(4,1fr);gap:6px;padding:8px}
+  .food .w{font-size:12px}
+  .food .em{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 标题页 -->
+  <section id="titleView" class="title">
+    <div class="logo">🌟🍜</div>
+    <h1>星星小饭馆</h1>
+    <p class="tag">外星客人只会用英文说想吃什么，读懂了才能端对菜。</p>
+    <div class="lv" id="lvPick"></div>
+    <button class="big" id="startBtn">开张营业</button>
+    <div class="row">
+      <button class="ghost" data-open="mail">📮 烦恼信箱<span class="dot hidden" id="mailDot1"></span></button>
+      <button class="ghost" data-open="shop">🛒 装修小店</button>
+      <button class="ghost" data-open="friends">👽 老顾客</button>
+      <button class="ghost" data-open="settings">⚙️ 设置</button>
+    </div>
+    <p class="hint-small" id="titleInfo"></p>
+  </section>
+
+  <!-- 营业中 -->
+  <section id="shiftView" class="hidden">
+    <div class="top">
+      <span class="name">🌟 星星小饭馆</span>
+      <span class="decor" id="decor"></span>
+      <span class="pill" id="dayPill"></span>
+      <span class="pill" id="servePill"></span>
+      <span class="pill" id="coinPill"></span>
+    </div>
+    <div class="tables" id="tables"></div>
+    <div class="type">
+      <input id="typeBox" placeholder="会拼就直接打字上菜（回车）" autocomplete="off" autocapitalize="off" spellcheck="false">
+    </div>
+    <div class="sugg" id="sugg"><span class="tip">先点一位客人，再从货架上找菜，或者直接打字。</span></div>
+    <div class="tabs" id="tabs"></div>
+    <div class="shelf" id="shelf"></div>
+  </section>
+</div>
+
+<div id="mask" class="mask hidden"><div class="panel" id="panel"></div></div>
+<div class="toast" id="toast"></div>
+<div class="ver">原型 v0.1</div>
+
+<script>
+'use strict';
+// ===================== 内容 =====================
+// 菜品：w 单词, e 图标, zh 中文, c 货架, l 最低等级(0 KET / 1 PET / 2 FCE), d 三档客人说法 [KET, PET, FCE]
+const FOODS = [
+  // 主食
+  {w:'bread',e:'🍞',zh:'面包',c:'meal',l:0,d:["I want the thing you make toast from, please.","Can I have a loaf of the stuff people use to make sandwiches?","I'm after something freshly baked from flour, water and yeast — ideally still warm from the oven."]},
+  {w:'rice',e:'🍚',zh:'米饭',c:'meal',l:0,d:["Small white grains, please. People in China eat them every day.","A bowl of small white grains that are boiled in water, please.","I'd love a bowl of the grain that's grown in flooded fields all over Asia."]},
+  {w:'noodles',e:'🍜',zh:'面条',c:'meal',l:0,d:["Long, thin food in hot soup, please!","I'd like long thin strips in a bowl of soup — I'll eat them with chopsticks.","Something long and slippery that you slurp up with chopsticks, please."]},
+  {w:'pizza',e:'🍕',zh:'比萨',c:'meal',l:0,d:["A big, round, flat bread with cheese and tomato on top!","A round Italian dish, baked in an oven and cut into triangle slices.","I fancy an Italian classic — thin crust, melted cheese and whatever toppings you like."]},
+  {w:'sandwich',e:'🥪',zh:'三明治',c:'meal',l:0,d:["Two pieces of bread with cheese in the middle, please.","Something quick for lunch: a filling between two slices of bread.","Something I can grab and eat on the go — any filling, as long as it's squeezed between slices of bread."]},
+  {w:'hamburger',e:'🍔',zh:'汉堡',c:'meal',l:0,d:["Meat in a round bread roll, please!","A round piece of beef in a bun, often served with chips.","A fast-food favourite: a grilled patty in a bun, with lettuce and sauce."]},
+  {w:'soup',e:'🍲',zh:'汤',c:'meal',l:0,d:["Something hot to eat with a spoon. It's like water with vegetables in it.","A hot liquid dish made by boiling vegetables or meat — perfect on a cold day.","Something warming for a chilly evening — I'll need a spoon, not a fork."]},
+  {w:'egg',e:'🥚',zh:'鸡蛋',c:'meal',l:0,d:["A chicken gives you this in the morning. It is white or brown.","Something with a shell that you can boil, fry or scramble.","You can't make an omelette without breaking a few of these."]},
+  {w:'chicken',e:'🍗',zh:'鸡肉',c:'meal',l:0,d:["The meat from a bird that says 'cluck cluck'.","Roast meat from a farm bird — a leg would be lovely.","Poultry, please — a roasted drumstick would really hit the spot."]},
+  {w:'fish',e:'🐟',zh:'鱼',c:'meal',l:0,d:["An animal that lives in the sea. I want to eat it!","Something from the sea that swims and has fins — grilled, please.","Something freshly caught — it was swimming in the ocean this morning."]},
+  {w:'salad',e:'🥗',zh:'沙拉',c:'meal',l:0,d:["Cold green vegetables in a bowl, please.","A healthy bowl of raw leaves and vegetables with a little dressing.","I'm trying to eat healthily — something light and raw, tossed with oil and lemon."]},
+  {w:'chips',e:'🍟',zh:'薯条',c:'meal',l:0,d:["Long yellow pieces of potato, cooked in hot oil.","Fried strips of potato — in America they call them fries.","Something golden and crispy that the British usually serve alongside fish."]},
+  {w:'cheese',e:'🧀',zh:'奶酪',c:'meal',l:0,d:["A yellow food made from milk. Mice love it!","A solid food made from milk; it can be soft or hard, mild or strong.","Something that's left to mature for months — the older it gets, the stronger it smells."]},
+  {w:'hot dog',e:'🌭',zh:'热狗',c:'meal',l:1,d:["A sausage in long bread, please.","A long sausage served in a soft roll, often with mustard.","A classic snack at football matches: a sausage tucked into a bun."]},
+  {w:'pancake',e:'🥞',zh:'薄煎饼',c:'meal',l:1,d:["A flat round cake from a pan.","A flat, round cake cooked in a frying pan, eaten with syrup or lemon.","Something you toss and flip in the pan — the British have them on the Tuesday before Lent."]},
+  {w:'dumplings',e:'🥟',zh:'饺子',c:'meal',l:1,d:["Small pieces of dough with meat inside.","Small pieces of dough with meat or vegetables inside, boiled or steamed.","Little parcels of dough that families fold together at Chinese New Year."]},
+  {w:'curry',e:'🍛',zh:'咖喱',c:'meal',l:1,d:["A spicy dish with rice.","A spicy dish from India, usually served with rice.","Something with plenty of spices — I don't mind if it's a bit hot."]},
+  {w:'sushi',e:'🍣',zh:'寿司',c:'meal',l:1,d:["Rice and fish from Japan.","Small rolls of cold rice with raw fish, from Japan.","A Japanese speciality: vinegared rice, often topped with raw fish."]},
+  {w:'spaghetti',e:'🍝',zh:'意大利面',c:'meal',l:1,d:["Long thin pasta.","Long, thin pasta, often served with tomato sauce.","Italian strands that you twirl around your fork."]},
+  {w:'steak',e:'🥩',zh:'牛排',c:'meal',l:2,d:["A big piece of beef.","A thick piece of beef cooked quickly in a very hot pan.","A thick slice of beef — medium-rare, if you don't mind."]},
+  // 果蔬
+  {w:'apple',e:'🍎',zh:'苹果',c:'veg',l:0,d:["A round fruit. It is red or green and crunchy.","A crunchy fruit that grows on trees; you can make pies and juice from it.","The fruit that, according to the story, fell on Isaac Newton's head."]},
+  {w:'banana',e:'🍌',zh:'香蕉',c:'veg',l:0,d:["A long yellow fruit. Monkeys love it!","A curved fruit — you peel off the yellow skin before you eat it.","Something curved whose skin people always slip on in cartoons."]},
+  {w:'orange',e:'🍊',zh:'橙子',c:'veg',l:0,d:["A round fruit. Its name is a colour too!","A juicy citrus fruit that you peel; it's full of vitamin C.","A citrus fruit — and apparently nothing in English rhymes with its name."]},
+  {w:'lemon',e:'🍋',zh:'柠檬',c:'veg',l:0,d:["A yellow fruit. It is very sour!","A sour yellow citrus fruit — a slice is nice in tea.","Something so sour it makes your face screw up — I need a wedge for my fish."]},
+  {w:'grapes',e:'🍇',zh:'葡萄',c:'veg',l:0,d:["Small round purple or green fruit. They grow together in a bunch.","A bunch of small juicy fruits — people make wine from them.","Something that grows on vines in a vineyard; I'll have a bunch."]},
+  {w:'strawberry',e:'🍓',zh:'草莓',c:'veg',l:0,d:["A small red fruit with little seeds on the outside.","A sweet red berry, very popular with cream in summer.","A summer berry, red and heart-shaped, with its seeds on the outside."]},
+  {w:'watermelon',e:'🍉',zh:'西瓜',c:'veg',l:0,d:["A very big fruit. It is green outside and red inside.","A huge, juicy summer fruit with black seeds and a hard green skin.","Something so juicy it's mostly water — you'll need a big knife."]},
+  {w:'pineapple',e:'🍍',zh:'菠萝',c:'veg',l:0,d:["A big fruit with a hard skin and green leaves on top.","A sweet tropical fruit with a spiky skin; some people even put it on pizza!","Something tropical and prickly — and no, it doesn't come from a pine tree."]},
+  {w:'carrot',e:'🥕',zh:'胡萝卜',c:'veg',l:0,d:["A long orange vegetable. Rabbits love it!","A crunchy orange root vegetable that people say helps you see in the dark.","A root vegetable — the one people use as a nose for a snowman."]},
+  {w:'potato',e:'🥔',zh:'土豆',c:'veg',l:0,d:["A brown vegetable. You can make chips from it.","A vegetable that grows under the ground; you can mash, bake or roast it.","Something starchy that grows underground — baked in its jacket, please."]},
+  {w:'tomato',e:'🍅',zh:'西红柿',c:'veg',l:0,d:["A soft, round, red vegetable. We put it in salad.","A red, juicy fruit that people cook as a vegetable; ketchup is made from it.","Technically a fruit, but nobody would put it in a fruit salad."]},
+  {w:'peach',e:'🍑',zh:'桃子',c:'veg',l:1,d:["A soft sweet fruit.","A soft, sweet fruit with fuzzy skin and a big stone in the middle.","A soft fruit with velvety skin — I hear they're perfectly ripe today."]},
+  {w:'cherry',e:'🍒',zh:'樱桃',c:'veg',l:1,d:["A small red fruit.","A small, round, dark red fruit with a stone inside.","The little red fruit people put on top of a cake to finish it off."]},
+  {w:'pear',e:'🍐',zh:'梨',c:'veg',l:1,d:["A green fruit.","A sweet green fruit, round at the bottom and thin at the top.","A juicy fruit — when plans go wrong, the British say they've gone '___-shaped'."]},
+  {w:'onion',e:'🧅',zh:'洋葱',c:'veg',l:1,d:["A vegetable that makes you cry.","A round vegetable with layers — cutting it can make you cry.","Something with many layers that brings tears to your eyes when you chop it."]},
+  {w:'mushroom',e:'🍄',zh:'蘑菇',c:'veg',l:1,d:["It looks like a little umbrella.","A small vegetable shaped like an umbrella; it grows in dark, wet places.","A fungus — the kind you can safely eat, of course!"]},
+  {w:'corn',e:'🌽',zh:'玉米',c:'veg',l:1,d:["Yellow seeds on a tall plant.","Yellow seeds that grow on a tall plant; you can make popcorn from them.","Something you can eat straight off the cob, dripping with butter."]},
+  {w:'cucumber',e:'🥒',zh:'黄瓜',c:'veg',l:1,d:["A long green vegetable.","A long, cool, green vegetable, often sliced into salads.","Something long, green and refreshing — 'as cool as a ___', as the saying goes."]},
+  {w:'broccoli',e:'🥦',zh:'西兰花',c:'veg',l:2,d:["A green vegetable like a tree.","A green vegetable that looks like a little tree.","A green vegetable shaped like a tiny tree, which children famously refuse to eat."]},
+  {w:'garlic',e:'🧄',zh:'大蒜',c:'veg',l:2,d:["A small white plant with a strong smell.","A small white plant with a very strong smell, used in cooking.","Something pungent that leaves your breath smelling strong for hours."]},
+  {w:'coconut',e:'🥥',zh:'椰子',c:'veg',l:2,d:["A big brown nut.","A big, hard, brown nut with white flesh and sweet water inside.","A tropical nut with a hairy shell — you'll need a hammer to crack it open."]},
+  {w:'aubergine',e:'🍆',zh:'茄子',c:'veg',l:2,d:["A purple vegetable.","A long, shiny, purple vegetable.","A glossy purple vegetable — Americans call it an eggplant."]},
+  // 甜点
+  {w:'cake',e:'🍰',zh:'蛋糕',c:'sweet',l:0,d:["A sweet food for birthdays. You put candles on it.","A sweet baked food made from flour, eggs and sugar — a slice, please.","Something sweet and baked — you can't have it and eat it too, so they say."]},
+  {w:'ice cream',e:'🍦',zh:'冰淇淋',c:'sweet',l:0,d:["Something cold and sweet you eat in summer!","A frozen dessert in a cone that melts if you eat it too slowly.","Something frozen and creamy — two scoops, before it melts in this heat!"]},
+  {w:'chocolate',e:'🍫',zh:'巧克力',c:'sweet',l:0,d:["A sweet brown food. Children love it!","A sweet made from cocoa beans; it can be dark, milk or white.","Something made from cocoa — dark, please: the more bitter, the better."]},
+  {w:'biscuit',e:'🍪',zh:'饼干',c:'sweet',l:0,d:["A small, dry, sweet thing. I eat it with milk.","A small, flat, crunchy sweet — Americans call it a cookie.","Something crunchy to dunk in my tea."]},
+  {w:'sweets',e:'🍬',zh:'糖果',c:'sweet',l:0,d:["Small sugary things. Don't eat too many — they're bad for your teeth!","Small sugary treats in colourful wrappers — Americans say candy.","Something sugary in a wrapper — my dentist would not approve."]},
+  {w:'honey',e:'🍯',zh:'蜂蜜',c:'sweet',l:0,d:["A sweet yellow food. Bees make it.","A sweet, sticky food made by bees; it's lovely on toast.","Something golden and sticky, straight from the hive."]},
+  {w:'doughnut',e:'🍩',zh:'甜甜圈',c:'sweet',l:1,d:["A round cake with a hole.","A round fried cake with a hole in the middle.","Something deep-fried and ring-shaped, covered in sugary icing."]},
+  {w:'pie',e:'🥧',zh:'馅饼',c:'sweet',l:1,d:["Fruit in pastry.","Fruit or meat baked inside pastry.","Something with a pastry crust — an easy task is said to be 'as easy as' this."]},
+  {w:'lollipop',e:'🍭',zh:'棒棒糖',c:'sweet',l:1,d:["A sweet on a stick.","A hard sweet on a stick.","A sweet on a stick that lasts for ages if you lick it slowly."]},
+  {w:'pudding',e:'🍮',zh:'布丁',c:'sweet',l:2,d:["A soft sweet food.","A soft, sweet dish eaten at the end of a meal.","A wobbly dessert — and, in Britain, a word for any sweet course after dinner."]},
+  // 饮料
+  {w:'water',e:'💧',zh:'水',c:'drink',l:0,d:["A drink with no colour. It comes from the tap.","A clear drink with no taste — the healthiest choice when you're thirsty.","Just something plain from the tap — still, not sparkling."]},
+  {w:'milk',e:'🥛',zh:'牛奶',c:'drink',l:0,d:["A white drink from cows.","A white drink that's good for your bones; some people put it in tea.","There's no use crying over this when it's spilt, as they say."]},
+  {w:'tea',e:'🍵',zh:'茶',c:'drink',l:0,d:["A hot drink. People in Britain love it!","A hot drink made by pouring boiling water onto dried leaves.","A cuppa, please — the British cure for everything."]},
+  {w:'coffee',e:'☕',zh:'咖啡',c:'drink',l:0,d:["A hot brown drink. Many grown-ups drink it in the morning.","A hot drink made from roasted beans; it helps people wake up.","Something to keep me awake — a strong espresso or a latte."]},
+  {w:'juice',e:'🧃',zh:'果汁',c:'drink',l:0,d:["A drink made from fruit. Orange or apple?","A cold drink made by squeezing fruit.","Something freshly squeezed — no added sugar, please."]},
+  {w:'ice',e:'🧊',zh:'冰块',c:'drink',l:0,d:["Water that is very cold and hard.","Small frozen cubes to make my drink cold.","Something to keep my drink chilled — frozen water, in cubes please."]},
+  {w:'fizzy drink',e:'🥤',zh:'汽水',c:'drink',l:1,d:["A sweet drink with bubbles.","A sweet drink full of bubbles.","Something sparkling and sugary, full of bubbles that tickle my nose."]},
+  {w:'bubble tea',e:'🧋',zh:'珍珠奶茶',c:'drink',l:1,d:["Milk tea with balls in it.","A sweet milky tea with chewy balls at the bottom.","A drink from Taiwan with chewy tapioca pearls — I'll need a fat straw."]},
+];
+const SHELVES = [['meal','🍽️ 主食'],['veg','🥕 果蔬'],['sweet','🍰 甜点'],['drink','🥤 饮料']];
+
+const ALIENS = [
+  {id:'zib',e:'👽',n:'绿星人 Zib',s:['Zib 的星球上没有草莓，第一次吃到时，它开心得原地转了三圈。','Zib 回家时带走了一盒草莓种子，要在绿星上种一大片草莓田。']},
+  {id:'ollie',e:'🐙',n:'章鱼 Ollie',s:['Ollie 有八只手，所以总想一次点八杯饮料。','Ollie 其实是海底乐队的鼓手，下次要来小店开一场音乐会！']},
+  {id:'beep',e:'🤖',n:'机器人 Beep',s:['Beep 其实不用吃饭，它说来这里是为了“收集笑声”。','Beep 把你端对的每一道菜都存进了记忆芯片，叫它“最好吃的数据”。']},
+  {id:'luna',e:'🦄',n:'独角兽 Luna',s:['Luna 吃到甜点时，角会发出彩虹色的光。','Luna 说，小店的灯光是整片星空里最暖和的。']},
+  {id:'pip',e:'🐸',n:'邮差 Pip',s:['Pip 是星际邮差，每天要跳过三颗星球送信。','Pip 说你写的回信，是整个银河最受欢迎的信。']},
+  {id:'momo',e:'🐼',n:'竹子星 Momo',s:['Momo 从竹子星来，最想尝尝竹子以外的所有东西。','Momo 学会了包饺子，说下次要请你吃。']},
+  {id:'penny',e:'🐧',n:'冰雪星 Penny',s:['Penny 从冰雪星来，原来只爱吃冰的东西。','Penny 第一次喝了热茶，发现暖暖的东西也很好！']},
+  {id:'dino',e:'🦕',n:'长脖子 Dino',s:['Dino 太高了，每次进门都要低下长长的脖子。','Dino 说等它攒够星星币，要请全店的客人吃冰淇淋。']},
+];
+const STORY_AT = [3, 8];
+
+// 烦恼信箱：k 关键词, zh 中文, l 等级, r[0] 是合适的回信
+const LETTERS = [
+  {a:'pip',l:0,k:'bored',zh:'无聊的',t:"It's raining again and I can't go out. I have nothing to do. I'm so <mark>bored</mark>!",r:["Why not read a fun book or build a blanket fort?","Well done! You must be very proud.","Go to bed early — you need a rest."]},
+  {a:'momo',l:0,k:'lonely',zh:'孤独的',t:"I'm new at my school. Nobody talks to me at lunch, and I feel <mark>lonely</mark>.",r:["Try saying hi to one person. Friendships start with one smile!","Lucky you! Enjoy the quiet.","Eat a bigger lunch next time."]},
+  {a:'penny',l:0,k:'scared',zh:'害怕的',t:"There's a big storm tonight. The thunder is so loud and I'm <mark>scared</mark>.",r:["Stay close to your family. Storms always pass.","Thunder is boring, isn't it?","Great! Go and play outside."]},
+  {a:'dino',l:0,k:'tired',zh:'累的',t:"I played football all afternoon. Now my legs hurt and I'm really <mark>tired</mark>.",r:["Have a warm bath and go to bed early.","Run ten more laps!","Don't worry, it's only a game."]},
+  {a:'beep',l:0,k:'angry',zh:'生气的',t:"My little brother broke my favourite toy robot. I'm so <mark>angry</mark>!",r:["Take a deep breath first, then tell him how you feel.","Say thank you to him.","Buy him a present."]},
+  {a:'luna',l:0,k:'excited',zh:'兴奋的',t:"Tomorrow is my first trip to the seaside! I can't sit still — I'm so <mark>excited</mark>!",r:["How wonderful! Don't forget your sun hat.","Don't worry, I'm sure it will be over soon.","Oh no, I'm so sorry to hear that."]},
+  {a:'zib',l:1,k:'nervous',zh:'紧张的',t:"My piano exam is tomorrow and my hands keep shaking. I'm so <mark>nervous</mark>.",r:["Take a deep breath — you've practised a lot, so trust yourself!","Congratulations on passing!","Why not have a nap? You must be bored."]},
+  {a:'ollie',l:1,k:'embarrassed',zh:'尴尬的',t:"I fell over in front of the whole class today and everyone laughed. I was so <mark>embarrassed</mark>!",r:["Everyone falls sometimes. Laugh along — by tomorrow they'll forget.","You should be really proud of yourself!","Go to the doctor right now."]},
+  {a:'dino',l:1,k:'disappointed',zh:'失望的',t:"I trained for months, but I didn't get into the school team. I'm really <mark>disappointed</mark>.",r:["That's hard, but keep training — there's always next season.","Hooray! Let's have a party!","Don't be afraid of the dark."]},
+  {a:'momo',l:1,k:'jealous',zh:'嫉妒的',t:"My best friend got a new bike and I didn't. I feel a bit <mark>jealous</mark>, and I don't like it.",r:["That's a normal feeling. Maybe you could take turns riding it together!","You should be happy you got a bike!","Don't be shy — just say hello."]},
+  {a:'penny',l:1,k:'confused',zh:'困惑的',t:"My teacher explained fractions three times, but I'm still <mark>confused</mark>.",r:["Ask her to show you with a pizza — fractions are easier to see!","Great! Now you can teach the whole class.","Go and have a snack, you must be hungry."]},
+  {a:'beep',l:1,k:'proud',zh:'自豪的',t:"I finally built a model rocket all by myself! I feel so <mark>proud</mark>.",r:["Amazing! You worked hard, so you should be proud.","Don't worry, you'll do better next time.","Oh no, I'm so sorry."]},
+  {a:'luna',l:2,k:'overwhelmed',zh:'不知所措的',t:"I've got three tests, a project and a concert this week. I feel completely <mark>overwhelmed</mark>.",r:["Make a list and tackle one small thing at a time — it'll feel lighter.","Sounds like you need something to do!","Congratulations on finishing everything!"]},
+  {a:'zib',l:2,k:'homesick',zh:'想家的',t:"I'm on a two-week school trip to Earth. It's great, but I keep missing my mum's cooking. I'm <mark>homesick</mark>.",r:["Call home tonight — and try an Earth dish that reminds you of hers.","Stay in bed until you're feeling better.","You should travel even more often!"]},
+  {a:'ollie',l:2,k:'reluctant',zh:'不情愿的',t:"My parents want me to join the swimming club, but I'm <mark>reluctant</mark> — I've never liked deep water.",r:["Tell them how you feel; maybe start with a few lessons in the shallow end.","Great, you're so keen! Sign up today.","Don't be late for your first lesson."]},
+  {a:'pip',l:2,k:'frustrated',zh:'（屡试不成而）沮丧的',t:"I've tried to solve this puzzle fifty times and I still can't do it. I'm so <mark>frustrated</mark>!",r:["Take a break and come back later — fresh eyes often help.","Well done, you solved it!","Go out and make some new friends."]},
+  {a:'dino',l:2,k:'grateful',zh:'感激的',t:"My neighbour fixed my spaceship for free. I'm so <mark>grateful</mark> — how can I thank him?",r:["Bake him something tasty and write a thank-you card!","Ask him to pay you back.","Tell him you're angry."]},
+  {a:'momo',l:2,k:'anxious',zh:'焦虑的',t:"I keep worrying about moving to a new planet next month. I can't sleep — I'm really <mark>anxious</mark>.",r:["Talk to someone you trust, and find out a few fun facts about your new home.","Sounds like you're excited — have fun!","Sleep more and you won't be bored."]},
+];
+
+const UPGRADES = [
+  {id:'seat3',e:'🪑',n:'第三张桌子',d:'同时接待 3 位客人',p:40},
+  {id:'board',e:'🪧',n:'提示小黑板',d:'端错一次就显示首字母',p:50},
+  {id:'lamp',e:'🌟',n:'星光吊灯',d:'每位客人多给 3 星星币',p:60},
+  {id:'jukebox',e:'📻',n:'外星唱片机',d:'客人等得更有耐心',p:80},
+  {id:'sign',e:'🪩',n:'霓虹招牌',d:'每天多来 2 位客人',p:100},
+  {id:'seat4',e:'🛋️',n:'第四张桌子',d:'同时接待 4 位客人',p:120,need:'seat3'},
+];
+
+const LV = [
+  {k:'KET',d:'客人说简单的英文释义'},
+  {k:'PET',d:'客人用近义词，菜更多'},
+  {k:'FCE',d:'客人绕弯说话、用习语'},
+];
+
+// ===================== 存档 =====================
+const KEY = 'star-diner-v1';
+const S = Object.assign({level:0, day:1, coins:0, up:{}, words:{}, hearts:{}, letters:{}, pic:true, missedBy:{}}, load());
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; } }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+// ===================== 工具 =====================
+const $ = id => document.getElementById(id);
+const rnd = (a,b) => a + Math.random()*(b-a);
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+const norm = s => s.toLowerCase().replace(/[^a-z]/g,'');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const alienById = id => ALIENS.find(a => a.id === id);
+let toastT;
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),1800); }
+
+function pool(){ return FOODS.filter(f => f.l <= S.level); }
+function seatCount(){ return S.up.seat4 ? 4 : S.up.seat3 ? 3 : 2; }
+function lettersOpen(){
+  const avail = LETTERS.filter(x => x.l <= S.level);
+  const n = Math.min(avail.length, 2 + 2*(S.day-1));
+  return avail.slice(0, n);
+}
+function unreadLetters(){ return lettersOpen().filter(x => !S.letters[x.k]).length; }
+
+// ===================== 选词（间隔复习） =====================
+const GAP = [1,2,3,5,8,13];
+function chooseOrder(busyWords, busyAliens){
+  const today = S.day;
+  let cands = pool().filter(f => !busyWords.includes(f.w));
+  const fresh = cands.filter(f => !(shift && shift.used.has(f.w)));
+  if(fresh.length) cands = fresh;   // 同一天尽量不重复点同一道菜
+  const weighted = cands.map(f => {
+    const st = S.words[f.w];
+    let w;
+    if(!st) w = 3;                       // 新词
+    else if(st.due <= today) w = st.miss ? 8 : 5;  // 到期复习，上次端错的优先
+    else w = 0.4;                        // 还没到期
+    return [f, w];
+  });
+  let sum = weighted.reduce((s,x)=>s+x[1],0), r = Math.random()*sum, food = weighted[0][0];
+  for(const [f,w] of weighted){ r -= w; if(r <= 0){ food = f; break; } }
+  // 选客人：端错过这道菜的老顾客会回来再点
+  const st = S.words[food.w];
+  let alien = null, returning = false;
+  if(st && st.miss && st.due <= today && S.missedBy[food.w] && !busyAliens.includes(S.missedBy[food.w])){
+    alien = alienById(S.missedBy[food.w]); returning = true;
+  }
+  if(!alien){
+    const free = ALIENS.filter(a => !busyAliens.includes(a.id));
+    alien = pick(free.length ? free : ALIENS);
+  }
+  return {food, alien, returning};
+}
+function recordWord(w, firstTry, alienId){
+  const st = S.words[w] || {box:0, due:0, seen:0, right:0, miss:false};
+  st.seen++;
+  if(firstTry){ st.right++; st.box = Math.min(st.box+1, GAP.length-1); st.miss = false; st.due = S.day + GAP[st.box]; delete S.missedBy[w]; }
+  else { st.box = 0; st.miss = true; st.due = S.day + 1; S.missedBy[w] = alienId; }
+  S.words[w] = st;
+}
+
+// ===================== 营业 =====================
+let shift = null, tab = 'meal', timer = null;
+
+function startShift(){
+  shift = {quota: 8 + (S.up.sign?2:0), arrived:0, done:0, earned:0, right:[], missed:[], seats:Array(seatCount()).fill(null), sel:-1, used:new Set(), nextAt: performance.now()+500};
+  $('titleView').classList.add('hidden');
+  $('shiftView').classList.remove('hidden');
+  tab = 'meal';
+  renderTabs(); renderShelf(); renderTables(); renderTop();
+  $('typeBox').value=''; renderSugg();
+  clearInterval(timer); timer = setInterval(tick, 200);
+}
+
+function patienceMs(){ return (S.up.jukebox ? 60 : 40) * 1000 + S.level*8000; }
+
+function tick(){
+  if(!shift) return;
+  const now = performance.now();
+  const free = shift.seats.findIndex(s => !s);
+  if(free >= 0 && shift.arrived < shift.quota && now >= shift.nextAt){
+    const busyW = shift.seats.filter(Boolean).map(c=>c.food.w);
+    const busyA = shift.seats.filter(Boolean).map(c=>c.alien.id);
+    const o = chooseOrder(busyW, busyA);
+    shift.seats[free] = {food:o.food, alien:o.alien, returning:o.returning, start:now, wrong:0, state:'wait', react:'', good:false};
+    shift.arrived++; shift.used.add(o.food.w);
+    shift.nextAt = now + rnd(2500, 5000);
+    if(shift.sel < 0 || !shift.seats[shift.sel] || shift.seats[shift.sel].state!=='wait') shift.sel = free;
+    renderTables();
+  }
+  // 耐心条
+  shift.seats.forEach((c,i) => {
+    if(!c || c.state!=='wait') return;
+    const bar = document.querySelector(`#seat${i} .pat i`);
+    if(bar) bar.style.width = (100*patienceFrac(c,now)).toFixed(1)+'%';
+  });
+}
+function patienceFrac(c, now){ return Math.max(0, 1 - (now - c.start)/patienceMs()); }
+
+function renderTop(){
+  $('dayPill').textContent = `第 ${S.day} 天 · ${LV[S.level].k}`;
+  $('servePill').textContent = `🍽️ ${shift.done}/${shift.quota}`;
+  $('coinPill').textContent = `🪙 ${S.coins}`;
+  $('decor').textContent = UPGRADES.filter(u=>S.up[u.id]).map(u=>u.e).join('');
+}
+
+function hintText(c){
+  const w = c.food.w;
+  if(c.wrong >= 3) return `中文提示：${c.food.zh}`;
+  if(c.wrong >= 2 || (c.wrong >= 1 && S.up.board)) return `提示：以 “${w[0]}” 开头，共 ${w.replace(/ /g,'').length} 个字母`;
+  return '';
+}
+
+function renderTables(){
+  const el = $('tables');
+  el.innerHTML = shift.seats.map((c,i) => {
+    if(!c) return `<div class="seat empty" id="seat${i}">空桌子 · 等客人来</div>`;
+    const sel = i===shift.sel && c.state==='wait';
+    const hint = hintText(c);
+    const def = S.level < c.food.l ? c.food.d[c.food.l] : c.food.d[S.level];
+    return `<div class="seat ${sel?'sel':''} ${c.state==='happy'?'happy':''}" id="seat${i}" data-seat="${i}">
+      <span class="tap">${c.state==='happy'?'':sel?'正在服务':'点我服务'}</span>
+      <div class="who"><span class="ava">${c.state==='happy'?'😋':c.alien.e}</span><div>
+        <div class="nm">${esc(c.alien.n)}</div>
+        ${c.returning?'<div class="tagline">🔁 老顾客回来了，想再点上次那道菜</div>':''}
+      </div></div>
+      <div class="bubble">${c.state==='happy'?esc(c.react):esc(def)}</div>
+      ${c.state==='wait'?`<div class="react">${esc(c.react)}${hint?`<br>${esc(hint)}`:''}</div><div class="pat"><i style="width:${(100*patienceFrac(c,performance.now())).toFixed(1)}%"></i></div>`:`<div class="react good">${esc(c.good)}</div>`}
+    </div>`;
+  }).join('');
+}
+
+function renderTabs(){
+  $('tabs').innerHTML = SHELVES.map(([k,n]) => `<button data-tab="${k}" class="${k===tab?'on':''}">${n}</button>`).join('');
+}
+function renderShelf(){
+  const items = pool().filter(f => f.c === tab);
+  $('shelf').innerHTML = items.map(f => `<button class="food" data-food="${esc(f.w)}">${S.pic?`<span class="em">${f.e}</span>`:''}<span class="w">${esc(f.w)}</span></button>`).join('');
+}
+function renderSugg(){
+  const q = norm($('typeBox').value);
+  const el = $('sugg');
+  if(q.length < 2){ el.innerHTML = '<span class="tip">先点一位客人，再从货架上找菜；会拼的话直接打字更快，拼全还有奖励。</span>'; return; }
+  const m = matches(q);
+  el.innerHTML = m.length ? m.slice(0,6).map(f=>`<button data-food="${esc(f.w)}" data-typed="1">${S.pic?f.e+' ':''}${esc(f.w)}</button>`).join('') + '<span class="tip">回车端第一个</span>'
+                          : '<span class="tip">没有这个开头的菜，再看看拼写？</span>';
+}
+function matches(q){
+  return pool().filter(f => norm(f.w).startsWith(q)).sort((a,b)=>norm(a.w).length-norm(b.w).length);
+}
+
+function serve(w, typed){
+  if(!shift) return;
+  const i = shift.sel, c = shift.seats[i];
+  if(!c || c.state !== 'wait'){ toast('先点一位正在等的客人'); return; }
+  const food = FOODS.find(f => f.w === w);
+  if(food.w === c.food.w){
+    const now = performance.now();
+    const firstTry = c.wrong === 0;
+    const spelled = typed && norm($('typeBox').value) === norm(food.w);
+    let coins = 10 + Math.ceil(6*patienceFrac(c,now)) + (S.up.lamp?3:0) + (spelled?3:0);
+    if(!firstTry) coins = Math.max(4, coins - 3*c.wrong);
+    S.coins += coins; shift.earned += coins; shift.done++;
+    recordWord(food.w, firstTry, c.alien.id);
+    (firstTry ? shift.right : shift.missed).push(food);
+    const before = S.hearts[c.alien.id] || 0;
+    S.hearts[c.alien.id] = before + 1;
+    const newStory = STORY_AT.includes(before+1);
+    c.state = 'happy';
+    c.react = pick(['Yum! Thank you!','Perfect, just what I wanted!','Delicious! See you again!','You understood me! Thanks!']);
+    c.good = `✓ ${food.e} ${food.w} = ${food.zh}　+${coins} 🪙${spelled?'（拼写奖励）':''}`;
+    save();
+    $('typeBox').value=''; renderSugg();
+    if(newStory) toast(`💗 和 ${c.alien.n} 更熟了，去“老顾客”看看它的小故事`);
+    // 换到下一位等待的客人
+    const next = shift.seats.findIndex(s => s && s.state==='wait');
+    shift.sel = next;
+    renderTables(); renderTop();
+    setTimeout(() => {
+      if(!shift) return;
+      shift.seats[i] = null;
+      if(shift.sel < 0){ const n = shift.seats.findIndex(s => s && s.state==='wait'); shift.sel = n; }
+      shift.nextAt = Math.min(shift.nextAt, performance.now() + rnd(1200, 2500));
+      renderTables();
+      if(shift.done >= shift.quota) endShift();
+    }, 1600);
+  } else {
+    c.wrong++;
+    c.react = `这是 ${food.w}（${food.zh}），不是我想要的。再读一遍我的话，再试一次吧！`;
+    renderTables();
+    const b = document.querySelector(`[data-food="${CSS.escape(food.w)}"].food`);
+    if(b){ b.classList.remove('flash'); void b.offsetWidth; b.classList.add('flash'); }
+  }
+}
+
+function endShift(){
+  clearInterval(timer);
+  const sh = shift; shift = null;
+  S.day++; save();
+  $('shiftView').classList.add('hidden');
+  $('titleView').classList.remove('hidden');
+  renderTitle();
+  const wl = arr => arr.length ? `<div class="wl">${arr.map(f=>`<span>${f.e} ${esc(f.w)}<em>${f.zh}</em></span>`).join('')}</div>` : '<p style="color:var(--mute);margin:0">没有</p>';
+  openPanel(`<h2>🌙 第 ${S.day-1} 天打烊啦</h2>
+    <div class="stats"><div><b>${sh.done}</b><span>位客人吃饱了</span></div><div><b>${sh.right.length}</b><span>一次就端对</span></div><div><b>+${sh.earned}</b><span>星星币</span></div></div>
+    <h3>✨ 一次端对的菜</h3>${wl(sh.right)}
+    <h3>🔁 明天老顾客会再点的菜</h3>${wl(sh.missed)}
+    <div class="btns">
+      <button class="ghost" data-open="mail">📮 烦恼信箱${unreadLetters()?`<span class="dot">${unreadLetters()}</span>`:''}</button>
+      <button class="ghost" data-open="shop">🛒 装修小店</button>
+      <button class="big" data-act="start">明天继续营业</button>
+    </div>`);
+}
+
+// ===================== 标题页 =====================
+function renderTitle(){
+  $('lvPick').innerHTML = LV.map((x,i)=>`<button data-lv="${i}" class="${i===S.level?'on':''}"><b>${x.k} 客人</b><span>${x.d}</span></button>`).join('');
+  const n = unreadLetters(); const d = $('mailDot1');
+  d.textContent = n; d.classList.toggle('hidden', !n);
+  const learned = Object.values(S.words).filter(s=>s.box>=2).length;
+  $('titleInfo').textContent = `第 ${S.day} 天 · 🪙 ${S.coins} · 已经记住 ${learned} 道菜 · 菜单共 ${pool().length} 道`;
+  $('startBtn').textContent = S.day===1 ? '开张营业' : `第 ${S.day} 天开门`;
+}
+
+// ===================== 弹层 =====================
+function openPanel(html){ $('panel').innerHTML = `<button class="close" data-act="close">✕</button>` + html; $('mask').classList.remove('hidden'); $('mask').scrollTop = 0; }
+function closePanel(){ $('mask').classList.add('hidden'); renderTitle(); }
+
+function openShop(){
+  openPanel(`<h2>🛒 装修小店</h2><p style="margin:0 0 10px;color:var(--mute)">现在有 🪙 ${S.coins}</p>` + UPGRADES.map(u=>{
+    const own = S.up[u.id], locked = u.need && !S.up[u.need];
+    return `<div class="shop-item"><span class="ic">${u.e}</span><div class="tx"><b>${u.n}</b><span>${u.d}${locked?'（先买第三张桌子）':''}</span></div>
+      <button class="buy" data-buy="${u.id}" ${own||locked||S.coins<u.p?'disabled':''}>${own?'已拥有':`🪙 ${u.p}`}</button></div>`;
+  }).join(''));
+}
+function buy(id){
+  const u = UPGRADES.find(x=>x.id===id);
+  if(!u || S.up[id] || S.coins < u.p) return;
+  S.coins -= u.p; S.up[id] = true; save();
+  toast(`${u.e} ${u.n} 装好啦！`);
+  openShop();
+}
+
+function openMail(){
+  const list = lettersOpen();
+  const avail = LETTERS.filter(x => x.l <= S.level).length;
+  openPanel(`<h2>📮 烦恼信箱</h2><p style="margin:0 0 10px;color:var(--mute)">客人们写来了小烦恼，读懂信里的心情词，选一封最合适的回信。</p>
+    <div class="letter-list">${list.map(x=>{const a=alienById(x.a);const done=S.letters[x.k];
+      return `<button data-letter="${x.k}"><span class="ic">${a.e}</span><span class="tx">${esc(a.n)} 的来信<span>${done?`✓ 已回信 · ${x.k} ${x.zh}`:'还没回信'}</span></span><span>${done?'💌':'✉️'}</span></button>`;}).join('')}</div>
+    ${list.length<avail?`<p class="hint-small">每营业一天，会再收到 2 封信。</p>`:''}`);
+}
+let letterState = null;
+function openLetter(k){
+  const x = LETTERS.find(l=>l.k===k), a = alienById(x.a);
+  // 打乱回信顺序（固定在本次打开期间）
+  const order = [0,1,2].sort(()=>Math.random()-.5);
+  letterState = {x, order, tries:0, done: !!S.letters[k]};
+  drawLetter();
+}
+function drawLetter(){
+  const {x, order, done} = letterState, a = alienById(x.a);
+  openPanel(`<h2>✉️ ${esc(a.n)} 的来信</h2>
+    <div class="paper"><div class="from">Dear Chef,</div>${x.t}<div class="from" style="margin-top:6px">— ${esc(a.n.split(' ').pop())}</div></div>
+    <h3>选一句最合适的回信</h3>
+    <div class="replies">${order.map(i=>`<button data-reply="${i}" class="${done&&i===0?'right':''}">${esc(x.r[i])}</button>`).join('')}</div>
+    <div class="fb ${done?'good':''}" id="fb">${done?`💌 已经寄出啦。<b>${x.k}</b> = ${x.zh}`:''}</div>
+    <div class="btns"><button class="ghost" data-open="mail">← 回到信箱</button></div>`);
+}
+function reply(i, btn){
+  const st = letterState; if(!st || st.done) return;
+  const x = st.x, a = alienById(x.a);
+  if(i === 0){
+    st.done = true;
+    const coins = st.tries === 0 ? 15 : 8;
+    S.coins += coins; S.letters[x.k] = true;
+    S.hearts[a.id] = (S.hearts[a.id]||0) + 2;
+    save();
+    btn.classList.add('right');
+    $('fb').className = 'fb good';
+    $('fb').innerHTML = `💌 ${esc(a.n.split(' ').pop())} 收到回信，好多了！<b>${x.k}</b> = ${x.zh}　+${coins} 🪙　💗+2`;
+  } else {
+    st.tries++;
+    btn.classList.add('wrong'); btn.disabled = true;
+    $('fb').className = 'fb try';
+    $('fb').innerHTML = st.tries >= 2 ? `再试一次吧。小提示：<b>${x.k}</b> 的意思是“${x.zh}”。` : '这句回信好像不太对，再读一遍信里黄色的词，再试一次吧！';
+  }
+}
+
+function openFriends(){
+  openPanel(`<h2>👽 老顾客</h2><p style="margin:0 0 10px;color:var(--mute)">端对菜、回好信，客人就会和你更熟，说出自己的小故事。</p><div class="friends">` + ALIENS.map(a=>{
+    const h = S.hearts[a.id]||0;
+    return `<div class="friend"><div class="top2"><span>${a.e}</span>${esc(a.n)}</div><div class="hearts">💗 ${h}</div>` +
+      a.s.map((s,i)=> h>=STORY_AT[i] ? `<p>${esc(s)}</p>` : `<p class="lock">🔒 熟悉度到 ${STORY_AT[i]} 解锁</p>`).join('') + `</div>`;
+  }).join('') + `</div>`);
+}
+
+function openSettings(){
+  openPanel(`<h2>⚙️ 设置</h2>
+    <div class="set">货架上显示图片<span class="switch ${S.pic?'on':''}" data-act="pic"></span></div>
+    <p class="hint-small" style="margin-top:0">关掉图片后只能看英文单词找菜，更有挑战。</p>
+    <div class="set">从头再来（清空进度）<button class="ghost" data-act="reset">清空</button></div>`);
+}
+
+// ===================== 事件 =====================
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-lv],[data-open],[data-act],[data-tab],[data-food],[data-seat],[data-buy],[data-letter],[data-reply]');
+  if(!t){ if(e.target.id==='mask') closePanel(); return; }
+  const d = t.dataset;
+  if(d.lv!==undefined){ S.level = +d.lv; save(); renderTitle(); return; }
+  if(d.open){ ({mail:openMail, shop:openShop, friends:openFriends, settings:openSettings})[d.open](); return; }
+  if(d.act==='close'){ closePanel(); return; }
+  if(d.act==='start'){ closePanel(); startShift(); return; }
+  if(d.act==='pic'){ S.pic=!S.pic; save(); openSettings(); return; }
+  if(d.act==='reset'){
+    if(t.dataset.confirm){ localStorage.removeItem(KEY); location.reload(); }
+    else { t.dataset.confirm='1'; t.textContent='再点一次确认'; }
+    return;
+  }
+  if(d.tab){ tab=d.tab; renderTabs(); renderShelf(); return; }
+  if(d.food){ serve(d.food, !!d.typed); return; }
+  if(d.seat!==undefined){ const c=shift&&shift.seats[+d.seat]; if(c&&c.state==='wait'){ shift.sel=+d.seat; renderTables(); } return; }
+  if(d.buy){ buy(d.buy); return; }
+  if(d.letter){ openLetter(d.letter); return; }
+  if(d.reply!==undefined){ reply(+d.reply, t); return; }
+});
+$('startBtn').addEventListener('click', startShift);
+$('typeBox').addEventListener('input', renderSugg);
+$('typeBox').addEventListener('keydown', e => {
+  if(e.key!=='Enter') return;
+  const q = norm($('typeBox').value); if(q.length<2) return;
+  const m = matches(q); if(m.length) serve(m[0].w, true);
+});
+
+renderTitle();
+</script>
+</body>
+</html>

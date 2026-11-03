@@ -162,7 +162,8 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
     1. 点<b>词宝小屋</b>里的词卡，答对题才能请到词宝（答错不扣词币）。<br>
     2. 同一个词请 3 次会升到 3 星，戴上小皇冠 👑。<br>
     3. 把有关系的词宝放上草地，触发<b>组合</b>：同主题、同词根、反义词挨着站。<br>
-    4. 点“开始比赛”，两队自动扔星星泡泡。坚持 8 回合就通关！
+    4. 点“开始比赛”，两队自动扔星星泡泡。赢了可能得到🏷️魔法贴纸，把 happy 变成 unhappy！<br>
+    5. 坚持 8 回合就通关！
   </div>
   <div class="card">
     <h3>四种词宝</h3>
@@ -197,6 +198,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
   <div id="prep">
     <div class="benchrow"><span class="lbl">长椅</span><div class="bench" id="bench"></div></div>
     <div class="combos" id="combos"></div>
+    <div class="combos" id="stickers"></div>
     <div class="info hidden" id="info"></div>
     <div class="shophead"><h2>🏡 词宝小屋</h2><span class="pill" id="streakP"></span></div>
     <div class="shop" id="shop"></div>
@@ -214,7 +216,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 
 </div>
 <div id="modalRoot"></div>
-<div class="ver">v0.2</div>
+<div class="ver">v0.3</div>
 
 <script>
 /*DATA*/const DATA = {"themes":{"travel":{"name":"旅行","icon":"🧳"},"food":{"name":"美食","icon":"🍰"},"school":{"name":"学校","icon":"🏫"},"nature":{"name":"自然","icon":"🌳"},"sport":{"name":"运动","icon":"⚽"},"home":{"name":"家","icon":"🏠"},"feel":{"name":"心情","icon":"😊"},"shop":{"name":"购物","icon":"🛍️"}},"fams":{"port":{"note":"port = 搬、运"},"help":{"note":"help = 帮助"},"happy":{"note":"happy = 开心"},"care":{"note":"care = 小心、在意"},"play":{"note":"play = 玩"},"friend":{"note":"friend = 朋友"},"sun":{"note":"sun = 太阳"},"rain":{"note":"rain = 雨"},"use":{"note":"use = 用"},"er":{"note":"-er = 做某事的人"},"ly":{"note":"-ly = ……地"}},"words":[{"w":"ticket","pos":"n","th":"travel","lv":"A2","cn":"票","ex":"I bought a ticket for the train.","fam":[],"ant":null},{"w":"luggage","pos":"n","th":"travel","lv":"A2","cn":"行李","ex":"How much luggage do you have?","fam":[],"ant":null},{"w":"passport","pos":"n","th":"travel","lv":"A2","cn":"护照","ex":"Don't forget your passport.","fam":["port"],"ant":null},{"w":"airport","pos":"n","th":"travel","lv":"A2","cn":"机场","ex":"We got to the airport early.","fam":["port"],"ant":null},{"w":"hotel","pos":"n","th":"travel","lv":"A2","cn":"酒店","ex":"Our hotel is near the beach.","fam":[],"ant":null},{"w":"map","pos":"n","th":"travel","lv":"A2","cn":"地图","ex":"Let's look at the map.","fam":[],"ant":null},{"w":"journey","pos":"n","th":"travel","lv":"A2","cn":"旅程","ex":"The journey took three hours.","fam":[],"ant":null},{"w":"trip","pos":"n","th":"travel","lv":"A2","cn":"旅行；短途旅行","ex":"We went on a school trip to the zoo.","fam":[],"ant":null},{"w":"transport","pos":"n","th":"travel","lv":"A2","cn":"交通","ex":"Public transport in this city is very good.","fam":["port"],"ant":null},{"w":"travel","pos":"v","th":"travel","lv":"A2","cn":"旅行","ex":"I love to travel to new places.","fam":[],"ant":null},{"w":"arrive","pos":"v","th":"travel","lv":"A2","cn":"到达","ex":"What time does the train arrive?","fam":[],"ant":"leave"},{"w":"leave","pos":"v","th":"travel","lv":"A2","cn":"离开","ex":"The bus will leave in five minutes.","fam":[],"ant":"arrive"},{"w":"visit","pos":"v","th":"travel","lv":"A2","cn":"拜访；参观","ex":"We visit our grandparents every Sunday.","fam":[],"ant":null},{"w":"visitor","pos":"n","th":"travel","lv":"A2","cn":"游客；访客","ex":"A visitor from London came to our class.","fam":["er"],"ant":null},{"w":"pack","pos":"v","th":"travel","lv":"A2","cn":"打包","ex":"Pack your suitcase tonight.","fam":[],"ant":null},{"w":"delay","pos":"n","th":"travel","lv":"B1","cn":"延误","ex":"There is a delay of twenty minutes.","fam":[],"ant":null},{"w":"abroad","pos":"adv","th":"travel","lv":"B1","cn":"在国外","ex":"She wants to study abroad.","fam":[],"ant":null},{"w":"early","pos":"adv","th":"travel","lv":"A2","cn":"早的","ex":"I get up early on school days.","fam":[],"ant":"late"},{"w":"late","pos":"adv","th":"travel","lv":"A2","cn":"晚的；迟到","ex":"Sorry I'm late.","fam":[],"ant":"early"},{"w":"apple","pos":"n","th":"food","lv":"A2","cn":"苹果","ex":"She ate an apple after lunch.","fam":[],"ant":null},{"w":"bread","pos":"n","th":"food","lv":"A2","cn":"面包","ex":"Can you buy some bread on the way home?","fam":[],"ant":null},{"w":"cheese","pos":"n","th":"food","lv":"A2","cn":"奶酪","ex":"I'd like a cheese sandwich.","fam":[],"ant":null},{"w":"soup","pos":"n","th":"food","lv":"A2","cn":"汤","ex":"Hot soup is perfect on a cold day.","fam":[],"ant":null},{"w":"breakfast","pos":"n","th":"food","lv":"A2","cn":"早餐","ex":"I have eggs for breakfast.","fam":[],"ant":null},{"w":"cooker","pos":"n","th":"food","lv":"A2","cn":"炉灶","ex":"Don't touch the cooker, it's hot.","fam":[],"ant":null},{"w":"cook","pos":"v","th":"food","lv":"A2","cn":"做饭；厨师","ex":"My dad loves to cook on Sundays.","fam":[],"ant":null},{"w":"eat","pos":"v","th":"food","lv":"A2","cn":"吃","ex":"What do you want to eat?","fam":[],"ant":null},{"w":"drink","pos":"v","th":"food","lv":"A2","cn":"喝；饮料","ex":"Drink plenty of water every day.","fam":[],"ant":null},{"w":"taste","pos":"v","th":"food","lv":"A2","cn":"尝；味道","ex":"Taste the sauce and add some salt.","fam":[],"ant":null},{"w":"delicious","pos":"adj","th":"food","lv":"A2","cn":"美味的","ex":"This soup is delicious.","fam":[],"ant":null},{"w":"hungry","pos":"adj","th":"food","lv":"A2","cn":"饿的","ex":"I'm hungry, let's eat.","fam":[],"ant":null},{"w":"sweet","pos":"adj","th":"food","lv":"A2","cn":"甜的；糖果","ex":"This cake is too sweet for me.","fam":[],"ant":null},{"w":"fresh","pos":"adj","th":"food","lv":"A2","cn":"新鲜的","ex":"We buy fresh fish at the market.","fam":[],"ant":null},{"w":"hot","pos":"adj","th":"food","lv":"A2","cn":"热的；辣的","ex":"Be careful, the soup is hot.","fam":[],"ant":"cold"},{"w":"cold","pos":"adj","th":"food","lv":"A2","cn":"感冒；冷的","ex":"I caught a cold at the weekend.","fam":[],"ant":"hot"},{"w":"teacher","pos":"n","th":"school","lv":"A2","cn":"老师","ex":"Our teacher gives us lots of homework.","fam":["er"],"ant":null},{"w":"student","pos":"n","th":"school","lv":"A2","cn":"学生","ex":"Every student needs a dictionary.","fam":[],"ant":null},{"w":"lesson","pos":"n","th":"school","lv":"A2","cn":"课","ex":"The English lesson starts at nine.","fam":[],"ant":null},{"w":"homework","pos":"n","th":"school","lv":"A2","cn":"家庭作业","ex":"I always do my homework after dinner.","fam":[],"ant":null},{"w":"library","pos":"n","th":"school","lv":"A2","cn":"图书馆","ex":"I borrow books from the library.","fam":[],"ant":null},{"w":"exam","pos":"n","th":"school","lv":"A2","cn":"考试","ex":"I passed my English exam!","fam":[],"ant":null},{"w":"pencil","pos":"n","th":"school","lv":"A2","cn":"铅笔","ex":"Draw it with a pencil first.","fam":[],"ant":null},{"w":"report","pos":"n","th":"school","lv":"B1","cn":"报告","ex":"I have to write a report about the trip.","fam":["port"],"ant":null},{"w":"teach","pos":"v","th":"school","lv":"A2","cn":"教","ex":"Can you teach me to cook?","fam":[],"ant":"learn"},{"w":"learn","pos":"v","th":"school","lv":"A2","cn":"学习","ex":"I want to learn to play the guitar.","fam":[],"ant":"teach"},{"w":"study","pos":"v","th":"school","lv":"A2","cn":"学习；研究","ex":"I study for two hours every evening.","fam":[],"ant":null},{"w":"read","pos":"v","th":"school","lv":"A2","cn":"读","ex":"I read a story before bed.","fam":[],"ant":null},{"w":"reader","pos":"n","th":"school","lv":"A2","cn":"读者","ex":"She is a fast reader and loves comics.","fam":["er"],"ant":null},{"w":"write","pos":"v","th":"school","lv":"A2","cn":"写","ex":"Please write your name at the top.","fam":[],"ant":null},{"w":"clever","pos":"adj","th":"school","lv":"A2","cn":"聪明的","ex":"She is clever enough to solve any puzzle.","fam":[],"ant":null},{"w":"quietly","pos":"adv","th":"school","lv":"A2","cn":"安静地","ex":"Please talk quietly in the library.","fam":["ly"],"ant":"loudly"},{"w":"loudly","pos":"adv","th":"school","lv":"B1","cn":"大声地","ex":"He laughed loudly.","fam":["ly"],"ant":"quietly"},{"w":"carefully","pos":"adv","th":"school","lv":"A2","cn":"仔细地","ex":"Read the question carefully.","fam":["care","ly"],"ant":null},{"w":"sun","pos":"n","th":"nature","lv":"A2","cn":"太阳","ex":"The sun is shining.","fam":["sun"],"ant":null},{"w":"sunshine","pos":"n","th":"nature","lv":"B1","cn":"阳光","ex":"Let's sit in the sunshine.","fam":["sun"],"ant":null},{"w":"rain","pos":"n","th":"nature","lv":"A2","cn":"雨；下雨","ex":"It's going to rain this afternoon.","fam":["rain"],"ant":null},{"w":"rainbow","pos":"n","th":"nature","lv":"A2","cn":"彩虹","ex":"Look, there's a rainbow!","fam":["rain"],"ant":null},{"w":"snow","pos":"n","th":"nature","lv":"A2","cn":"雪；下雪","ex":"We built a snowman in the snow.","fam":[],"ant":null},{"w":"river","pos":"n","th":"nature","lv":"A2","cn":"河","ex":"We swam in the river.","fam":[],"ant":null},{"w":"mountain","pos":"n","th":"nature","lv":"A2","cn":"山","ex":"We climbed the mountain.","fam":[],"ant":null},{"w":"forest","pos":"n","th":"nature","lv":"A2","cn":"森林","ex":"Bears live in the forest.","fam":[],"ant":null},{"w":"grow","pos":"v","th":"nature","lv":"A2","cn":"长大；种植","ex":"Children grow very fast.","fam":[],"ant":null},{"w":"sunny","pos":"adj","th":"nature","lv":"A2","cn":"晴朗的","ex":"It's a sunny day.","fam":["sun"],"ant":null},{"w":"rainy","pos":"adj","th":"nature","lv":"A2","cn":"下雨的","ex":"I stay at home on rainy days.","fam":["rain"],"ant":null},{"w":"windy","pos":"adj","th":"nature","lv":"A2","cn":"有风的","ex":"It's too windy to fly a kite.","fam":[],"ant":null},{"w":"cloudy","pos":"adj","th":"nature","lv":"A2","cn":"多云的","ex":"It's cloudy, but it isn't raining.","fam":[],"ant":null},{"w":"wet","pos":"adj","th":"nature","lv":"A2","cn":"湿的","ex":"My shoes got wet in the rain.","fam":[],"ant":"dry"},{"w":"dry","pos":"adj","th":"nature","lv":"A2","cn":"干燥的","ex":"Keep your phone dry.","fam":[],"ant":"wet"},{"w":"outside","pos":"adv","th":"nature","lv":"A2","cn":"在外面","ex":"The children are playing outside.","fam":[],"ant":null},{"w":"football","pos":"n","th":"sport","lv":"A2","cn":"足球","ex":"We play football every Saturday.","fam":[],"ant":null},{"w":"team","pos":"n","th":"sport","lv":"A2","cn":"队","ex":"I'm in the school football team.","fam":[],"ant":null},{"w":"player","pos":"n","th":"sport","lv":"A2","cn":"运动员；选手","ex":"He's the best player in the team.","fam":["play","er"],"ant":null},{"w":"match","pos":"n","th":"sport","lv":"A2","cn":"比赛","ex":"The match starts at three.","fam":[],"ant":null},{"w":"playground","pos":"n","th":"sport","lv":"A2","cn":"操场","ex":"The children are running in the playground.","fam":["play"],"ant":null},{"w":"play","pos":"v","th":"sport","lv":"A2","cn":"玩；演奏","ex":"Let's play outside.","fam":["play"],"ant":null},{"w":"run","pos":"v","th":"sport","lv":"A2","cn":"跑","ex":"I run in the park every morning.","fam":[],"ant":null},{"w":"swim","pos":"v","th":"sport","lv":"A2","cn":"游泳","ex":"Can you swim?","fam":[],"ant":null},{"w":"swimmer","pos":"n","th":"sport","lv":"A2","cn":"游泳的人","ex":"My brother is a very good swimmer.","fam":["er"],"ant":null},{"w":"jump","pos":"v","th":"sport","lv":"A2","cn":"跳","ex":"The cat can jump onto the table.","fam":[],"ant":null},{"w":"win","pos":"v","th":"sport","lv":"A2","cn":"赢","ex":"Our team hopes to win the cup.","fam":[],"ant":"lose"},{"w":"lose","pos":"v","th":"sport","lv":"A2","cn":"输掉；丢失","ex":"Don't lose your ticket.","fam":[],"ant":"win"},{"w":"fast","pos":"adj","th":"sport","lv":"A2","cn":"快的","ex":"This is a fast train.","fam":[],"ant":"slow"},{"w":"slow","pos":"adj","th":"sport","lv":"A2","cn":"慢的","ex":"The bus is very slow.","fam":[],"ant":"fast"},{"w":"strong","pos":"adj","th":"sport","lv":"A2","cn":"强壮的","ex":"You need strong legs to climb this hill.","fam":[],"ant":"weak"},{"w":"weak","pos":"adj","th":"sport","lv":"A2","cn":"虚弱的；弱的","ex":"I felt weak after I was ill.","fam":[],"ant":"strong"},{"w":"quickly","pos":"adv","th":"sport","lv":"A2","cn":"快速地","ex":"He ran quickly to the bus.","fam":["ly"],"ant":"slowly"},{"w":"slowly","pos":"adv","th":"sport","lv":"A2","cn":"慢慢地","ex":"Please speak slowly.","fam":["ly"],"ant":"quickly"},{"w":"house","pos":"n","th":"home","lv":"A2","cn":"房子","ex":"They live in a big house with a garden.","fam":[],"ant":null},{"w":"bedroom","pos":"n","th":"home","lv":"A2","cn":"卧室","ex":"I share a bedroom with my brother.","fam":[],"ant":null},{"w":"door","pos":"n","th":"home","lv":"A2","cn":"门","ex":"Please close the door.","fam":[],"ant":null},{"w":"window","pos":"n","th":"home","lv":"A2","cn":"窗户","ex":"Open the window, it's hot in here.","fam":[],"ant":null},{"w":"sofa","pos":"n","th":"home","lv":"A2","cn":"沙发","ex":"The cat is sleeping on the sofa.","fam":[],"ant":null},{"w":"clean","pos":"v","th":"home","lv":"A2","cn":"干净的；打扫","ex":"Please clean your room.","fam":[],"ant":"dirty"},{"w":"wash","pos":"v","th":"home","lv":"A2","cn":"洗","ex":"Wash your hands before lunch.","fam":[],"ant":null},{"w":"open","pos":"v","th":"home","lv":"A2","cn":"打开","ex":"Open your books at page five.","fam":[],"ant":"close"},{"w":"close","pos":"v","th":"home","lv":"A2","cn":"关闭","ex":"Close the window, please.","fam":[],"ant":"open"},{"w":"tidy","pos":"adj","th":"home","lv":"A2","cn":"整洁的；整理","ex":"Your room is very tidy today.","fam":[],"ant":"messy"},{"w":"messy","pos":"adj","th":"home","lv":"B1","cn":"凌乱的","ex":"The kitchen is messy after the party.","fam":[],"ant":"tidy"},{"w":"dirty","pos":"adj","th":"home","lv":"A2","cn":"脏的","ex":"My shoes are dirty after the football match.","fam":[],"ant":"clean"},{"w":"comfortable","pos":"adj","th":"home","lv":"A2","cn":"舒服的","ex":"This sofa is really comfortable.","fam":[],"ant":null},{"w":"upstairs","pos":"adv","th":"home","lv":"A2","cn":"在楼上","ex":"My bedroom is upstairs.","fam":[],"ant":"downstairs"},{"w":"downstairs","pos":"adv","th":"home","lv":"A2","cn":"在楼下","ex":"Breakfast is ready, come downstairs.","fam":[],"ant":"upstairs"},{"w":"together","pos":"adv","th":"home","lv":"A2","cn":"一起","ex":"We walk to school together.","fam":[],"ant":null},{"w":"friend","pos":"n","th":"feel","lv":"A2","cn":"朋友","ex":"My best friend lives in the next street.","fam":["friend"],"ant":null},{"w":"friendship","pos":"n","th":"feel","lv":"B1","cn":"友谊","ex":"Their friendship started at primary school.","fam":["friend"],"ant":null},{"w":"happiness","pos":"n","th":"feel","lv":"B1","cn":"幸福；快乐","ex":"Money can't buy happiness.","fam":["happy"],"ant":null},{"w":"smile","pos":"v","th":"feel","lv":"A2","cn":"微笑","ex":"She gave me a big smile.","fam":[],"ant":null},{"w":"laugh","pos":"v","th":"feel","lv":"A2","cn":"笑","ex":"His jokes always make me laugh.","fam":[],"ant":"cry"},{"w":"cry","pos":"v","th":"feel","lv":"A2","cn":"哭","ex":"The baby started to cry.","fam":[],"ant":"laugh"},{"w":"help","pos":"v","th":"feel","lv":"A2","cn":"帮助","ex":"Can you help me carry this box?","fam":["help"],"ant":null},{"w":"helper","pos":"n","th":"feel","lv":"A2","cn":"帮手","ex":"Tom is a good helper in the kitchen.","fam":["help","er"],"ant":null},{"w":"happy","pos":"adj","th":"feel","lv":"A2","cn":"快乐的","ex":"I'm happy to see you.","fam":["happy"],"ant":"sad"},{"w":"unhappy","pos":"adj","th":"feel","lv":"A2","cn":"不开心的","ex":"He was unhappy with his test result.","fam":["happy"],"ant":null},{"w":"sad","pos":"adj","th":"feel","lv":"A2","cn":"难过的","ex":"The end of the film was very sad.","fam":[],"ant":"happy"},{"w":"friendly","pos":"adj","th":"feel","lv":"A2","cn":"友好的","ex":"The people here are very friendly.","fam":["friend"],"ant":"unfriendly"},{"w":"unfriendly","pos":"adj","th":"feel","lv":"B1","cn":"不友好的","ex":"The shop assistant was a bit unfriendly.","fam":["friend"],"ant":"friendly"},{"w":"kind","pos":"adj","th":"feel","lv":"A2","cn":"友好的；种类","ex":"It was kind of you to help me.","fam":[],"ant":null},{"w":"brave","pos":"adj","th":"feel","lv":"B1","cn":"勇敢的","ex":"The brave firefighter saved the child.","fam":[],"ant":null},{"w":"afraid","pos":"adj","th":"feel","lv":"A2","cn":"害怕的","ex":"Are you afraid of spiders?","fam":[],"ant":null},{"w":"helpful","pos":"adj","th":"feel","lv":"A2","cn":"有帮助的","ex":"The guide was very helpful.","fam":["help"],"ant":null},{"w":"careful","pos":"adj","th":"feel","lv":"A2","cn":"小心的","ex":"Be careful when you cross the road.","fam":["care"],"ant":"careless"},{"w":"careless","pos":"adj","th":"feel","lv":"B1","cn":"粗心的","ex":"I lost marks because of careless mistakes.","fam":["care"],"ant":"careful"},{"w":"happily","pos":"adv","th":"feel","lv":"A2","cn":"开心地","ex":"The children played happily in the garden.","fam":["happy","ly"],"ant":"sadly"},{"w":"sadly","pos":"adv","th":"feel","lv":"B1","cn":"难过地","ex":"She looked sadly at the broken toy.","fam":["ly"],"ant":"happily"},{"w":"shop","pos":"n","th":"shop","lv":"A2","cn":"商店；购物","ex":"The shop opens at nine.","fam":[],"ant":null},{"w":"money","pos":"n","th":"shop","lv":"A2","cn":"钱","ex":"I don't have enough money.","fam":[],"ant":null},{"w":"price","pos":"n","th":"shop","lv":"A2","cn":"价格","ex":"The price of this book is ten pounds.","fam":[],"ant":null},{"w":"present","pos":"n","th":"shop","lv":"A2","cn":"在场的；礼物；现在","ex":"Everyone is present today.","fam":[],"ant":null},{"w":"customer","pos":"n","th":"shop","lv":"A2","cn":"顾客","ex":"The shop is full of customers today. One customer is waiting.","fam":[],"ant":null},{"w":"buy","pos":"v","th":"shop","lv":"A2","cn":"买","ex":"I want to buy a new bike.","fam":[],"ant":"sell"},{"w":"sell","pos":"v","th":"shop","lv":"A2","cn":"卖","ex":"They sell ice cream at the beach.","fam":[],"ant":"buy"},{"w":"pay","pos":"v","th":"shop","lv":"A2","cn":"付钱","ex":"Can I pay by card?","fam":[],"ant":null},{"w":"borrow","pos":"v","th":"shop","lv":"A2","cn":"借（入）","ex":"Can I borrow your pencil?","fam":[],"ant":"lend"},{"w":"lend","pos":"v","th":"shop","lv":"A2","cn":"借（出）","ex":"Can you lend me five pounds?","fam":[],"ant":"borrow"},{"w":"import","pos":"v","th":"shop","lv":"B2","cn":"进口","ex":"We import oil.","fam":["port"],"ant":"export"},{"w":"export","pos":"v","th":"shop","lv":"B2","cn":"出口","ex":"China exports many goods. We export cars.","fam":["port"],"ant":"import"},{"w":"cheap","pos":"adj","th":"shop","lv":"A2","cn":"便宜的","ex":"This T-shirt is very cheap.","fam":[],"ant":"expensive"},{"w":"expensive","pos":"adj","th":"shop","lv":"A2","cn":"昂贵的","ex":"That watch is too expensive.","fam":[],"ant":"cheap"},{"w":"useful","pos":"adj","th":"shop","lv":"A2","cn":"有用的","ex":"This dictionary is really useful.","fam":["use"],"ant":"useless"},{"w":"useless","pos":"adj","th":"shop","lv":"B1","cn":"没用的","ex":"An umbrella is useless in such strong wind.","fam":["use"],"ant":"useful"}]};/*END DATA*/
@@ -283,7 +285,7 @@ function newRun(){
     round: 1, hearts: 10, coins: 5, lvl: 1, streak: 0, bonus: 0, wins: 0,
     board: Array(ROWS * COLS).fill(null), bench: Array(BENCH).fill(null),
     shop: [], lock: new Set(), wrongRound: [], runWrong: new Set(), runCrown: new Set(),
-    asked: new Set(), boosted: new Set(), themes, sel: null, phase: "prep", queue: [],
+    asked: new Set(), boosted: new Set(), stickers: [], themes, sel: null, phase: "prep", queue: [],
     pool: W.map((e, i) => i).filter(i => themes.includes(W[i].th)),
   };
   rollShop(true);
@@ -523,6 +525,8 @@ function render(){
   const cs = combosOf(S.board, S.boosted).sort((a, b) => (b.tier > 0) - (a.tier > 0));
   $("combos").innerHTML = cs.length ? cs.map(c => `<span class="chip ${c.tier ? "on" : c.kind === "ant" ? "hint" : ""}">${esc(comboLabel(c))}${S.boosted.has(c.key) && c.tier ? ' <span class="boost">+加强</span>' : ""}</span>`).join("")
     : `<span class="chip">还没有组合：同主题 2 只、同词根 2 只、反义词挨着站都会触发</span>`;
+  $("stickers").innerHTML = S.stickers.map((st, n) => `<button class="chip hint" data-n="${n}">🏷️ 魔法贴纸 ${st}</button>`).join("");
+  $("stickers").querySelectorAll("button").forEach(b => b.onclick = () => useSticker(+b.dataset.n));
   // 选中信息
   renderInfo();
   // 小屋
@@ -751,6 +755,77 @@ function checkNewCombos(){
   });
 }
 
+// ================= 魔法贴纸（前后缀）=================
+const STICK = {
+  "un-":   [["happy", "unhappy"], ["friendly", "unfriendly"]],
+  "-er":   [["teach", "teacher"], ["read", "reader"], ["swim", "swimmer"], ["play", "player"], ["help", "helper"]],
+  "-or":   [["visit", "visitor"]],
+  "-ful":  [["help", "helpful"]],
+  "-ly":   [["happy", "happily"], ["sad", "sadly"], ["slow", "slowly"], ["careful", "carefully"]],
+  "-y":    [["sun", "sunny"], ["rain", "rainy"]],
+  "-ness": [["happy", "happiness"]],
+};
+const STICK_NOTE = { "un-": "un- = 不", "-er": "-er = 做这件事的人", "-or": "-or = 做这件事的人", "-ful": "-ful = 充满……的", "-ly": "-ly = ……地", "-y": "-y = 有……的（天气）", "-ness": "-ness = 变成名词" };
+function stickerTargets(st){ return STICK[st].filter(([a, b]) => IDX[a] !== undefined && IDX[b] !== undefined); }
+function giveSticker(){
+  const have = new Set(allUnits().map(u => W[u.w].w));
+  const pool = Object.keys(STICK).filter(st => stickerTargets(st).some(([a]) => S.pool.includes(IDX[a]) || have.has(a)));
+  const fit = pool.filter(st => stickerTargets(st).some(([a]) => have.has(a)));
+  const st = fit.length && Math.random() < 0.6 ? pick(fit) : pick(pool.length ? pool : Object.keys(STICK));
+  S.stickers.push(st); return st;
+}
+// 错误拼法：直接拼接、少双写、y 没变 i、前缀放错
+function wrongForms(base, st, right){
+  const af = st.replace("-", ""), out = new Set();
+  if (st.endsWith("-")){ out.add(base + af); out.add("dis" + base); out.add("in" + base); out.add(af + base + "s"); }
+  else {
+    out.add(base + af);
+    if (base.endsWith("y")) out.add(base.slice(0, -1) + "i" + af), out.add(base + af);
+    out.add(base + base.slice(-1) + af);
+    if (right.length > base.length + af.length) out.add(base + af);
+    out.add(base + af + "s"); out.add(base + "e" + af);
+  }
+  out.delete(right);
+  return shuffle([...out]).slice(0, 3);
+}
+function useSticker(n){
+  if (S.phase !== "prep" || modalOpen()) return;
+  const st = S.stickers[n], pairs = stickerTargets(st);
+  const units = allUnits().filter(u => pairs.some(([a, b]) => W[u.w].w === a && !owned(IDX[b])));
+  const fitsText = pairs.map(([a]) => a).join("、");
+  if (!units.length){
+    toast(`${st} 能贴在：${fitsText}。先请到其中一只吧`, 2600); return;
+  }
+  const m = openModal(`<h3>🏷️ 魔法贴纸 ${st}</h3><div class="qsub" style="text-align:left">${esc(STICK_NOTE[st])}。贴在谁身上？</div><div class="opts">${units.map((u, k) => `<button class="opt" data-k="${k}">${TYPE[W[u.w].pos].face} ${esc(W[u.w].w)} ${"★".repeat(u.star)}</button>`).join("")}</div><div class="mrow"><button class="btn ghost" id="stNo">先不贴</button></div>`);
+  $("stNo").onclick = closeModal;
+  m.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    const u = units[+b.dataset.k], base = W[u.w].w, right = pairs.find(([a]) => a === base)[1], j = IDX[right];
+    const opts = shuffle([right, ...wrongForms(base, st, right)]);
+    const af = st.replace("-", "");
+    const q = openModal(`<h3>🏷️ ${esc(st)} 贴上去会变成什么词？</h3><div class="qword" style="font-size:26px">${st.endsWith("-") ? `${af} + ${esc(base)}` : `${esc(base)} + ${af}`}</div><div class="qsub">${esc(W[u.w].cn)} → ${esc(W[j].cn)}</div><div class="opts">${opts.map(o => `<button class="opt">${esc(o)}</button>`).join("")}</div>`);
+    q.querySelectorAll(".opt").forEach(x => x.onclick = () => {
+      const ok = x.textContent === right;
+      x.classList.add(ok ? "right" : "wrong");
+      if (!ok) [...q.querySelectorAll(".opt")].find(y => y.textContent === right).classList.add("right");
+      q.querySelectorAll(".opt").forEach(y => y.disabled = true);
+      remember(j, ok); beep(ok ? "up" : "no");
+      const fb = document.createElement("div"); fb.className = "fb " + (ok ? "ok" : "no");
+      if (ok){
+        const before = TYPE[W[u.w].pos], after = TYPE[W[j].pos];
+        fb.innerHTML = `✅ ${esc(base)} 变成了 <b>${esc(right)}</b>！${before.face}${before.name} → ${after.face}${after.name}<div class="ex">${esc(W[j].ex)}</div>`;
+        u.w = j; S.stickers.splice(n, 1); S.popWord = j;
+      } else {
+        fb.innerHTML = `正确拼法是 <b>${esc(right)}</b>。贴纸还留着，下次再试！<div class="ex">${esc(W[j].ex)}</div>`;
+        S.runWrong.add(j);
+      }
+      q.appendChild(fb);
+      const row = document.createElement("div"); row.className = "mrow"; row.innerHTML = `<button class="btn green">好的</button>`;
+      row.firstChild.onclick = () => { closeModal(); render(); checkNewCombos(); };
+      q.appendChild(row);
+    });
+  });
+}
+
 // ================= 比赛 =================
 let speed = 1;
 function fight(){
@@ -840,12 +915,14 @@ function endBattle(r){
   else if (win < 0){ lost = r.theirs >= 3 ? 2 : 1; S.hearts -= lost; beep("lose"); }
   // 回合收入
   S.lostLast = win < 0;
+  const gotSticker = win > 0 && S.round < ROUNDS && Math.random() < 0.7 ? giveSticker() : null;
   const base = 5, piggy = Math.min(2, Math.floor(S.coins / 5)), winB = win > 0 ? 1 : win < 0 ? 1 : 0, star = S.bonus;
   const title = win > 0 ? "赢啦！" : win < 0 ? "这场输了" : "平局";
   const face = win > 0 ? "🎉" : win < 0 ? "🌧️" : "🤝";
   const m = openModal(`<div class="result"><div class="big">${face}</div><h2>${title}</h2>
     <div class="qsub">${win < 0 ? `对面还剩 ${r.theirs} 只，少了 ${lost} 颗爱心 ❤️` : win > 0 ? `我方还剩 ${r.mine} 只` : "双方都还有能量"}</div>
     <div class="li" style="text-align:left">下回合词币：基础 +${base}${piggy ? `，存钱罐 +${piggy}` : ""}${winB ? (win > 0 ? "，获胜 +1" : "，加油奖 +1") : ""}${star ? `，连对小星星 +${star}` : ""}</div>
+    ${gotSticker ? `<div class="li" style="text-align:left;margin-top:6px">🏷️ 得到魔法贴纸 <b>${gotSticker}</b>：${esc(STICK_NOTE[gotSticker])}。能贴在 ${stickerTargets(gotSticker).map(([a]) => a).join("、")} 身上</div>` : ""}
     <div class="mrow" style="justify-content:center"><button class="btn green" id="nextBtn">${S.hearts <= 0 || S.round >= ROUNDS ? "看看这局学了什么" : "下一回合"}</button></div></div>`);
   $("nextBtn").onclick = () => {
     closeModal();

@@ -91,12 +91,23 @@ Object.entries(byIpa).forEach(([k, ws]) => { for (let i = 0; i < ws.length; i++)
   add(ws[i], ws[j], "sound", `${ws[i]} 和 ${ws[j]} 读音相同，都读 /${words[ws[i]].ipa}/。`); });
 // 3) 同词根：后缀、前缀
 const SUF = [["er","做……的人/东西"],["or","做……的人"],["ful","充满……的"],["less","没有……的"],["ly","……地"],["ness","名词后缀"],["ment","名词后缀"],["tion","名词后缀"],["ion","名词后缀"],["ation","名词后缀"],["able","能被……的"],["ible","能被……的"],["al","形容词后缀"],["y","形容词后缀"],["ous","形容词后缀"],["ive","形容词后缀"],["ing","名词/形容词"],["ed","形容词"],["ist","……的人"],["ity","名词后缀"],["ence","名词后缀"],["ance","名词后缀"],["ent","形容词后缀"],["ant","形容词后缀"],["ise","动词后缀"],["ize","动词后缀"],["en","动词后缀"],["ish","形容词后缀"],["hood","名词后缀"],["ship","名词后缀"],["th","名词后缀"]];
+const SUF2 = [["ic","形容词后缀"],["ical","形容词后缀"],["ure","名词后缀"],["ary","名词/形容词后缀"],["ery","名词后缀"],["ee","被……的人"],["ian","……的人"],["ism","名词后缀"],["ify","动词后缀"],["ward","向……"],["wards","向……"],["some","形容词后缀"],["age","名词后缀"],["ant","……的人"],["est","最……"],["ier","更……"],["iest","最……"]];
 const PRE = [["un","不、相反"],["dis","不、相反"],["re","再、重新"],["im","不"],["in","不"],["ir","不"],["il","不"],["mis","错误地"],["over","过度"],["under","不足"]];
+const PRE2 = [["non","非"],["pre","预先"],["inter","相互"],["anti","反对"],["sub","下、次"],["super","超级"],["co","共同"],["de","去除"],["ex","前任、向外"],["out","超过、向外"],["up","向上"],["bi","两个"],["multi","多"],["tele","远"],["trans","跨越"],["self","自己"],["en","使"],["be","使"]];
+const CNSTOP = new Set([..."的地得了着一不是有人子者在和与把被个"]);
+const NOAFFIX = new Set("truant important secretary devote remember story bitter petal letter butter liver final seal seed seize factor tooth relay comment income overcome legal policy porter reporter portion caption muggy former sandal tailor retail party invoice liable evening invest feed ponder tidy organise intuition install kitten rubbish reliable overcast".split(" "));
+const cnShare = (a, b) => { if (NOAFFIX.has(b)) return false; const A = new Set([...words[a].cn].filter(c => /[\u4e00-\u9fff]/.test(c) && !CNSTOP.has(c))); return [...words[b].cn].some(c => A.has(c)); };
+// 词缀只是拼写碰巧对上（man/many、ear/early）不算：要么中文释义有相同的字，要么派生词的读音里包含原词的读音
+const ipaBare = w => words[w].ipa.replace(/[ˈˌ]/g, "");
+const affixOk = (b, d) => !NOAFFIX.has(d) && (cnShare(b, d) || ipaBare(d).includes(ipaBare(b)));
 function stems(base){ const s = [base]; if (base.endsWith("e")) s.push(base.slice(0,-1)); if (base.endsWith("y")) s.push(base.slice(0,-1) + "i");
   if (/[^aeiou][aeiou][bdgmnprt]$/.test(base)) s.push(base + base.slice(-1)); return s; }
 for (const b of order){ if (b.length < 3) continue;
-  for (const [suf, mean] of SUF) for (const st of stems(b)){ const d = st + suf; if (d !== b && words[d]) add(b, d, "root", `${b} + -${suf}（${mean}）= ${d}（${first(words[d].cn)}）。`); }
-  for (const [pre, mean] of PRE){ const d = pre + b; if (words[d]) add(b, d, "root", `${pre}-（${mean}）+ ${b} = ${d}（${first(words[d].cn)}）。`); } }
+  for (const [suf, mean] of SUF) for (const st of stems(b)){ const d = st + suf; if (d !== b && words[d] && affixOk(b, d)) add(b, d, "root", `${b} + -${suf}（${mean}）= ${d}（${first(words[d].cn)}）。`); }
+  for (const [pre, mean] of PRE){ const d = pre + b; if (words[d] && affixOk(b, d)) add(b, d, "root", `${pre}-（${mean}）+ ${b} = ${d}（${first(words[d].cn)}）。`); }
+  // 新加的词缀容易碰上巧合（man/manage），要求中文释义里有相同的字
+  for (const [suf, mean] of SUF2) for (const st of stems(b)){ const d = st + suf; if (d !== b && words[d] && cnShare(b, d)) add(b, d, "root", `${b} + -${suf}（${mean}）= ${d}（${first(words[d].cn)}）。`); }
+  for (const [pre, mean] of PRE2){ const d = pre + b; if (words[d] && cnShare(b, d)) add(b, d, "root", `${pre}-（${mean}）+ ${b} = ${d}（${first(words[d].cn)}）。`); } }
 // 4) 字形：编辑距离 1、字母换位、同字母异序（长度 ≥ 4），每个词最多 3 条
 function formNote(a, b){
   if (a.length === b.length){
@@ -126,11 +137,81 @@ for (let i = 0; i < order.length; i++) for (let j = i+1; j < order.length; j++){
   if (b.startsWith(a) || a.startsWith(b)) continue;      // 加后缀的已经算作同词根
   if (close(a, b)) cands.push([a, b]); }
 cands.sort((x, y) => (words[x[0]].gal === words[x[1]].gal ? 0 : 1) - (words[y[0]].gal === words[y[1]].gal ? 0 : 1));
-for (const [a, b] of cands){ if ((formCnt[a]||0) >= 3 || (formCnt[b]||0) >= 3) continue;
+for (const [a, b] of cands){ if ((formCnt[a]||0) >= 4 || (formCnt[b]||0) >= 4) continue;
   if (add(a, b, "form", formNote(a, b))){ formCnt[a] = (formCnt[a]||0) + 1; formCnt[b] = (formCnt[b]||0) + 1; } }
+// 4b) 同义：第一个中文释义完全相同的词（每组最多 6 个）
+const byCn = {};
+order.forEach(w => { const k = first(words[w].cn); if (k.length >= 2) (byCn[k] = byCn[k] || []).push(w); });
+Object.entries(byCn).forEach(([k, ws]) => { if (ws.length < 2 || ws.length > 6) return;
+  for (let i = 0; i < ws.length; i++) for (let j = i+1; j < ws.length; j++)
+    add(ws[i], ws[j], "syn", `${ws[i]} 和 ${ws[j]} 都有“${k}”的意思。`); });
+// 4c) 合成词、短语：football = foot + ball；break the ice 里有 break、ice
+const isWord = x => words[x] && !FUNC.has(x) && x.length >= 3 && !x.includes(" ");
+for (const w of order){
+  if (/^[a-z]{6,}$/.test(w)) for (let i = 3; i <= w.length - 3; i++){ const a = w.slice(0, i), b = w.slice(i);
+    const ip = x => words[x].ipa.replace(/[ˈˌ]/g, "");
+    if (isWord(a) && isWord(b) && ip(w).includes(ip(a)) && ip(w).includes(ip(b))){ add(w, a, "root", `${w} = ${a} + ${b}（合成词）。`); add(w, b, "root", `${w} = ${a} + ${b}（合成词）。`); break; } }
+  if (/[ -]/.test(w)) w.toLowerCase().split(/[ -]+/).filter(isWord).slice(0, 2).forEach(o => add(w, o, "coll", `短语 ${w} 里用到了 ${o}。`));
+}
+// 4d) 例句里的搭配：例句中紧挨着本词的实词（跳过冠词、物主代词等），每个词最多 3 条，常用词最多被连 8 次
+const GENERIC = new Set("i you he she we they me him us them not no yes so too very really there here what when where who why how which if than then just also all every each can could will would shall should may might must lot lots much many more most get got go went come came say said tell told whose which whom someone something anyone anything everyone everything nobody nothing".split(" "));
+const lemma = t => { if (words[t]) return t;
+  for (const [s, r] of [["ies","y"],["ied","y"],["es",""],["s",""],["ed",""],["ed","e"],["d",""],["ing",""],["ing","e"]])
+    if (t.endsWith(s)){ let b = t.slice(0, -s.length) + r; if (words[b]) return b; if (r === "" && /(.)\1$/.test(b) && words[b.slice(0, -1)]) return b.slice(0, -1); }
+  return null; };
+const SKIP = new Set("a an the my your his her its our their this that these those some any".split(" "));
+const collIn = {}, collOut = {};
+for (const w of order){ if (w.includes(" ") || GENERIC.has(w) || FUNC.has(w)) continue;
+  const toks = words[w].ex.toLowerCase().replace(/[^a-z' -]/g, " ").split(/\s+/).filter(Boolean);
+  const at = toks.findIndex(t => t === w || lemma(t) === w); if (at < 0) continue;
+  const near = [];
+  for (const dir of [1, -1]){ let k = at + dir; const skipped = [];
+    while (k >= 0 && k < toks.length && SKIP.has(toks[k])){ skipped.push(toks[k]); k += dir; }
+    if (k < 0 || k >= toks.length || skipped.length > 1) continue;
+    const o = lemma(toks[k]); if (!o || o === w || FUNC.has(o) || GENERIC.has(o) || o.length < 3) continue;
+    const lo = Math.min(at, k), hi = Math.max(at, k);
+    near.push([o, toks.slice(lo, hi + 1).join(" ")]); }
+  for (const [o, ph] of near){ if ((collOut[w]||0) >= 3 || (collIn[o]||0) >= 12) continue;
+    if (add(w, o, "coll", `例句搭配：“${ph}”——${words[w].ex}`)){ collOut[w] = (collOut[w]||0) + 1; collIn[o] = (collIn[o]||0) + 1; } }
+}
+// 4f) 手写的额外关系表 words/links.txt：反义、近义、上下位、搭配
+{ let sec = null; const LS = new Set("a an the of to your my his her our their in on at for by with".split(" ")); let used = 0, skipped = 0;
+  for (const ln of fs.readFileSync(path.join(SRC, "links.txt"), "utf8").split(/\r?\n/)){
+    if (!ln.trim() || ln.startsWith("//")) continue;
+    if (ln.startsWith("## ")){ sec = ln.slice(3).trim(); continue; }
+    for (const item of ln.split(";").map(x => x.trim()).filter(Boolean)){
+      if (sec === "coll"){
+        if (words[item] || words[item.toLowerCase()]){ skipped++; continue; }
+        const toks = item.split(/\s+/).filter(t => !LS.has(t.toLowerCase()));
+        const ws = toks.map(t => words[t] ? t : lemma(t.toLowerCase())).filter(x => x && x.length >= 2);
+        if (ws.length < 2 || ws[0] === ws[ws.length-1]){ skipped++; continue; }
+        if (add(ws[0], ws[ws.length-1], "coll", `常见搭配：${item}。`)) used++; else skipped++;
+        continue; }
+      const [a, b] = item.split(/\s+/);
+      if (!words[a] || !words[b]){ skipped++; continue; }
+      const A = words[a], B = words[b];
+      const note = sec === "syn" ? `${a}（${first(A.cn)}）和 ${b}（${first(B.cn)}）意思相近。`
+        : sec === "ant" ? `${a} ${first(A.cn)} ↔ ${b} ${first(B.cn)}。`
+        : `${a}（${first(A.cn)}）是一种 ${b}（${first(B.cn)}）。`;
+      if (add(a, b, sec, note)) used++; else skipped++; } }
+  console.log(`关系表：用上 ${used} 条，跳过 ${skipped} 条（词库外或已有）`); }
+// 4e) 押韵：一到两个音节的词，从最后一个元音起读音相同（每个词最多 2 条，同星系优先）
+const VOW = /(eɪ|aɪ|ɔɪ|əʊ|aʊ|ɪə|eə|ʊə|iː|uː|ɑː|ɔː|ɜː|[iɪeæʌɒʊuəɑɔ])/g;
+const rhymeKey = ipa => { const s = ipa.replace(/[ˌ.()]/g, "").replace(/\s.*$/, ""); const m = [...s.matchAll(VOW)];
+  if (!m.length || m.length > 2) return null; const last = m[m.length - 1]; if (last[0] === "ə" && m.length > 1) return null;
+  if (m.length === 2){ const st = s.indexOf("ˈ"); if (st <= m[0].index || st > last.index) return null; }
+  return s.slice(last.index).replace(/ˈ/g, ""); };
+const byRhyme = {};
+order.forEach(w => { if (!/^[a-z]{3,}$/.test(w)) return; const k = rhymeKey(words[w].ipa); if (k && k.length >= 2) (byRhyme[k] = byRhyme[k] || []).push(w); });
+const rhCnt = {}; const rc = [];
+Object.entries(byRhyme).forEach(([k, ws]) => { for (let i = 0; i < ws.length; i++) for (let j = i+1; j < ws.length; j++){ const a = ws[i], b = ws[j];
+  if (a.endsWith(b) || b.endsWith(a)) continue; rc.push([a, b, k, (words[a].gal === words[b].gal ? 0 : 2) + (words[a].lv === words[b].lv ? 0 : 1) + ((a.length * 31 + b.charCodeAt(0) * 7 + b.length) % 97) / 100]); } });
+rc.sort((x, y) => x[3] - y[3]);
+for (const [a, b, k] of rc){ if ((rhCnt[a]||0) >= 3 || (rhCnt[b]||0) >= 3) continue;
+  if (add(a, b, "sound", `${a} /${words[a].ipa}/ 和 ${b} /${words[b].ipa}/ 押韵，都以 /${k}/ 结尾。`)){ rhCnt[a] = (rhCnt[a]||0) + 1; rhCnt[b] = (rhCnt[b]||0) + 1; } }
 // 5) 同主题：同一小话题里，给连线少于 2 条的词补上主题连线（按顺序连成链）
 for (const g of galaxies) for (const s of g.subs){ const ws = s.words;
-  for (let i = 0; i < ws.length; i++){ const w = ws[i]; if (deg(w) >= 2 && i) continue;
+  for (let i = 0; i < ws.length; i++){ const w = ws[i]; if (deg(w) >= 4 && i) continue;
     const nb = ws[(i + 1) % ws.length]; if (ws.length > 1) add(w, nb, "topic", `${w} 和 ${nb} 都属于“${s.name}”这个话题。`); } }
 
 // 6) 保证每个星系内部连通：每种词库组合（KET、PET、KET+PET、KET+PET+FCE）都能从起点一路点亮整个星系

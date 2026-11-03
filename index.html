@@ -60,6 +60,9 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 380px;min-height:0}
 /* 网络图 */
 .edge{stroke-width:1.2;opacity:.16;transition:opacity .4s,stroke-width .4s}
 .edge.half{opacity:.4}
+.edge.weak{opacity:.07}
+.edge.weak.half{opacity:.22}
+.edge.weak.lit{opacity:.55;stroke-width:1.4}
 .edge.lit{opacity:.95;stroke-width:2}
 .edge.hl{opacity:1;stroke-width:2.6}
 .edge.off{display:none}
@@ -480,7 +483,7 @@ function build(g){
   cur = g; S.gal = g; BB = BBg[g];
   [gE, gN, gB, gG, gS].forEach(x => x.textContent = "");
   edgeEls = GE[g].map(i => { const [a,b,t] = D.edges[i];
-    const l = el("line", {x1:P[a].x,y1:P[a].y,x2:P[b].x,y2:P[b].y,class:"edge",stroke:`var(--t-${t})`}); gE.appendChild(l); return {i, l}; });
+    const l = el("line", {x1:P[a].x,y1:P[a].y,x2:P[b].x,y2:P[b].y,class:"edge" + (t === "topic" ? " weak" : ""),stroke:`var(--t-${t})`}); gE.appendChild(l); return {i, l}; });
   nodeEls = {};
   GW[g].forEach(w => {
     const n = el("g", {class:"node", transform:`translate(${P[w].x},${P[w].y})`, tabindex:"0", role:"button", "aria-label":w});
@@ -752,11 +755,24 @@ function fillFrom(target, pools, n, ok){ const out = []; const used = new Set([t
   for (const pool of pools) for (const x of shuffle(pool)) { if (out.length >= n) break; if (used.has(x) || !ok(x)) continue; out.push(x); used.add(x); }
   return out; }
 const sameLv = w => WORDS.filter(x => D.words[x].lv === D.words[w].lv);
+// 连线变多以后，干扰项也要更小心：不能也“说得通”
+const cn1 = w => D.words[w].cn.split(/[；;，,]/)[0].replace(/（[^）]*）/g, "").trim();
+const CN_STOP = new Set([..."的地得了着一不是有人子者在和与把被个"]);
+const cnChars = w => new Set([...D.words[w].cn].filter(c => /[\u4e00-\u9fff]/.test(c) && !CN_STOP.has(c)));
+const cnNear = (a, b) => { if (cn1(a) === cn1(b)) return true; const A = cnChars(a); return [...cn1(b)].some(c => A.has(c)); };
+const ipaOf = w => D.words[w].ipa.replace(/[ˈˌ]/g, "");
+const soundNear = (a, b) => ipaOf(a) === ipaOf(b) || ipaOf(a).slice(-2) === ipaOf(b).slice(-2);
+function lev(a, b){ if (Math.abs(a.length - b.length) > 2) return 9; let p = [...Array(b.length + 1).keys()];
+  for (let i = 1; i <= a.length; i++){ const q = [i]; for (let j = 1; j <= b.length; j++) q[j] = Math.min(p[j] + 1, q[j-1] + 1, p[j-1] + (a[i-1] === b[j-1] ? 0 : 1)); p = q; } return p[b.length]; }
+const spellNear = (a, b) => lev(a.toLowerCase(), b.toLowerCase()) <= 2 || a.startsWith(b) || b.startsWith(a);
+const MEANING_T = new Set(["syn","ant","hyper"]);
+// 某种关系下，x 和 w 是不是“看起来也对”
+const alsoFits = (t, w, x) => t === "sound" ? soundNear(w, x) : t === "form" || t === "root" ? spellNear(w, x) : t === "syn" || t === "ant" || t === "hyper" ? cnNear(w, x) || cnNear(x, w) : false;
 
 function qMeaning(w){
   const cn = D.words[w].cn; const seen = new Set([cn]);
   const close = new Set(adj[w].filter(e => e.t === "syn" || e.t === "hyper" || e.t === "root").map(e => e.w));
-  const ok = x => !close.has(x) && !seen.has(D.words[x].cn) && (seen.add(D.words[x].cn), true);
+  const ok = x => !close.has(x) && !seen.has(D.words[x].cn) && !seen.has(cn1(x)) && cn1(x) !== cn1(w) && (seen.add(D.words[x].cn), seen.add(cn1(x)), true);
   const ds = fillFrom(w, [adj[w].filter(e => e.t === "sound" || e.t === "form").map(e => e.w), adj[w].filter(e => e.t !== "topic").map(e => e.w), twoHop(w), sameLv(w)], 3, ok);
   const opts = shuffle([w, ...ds]).map(x => ({key:x, label:D.words[x].cn, en:false}));
   return { gen:"meaning", html:`<span class="w">${esc(w)}</span> 的中文意思是？`, opts, answer:w,
@@ -764,8 +780,10 @@ function qMeaning(w){
 }
 // 关系题：干扰项全部来自别的星系、且和本词没有连线，保证答案唯一
 function qRelation(w){
-  const strong = adj[w].filter(e => e.t !== "topic"); const e = pick(strong.length ? strong : adj[w]); const near = nbSet(w);
-  const g = gOf(w), ok = x => !near.has(x) && gOf(x) !== g && !nbSet(x).has(e.w);
+  // 连线多了：先随机挑一种关系，再在这种关系里挑一条，各种关系出现得更均匀
+  const strong = adj[w].filter(e => e.t !== "topic"), pool = strong.length ? strong : adj[w];
+  const t0 = pick([...new Set(pool.map(e => e.t))]), e = pick(pool.filter(x => x.t === t0)); const near = nbSet(w);
+  const g = gOf(w), ok = x => !near.has(x) && gOf(x) !== g && !nbSet(x).has(e.w) && !alsoFits(e.t, w, x) && !(MEANING_T.has(e.t) && (cnNear(e.w, x) || cnNear(x, e.w)));
   const ds = fillFrom(w, [twoHop(e.w), twoHop(w), sameLv(w)], 3, ok);
   const opts = shuffle([e.w, ...ds]).map(x => ({key:x, label:x, en:true}));
   return { gen:"relation", html:`哪个词和 <span class="w">${esc(w)}</span> ${TYPES[e.t].ask}？`, opts, answer:e.w,
@@ -777,16 +795,22 @@ function qBlank(w){
   // 干扰项：读音字形易混的词优先，其余取自别的星系（同一小话题的词可能也填得进去）
   const conf = adj[w].filter(e => e.t === "sound" || e.t === "form").map(e => e.w);
   const g = gOf(w), banned = nbSet(w);
-  const ds = fillFrom(w, [conf, sameLv(w).filter(x => gOf(x) !== g)], 3, x => conf.includes(x) || (!banned.has(x) && gOf(x) !== g && !d.ex.toLowerCase().includes(x.toLowerCase())));
+  const ds = fillFrom(w, [conf, sameLv(w).filter(x => gOf(x) !== g)], 3, x => conf.includes(x) || (!banned.has(x) && gOf(x) !== g && !cnNear(w, x) && !cnNear(x, w) && !d.ex.toLowerCase().includes(x.toLowerCase())));
   const opts = shuffle([w, ...ds]).map(x => ({key:x, label:x, en:true}));
   return { gen:"blank", html:`选词填空<span class="sent">${sent}</span>`, opts, answer:w,
     explain:`<b>${esc(w)}</b>：${esc(d.ex)}`, showCn:true };
 }
 // 猜连线：两个相邻的词是什么关系（擦亮时用）
 function qLink(w){
-  const lit = adj[w].filter(e => isLit(e.w)); const e = pick(lit.length ? lit : adj[w]);
-  const types = new Set(adj[w].filter(x => x.w === e.w).map(x => x.t));
-  const ds = shuffle(TYPE_ORDER.filter(t => !types.has(t))).slice(0, 3);
+  // 优先考强关系；“同主题”太宽泛，不拿来当干扰项；另一种关系也说得通的也不拿。凑不齐 3 个干扰项就换一条连线
+  const lit = adj[w].filter(e => isLit(e.w)), strongLit = lit.filter(e => e.t !== "topic");
+  const tiers = [strongLit, lit, adj[w].filter(e => e.t !== "topic"), adj[w]];
+  const optsFor = e => { const fits = t => MEANING_T.has(t) ? !MEANING_T.has(e.t) && alsoFits(t, w, e.w) : alsoFits(t, w, e.w);
+    const free = TYPE_ORDER.filter(t => t !== e.t && t !== "topic" && !fits(t));
+    return free.length >= 3 ? shuffle(free).slice(0, 3) : e.t !== "topic" && free.length === 2 ? free.concat("topic") : null; };
+  let e = null, ds = null;
+  for (const tier of tiers){ for (const x of shuffle(tier)){ const d = optsFor(x); if (d){ e = x; ds = d; break; } } if (e) break; }
+  if (!e){ e = pick(adj[w]); ds = shuffle(TYPE_ORDER.filter(t => t !== e.t)).slice(0, 3); }
   const opts = shuffle([e.t, ...ds]).map(t => ({key:t, label:TYPES[t].name, en:false}));
   return { gen:"link", html:`<span class="w">${esc(w)}</span> 和 <span class="w">${esc(e.w)}</span> 是什么关系？`, opts, answer:e.t,
     explain:`${TYPES[e.t].name}：${esc(e.note)}` };
@@ -795,7 +819,7 @@ function qLink(w){
 function qReverse(w){
   const cn = D.words[w].cn; const seen = new Set([cn]);
   const close = new Set(adj[w].filter(e => e.t === "syn" || e.t === "hyper" || e.t === "root").map(e => e.w));
-  const ok = x => !close.has(x) && !seen.has(D.words[x].cn) && (seen.add(D.words[x].cn), true);
+  const ok = x => !close.has(x) && !seen.has(D.words[x].cn) && !seen.has(cn1(x)) && cn1(x) !== cn1(w) && (seen.add(D.words[x].cn), seen.add(cn1(x)), true);
   const ds = fillFrom(w, [adj[w].filter(e => e.t === "sound" || e.t === "form").map(e => e.w), twoHop(w), sameLv(w)], 3, ok);
   const opts = shuffle([w, ...ds]).map(x => ({key:x, label:x, en:true}));
   return { gen:"reverse", html:`“${esc(cn)}”用英语怎么说？`, opts, answer:w, explain:`<b>${esc(w)}</b> /${esc(D.words[w].ipa)}/：${esc(cn)}`, showCn:true };

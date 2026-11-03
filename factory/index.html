@@ -50,9 +50,24 @@ header h1{font-size:20px;margin:0;flex:1;white-space:nowrap}
 .grid{position:relative;display:grid;gap:0;margin:0 auto}
 .cell{width:var(--c);height:var(--c);position:relative;display:grid;place-items:center;font-size:20px}
 .cell.deco{opacity:.55}
-.cell.belt{background:repeating-linear-gradient(var(--ang,90deg),var(--belt) 0 7px,var(--belt2) 7px 10px);border-radius:6px;margin:3px;width:calc(var(--c) - 6px);height:calc(var(--c) - 6px);color:#78909c;font-size:16px}
-.cell.run.belt{animation:move .4s linear infinite}
-@keyframes move{to{background-position:10px 10px}}
+.cell{z-index:1}
+.cell.belt{color:#78909c;font-size:18px;font-weight:800}
+.beltsvg{position:absolute;left:0;top:0;z-index:0;pointer-events:none}
+.beltsvg .base{stroke:var(--belt);fill:none;stroke-linecap:round;stroke-linejoin:round}
+.beltsvg .dash{stroke:var(--belt2);fill:none;stroke-linejoin:round;stroke-dasharray:3 9}
+.beltsvg.run .dash{animation:move .5s linear infinite}
+@keyframes move{to{stroke-dashoffset:-12}}
+.pulse{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(242,183,5,.55)}}
+@media (prefers-reduced-motion:reduce){.pulse,.beltsvg.run .dash,.cell.pad.bump .m{animation:none}}
+.store{display:block;width:100%;margin-top:12px;background:#fff;border:2px solid var(--line);border-radius:18px;padding:12px 14px;text-align:left;font-weight:800;font-size:16px}
+.store small{font-weight:400;color:var(--soft);margin-left:6px}
+.fam{border:2px solid var(--line);border-radius:14px;padding:8px 10px;margin:8px 0}
+.fam .root{font-weight:800;letter-spacing:1px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{border-radius:10px;padding:3px 8px;background:#d8f5e3;font-size:14px}
+.chip small{color:var(--soft);margin-left:4px}
+.chip.no{background:#eee;color:#aaa}
 .cell.pad{background:var(--pad);border:2px dashed var(--padb);border-radius:10px;margin:2px;width:calc(var(--c) - 4px);height:calc(var(--c) - 4px);font-size:12px;color:#a07a00}
 .cell.pad.sel{box-shadow:0 0 0 3px #ffd43b}
 .cell.pad.has{border-style:solid;padding:0}
@@ -123,6 +138,7 @@ header h1{font-size:20px;margin:0;flex:1;white-space:nowrap}
       <br>点一下下面的机器，再点一下黄色虚线格子，就能把机器装上去。装好后按“开机”。
     </div>
     <div class="levels" id="levels"></div>
+    <button class="store" id="storeBtn">📦 单词仓库<small id="storeN"></small></button>
     <div class="foot">原型版 · 进度只存在这台设备上</div>
   </section>
 
@@ -137,7 +153,7 @@ header h1{font-size:20px;margin:0;flex:1;white-space:nowrap}
     </div>
     <div class="bot" id="bot"><span class="face">🤖</span><div id="botText"></div></div>
     <div class="factory"><div class="grid" id="grid"></div></div>
-    <div class="pal-title">机器（点机器，再点虚线格子；点已装的机器可以拆下）</div>
+    <div class="pal-title">机器（点机器，再点虚线格子；同一台再点一下就拆下）</div>
     <div class="palette" id="palette"></div>
     <div class="actions">
       <button class="ghost" id="clearBtn">全部拆下</button>
@@ -161,6 +177,9 @@ const MACHINES = {
   ion:{kind:'suf',label:'-ion',tip:'动词变名词',add:'ion'},
   ive:{kind:'suf',label:'-ive',tip:'变形容词',add:'ive'},
   ity:{kind:'suf',label:'-ity',tip:'形容词变名词',add:'ity'},
+  able:{kind:'suf',label:'-able',tip:'能……的',add:'able'},
+  ment:{kind:'suf',label:'-ment',tip:'动词变名词',add:'ment'},
+  ing:{kind:'suf',label:'-ing',tip:'做这件事',add:'ing'},
   // 前缀
   un:{kind:'pre',label:'un-',tip:'不',add:'un'},
   dis:{kind:'pre',label:'dis-',tip:'不、相反',add:'dis'},
@@ -169,6 +188,7 @@ const MACHINES = {
   // 修正台
   y2i:{kind:'fix',label:'y→i',tip:'修正台',fix:'y'},
   drope:{kind:'fix',label:'去 e',tip:'修正台',fix:'e'},
+  dbl:{kind:'fix',label:'双写',tip:'修正台',fix:'d'},
 };
 
 /* ---------- 规则卡（关卡开始介绍、结束复习） ---------- */
@@ -187,7 +207,11 @@ const RULES = {
   ity:['-ity','suf','加在形容词后面，变成名词。','active → activity 活动'],
   or:['-or','suf','也表示“做这件事的人”，有些词用 -or 不用 -er。','act → actor 演员'],
   in:['in-','pre','也表示“不”，常加在 active、correct 等词前面。','active → inactive 不活跃的'],
-  drope:['去 e','fix','以不发音的 e 结尾的词，加元音开头的后缀（-ion、-ive、-ity）前要去掉 e。','create → creative，active → activity'],
+  able:['-able','suf','加在动词或名词后面，变成形容词，意思是“能……的、让人……的”。','enjoy → enjoyable 令人愉快的'],
+  ment:['-ment','suf','加在动词后面，变成名词。它是辅音开头的后缀，词尾的 e 不用去掉。','move → movement 动作'],
+  ing:['-ing','suf','加在动词后面，表示“做这件事”，可以当名词用。','shop → shopping 购物'],
+  dbl:['双写','fix','短元音 + 一个辅音结尾的词（run、swim、shop、begin），加元音开头的后缀前，要把最后一个辅音再写一遍。','run → runner，swim → swimming；read 有两个元音，不双写'],
+  drope:['去 e','fix','以不发音的 e 结尾的词，加元音开头的后缀（-ion、-ive、-ity、-able、-ing）前要去掉 e。','create → creative，active → activity'],
 };
 
 /* ---------- 认识的真单词（用来给更具体的反馈和词义小测） ---------- */
@@ -201,6 +225,13 @@ const WORDS = {
   creative:'有创造力的', creation:'创造；作品', creativity:'创造力', creator:'创造者',
   construction:'建造；建筑工程', constructive:'有建设性的', inaction:'不行动', actively:'积极地', creatively:'有创意地',
   reuse:'再利用', recreate:'重新创造',
+  comfortable:'舒服的', comfortably:'舒服地', uncomfortable:'不舒服的', enjoyable:'令人愉快的', enjoyment:'乐趣',
+  movement:'动作；运动', movable:'可移动的', reliable:'可靠的', unreliable:'不可靠的', believable:'可信的',
+  unbelievable:'难以置信的', agreement:'协议；一致意见', disagreement:'分歧',
+  runner:'跑步的人', running:'跑步', swimmer:'游泳的人', swimming:'游泳', beginner:'初学者', beginning:'开始',
+  shopping:'购物', shopper:'购物者', reader:'读者', reading:'阅读', riding:'骑（车、马）', rider:'骑手',
+  carelessness:'粗心', carefully:'小心地', carelessly:'粗心地', hopeful:'充满希望的', hopeless:'没有希望的',
+  hopefully:'但愿；希望', unhelpfully:'没帮上忙地', usefully:'有用地', helpfully:'有帮助地',
 };
 
 /* ---------- 关卡 ---------- */
@@ -239,12 +270,47 @@ const LEVELS = [
       {s:'Artists are ___ people.',stem:'create',ans:'creative',hint:'形容词“有创造力的”。注意 e！',zh:'艺术家是有创造力的人。'},
       {s:'The ___ of the bridge took two years.',stem:'construct',ans:'construction',hint:'the 后面要一个名词，“建造”。',zh:'这座桥建了两年。'},
     ]},
+  { id:4, name:'第 4 关 · 舒适车间', desc:'-able 和 -ment，修正台继续上岗', cols:7, rows:4,
+    path:[[0,2],[1,2],[1,1],[1,0],[2,0],[3,0],[4,0],[4,1],[4,2],[5,2],[6,2]], pads:[2,5,8],
+    machines:['un','able','ment','ly','y2i','drope'],
+    orders:[
+      {s:'This sofa is very ___ .',stem:'comfort',ans:'comfortable',hint:'形容词，“舒服的”。',zh:'这张沙发很舒服。'},
+      {s:'Thanks for a very ___ evening!',stem:'enjoy',ans:'enjoyable',hint:'形容词，“令人愉快的”。enjoy 的 y 前面是元音 o，不用变。',zh:'谢谢你，今晚过得很愉快！'},
+      {s:'Every ___ of the dancer was beautiful.',stem:'move',ans:'movement',hint:'名词，“动作”。-ment 是辅音开头，e 要留着。',zh:'舞者的每个动作都很美。',mistakes:{movment:'-ment 是辅音开头的后缀，move 的 e 要留着：movement。'}},
+      {s:'He is always on time. He is very ___ .',stem:'rely',ans:'reliable',hint:'形容词，“可靠的”。注意 y！',zh:'他总是很准时，非常可靠。'},
+      {s:'Wow, you did it in one minute? That\'s ___ !',stem:'believe',ans:'unbelievable',hint:'“难以置信的”：不 + 相信 + 能……的。',zh:'哇，你一分钟就做完了？真难以置信！'},
+      {s:'The two teams came to an ___ .',stem:'agree',ans:'agreement',hint:'an 后面要一个名词，“一致意见”。',zh:'两队达成了一致。'},
+    ]},
+  { id:5, name:'第 5 关 · 双写车间', desc:'run → runner，什么时候要双写？', cols:7, rows:3,
+    path:[[0,2],[1,2],[2,2],[2,1],[2,0],[3,0],[4,0],[4,1],[4,2],[5,2],[6,2]], pads:[1,4,8],
+    machines:['er','ing','dbl','drope'],
+    orders:[
+      {s:'My brother is a fast ___ .',stem:'run',ans:'runner',hint:'“跑步的人”。run 是短元音 + 一个辅音。',zh:'我哥哥跑得很快。'},
+      {s:'___ is my favourite sport.',stem:'swim',ans:'swimming',hint:'“游泳”这件事。',zh:'游泳是我最喜欢的运动。'},
+      {s:'I\'m just a ___ at chess.',stem:'begin',ans:'beginner',hint:'“初学者”。',zh:'我下国际象棋还只是个初学者。'},
+      {s:'Mum loves going ___ on Saturdays.',stem:'shop',ans:'shopping',hint:'go + 做某事：“去购物”。',zh:'妈妈周六喜欢去购物。'},
+      {s:'She reads every day. She is a great ___ .',stem:'read',ans:'reader',hint:'“读者”。read 里有两个元音 ea，要不要双写？',zh:'她每天看书，是个很棒的读者。'},
+      {s:'I enjoy ___ my bike after school.',stem:'ride',ans:'riding',hint:'enjoy 后面加 -ing。ride 以 e 结尾……',zh:'我喜欢放学后骑自行车。'},
+    ]},
+  { id:6, name:'第 6 关 · 词族总决赛', desc:'一个词根，三台机器连着用', cols:7, rows:4,
+    path:[[0,3],[1,3],[2,3],[2,2],[2,1],[2,0],[3,0],[4,0],[5,0],[5,1],[5,2],[5,3],[6,3]], pads:[1,4,7,10],
+    machines:['un','re','ful','less','ness','ly','er'],
+    orders:[
+      {s:'Don\'t be ___ . Check your answers.',stem:'care',ans:'careless',hint:'“粗心的”。',zh:'别粗心，检查一下答案。'},
+      {s:'Please hold the cup ___ . It\'s hot.',stem:'care',ans:'carefully',hint:'修饰 hold，要副词“小心地”。',zh:'请小心拿着杯子，很烫。'},
+      {s:'I lost points because of my ___ .',stem:'care',ans:'carelessness',hint:'名词“粗心”：care → careless → ……',zh:'我因为粗心丢了分。'},
+      {s:'___ , it will be sunny tomorrow.',stem:'hope',ans:'hopefully',hint:'“但愿”：hope → hopeful → ……',zh:'但愿明天是晴天。'},
+      {s:'We lost ten games. Our team felt ___ .',stem:'hope',ans:'hopeless',hint:'“没有希望的”。',zh:'我们输了十场，全队都觉得没希望了。'},
+      {s:'We can ___ these bags again and again.',stem:'use',ans:'reuse',hint:'“再次使用”。',zh:'这些袋子我们可以一次又一次地再用。'},
+      {s:'Sorry, that answer was ___ . It didn\'t help.',stem:'help',ans:'unhelpful',hint:'“没有帮助的”：不 + 帮助 + 充满……的。',zh:'抱歉，那个回答没帮上忙。'},
+    ]},
 ];
 
 /* ---------- 存档 ---------- */
 const KEY='word-factory-v1';
-let save={stars:{},coins:0,seen:{}};
+let save={stars:{},coins:0,seen:{},made:{}};
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s) save=Object.assign(save,s);}catch(e){}
+save.made=save.made||{};
 function store(){try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}}
 
 /* ---------- 声音 ---------- */
@@ -259,6 +325,7 @@ let L=null, oi=0, placed={}, selM=null, running=false, misses=0, orderMiss=0;
 function showHome(){
   $('home').classList.remove('hidden'); $('play').classList.add('hidden'); $('backBtn').classList.add('hidden');
   $('coin').textContent='⚙️ '+save.coins;
+  $('storeN').textContent=`已做出 ${Object.keys(save.made).length} / ${new Set(LEVELS.flatMap(l=>l.orders.map(o=>o.ans))).size} 个词`;
   const box=$('levels'); box.innerHTML='';
   LEVELS.forEach((lv,i)=>{
     const open = i===0 || save.stars[LEVELS[i-1].id];
@@ -266,7 +333,7 @@ function showHome(){
     const b=document.createElement('button');
     b.className='lv'+(open?'':' locked');
     b.innerHTML=`<div class="num">${open?lv.id:'🔒'}</div><div><div class="t">${lv.name}</div><div class="d">${lv.desc} · ${lv.orders.length} 张订单</div></div><div class="st">${st?'⭐'.repeat(st)+'<span style="opacity:.25">'+'⭐'.repeat(3-st)+'</span>':''}</div>`;
-    b.onclick=()=>{ if(open) startLevel(i); else toast('先完成上一关'); };
+    b.onclick=()=>{ if(open) startLevel(i); else { b.querySelector('.d').textContent='先完成上一关，才能开这一关'; sfx.bad(); } };
     box.appendChild(b);
   });
 }
@@ -303,17 +370,21 @@ function buildGrid(){
       else if(i===L.path.length-1){el.classList.add('port');el.innerHTML='🚚<span>订单口</span>'}
       else if(L.pads.includes(i)){el.classList.add('pad');el.dataset.i=i;el.onclick=()=>tapPad(i)}
       else{
-        const n=L.path[i+1], p=L.path[i-1];
-        const dx=n[0]-p[0], dy=n[1]-p[1];
+        const n=L.path[i+1];
         el.classList.add('belt');
         const nd=[n[0]-col,n[1]-r]; // 指向下一格
         el.textContent = nd[0]>0?'›':nd[0]<0?'‹':nd[1]>0?'⌄':'⌃';
-        el.style.setProperty('--ang', Math.abs(nd[0])?'90deg':'0deg');
       }
       cellEls[i]=el;
     } else { el.classList.add('deco'); el.textContent=deco[(col*7+r*3)%deco.length]; }
     g.appendChild(el);
   }
+  // 连续的传送带画在格子下面
+  const pts=L.path.map(([x,y])=>`${x*c+c/2},${y*c+c/2}`).join(' ');
+  const NS='http://www.w3.org/2000/svg', svg=document.createElementNS(NS,'svg');
+  svg.setAttribute('class','beltsvg'); svg.setAttribute('width',L.cols*c); svg.setAttribute('height',L.rows*c);
+  svg.innerHTML=`<polyline class="base" points="${pts}" stroke-width="${c*.62}"/><polyline class="dash" points="${pts}" stroke-width="${c*.62}"/>`;
+  g.prepend(svg);
   renderPads();
 }
 function renderPads(){
@@ -334,17 +405,26 @@ function buildPalette(){
   });
   markPal();
 }
-function markPal(){document.querySelectorAll('.mc').forEach(b=>b.classList.toggle('sel',b.dataset.m===selM))}
+function markPal(){document.querySelectorAll('.mc').forEach(b=>b.classList.toggle('sel',b.dataset.m===selM)); guide();}
+// 第一张订单的新手引导：没选机器时让机器闪，选了还没装时让空位闪
+function guide(){
+  const on = L && L.id===1 && oi===0 && !running && !Object.keys(placed).length;
+  $('palette').classList.toggle('pulse', on && !selM);
+  document.querySelectorAll('.cell.pad').forEach(e=>e.classList.toggle('pulse', on && !!selM));
+}
 
 function tapPad(i){
   if(running) return;
-  if(selM){ placed[i]=selM; sfx.place(); }
+  if(selM && placed[i]===selM){ delete placed[i]; sfx.place(); }
+  else if(selM){ placed[i]=selM; sfx.place(); }
   else if(placed[i]){ delete placed[i]; sfx.place(); }
   else { bot('先点下面的一台机器，再点这个空位。'); return; }
-  renderPads(); cellEls[i].classList.add('bump'); setTimeout(()=>cellEls[i].classList.remove('bump'),350);
+  renderPads(); guide(); cellEls[i].classList.add('bump'); setTimeout(()=>cellEls[i].classList.remove('bump'),350);
 }
 
 /* ---------- 订单 ---------- */
+// 把单词填进句子（空在句首时首字母大写）
+function fill(o,html){return o.s.replace('___', o.s.startsWith('___') ? html.replace(/>(\w)/,(m,ch)=>'>'+ch.toUpperCase()) : html)}
 function showOrder(){
   const o=L.orders[oi]; orderMiss=0;
   $('sent').innerHTML = o.s.replace('___','<span class="blank">?</span>')+` <span class="stem">${o.stem.toUpperCase()}</span>`;
@@ -354,9 +434,12 @@ function showOrder(){
   bot(oi===0 ? `新订单！原料 <b>${o.stem.toUpperCase()}</b> 已经装好。想想句子空里要什么词，装好机器后按“开机”。`
              : `下一张订单：原料换成 <b>${o.stem.toUpperCase()}</b>。上一条线还在，要改一改哦。`);
   $('coin').textContent='⚙️ '+save.coins;
+  guide();
 }
 
 /* ---------- 加工 ---------- */
+// 短元音 + 一个辅音结尾（run、swim、shop、begin）：加元音开头的后缀要双写
+const DBL=/(^|[^aeiou])[aeiou][bdgmnpt]$/;
 // 返回 {w, half, flag, note}
 function apply(m, st){
   const M=MACHINES[m]; let w=st.w;
@@ -364,11 +447,13 @@ function apply(m, st){
   if(M.kind==='fix'){
     if(M.fix==='y'){ if(/y$/.test(w)) return {w:w.slice(0,-1)+'i', half:true, flag:st.flag, note:'y→i'}; return {...st, note:'没有 y'}; }
     if(M.fix==='e'){ if(/e$/.test(w)) return {w:w.slice(0,-1), half:true, flag:st.flag, note:'去掉 e'}; return {...st, note:'没有 e'}; }
+    if(M.fix==='d'){ const ok=DBL.test(w); return {w:w+w.slice(-1), half:true, flag:ok?st.flag:(st.flag||'dx:'+w), note:'双写 '+w.slice(-1)}; }
   }
   // 后缀
   let flag=st.flag;
   if(/[^aeiou]y$/.test(w) && M.add[0]!=='i') flag=flag||'y';
   if(/[^aeiou]e$/.test(w) && /^[aeiou]/.test(M.add) && !/ee$/.test(w)) flag=flag||'e';
+  if(DBL.test(w) && /^[aeiou]/.test(M.add) && !st.half) flag=flag||'d';
   return {w:w+M.add, half:false, flag, note:M.label};
 }
 
@@ -376,8 +461,8 @@ function bot(html,cls=''){ $('bot').className='bot '+cls; $('botText').innerHTML
 
 async function run(){
   if(running) return;
-  running=true; $('goBtn').disabled=true;
-  document.querySelectorAll('.cell.belt').forEach(e=>e.classList.add('run'));
+  running=true; $('goBtn').disabled=true; guide();
+  document.querySelector('.beltsvg').classList.add('run');
   const o=L.orders[oi];
   const grid=$('grid'), c=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--c'));
   const tok=document.createElement('div'); tok.className='token'; grid.appendChild(tok);
@@ -387,15 +472,15 @@ async function run(){
   tok.style.transition='none'; pos(0); tok.offsetWidth; tok.style.transition='';
   bot('机器转起来了……');
   for(let i=1;i<L.path.length;i++){
-    pos(i); await wait(210);
+    pos(i); await wait(150);
     if(placed[i]){
       st=apply(placed[i],st); tok.textContent=st.w; tok.classList.toggle('half',st.half);
       pos(i); sfx.ding(); flash(L.path[i],st.note,c);
       cellEls[i].classList.add('bump'); setTimeout(()=>cellEls[i].classList.remove('bump'),350);
-      await wait(320);
+      await wait(260);
     }
   }
-  document.querySelectorAll('.cell.belt').forEach(e=>e.classList.remove('run'));
+  document.querySelector('.beltsvg').classList.remove('run');
   await check(st,o,tok);
   tok.remove(); running=false; $('goBtn').disabled=false;
 }
@@ -405,8 +490,8 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
 async function check(st,o,tok){
   const w=st.w;
   if(w===o.ans && !st.half){
-    tok.classList.add('good'); sfx.good();
-    bot(`质检通过！<b>${w}</b> 正好放进句子：${o.s.replace('___','<b>'+w+'</b>')}<br><span style="color:#6b6875">${o.zh}</span>`,'good');
+    tok.classList.add('good'); sfx.good(); save.made[w]=1; store();
+    bot(`质检通过！<b>${w}</b> 正好放进句子：${fill(o,'<b>'+w+'</b>')}<br><span style="color:#6b6875">${o.zh}</span>`,'good');
     await wait(900);
     await meaningQuiz(o);
     oi++;
@@ -419,7 +504,9 @@ async function check(st,o,tok){
   if(w===o.stem) msg=`原料 <b>${w}</b> 没加工就送出来了。先装一台机器吧。`;
   else if(st.half) msg=`<b>${w}</b> 还是半成品（修正台改好了拼写，但还没加后缀）。修正台后面要接一台后缀机。`;
   else if(st.flag==='y') msg=`<b>${w}</b> 拼错啦。辅音字母 + y 结尾的词，加后缀前要把 <b>y 变成 i</b>（happy → happiness）。在后缀机<b>前面</b>放一台 y→i 修正台试试。`;
-  else if(st.flag==='e') msg=`<b>${w}</b> 拼错啦。不发音的 e 结尾的词，加 -ion、-ive、-ity 这种元音开头的后缀前，要先<b>去掉 e</b>（create → creative）。`;
+  else if(st.flag==='d') msg=`<b>${w}</b> 拼错啦。短元音 + 一个辅音结尾的词（run、swim、shop、begin），加 -er、-ing 这种元音开头的后缀前，要把最后的辅音<b>双写</b>（run → runner）。在后缀机前面放一台双写修正台试试。`;
+  else if(st.flag && st.flag.startsWith('dx:')) msg=`<b>${w}</b> 拼错啦。<b>${st.flag.slice(3)}</b> 不用双写：只有“短元音 + 一个辅音”结尾才双写，像 read 有两个元音 ea，就直接加后缀。`;
+  else if(st.flag==='e') msg=`<b>${w}</b> 拼错啦。不发音的 e 结尾的词，加 -ion、-ive、-ity、-able、-ing 这种元音开头的后缀前，要先<b>去掉 e</b>（create → creative）。`;
   else if(o.mistakes && o.mistakes[w]) msg=`<b>${w}</b> 不对哦。${o.mistakes[w]}`;
   else if(WORDS[w]) msg=`<b>${w}</b> 是个真单词，意思是“${WORDS[w]}”，但放进这句话不通顺。`;
   else msg=`<b>${w}</b> 不是这句话要的词，英语里也没有这个词。`;
@@ -432,7 +519,7 @@ async function check(st,o,tok){
 function meaningQuiz(o){
   return new Promise(res=>{
     const right=WORDS[o.ans];
-    const pool=Object.keys(WORDS).filter(k=>k!==o.ans && WORDS[k] && WORDS[k]!==right);
+    const pool=Object.keys(WORDS).filter(k=>k.slice(0,3)!==o.ans.slice(0,3) && !k.includes(o.stem) && WORDS[k] && WORDS[k]!==right);
     const wrong=WORDS[pool[Math.floor(Math.random()*pool.length)]];
     const opts=Math.random()<.5?[right,wrong]:[wrong,right];
     modal(`<h2>🚚 装车前确认一下</h2><div style="font-size:22px;font-weight:800;text-align:center;margin:6px 0">${o.ans}</div><div style="text-align:center;color:#6b6875">是什么意思？答对多拿 1 个⚙️</div><div class="opts">${opts.map(t=>`<button class="opt" data-t="${t}">${t}</button>`).join('')}</div>`);
@@ -453,7 +540,7 @@ function finishLevel(){
   modal(`<h2>${L.name} 完成！</h2><div class="big">${'⭐'.repeat(stars)}<span style="opacity:.2">${'⭐'.repeat(3-stars)}</span></div>
     <div style="text-align:center;color:#6b6875">退回 ${misses} 次 · 奖励 ⚙️ ${stars*3}</div>
     <h2 style="margin-top:12px;font-size:16px">这一关学会的规则</h2>${L.machines.map(ruleHTML).join('')}
-    ${next?`<button class="go" id="nextBtn">下一关 ▶</button>`:`<div style="text-align:center;margin-top:10px">🎉 三关全部完成！你已经是小厂长啦。</div>`}
+    ${next?`<button class="go" id="nextBtn">下一关 ▶</button>`:`<div style="text-align:center;margin-top:10px">🎉 全部关卡完成！你已经是小厂长啦。去“单词仓库”看看你做出的词吧。</div>`}
     <button class="ghost" style="width:100%;margin-top:8px" id="homeBtn">回到关卡</button>`);
   if(next) $('nextBtn').onclick=()=>{closeModal();startLevel(idx+1)};
   $('homeBtn').onclick=()=>{closeModal();showHome()};
@@ -465,6 +552,11 @@ function closeModal(){$('mask').classList.add('hidden')}
 function toast(t){bot(t)}
 
 $('goBtn').onclick=run;
+$('storeBtn').onclick=()=>{
+  const fam={}; LEVELS.forEach(l=>l.orders.forEach(o=>{(fam[o.stem]=fam[o.stem]||new Set()).add(o.ans)}));
+  const html=Object.entries(fam).map(([r,set])=>`<div class="fam"><span class="root">${r.toUpperCase()}</span> 一家<div class="chips">${[...set].map(w=>save.made[w]?`<span class="chip">${w}<small>${WORDS[w]||''}</small></span>`:`<span class="chip no">？？？</span>`).join('')}</div></div>`).join('');
+  modal(`<h2>📦 单词仓库</h2><div style="color:#6b6875">按词根分家。订单做对，新词就会进仓库。</div>${html}<button class="go" onclick="closeModal()">关上仓库</button>`);
+};
 $('clearBtn').onclick=()=>{ if(running) return; placed={}; renderPads(); };
 $('hintBtn').onclick=()=>$('hint').classList.toggle('hidden');
 $('backBtn').onclick=()=>{ if(!running) showHome(); };

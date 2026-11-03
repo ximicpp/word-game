@@ -130,10 +130,31 @@ button{font:inherit;color:inherit;border:0;cursor:pointer}
 .switch.on{background:var(--ok)}
 .switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}
 .switch.on::after{left:23px}
+.food.tried{opacity:.35;filter:grayscale(1)}
+.seat-foot{display:flex;align-items:center;gap:8px;margin-top:8px}
+.seat-foot .pat{flex:1;margin-top:0}
+.help{background:#3b3570;border:1px solid #6a5fb0;border-radius:999px;padding:2px 10px;font-size:13px;white-space:nowrap}
+.seat.arrive{animation:arrive .45s ease-out}
+@keyframes arrive{from{transform:translateY(-14px) scale(.96);opacity:0}to{transform:none;opacity:1}}
+.pill.streak{border-color:var(--warm2);color:#ffd2a8}
+.day-stars{text-align:center;font-size:40px;color:var(--warm);letter-spacing:6px;line-height:1.2}
+.day-stars span{color:#4a4f80}
+.day-words{text-align:center;color:var(--mute);margin:2px 0 12px}
+.none{color:var(--mute);margin:0}
+.book-sec{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.dish{background:var(--card);border-radius:12px;padding:8px 10px;font-size:14px}
+.dish b{font-size:15px}
+.dish .zh{color:var(--mute);margin-left:4px}
+.dish .lvl{color:var(--warm);font-size:12px;float:right}
+.dish p{margin:4px 0 0;font-size:12px;color:#cfd0f0;line-height:1.4}
+.dish.unknown{opacity:.5}
+button:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.seat.arrive,.food.flash{animation:none}}
 .ver{position:fixed;right:8px;bottom:6px;font-size:11px;color:#6d71a8}
 @media (max-width:480px){
   .tables{grid-template-columns:1fr 1fr}
   .seat{min-height:140px;padding:8px}
+  .seat .tap{display:none}
   .seat .ava{font-size:28px}
   .bubble{font-size:14px}
   .shelf{grid-template-columns:repeat(4,1fr);gap:6px;padding:8px}
@@ -155,10 +176,12 @@ button{font:inherit;color:inherit;border:0;cursor:pointer}
     <div class="row">
       <button class="ghost" data-open="mail">📮 烦恼信箱<span class="dot hidden" id="mailDot1"></span></button>
       <button class="ghost" data-open="shop">🛒 装修小店</button>
+      <button class="ghost" data-open="book">📖 菜谱</button>
       <button class="ghost" data-open="friends">👽 老顾客</button>
       <button class="ghost" data-open="settings">⚙️ 设置</button>
     </div>
     <p class="hint-small" id="titleInfo"></p>
+    <p class="hint-small" style="opacity:.6">原型 v0.2</p>
   </section>
 
   <!-- 营业中 -->
@@ -169,6 +192,7 @@ button{font:inherit;color:inherit;border:0;cursor:pointer}
       <span class="pill" id="dayPill"></span>
       <span class="pill" id="servePill"></span>
       <span class="pill" id="coinPill"></span>
+      <span class="pill streak hidden" id="streakPill"></span>
     </div>
     <div class="tables" id="tables"></div>
     <div class="type">
@@ -182,7 +206,6 @@ button{font:inherit;color:inherit;border:0;cursor:pointer}
 
 <div id="mask" class="mask hidden"><div class="panel" id="panel"></div></div>
 <div class="toast" id="toast"></div>
-<div class="ver">原型 v0.1</div>
 
 <script>
 'use strict';
@@ -270,24 +293,30 @@ const STORY_AT = [3, 8];
 
 // 烦恼信箱：k 关键词, zh 中文, l 等级, r[0] 是合适的回信
 const LETTERS = [
-  {a:'pip',l:0,k:'bored',zh:'无聊的',t:"It's raining again and I can't go out. I have nothing to do. I'm so <mark>bored</mark>!",r:["Why not read a fun book or build a blanket fort?","Well done! You must be very proud.","Go to bed early — you need a rest."]},
-  {a:'momo',l:0,k:'lonely',zh:'孤独的',t:"I'm new at my school. Nobody talks to me at lunch, and I feel <mark>lonely</mark>.",r:["Try saying hi to one person. Friendships start with one smile!","Lucky you! Enjoy the quiet.","Eat a bigger lunch next time."]},
-  {a:'penny',l:0,k:'scared',zh:'害怕的',t:"There's a big storm tonight. The thunder is so loud and I'm <mark>scared</mark>.",r:["Stay close to your family. Storms always pass.","Thunder is boring, isn't it?","Great! Go and play outside."]},
-  {a:'dino',l:0,k:'tired',zh:'累的',t:"I played football all afternoon. Now my legs hurt and I'm really <mark>tired</mark>.",r:["Have a warm bath and go to bed early.","Run ten more laps!","Don't worry, it's only a game."]},
-  {a:'beep',l:0,k:'angry',zh:'生气的',t:"My little brother broke my favourite toy robot. I'm so <mark>angry</mark>!",r:["Take a deep breath first, then tell him how you feel.","Say thank you to him.","Buy him a present."]},
-  {a:'luna',l:0,k:'excited',zh:'兴奋的',t:"Tomorrow is my first trip to the seaside! I can't sit still — I'm so <mark>excited</mark>!",r:["How wonderful! Don't forget your sun hat.","Don't worry, I'm sure it will be over soon.","Oh no, I'm so sorry to hear that."]},
-  {a:'zib',l:1,k:'nervous',zh:'紧张的',t:"My piano exam is tomorrow and my hands keep shaking. I'm so <mark>nervous</mark>.",r:["Take a deep breath — you've practised a lot, so trust yourself!","Congratulations on passing!","Why not have a nap? You must be bored."]},
-  {a:'ollie',l:1,k:'embarrassed',zh:'尴尬的',t:"I fell over in front of the whole class today and everyone laughed. I was so <mark>embarrassed</mark>!",r:["Everyone falls sometimes. Laugh along — by tomorrow they'll forget.","You should be really proud of yourself!","Go to the doctor right now."]},
-  {a:'dino',l:1,k:'disappointed',zh:'失望的',t:"I trained for months, but I didn't get into the school team. I'm really <mark>disappointed</mark>.",r:["That's hard, but keep training — there's always next season.","Hooray! Let's have a party!","Don't be afraid of the dark."]},
-  {a:'momo',l:1,k:'jealous',zh:'嫉妒的',t:"My best friend got a new bike and I didn't. I feel a bit <mark>jealous</mark>, and I don't like it.",r:["That's a normal feeling. Maybe you could take turns riding it together!","You should be happy you got a bike!","Don't be shy — just say hello."]},
-  {a:'penny',l:1,k:'confused',zh:'困惑的',t:"My teacher explained fractions three times, but I'm still <mark>confused</mark>.",r:["Ask her to show you with a pizza — fractions are easier to see!","Great! Now you can teach the whole class.","Go and have a snack, you must be hungry."]},
-  {a:'beep',l:1,k:'proud',zh:'自豪的',t:"I finally built a model rocket all by myself! I feel so <mark>proud</mark>.",r:["Amazing! You worked hard, so you should be proud.","Don't worry, you'll do better next time.","Oh no, I'm so sorry."]},
-  {a:'luna',l:2,k:'overwhelmed',zh:'不知所措的',t:"I've got three tests, a project and a concert this week. I feel completely <mark>overwhelmed</mark>.",r:["Make a list and tackle one small thing at a time — it'll feel lighter.","Sounds like you need something to do!","Congratulations on finishing everything!"]},
-  {a:'zib',l:2,k:'homesick',zh:'想家的',t:"I'm on a two-week school trip to Earth. It's great, but I keep missing my mum's cooking. I'm <mark>homesick</mark>.",r:["Call home tonight — and try an Earth dish that reminds you of hers.","Stay in bed until you're feeling better.","You should travel even more often!"]},
-  {a:'ollie',l:2,k:'reluctant',zh:'不情愿的',t:"My parents want me to join the swimming club, but I'm <mark>reluctant</mark> — I've never liked deep water.",r:["Tell them how you feel; maybe start with a few lessons in the shallow end.","Great, you're so keen! Sign up today.","Don't be late for your first lesson."]},
-  {a:'pip',l:2,k:'frustrated',zh:'（屡试不成而）沮丧的',t:"I've tried to solve this puzzle fifty times and I still can't do it. I'm so <mark>frustrated</mark>!",r:["Take a break and come back later — fresh eyes often help.","Well done, you solved it!","Go out and make some new friends."]},
-  {a:'dino',l:2,k:'grateful',zh:'感激的',t:"My neighbour fixed my spaceship for free. I'm so <mark>grateful</mark> — how can I thank him?",r:["Bake him something tasty and write a thank-you card!","Ask him to pay you back.","Tell him you're angry."]},
-  {a:'momo',l:2,k:'anxious',zh:'焦虑的',t:"I keep worrying about moving to a new planet next month. I can't sleep — I'm really <mark>anxious</mark>.",r:["Talk to someone you trust, and find out a few fun facts about your new home.","Sounds like you're excited — have fun!","Sleep more and you won't be bored."]},
+  {a:'pip',l:0,k:'bored',zh:'无聊的',t:"It's raining again and I can't go out. I have nothing to do. I'm so <mark>bored</mark>!",r:["Why not read a fun book or build a blanket fort?","Well done! You must feel very proud of yourself.","Go to bed early tonight. You need a good rest."]},
+  {a:'momo',l:0,k:'lonely',zh:'孤独的',t:"I'm new at my school. Nobody talks to me at lunch, and I feel <mark>lonely</mark>.",r:["Try saying hi to one person. Friends start with a smile!","Lucky you! Enjoy the peace and quiet at lunch time.","Eat a bigger lunch next time, and you'll feel full."]},
+  {a:'penny',l:0,k:'scared',zh:'害怕的',t:"There's a big storm tonight. The thunder is so loud and I'm <mark>scared</mark>.",r:["Stay close to your family. Storms always pass.","Thunder is so boring. Find a game to play!","What great weather! Go and play outside."]},
+  {a:'dino',l:0,k:'tired',zh:'累的',t:"I played football all afternoon. Now my legs hurt and I'm really <mark>tired</mark>.",r:["Have a warm bath and go to bed early.","Why not run ten more laps around the park?","Don't be sad. It's only a game, after all."]},
+  {a:'beep',l:0,k:'angry',zh:'生气的',t:"My little brother broke my favourite toy robot. I'm so <mark>angry</mark>!",r:["Take a deep breath, then tell him how you feel.","Say thank you to him. He was very kind to you!","Buy him a big present to say well done."]},
+  {a:'luna',l:0,k:'excited',zh:'兴奋的',t:"Tomorrow is my first trip to the seaside! I can't sit still. I'm so <mark>excited</mark>!",r:["How wonderful! Don't forget your sun hat.","Don't worry. I'm sure it will be over soon.","Oh no, I'm so sorry to hear that news."]},
+  {a:'ollie',l:0,k:'hungry',zh:'饿的',t:"I didn't have time for breakfast and my tummy keeps rumbling. I'm really <mark>hungry</mark>!",r:["Come to our diner! We'll cook you something yummy.","Have a glass of water and go to sleep for an hour.","Put on a warm coat before you go outside."]},
+  {a:'zib',l:0,k:'worried',zh:'担心的',t:"My pet space-cat didn't come home last night. I'm very <mark>worried</mark> about her.",r:["Let's put up some posters. Lots of people can help look.","Hooray! Let's have a party for your cat tonight.","Cats are boring. Why not get a fish instead?"]},
+  {a:'zib',l:1,k:'nervous',zh:'紧张的',t:"My piano exam is tomorrow and my hands keep shaking. I'm so <mark>nervous</mark>.",r:["Take a deep breath. You've practised a lot, so trust yourself!","Congratulations on passing! Your teacher must be pleased.","Why not have a nap? You must be bored after all that."]},
+  {a:'ollie',l:1,k:'embarrassed',zh:'尴尬的',t:"I fell over in front of the whole class today and everyone laughed. I was so <mark>embarrassed</mark>!",r:["Everyone falls sometimes. Laugh along, and they'll soon forget.","You should feel really proud. Not everyone can do that!","Go to the doctor right now and ask for some medicine."]},
+  {a:'dino',l:1,k:'disappointed',zh:'失望的',t:"I trained for months, but I didn't get into the school team. I'm really <mark>disappointed</mark>.",r:["That's hard, but keep training. There's always next season.","Hooray! You must be so happy. Let's have a party!","Don't be afraid of the dark. Leave a little light on."]},
+  {a:'momo',l:1,k:'jealous',zh:'嫉妒的',t:"My best friend got a new bike and I didn't. I feel a bit <mark>jealous</mark>, and I don't like it.",r:["That's a normal feeling. Maybe you could take turns on it!","You should be happy that you got a shiny new bike!","Don't be shy. Just walk over and say hello to them."]},
+  {a:'penny',l:1,k:'confused',zh:'困惑的',t:"My teacher explained fractions three times, but I'm still <mark>confused</mark>.",r:["Ask her to show you with a pizza. Fractions are easier to see!","Great! Now you understand it, you can teach the whole class.","Go and have a snack. You must be really hungry by now."]},
+  {a:'beep',l:1,k:'proud',zh:'自豪的',t:"I finally built a model rocket all by myself! I feel so <mark>proud</mark>.",r:["Amazing! You worked hard, so you should be proud.","Don't worry. You'll do much better next time.","Oh no, I'm so sorry. Is there anything I can do?"]},
+  {a:'luna',l:1,k:'upset',zh:'难过的；不安的',t:"My best friend is moving to another city. I've been <mark>upset</mark> all week.",r:["That's really sad. You can still video-call and write letters.","That's great news! You'll have so much more free time.","Calm down. There's no need to get so excited about it."]},
+  {a:'pip',l:1,k:'curious',zh:'好奇的',t:"I found a strange old key in my garden. What does it open? I'm so <mark>curious</mark>!",r:["Let's look for an old box or door. It could be an adventure!","Throw it away. Old keys are dirty and not interesting.","Don't feel bad. Everyone loses their keys sometimes."]},
+  {a:'luna',l:2,k:'overwhelmed',zh:'不知所措的',t:"I've got three tests, a project and a concert this week. I feel completely <mark>overwhelmed</mark>.",r:["Make a list and tackle one small thing at a time.","Sounds like you need something to do this week!","Congratulations on finishing everything so quickly!"]},
+  {a:'zib',l:2,k:'homesick',zh:'想家的',t:"I'm on a two-week school trip to Earth. It's great, but I keep missing my mum's cooking. I'm <mark>homesick</mark>.",r:["Call home tonight, and try an Earth dish that reminds you of hers.","Stay in bed and drink plenty of water until you're feeling better.","You should travel even more often. Book another trip straight away!"]},
+  {a:'ollie',l:2,k:'reluctant',zh:'不情愿的',t:"My parents want me to join the swimming club, but I'm <mark>reluctant</mark>. I've never liked deep water.",r:["Tell them how you feel. Maybe start with lessons in the shallow end.","Great, you're so keen! Sign up today before all the places go.","Don't be late for your first lesson. Set an alarm the night before."]},
+  {a:'pip',l:2,k:'frustrated',zh:'（屡试不成而）沮丧的',t:"I've tried to solve this puzzle fifty times and I still can't do it. I'm so <mark>frustrated</mark>!",r:["Take a break and come back later. Fresh eyes often help.","Well done, you solved it! Now try a harder one.","Go out and make some new friends at the park."]},
+  {a:'dino',l:2,k:'grateful',zh:'感激的',t:"My neighbour fixed my spaceship for free. I'm so <mark>grateful</mark>. How can I thank him?",r:["Bake him something tasty and write a thank-you card!","Ask him to pay you back for the time you lost.","Tell him how angry you are, and don't speak to him."]},
+  {a:'momo',l:2,k:'anxious',zh:'焦虑的',t:"I keep worrying about moving to a new planet next month. I can't sleep. I'm really <mark>anxious</mark>.",r:["Talk to someone you trust, and learn a few fun facts about your new home.","Sounds like you can't wait! Enjoy every exciting minute of the move.","Try to sleep more, and you won't feel so bored in the evenings."]},
+  {a:'penny',l:2,k:'indecisive',zh:'犹豫不决的',t:"I can't choose between the art club and the science club. I've changed my mind ten times. I'm so <mark>indecisive</mark>!",r:["Try one session of each, then pick the one you looked forward to most.","Brilliant! It's great that you always know exactly what you want.","Never mind. Clubs are a waste of time, so just stay at home."]},
+  {a:'beep',l:2,k:'relieved',zh:'松了一口气的',t:"I thought I'd lost my homework, but it was in my bag all along. I'm so <mark>relieved</mark>!",r:["Phew! Maybe keep it in one special folder from now on.","Oh dear, you'll have to do it all again tonight.","Don't panic. I'm sure your teacher will understand."]},
 ];
 
 const UPGRADES = [
@@ -307,7 +336,7 @@ const LV = [
 
 // ===================== 存档 =====================
 const KEY = 'star-diner-v1';
-const S = Object.assign({level:0, day:1, coins:0, up:{}, words:{}, hearts:{}, letters:{}, pic:true, missedBy:{}}, load());
+const S = Object.assign({level:0, day:1, coins:0, up:{}, words:{}, hearts:{}, letters:{}, pic:true, sound:true, stars:0, missedBy:{}}, load());
 function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ return {}; } }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
@@ -332,32 +361,42 @@ function unreadLetters(){ return lettersOpen().filter(x => !S.letters[x.k]).leng
 
 // ===================== 选词（间隔复习） =====================
 const GAP = [1,2,3,5,8,13];
+function weightOf(f){
+  const st = S.words[f.w];
+  if(!st) return 3;                               // 新菜
+  if(st.due <= S.day) return st.miss ? 8 : 5;     // 到期复习，上次端错的优先
+  return 0.4;                                     // 还没到期
+}
+function weightedPick(list){
+  const ws = list.map(weightOf);
+  let r = Math.random() * ws.reduce((a,b)=>a+b,0);
+  for(let i=0;i<list.length;i++){ r -= ws[i]; if(r <= 0) return list[i]; }
+  return list[list.length-1];
+}
+function freshCands(filter, busyWords){
+  let c = pool().filter(f => filter(f) && !busyWords.includes(f.w));
+  const fresh = c.filter(f => !(shift && shift.used.has(f.w)));
+  return fresh.length ? fresh : c;                // 同一天尽量不重复点同一道菜
+}
 function chooseOrder(busyWords, busyAliens){
-  const today = S.day;
-  let cands = pool().filter(f => !busyWords.includes(f.w));
-  const fresh = cands.filter(f => !(shift && shift.used.has(f.w)));
-  if(fresh.length) cands = fresh;   // 同一天尽量不重复点同一道菜
-  const weighted = cands.map(f => {
-    const st = S.words[f.w];
-    let w;
-    if(!st) w = 3;                       // 新词
-    else if(st.due <= today) w = st.miss ? 8 : 5;  // 到期复习，上次端错的优先
-    else w = 0.4;                        // 还没到期
-    return [f, w];
-  });
-  let sum = weighted.reduce((s,x)=>s+x[1],0), r = Math.random()*sum, food = weighted[0][0];
-  for(const [f,w] of weighted){ r -= w; if(r <= 0){ food = f; break; } }
+  const food = weightedPick(freshCands(()=>true, busyWords));
+  const items = [food];
+  // 第 3 天起，有些客人会再要一杯饮料
+  if(S.day >= 3 && food.c !== 'drink' && Math.random() < 0.3){
+    const drinks = freshCands(f => f.c === 'drink', busyWords);
+    if(drinks.length) items.push(weightedPick(drinks));
+  }
   // 选客人：端错过这道菜的老顾客会回来再点
   const st = S.words[food.w];
   let alien = null, returning = false;
-  if(st && st.miss && st.due <= today && S.missedBy[food.w] && !busyAliens.includes(S.missedBy[food.w])){
+  if(st && st.miss && st.due <= S.day && S.missedBy[food.w] && !busyAliens.includes(S.missedBy[food.w])){
     alien = alienById(S.missedBy[food.w]); returning = true;
   }
   if(!alien){
     const free = ALIENS.filter(a => !busyAliens.includes(a.id));
     alien = pick(free.length ? free : ALIENS);
   }
-  return {food, alien, returning};
+  return {items, alien, returning};
 }
 function recordWord(w, firstTry, alienId){
   const st = S.words[w] || {box:0, due:0, seen:0, right:0, miss:false};
@@ -367,11 +406,35 @@ function recordWord(w, firstTry, alienId){
   S.words[w] = st;
 }
 
+// ===================== 音效 =====================
+let actx = null;
+function beep(notes){
+  if(!S.sound) return;
+  try{
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    let t = actx.currentTime;
+    for(const [f,d] of notes){
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.18, t+0.02); g.gain.exponentialRampToValueAtTime(0.0001, t+d);
+      o.connect(g).connect(actx.destination); o.start(t); o.stop(t+d+0.02);
+      t += d*0.8;
+    }
+  }catch(e){}
+}
+const SND = {
+  right: () => beep([[660,.12],[880,.18]]),
+  done:  () => beep([[523,.1],[659,.1],[784,.1],[1047,.25]]),
+  wrong: () => beep([[330,.18]]),
+  door:  () => beep([[988,.08],[1319,.14]]),
+};
+
 // ===================== 营业 =====================
 let shift = null, tab = 'meal', timer = null;
 
 function startShift(){
-  shift = {quota: 8 + (S.up.sign?2:0), arrived:0, done:0, earned:0, right:[], missed:[], seats:Array(seatCount()).fill(null), sel:-1, used:new Set(), nextAt: performance.now()+500};
+  shift = {quota: 8 + (S.up.sign?2:0), arrived:0, done:0, earned:0, right:[], missed:[], streak:0, bestStreak:0,
+           seats:Array(seatCount()).fill(null), sel:-1, used:new Set(), nextAt: performance.now()+500};
   $('titleView').classList.add('hidden');
   $('shiftView').classList.remove('hidden');
   tab = 'meal';
@@ -381,24 +444,28 @@ function startShift(){
 }
 
 function patienceMs(){ return (S.up.jukebox ? 60 : 40) * 1000 + S.level*8000; }
+const curSeat = () => shift && shift.seats[shift.sel];
+const waiting = c => c && c.state === 'wait';
+const target = c => c.items.find(f => !c.got.includes(f.w));   // 还没端上的那道菜
 
 function tick(){
   if(!shift) return;
   const now = performance.now();
   const free = shift.seats.findIndex(s => !s);
   if(free >= 0 && shift.arrived < shift.quota && now >= shift.nextAt){
-    const busyW = shift.seats.filter(Boolean).map(c=>c.food.w);
+    const busyW = shift.seats.filter(Boolean).flatMap(c=>c.items.map(f=>f.w));
     const busyA = shift.seats.filter(Boolean).map(c=>c.alien.id);
     const o = chooseOrder(busyW, busyA);
-    shift.seats[free] = {food:o.food, alien:o.alien, returning:o.returning, start:now, wrong:0, state:'wait', react:'', good:false};
-    shift.arrived++; shift.used.add(o.food.w);
+    shift.seats[free] = {items:o.items, got:[], alien:o.alien, returning:o.returning, start:now, wrong:0, help:0, tried:[], state:'wait', react:'', good:'', fresh:true};
+    o.items.forEach(f => shift.used.add(f.w));
+    shift.arrived++;
     shift.nextAt = now + rnd(2500, 5000);
-    if(shift.sel < 0 || !shift.seats[shift.sel] || shift.seats[shift.sel].state!=='wait') shift.sel = free;
-    renderTables();
+    if(!waiting(curSeat())) shift.sel = free;
+    SND.door();
+    renderTables(); renderShelf();
   }
-  // 耐心条
   shift.seats.forEach((c,i) => {
-    if(!c || c.state!=='wait') return;
+    if(!waiting(c)) return;
     const bar = document.querySelector(`#seat${i} .pat i`);
     if(bar) bar.style.width = (100*patienceFrac(c,now)).toFixed(1)+'%';
   });
@@ -409,31 +476,50 @@ function renderTop(){
   $('dayPill').textContent = `第 ${S.day} 天 · ${LV[S.level].k}`;
   $('servePill').textContent = `🍽️ ${shift.done}/${shift.quota}`;
   $('coinPill').textContent = `🪙 ${S.coins}`;
+  $('streakPill').textContent = `🔥 连对 ${shift.streak}`;
+  $('streakPill').classList.toggle('hidden', shift.streak < 2);
   $('decor').textContent = UPGRADES.filter(u=>S.up[u.id]).map(u=>u.e).join('');
 }
 
+const SHELF_NAME = Object.fromEntries(SHELVES);
+function hintLevel(c){ return c.wrong + c.help + (S.up.board && (c.wrong + c.help) > 0 ? 1 : 0); }
 function hintText(c){
-  const w = c.food.w;
-  if(c.wrong >= 3) return `中文提示：${c.food.zh}`;
-  if(c.wrong >= 2 || (c.wrong >= 1 && S.up.board)) return `提示：以 “${w[0]}” 开头，共 ${w.replace(/ /g,'').length} 个字母`;
-  return '';
+  const f = target(c), h = hintLevel(c);
+  if(!f || h <= 0) return '';
+  const n = f.w.replace(/ /g,'').length;
+  if(h >= 3) return `中文提示：${f.zh}（${f.w[0]}… 共 ${n} 个字母）`;
+  if(h >= 2) return `提示：在「${SHELF_NAME[f.c]}」货架，以 “${f.w[0]}” 开头，共 ${n} 个字母`;
+  return `提示：在「${SHELF_NAME[f.c]}」货架上找找`;
+}
+function lowerFirst(s){ return /^I\b/.test(s) ? s : s[0].toLowerCase() + s.slice(1); }
+function orderText(c){
+  const d = f => f.d[S.level];
+  if(c.items.length === 1) return esc(d(c.items[0]));
+  return c.items.map((f,i) => {
+    const t = i === 0 ? d(f) : 'And to drink: ' + lowerFirst(d(f));
+    return c.got.includes(f.w) ? `<s>${esc(t)}</s> ✓` : esc(t);
+  }).join('<br>');
 }
 
 function renderTables(){
-  const el = $('tables');
+  const el = $('tables'), now = performance.now();
   el.innerHTML = shift.seats.map((c,i) => {
     if(!c) return `<div class="seat empty" id="seat${i}">空桌子 · 等客人来</div>`;
-    const sel = i===shift.sel && c.state==='wait';
-    const hint = hintText(c);
-    const def = S.level < c.food.l ? c.food.d[c.food.l] : c.food.d[S.level];
-    return `<div class="seat ${sel?'sel':''} ${c.state==='happy'?'happy':''}" id="seat${i}" data-seat="${i}">
+    const sel = i===shift.sel && waiting(c);
+    const hint = waiting(c) ? hintText(c) : '';
+    const arrive = c.fresh ? 'arrive' : ''; c.fresh = false;
+    return `<div class="seat ${sel?'sel':''} ${c.state==='happy'?'happy':''} ${arrive}" id="seat${i}" data-seat="${i}">
       <span class="tap">${c.state==='happy'?'':sel?'正在服务':'点我服务'}</span>
       <div class="who"><span class="ava">${c.state==='happy'?'😋':c.alien.e}</span><div>
         <div class="nm">${esc(c.alien.n)}</div>
         ${c.returning?'<div class="tagline">🔁 老顾客回来了，想再点上次那道菜</div>':''}
+        ${c.items.length>1&&waiting(c)?'<div class="tagline">🥤 这位客人点了两样</div>':''}
       </div></div>
-      <div class="bubble">${c.state==='happy'?esc(c.react):esc(def)}</div>
-      ${c.state==='wait'?`<div class="react">${esc(c.react)}${hint?`<br>${esc(hint)}`:''}</div><div class="pat"><i style="width:${(100*patienceFrac(c,performance.now())).toFixed(1)}%"></i></div>`:`<div class="react good">${esc(c.good)}</div>`}
+      <div class="bubble">${c.state==='happy'?esc(c.react):orderText(c)}</div>
+      ${waiting(c)?`<div class="react">${esc(c.react)}${hint?`${c.react?'<br>':''}💡 ${esc(hint)}`:''}</div>
+        <div class="seat-foot"><div class="pat"><i style="width:${(100*patienceFrac(c,now)).toFixed(1)}%"></i></div>
+        ${hintLevel(c)<3?`<button class="help" data-help="${i}">💡 提示</button>`:''}</div>`
+      :`<div class="react good">${c.good}</div>`}
     </div>`;
   }).join('');
 }
@@ -442,8 +528,9 @@ function renderTabs(){
   $('tabs').innerHTML = SHELVES.map(([k,n]) => `<button data-tab="${k}" class="${k===tab?'on':''}">${n}</button>`).join('');
 }
 function renderShelf(){
+  const c = curSeat(), tried = waiting(c) ? c.tried : [];
   const items = pool().filter(f => f.c === tab);
-  $('shelf').innerHTML = items.map(f => `<button class="food" data-food="${esc(f.w)}">${S.pic?`<span class="em">${f.e}</span>`:''}<span class="w">${esc(f.w)}</span></button>`).join('');
+  $('shelf').innerHTML = items.map(f => `<button class="food ${tried.includes(f.w)?'tried':''}" data-food="${esc(f.w)}">${S.pic?`<span class="em">${f.e}</span>`:''}<span class="w">${esc(f.w)}</span></button>`).join('');
 }
 function renderSugg(){
   const q = norm($('typeBox').value);
@@ -456,61 +543,103 @@ function renderSugg(){
 function matches(q){
   return pool().filter(f => norm(f.w).startsWith(q)).sort((a,b)=>norm(a.w).length-norm(b.w).length);
 }
+function select(i){ shift.sel = i; renderTables(); renderShelf(); }
+
+function askHelp(i){
+  const c = shift && shift.seats[i];
+  if(!waiting(c) || hintLevel(c) >= 3) return;
+  c.help++;
+  if(i !== shift.sel) shift.sel = i;
+  renderTables(); renderShelf();
+}
 
 function serve(w, typed){
   if(!shift) return;
   const i = shift.sel, c = shift.seats[i];
-  if(!c || c.state !== 'wait'){ toast('先点一位正在等的客人'); return; }
+  if(!waiting(c)){ toast('先点一位正在等的客人'); return; }
   const food = FOODS.find(f => f.w === w);
-  if(food.w === c.food.w){
-    const now = performance.now();
-    const firstTry = c.wrong === 0;
-    const spelled = typed && norm($('typeBox').value) === norm(food.w);
-    let coins = 10 + Math.ceil(6*patienceFrac(c,now)) + (S.up.lamp?3:0) + (spelled?3:0);
-    if(!firstTry) coins = Math.max(4, coins - 3*c.wrong);
-    S.coins += coins; shift.earned += coins; shift.done++;
-    recordWord(food.w, firstTry, c.alien.id);
-    (firstTry ? shift.right : shift.missed).push(food);
-    const before = S.hearts[c.alien.id] || 0;
-    S.hearts[c.alien.id] = before + 1;
-    const newStory = STORY_AT.includes(before+1);
-    c.state = 'happy';
-    c.react = pick(['Yum! Thank you!','Perfect, just what I wanted!','Delicious! See you again!','You understood me! Thanks!']);
-    c.good = `✓ ${food.e} ${food.w} = ${food.zh}　+${coins} 🪙${spelled?'（拼写奖励）':''}`;
-    save();
-    $('typeBox').value=''; renderSugg();
-    if(newStory) toast(`💗 和 ${c.alien.n} 更熟了，去“老顾客”看看它的小故事`);
-    // 换到下一位等待的客人
-    const next = shift.seats.findIndex(s => s && s.state==='wait');
-    shift.sel = next;
-    renderTables(); renderTop();
-    setTimeout(() => {
-      if(!shift) return;
-      shift.seats[i] = null;
-      if(shift.sel < 0){ const n = shift.seats.findIndex(s => s && s.state==='wait'); shift.sel = n; }
-      shift.nextAt = Math.min(shift.nextAt, performance.now() + rnd(1200, 2500));
-      renderTables();
-      if(shift.done >= shift.quota) endShift();
-    }, 1600);
-  } else {
-    c.wrong++;
+  const spelled = typed && norm($('typeBox').value) === norm(food.w);
+  $('typeBox').value=''; renderSugg();
+  if(c.got.includes(food.w)){ toast(`${food.w} 已经端给它啦`); return; }
+  if(c.tried.includes(food.w)){ toast(`${food.w} 它刚才说过不是这个，换一道试试`); return; }
+
+  if(!c.items.some(f => f.w === food.w)){
+    c.wrong++; c.tried.push(food.w);
+    shift.streak = 0;
     c.react = `这是 ${food.w}（${food.zh}），不是我想要的。再读一遍我的话，再试一次吧！`;
-    renderTables();
-    const b = document.querySelector(`[data-food="${CSS.escape(food.w)}"].food`);
-    if(b){ b.classList.remove('flash'); void b.offsetWidth; b.classList.add('flash'); }
+    SND.wrong();
+    renderTables(); renderShelf(); renderTop();
+    return;
   }
+
+  // 端对了一道
+  const firstTry = c.wrong === 0 && c.help === 0;
+  recordWord(food.w, firstTry, c.alien.id);
+  (firstTry ? shift.right : shift.missed).push(food);
+  c.got.push(food.w);
+  c.spelled = (c.spelled||0) + (spelled?1:0);
+  if(c.got.length < c.items.length){
+    c.react = `✓ ${food.w}，谢谢！还差一样哦。`;
+    c.wrong = 0; c.help = 0; c.tried = [];
+    SND.right(); save();
+    renderTables(); renderShelf();
+    return;
+  }
+
+  // 整单完成
+  const now = performance.now();
+  const clean = !c.items.some(f => shift.missed.includes(f));
+  shift.streak = clean ? shift.streak + 1 : 0;
+  shift.bestStreak = Math.max(shift.bestStreak, shift.streak);
+  const streakBonus = clean ? Math.min(Math.max(shift.streak-1,0), 5) : 0;
+  let coins = 10*c.items.length + Math.ceil(6*patienceFrac(c,now)) + (S.up.lamp?3:0) + 3*c.spelled + streakBonus;
+  if(!clean) coins = Math.max(4, coins - 2*(c.wrong + c.help) - 3);
+  S.coins += coins; shift.earned += coins; shift.done++;
+  const before = S.hearts[c.alien.id] || 0;
+  S.hearts[c.alien.id] = before + 1;
+  const newStory = STORY_AT.includes(before+1);
+  c.state = 'happy';
+  c.react = pick(['Yum! Thank you!','Perfect, just what I wanted!','Delicious! See you again!','You understood me! Thanks!']);
+  c.good = c.items.map(f => `✓ ${f.e} ${esc(f.w)} = ${f.zh}`).join('<br>') +
+    `<br>+${coins} 🪙${c.spelled?'（含拼写奖励）':''}${streakBonus?`（🔥 连对 +${streakBonus}）`:''}`;
+  save();
+  SND.done();
+  if(newStory) toast(`💗 和 ${c.alien.n} 更熟了，去“老顾客”看看它的小故事`);
+  shift.sel = shift.seats.findIndex(s => waiting(s));
+  renderTables(); renderTop(); renderShelf();
+  setTimeout(() => {
+    if(!shift) return;
+    shift.seats[i] = null;
+    if(!waiting(curSeat())) shift.sel = shift.seats.findIndex(s => waiting(s));
+    shift.nextAt = Math.min(shift.nextAt, performance.now() + rnd(1200, 2500));
+    renderTables(); renderShelf();
+    if(shift.done >= shift.quota) endShift();
+  }, 1800);
+}
+
+function dayStars(sh){
+  const total = sh.right.length + sh.missed.length;
+  const r = total ? sh.right.length / total : 0;
+  return r >= 0.9 ? 3 : r >= 0.6 ? 2 : 1;
 }
 
 function endShift(){
   clearInterval(timer);
   const sh = shift; shift = null;
+  const stars = dayStars(sh);
+  S.stars = (S.stars||0) + stars;
   S.day++; save();
   $('shiftView').classList.add('hidden');
   $('titleView').classList.remove('hidden');
   renderTitle();
-  const wl = arr => arr.length ? `<div class="wl">${arr.map(f=>`<span>${f.e} ${esc(f.w)}<em>${f.zh}</em></span>`).join('')}</div>` : '<p style="color:var(--mute);margin:0">没有</p>';
+  const uniq = arr => [...new Map(arr.map(f=>[f.w,f])).values()];
+  const wl = arr => arr.length ? `<div class="wl">${uniq(arr).map(f=>`<span>${f.e} ${esc(f.w)}<em>${f.zh}</em></span>`).join('')}</div>` : '<p class="none">没有，太棒啦！</p>';
+  const words = ['再接再厉，明天会更好！','做得不错，客人们都很开心！','完美的一天，全银河都知道你的小店了！'];
   openPanel(`<h2>🌙 第 ${S.day-1} 天打烊啦</h2>
-    <div class="stats"><div><b>${sh.done}</b><span>位客人吃饱了</span></div><div><b>${sh.right.length}</b><span>一次就端对</span></div><div><b>+${sh.earned}</b><span>星星币</span></div></div>
+    <div class="day-stars">${'★'.repeat(stars)}<span>${'★'.repeat(3-stars)}</span></div>
+    <p class="day-words">${words[stars-1]}</p>
+    <div class="stats"><div><b>${sh.done}</b><span>位客人吃饱了</span></div><div><b>${sh.right.length}</b><span>道菜一次端对</span></div><div><b>+${sh.earned}</b><span>星星币</span></div></div>
+    ${sh.bestStreak>=3?`<p class="day-words">🔥 今天最长连对 ${sh.bestStreak} 次</p>`:''}
     <h3>✨ 一次端对的菜</h3>${wl(sh.right)}
     <h3>🔁 明天老顾客会再点的菜</h3>${wl(sh.missed)}
     <div class="btns">
@@ -526,7 +655,7 @@ function renderTitle(){
   const n = unreadLetters(); const d = $('mailDot1');
   d.textContent = n; d.classList.toggle('hidden', !n);
   const learned = Object.values(S.words).filter(s=>s.box>=2).length;
-  $('titleInfo').textContent = `第 ${S.day} 天 · 🪙 ${S.coins} · 已经记住 ${learned} 道菜 · 菜单共 ${pool().length} 道`;
+  $('titleInfo').textContent = `第 ${S.day} 天 · 🪙 ${S.coins} · ⭐ ${S.stars||0} · 已经记住 ${learned} 道菜 · 菜单共 ${pool().length} 道`;
   $('startBtn').textContent = S.day===1 ? '开张营业' : `第 ${S.day} 天开门`;
 }
 
@@ -602,23 +731,39 @@ function openFriends(){
   }).join('') + `</div>`);
 }
 
+function openBook(){
+  const all = pool();
+  const known = all.filter(f => S.words[f.w]);
+  const starOf = st => st.box >= 4 ? '★★★' : st.box >= 2 ? '★★' : '★';
+  openPanel(`<h2>📖 菜谱</h2><p style="margin:0 0 6px;color:var(--mute)">端上过的菜会记在这里，还能看到 ${LV[S.level].k} 客人是怎么说它的。★ 越多，记得越牢。</p>
+    <p style="margin:0 0 4px">已认识 <b>${known.length}</b> / ${all.length} 道菜</p>` +
+    SHELVES.map(([k,n]) => {
+      const sec = all.filter(f=>f.c===k), got = sec.filter(f=>S.words[f.w]), left = sec.length - got.length;
+      return `<h3>${n}　<span class="none" style="font-weight:400;font-size:13px">${got.length}/${sec.length}</span></h3>` +
+        (got.length ? `<div class="book-sec">` + got.map(f => `<div class="dish"><span class="lvl">${starOf(S.words[f.w])}</span>${f.e} <b>${esc(f.w)}</b><span class="zh">${f.zh}</span><p>${esc(f.d[S.level])}</p></div>`).join('') + `</div>` : '') +
+        (left ? `<p class="none" style="font-size:13px;margin-top:6px">❓ 还有 ${left} 道菜等客人来点</p>` : '');
+    }).join(''));
+}
+
 function openSettings(){
   openPanel(`<h2>⚙️ 设置</h2>
     <div class="set">货架上显示图片<span class="switch ${S.pic?'on':''}" data-act="pic"></span></div>
+    <div class="set">音效<span class="switch ${S.sound?'on':''}" data-act="sound"></span></div>
     <p class="hint-small" style="margin-top:0">关掉图片后只能看英文单词找菜，更有挑战。</p>
     <div class="set">从头再来（清空进度）<button class="ghost" data-act="reset">清空</button></div>`);
 }
 
 // ===================== 事件 =====================
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-lv],[data-open],[data-act],[data-tab],[data-food],[data-seat],[data-buy],[data-letter],[data-reply]');
+  const t = e.target.closest('[data-lv],[data-open],[data-act],[data-tab],[data-food],[data-help],[data-seat],[data-buy],[data-letter],[data-reply]');
   if(!t){ if(e.target.id==='mask') closePanel(); return; }
   const d = t.dataset;
   if(d.lv!==undefined){ S.level = +d.lv; save(); renderTitle(); return; }
-  if(d.open){ ({mail:openMail, shop:openShop, friends:openFriends, settings:openSettings})[d.open](); return; }
+  if(d.open){ ({mail:openMail, shop:openShop, friends:openFriends, settings:openSettings, book:openBook})[d.open](); return; }
   if(d.act==='close'){ closePanel(); return; }
   if(d.act==='start'){ closePanel(); startShift(); return; }
   if(d.act==='pic'){ S.pic=!S.pic; save(); openSettings(); return; }
+  if(d.act==='sound'){ S.sound=!S.sound; save(); openSettings(); return; }
   if(d.act==='reset'){
     if(t.dataset.confirm){ localStorage.removeItem(KEY); location.reload(); }
     else { t.dataset.confirm='1'; t.textContent='再点一次确认'; }
@@ -626,7 +771,8 @@ document.addEventListener('click', e => {
   }
   if(d.tab){ tab=d.tab; renderTabs(); renderShelf(); return; }
   if(d.food){ serve(d.food, !!d.typed); return; }
-  if(d.seat!==undefined){ const c=shift&&shift.seats[+d.seat]; if(c&&c.state==='wait'){ shift.sel=+d.seat; renderTables(); } return; }
+  if(d.help!==undefined){ askHelp(+d.help); return; }
+  if(d.seat!==undefined){ const c=shift&&shift.seats[+d.seat]; if(waiting(c)) select(+d.seat); return; }
   if(d.buy){ buy(d.buy); return; }
   if(d.letter){ openLetter(d.letter); return; }
   if(d.reply!==undefined){ reply(+d.reply, t); return; }

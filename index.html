@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b1222">
-<title>词网点灯</title>
+<title>单词星系</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Charis+SIL&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -331,7 +331,7 @@ details.fold[open] summary{margin-bottom:10px}
 
 <div class="app">
   <header>
-    <div class="brand"><h1>词网点灯</h1><button class="ghost bankb" id="bankBtn" type="button" title="选择词库">KET+PET</button></div>
+    <div class="brand"><h1>单词星系</h1><button class="ghost bankb" id="bankBtn" type="button" title="选择词库">KET+PET</button></div>
     <div class="prog">
       <div class="count"><b id="litN">0</b> / <span id="totN">0</span></div>
       <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
@@ -962,10 +962,10 @@ function renderResult(){
   if (cands.length){ const t = cands[0];
     html += `<div class="ctabar"><button class="cta" data-start="${t.w}" type="button">继续：${esc(t.w)} · ${QN} 题</button></div>`;
     if (cands.length > 1) html += `<div class="sec"><div class="eyebrow">${z.unlocked.length ? `新解锁 ${z.unlocked.length} 个` : "也可以选"}</div>${candHtml(cands.slice(1, 5))}</div>`; }
-  else html += `<button class="cta alt" id="home" type="button">回到词网</button>`;
+  else html += `<button class="cta alt" id="home" type="button">回到星图</button>`;
   panel.innerHTML = html; bind(panel);
   const hb = document.getElementById("home"); if (hb) hb.onclick = () => { quiz = null; select(null); };
-  if (litArr.length === WORDS.length) toast("整张词网都点亮了！");
+  if (litArr.length === WORDS.length) toast("整片单词星系都点亮了！");
   else if (z.goal) toast(`今日目标完成！星尘 +${GOAL_BONUS}`);
   else if (c) toast(`连成了${c.name}！`);
   else if (z.newGal.length) toast(z.newGal.length === 1 ? `新星系开放：${GAL[z.newGal[0]].name}` : `开放了 ${z.newGal.length} 个新星系`);

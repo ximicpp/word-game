@@ -1,7 +1,7 @@
 {
   "description": "单词星系 微信小游戏",
   "compileType": "game",
-  "appid": "touristappid",
+  "appid": "wx3e0ec4d809a28f68",
   "projectname": "word-galaxy",
   "miniprogramRoot": "",
   "packOptions": {

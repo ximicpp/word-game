@@ -312,6 +312,7 @@ const data = {
 };
 const banner = `// 本文件由 tools/build.js 根据 words/*.txt 自动生成，请改源文件后重新运行 node tools/build.js。\n`;
 fs.writeFileSync(path.join(ROOT, "data.js"), banner + "window.WORDNET = " + JSON.stringify(data) + ";\n");
+require("./build-minigame.js");   // 同步生成微信小游戏的词库
 const tc = {}; edges.forEach(e => tc[e[2]] = (tc[e[2]]||0) + 1);
 console.log(`单词 ${order.length}（A2 ${lvCnt.A2} · B1 ${lvCnt.B1} · B2 ${lvCnt.B2}）  连线 ${edges.length} ${JSON.stringify(tc)}  星座 ${constellations.length}  星系 ${galaxies.length}`);
 console.log(`在星座里的词 ${Object.keys(consOf).filter(w => consOf[w] >= 0).length}`);

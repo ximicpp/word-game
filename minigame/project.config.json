@@ -1,0 +1,32 @@
+{
+  "description": "单词星系 微信小游戏",
+  "compileType": "game",
+  "appid": "touristappid",
+  "projectname": "word-galaxy",
+  "miniprogramRoot": "",
+  "packOptions": {
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "dev"
+      },
+      {
+        "type": "file",
+        "value": "README.md"
+      },
+      {
+        "type": "folder",
+        "value": "test"
+      }
+    ]
+  },
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "enhance": true,
+    "postcss": false,
+    "minified": true,
+    "uploadWithSourceMap": false
+  },
+  "condition": {}
+}

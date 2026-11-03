@@ -60,10 +60,32 @@ jobs:
           path: dist/单词星系-Android-debug.apk
           if-no-files-found: error
 
+  minigame:
+    name: 微信小游戏
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: 检查词库同步与包大小
+        run: node tools/build-minigame.js --check
+      - name: 规则自测
+        run: node minigame/test/core.test.js
+      - name: 打包工程
+        run: |
+          mkdir -p dist
+          cd minigame && zip -qr "../dist/单词星系-微信小游戏.zip" . -x 'dev/*' 'test/*'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: word-game-minigame
+          path: dist/单词星系-微信小游戏.zip
+          if-no-files-found: error
+
   release:
     name: 发布 Release
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    needs: [web, android]
+    needs: [web, android, minigame]
     runs-on: ubuntu-latest
     permissions:
       contents: write

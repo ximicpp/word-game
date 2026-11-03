@@ -359,7 +359,7 @@ details.fold[open] summary{margin-bottom:10px}
 const KEY = "wordnet-progress-v1";
 // 词库：只用选中级别的词和它们之间的连线（构建时已保证每种组合在星系内连通）
 const BANKS = { ket:{name:"KET", lv:["A2"], note:"A2 Key"}, pet:{name:"PET", lv:["B1"], note:"B1 Preliminary"},
-  kp:{name:"KET+PET", lv:["A2","B1"], note:"A2 + B1"}, kpf:{name:"KET+PET+FCE", lv:["A2","B1","B2"], note:"A2 + B1 + B2 精选"} };
+  kp:{name:"KET+PET", lv:["A2","B1"], note:"A2 + B1"}, kpf:{name:"KET+PET+FCE", lv:["A2","B1","B2"], note:"A2 + B1 + B2"} };
 const RAW = window.WORDNET;
 let BANK = "kp"; try { const v = JSON.parse(localStorage.getItem(KEY)); if (v && BANKS[v.bank]) BANK = v.bank; } catch(e){}
 const LVS = BANKS[BANK].lv;
@@ -739,7 +739,7 @@ function renderHome(){
     <div class="note" style="margin-top:0">拖动、滚轮或双指移动缩放地图，上方切换星系。每点亮 ${OPEN_STEP} 个词开放一个新星系。点亮的词过几天会变暗，答 1 题就能擦亮。</div>
     <div class="keys">${TYPE_ORDER.map(t => `<span style="--c:var(--t-${t})"><i></i>${TYPES[t].name}</span>`).join("")}</div>
     <div class="note">正确率 ${S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "—"} · 最高连击 ${S.best} · 星座 ${GC.flat().filter(consDone).length} / ${NCONS}</div>
-    <div class="note">当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE，精选）的范围整理；例句为原创。</div>
+    <div class="note">当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。</div>
     <div class="foot"><span></span><button class="ghost" id="resetBtn" type="button">重新开始</button></div></details>`;
   panel.innerHTML = html; bind(panel);
   document.getElementById("resetBtn").onclick = askReset;

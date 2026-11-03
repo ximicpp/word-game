@@ -1,0 +1,72 @@
+# 思考与观点 | mind
+## 思维（FCE 三）
+advocate|B2|ˈædvəkeɪt|提倡|They advocate healthy eating.|
+anticipation|B2|ænˌtɪsɪˈpeɪʃn|期待|There was great anticipation before the match.|
+bias|B2|ˈbaɪəs|偏见|The report shows bias.|root:biased
+brainstorm|B2|ˈbreɪnstɔːm|集思广益|Let's brainstorm some ideas.|
+consensus|B2|kənˈsensəs|共识|We reached a consensus.|
+contradict|B2|ˌkɒntrəˈdɪkt|反驳；与……矛盾|Don't contradict your teacher.|
+contradiction|B2|ˌkɒntrəˈdɪkʃn|矛盾|There is a contradiction in his story.|
+contrast|B2|ˈkɒntrɑːst|对比|There is a big contrast between them.|
+criterion|B2|kraɪˈtɪəriən|标准|Price is one criterion.|
+deduce|B2|dɪˈdjuːs|推断|We can deduce the answer.|
+dispute|B2|dɪˈspjuːt|争论|There is a dispute about the land.|
+distinguish|B2|dɪˈstɪŋɡwɪʃ|区分|Can you distinguish the twins?|
+dream up|B2|ˌdriːm ˈʌp|凭空想出|Who did dream up this plan?|
+foresee|B2|fɔːˈsiː|预见|Nobody could foresee the problem.|syn:predict
+generalise|B2|ˈdʒenrəlaɪz|概括|Don't generalise about people.|
+grasp|B2|ɡrɑːsp|理解；抓住|I can't grasp the idea.|syn:understand
+hypothetical|B2|ˌhaɪpəˈθetɪkl|假设的|It's a hypothetical question.|
+ignorance|B2|ˈɪɡnərəns|无知|Ignorance is no excuse.|
+ignorant|B2|ˈɪɡnərənt|无知的|He is ignorant of the rules.|
+illusion|B2|ɪˈluːʒn|错觉|It's an optical illusion.|
+inference|B2|ˈɪnfərəns|推论|Make an inference from the text.|
+intuition|B2|ˌɪntjuˈɪʃn|直觉|Trust your intuition.|
+logic|B2|ˈlɒdʒɪk|逻辑|There is no logic in it.|root:logical
+misconception|B2|ˌmɪskənˈsepʃn|误解|It's a common misconception.|
+misunderstand|B2|ˌmɪsʌndəˈstænd|误解|Don't misunderstand me.|
+notion|B2|ˈnəʊʃn|概念|I have no notion of what he means.|syn:idea
+objective|B2|əbˈdʒektɪv|客观的；目标|Try to be objective.|ant:subjective
+subjective|B2|səbˈdʒektɪv|主观的|Taste is subjective.|
+outlook|B2|ˈaʊtlʊk|观点；前景|She has a positive outlook.|
+paradox|B2|ˈpærədɒks|悖论|It's a strange paradox.|
+perceive|B2|pəˈsiːv|察觉|How do you perceive the problem?|
+perception|B2|pəˈsepʃn|看法|Our perception of time changes.|
+ponder|B2|ˈpɒndə|沉思|She sat down to ponder the question.|
+presume|B2|prɪˈzjuːm|假定|I presume you're tired.|syn:assume
+rationale|B2|ˌræʃəˈnɑːl|根本原因|What is the rationale for this?|
+reasoning|B2|ˈriːzənɪŋ|推理|I don't follow your reasoning.|
+reckon|B2|ˈrekən|认为|I reckon it will rain.|syn:think
+scepticism|B2|ˈskeptɪsɪzəm|怀疑态度|There is scepticism about the plan.|
+speculate|B2|ˈspekjuleɪt|推测|We can only speculate.|
+stance|B2|stæns|立场|What is your stance on this?|
+suppose|B2|səˈpəʊz|猜想|I suppose you're right.|
+tendency|B2|ˈtendənsi|倾向|He has a tendency to be late.|
+## 情绪（FCE 二）
+agitated|B2|ˈædʒɪteɪtɪd|焦虑不安的|He became agitated.|
+appalled|B2|əˈpɔːld|震惊的|I was appalled by the news.|syn:shocked
+apprehensive|B2|ˌæprɪˈhensɪv|忧虑的|I'm apprehensive about the exam.|syn:anxious
+bewildered|B2|bɪˈwɪldəd|困惑的|She looked bewildered.|syn:confused
+content|B2|kənˈtent|满足的|He is content with his life.|
+dismayed|B2|dɪsˈmeɪd|沮丧的|We were dismayed by the result.|
+ecstatic|B2|ɪkˈstætɪk|狂喜的|She was ecstatic about the news.|
+elated|B2|iˈleɪtɪd|兴高采烈的|We were elated after winning.|
+exasperated|B2|ɪɡˈzæspəreɪtɪd|恼怒的|His mother was exasperated.|
+fed up|B2|ˌfed ˈʌp|厌烦的|I'm fed up with the rain.|
+gloomy|B2|ˈɡluːmi|忧郁的|He looks gloomy today.|
+heartbroken|B2|ˈhɑːtbrəʊkən|心碎的|She was heartbroken when he left.|
+homesick|B2|ˈhəʊmsɪk|想家的|I felt homesick at camp.|
+hopeful|B2|ˈhəʊpfl|充满希望的|I'm hopeful about the future.|ant:hopeless
+hopeless|B2|ˈhəʊpləs|绝望的|The situation is hopeless.|
+humiliated|B2|hjuːˈmɪlieɪtɪd|丢脸的|He felt humiliated.|
+indifferent|B2|ɪnˈdɪfrənt|漠不关心的|She was indifferent to the result.|
+irritated|B2|ˈɪrɪteɪtɪd|恼火的|I was irritated by the noise.|syn:annoyed
+miserable|B2|ˈmɪzrəbl|痛苦的|I feel miserable with this cold.|
+outraged|B2|ˈaʊtreɪdʒd|愤慨的|People were outraged.|
+panic|B2|ˈpænɪk|恐慌|Don't panic!|
+petrified|B2|ˈpetrɪfaɪd|吓呆的|She is petrified of spiders.|syn:terrified
+puzzled|B2|ˈpʌzld|困惑的|He looked puzzled.|
+resentful|B2|rɪˈzentfl|怨恨的|She felt resentful.|
+startled|B2|ˈstɑːtld|吓一跳的|The noise startled me.|
+stunned|B2|stʌnd|惊呆的|We were stunned by the news.|
+weary|B2|ˈwɪəri|疲倦的|He looked weary.|syn:tired

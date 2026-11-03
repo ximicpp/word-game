@@ -1,0 +1,75 @@
+# 交流与科技 | media
+## 科技（FCE 二）
+accessible|B2|əkˈsesəbl|可使用的；易到达的|The website is accessible to everyone.|
+attachment|B2|əˈtætʃmənt|附件|Open the attachment.|
+backup|B2|ˈbækʌp|备份|Make a backup of your files.|
+bandwidth|B2|ˈbændwɪdθ|带宽|Video needs a lot of bandwidth.|
+cursor|B2|ˈkɜːsə|光标|Move the cursor to the top.|
+cyberspace|B2|ˈsaɪbəspeɪs|网络空间|We meet in cyberspace.|
+data|B2|ˈdeɪtə|数据|The data is stored safely.|
+domain|B2|dəˈmeɪn|域名；领域|We bought a new domain name.|
+encrypt|B2|ɪnˈkrɪpt|加密|Encrypt your messages.|
+firewall|B2|ˈfaɪəwɔːl|防火墙|The firewall blocks viruses.|
+interactive|B2|ˌɪntərˈæktɪv|互动的|The museum has interactive displays.|
+malware|B2|ˈmælweə|恶意软件|Malware can steal your data.|
+network|B2|ˈnetwɜːk|网络|The network is down.|
+offline|B2|ˌɒfˈlaɪn|离线的|You can play the game offline.|ant:online
+screenshot|B2|ˈskriːnʃɒt|截图|Take a screenshot.|
+spam|B2|spæm|垃圾邮件|Delete the spam.|
+streaming|B2|ˈstriːmɪŋ|流媒体|I watch films on a streaming service.|
+touchscreen|B2|ˈtʌtʃskriːn|触摸屏|The phone has a touchscreen.|
+virtual|B2|ˈvɜːtʃuəl|虚拟的|We took a virtual tour.|
+wireless|B2|ˈwaɪələs|无线的|I have wireless headphones.|
+technical|B2|ˈteknɪkl|技术的|We had a technical problem.|
+technological|B2|ˌteknəˈlɒdʒɪkl|技术的|It was a technological breakthrough.|
+engineering|B2|ˌendʒɪˈnɪərɪŋ|工程|She studies engineering.|
+satellite|B2|ˈsætəlaɪt|卫星|The satellite sends TV signals.|
+signal|B2|ˈsɪɡnəl|信号|There's no phone signal here.|
+## 媒体（FCE 二）
+anchor|B2|ˈæŋkə|新闻主播|The news anchor smiled.|
+bulletin|B2|ˈbʊlətɪn|新闻简报|Here is the news bulletin.|
+caption|B2|ˈkæpʃn|说明文字|Read the caption under the photo.|
+column|B2|ˈkɒləm|专栏|She writes a column for the paper.|
+correspondent|B2|ˌkɒrəˈspɒndənt|记者|Our correspondent is in Paris.|
+feature|B2|ˈfiːtʃə|特写；特色|The magazine has a feature on music.|
+gossip column|B2|ˈɡɒsɪp kɒləm|八卦专栏|She reads the gossip column.|
+interviewer|B2|ˈɪntəvjuːə|采访者|The interviewer asked good questions.|
+paparazzi|B2|ˌpæpəˈrætsi|狗仔队|The paparazzi followed the star.|
+press conference|B2|ˈpres kɒnfərəns|新闻发布会|He gave a press conference.|
+publicity|B2|pʌbˈlɪsəti|宣传|The film got a lot of publicity.|
+ratings|B2|ˈreɪtɪŋz|收视率|The show has high ratings.|
+sitcom|B2|ˈsɪtkɒm|情景喜剧|I love this sitcom.|
+soap opera|B2|ˈsəʊp ɒprə|肥皂剧|My mum watches a soap opera.|
+subtitles|B2|ˈsʌbtaɪtlz|字幕|I watched it with subtitles.|
+tabloid|B2|ˈtæblɔɪd|小报|The tabloid printed rumours.|
+viewer|B2|ˈvjuːə|观众|Every viewer can vote.|
+viral|B2|ˈvaɪrəl|病毒式传播的|The video went viral.|
+## 交流（FCE 三）
+acknowledge|B2|əkˈnɒlɪdʒ|承认；告知收到|Please acknowledge my email.|
+addressee|B2|ˌædreˈsiː|收件人|Write the addressee's name.|
+boast|B2|bəʊst|吹嘘|He likes to boast about his car.|syn:show off
+compliment|B2|ˈkɒmplɪmənt|称赞|She paid me a compliment.|
+confess|B2|kənˈfes|坦白|He decided to confess.|syn:admit
+correspond|B2|ˌkɒrəˈspɒnd|通信|We correspond by email.|
+dialogue|B2|ˈdaɪəlɒɡ|对话|Read the dialogue aloud.|
+eloquent|B2|ˈeləkwənt|雄辩的|She gave an eloquent speech.|
+exclaim|B2|ɪkˈskleɪm|呼喊|"Wow!" she exclaimed. Don't exclaim so loudly.|
+inform|B2|ɪnˈfɔːm|通知|Please inform us of any changes.|
+insult|B2|ɪnˈsʌlt|侮辱|Don't insult your friends.|
+mumble|B2|ˈmʌmbl|含糊地说|Don't mumble, speak clearly.|
+mutter|B2|ˈmʌtə|嘀咕|He began to mutter to himself.|syn:mumble
+nag|B2|næɡ|唠叨|Don't nag me!|
+narrate|B2|nəˈreɪt|讲述|He will narrate the story.|
+object|B2|əbˈdʒekt|反对|I object to this plan.|
+plead|B2|pliːd|恳求|She will plead for help.|syn:beg
+beg|B2|beɡ|乞求|I beg you to stay.|
+quote|B2|kwəʊt|引用|Can I quote you?|
+recommend|B2|ˌrekəˈmend|推荐|I recommend this book.|
+recommendation|B2|ˌrekəmenˈdeɪʃn|推荐|Thanks for the recommendation.|
+remark|B2|rɪˈmɑːk|评论|He made a funny remark.|syn:comment
+comment|B2|ˈkɒment|评论|Leave a comment below.|
+stammer|B2|ˈstæmə|结巴|He began to stammer.|
+swear|B2|sweə|发誓；骂人|Don't swear!|
+threat|B2|θret|威胁|That's a threat!|root:threaten
+warning|B2|ˈwɔːnɪŋ|警告|Listen to the warning.|
+yell|B2|jel|叫喊|Don't yell at me.|syn:shout

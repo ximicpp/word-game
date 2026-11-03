@@ -1,0 +1,75 @@
+# 身体与健康 | body
+## 健康（FCE 四）
+addiction|B2|əˈdɪkʃn|上瘾|Gaming addiction is a real problem.|
+addicted|B2|əˈdɪktɪd|上瘾的|He is addicted to his phone.|root:addiction
+anaesthetic|B2|ˌænəsˈθetɪk|麻醉剂|The dentist gave me an anaesthetic.|
+antibiotic|B2|ˌæntibaɪˈɒtɪk|抗生素|The doctor gave me an antibiotic.|
+bacteria|B2|bækˈtɪəriə|细菌|Wash your hands to kill bacteria.|
+calorie|B2|ˈkæləri|卡路里|This drink has one calorie.|
+cholesterol|B2|kəˈlestərɒl|胆固醇|Eggs contain cholesterol.|
+deficiency|B2|dɪˈfɪʃnsi|缺乏|She has a vitamin deficiency.|
+dehydrated|B2|ˌdiːhaɪˈdreɪtɪd|脱水的|Drink water so you don't get dehydrated.|
+epidemic|B2|ˌepɪˈdemɪk|流行病|There is a flu epidemic.|
+fatigue|B2|fəˈtiːɡ|疲劳|He was suffering from fatigue.|
+insomnia|B2|ɪnˈsɒmniə|失眠|Stress can cause insomnia.|
+inhaler|B2|ɪnˈheɪlə|吸入器|She uses an inhaler.|
+intensive care|B2|ɪnˌtensɪv ˈkeə|重症监护|He is in intensive care.|
+outpatient|B2|ˈaʊtpeɪʃnt|门诊病人|Each outpatient waits in the hall.|
+overdose|B2|ˈəʊvədəʊs|过量|Never take an overdose of pills.|
+posture|B2|ˈpɒstʃə|姿势|Good posture protects your back.|
+protein|B2|ˈprəʊtiːn|蛋白质|Eggs are full of protein.|
+side effect|B2|ˈsaɪd ɪfekt|副作用|The drug has a side effect.|
+vitamin|B2|ˈvɪtəmɪn|维生素|Oranges contain vitamin C.|
+wheelchair|B2|ˈwiːltʃeə|轮椅|He uses a wheelchair.|
+# 运动与爱好 | sport
+## 运动（FCE 三）
+acrobat|B2|ˈækrəbæt|杂技演员|The acrobat did a backflip.|
+captaincy|B2|ˈkæptənsi|队长职务|He was given the captaincy.|
+cheer on|B2|ˌtʃɪər ˈɒn|为……加油|We cheer on our team.|
+competitive|B2|kəmˈpetətɪv|好胜的；竞争的|She is very competitive.|
+fixture|B2|ˈfɪkstʃə|比赛（日程）|The next fixture is on Saturday.|
+handicap|B2|ˈhændikæp|障碍；让分|He has a golf handicap of ten.|
+kit|B2|kɪt|运动服装|Bring your football kit.|
+lap|B2|læp|（跑道）一圈|She ran ten laps. The last lap was fast.|
+relay|B2|ˈriːleɪ|接力赛|Our team won the relay.|
+semi-final|B2|ˌsemi ˈfaɪnl|半决赛|They lost in the semi-final.|
+sprint|B2|sprɪnt|冲刺|She won the sprint.|
+substitute|B2|ˈsʌbstɪtjuːt|替补|The substitute scored.|
+warm-up|B2|ˈwɔːm ʌp|热身|Do a warm-up first.|
+# 购物与金钱 | shopping
+## 经济（FCE）
+cost of living|B2|ˌkɒst əv ˈlɪvɪŋ|生活费用|The cost of living is high.|
+credit|B2|ˈkredɪt|信贷|You can buy it on credit.|
+exchange rate|B2|ɪksˈtʃeɪndʒ reɪt|汇率|What's the exchange rate today?|
+financial|B2|faɪˈnænʃl|财务的|She has financial problems.|
+fund|B2|fʌnd|基金；资助|They set up a fund for the school.|
+grant|B2|ɡrɑːnt|拨款|She got a grant to study.|
+instalment|B2|ɪnˈstɔːlmənt|分期付款|We pay in instalments. The first instalment is due.|
+overdraft|B2|ˈəʊvədrɑːft|透支|I have an overdraft at the bank.|
+payment|B2|ˈpeɪmənt|付款|Payment is due today.|
+splash out|B2|ˌsplæʃ ˈaʊt|挥霍|Let's splash out on a nice meal.|
+squander|B2|ˈskwɒndə|浪费|Don't squander your money.|syn:waste
+thrifty|B2|ˈθrɪfti|节俭的|My grandma is very thrifty.|
+transaction|B2|trænˈzækʃn|交易|The transaction was quick.|
+# 家与居住 | home
+## 居住（FCE 二）
+dwelling|B2|ˈdwelɪŋ|住所|It's an old stone dwelling.|
+estate agent|B2|ɪˈsteɪt eɪdʒənt|房产中介|The estate agent showed us the flat.|
+homeless|B2|ˈhəʊmləs|无家可归的|Help the homeless.|
+move in|B2|ˌmuːv ˈɪn|搬进|We move in next week.|ant:move out
+move out|B2|ˌmuːv ˈaʊt|搬出|They will move out in June.|
+neighbourly|B2|ˈneɪbəli|睦邻的|It was a neighbourly thing to do.|
+semi-detached|B2|ˌsemi dɪˈtætʃt|半独立式的|We live in a semi-detached house.|
+terraced|B2|ˈterəst|排屋的|It's a terraced house.|
+studio flat|B2|ˌstjuːdiəʊ ˈflæt|单间公寓|She rents a studio flat.|
+utility|B2|juːˈtɪləti|公用事业|The rent includes every utility.|
+# 交流与科技 | media
+## 科技（FCE 三）
+automated|B2|ˈɔːtəmeɪtɪd|自动化的|The factory is automated.|
+cutting-edge|B2|ˌkʌtɪŋ ˈedʒ|尖端的|They use cutting-edge technology.|
+gadgetry|B2|ˈɡædʒɪtri|小装置（总称）|The car is full of gadgetry.|
+high-tech|B2|ˌhaɪ ˈtek|高科技的|It's a high-tech office.|
+innovate|B2|ˈɪnəveɪt|创新|Companies must innovate.|
+microchip|B2|ˈmaɪkrəʊtʃɪp|微芯片|The dog has a microchip.|
+prototype|B2|ˈprəʊtətaɪp|原型|They built a prototype.|
+user-friendly|B2|ˌjuːzə ˈfrendli|好用的|The app is user-friendly.|

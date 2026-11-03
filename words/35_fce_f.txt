@@ -1,0 +1,94 @@
+# 人物与家庭 | people
+## 性格（FCE 三）
+assertive|B2|əˈsɜːtɪv|果断自信的|You need to be more assertive at work.|
+bossy|B2|ˈbɒsi|爱指挥人的|My sister is very bossy.|
+cheeky|B2|ˈtʃiːki|厚脸皮的；调皮的|Don't be cheeky to your teacher.|
+conscientious|B2|ˌkɒnʃiˈenʃəs|认真负责的|She is a conscientious student.|
+decisive|B2|dɪˈsaɪsɪv|果断的|A good leader is decisive.|ant:indecisive
+indecisive|B2|ˌɪndɪˈsaɪsɪv|优柔寡断的|He is too indecisive to choose.|
+easy-going|B2|ˌiːzi ˈɡəʊɪŋ|随和的|My dad is very easy-going.|syn:relaxed
+energetic|B2|ˌenəˈdʒetɪk|精力充沛的|Young children are very energetic.|
+gullible|B2|ˈɡʌləbl|容易受骗的|He is so gullible that he believes everything.|
+humble|B2|ˈhʌmbl|谦逊的|He stayed humble after his success.|syn:modest
+idealistic|B2|ˌaɪdiəˈlɪstɪk|理想主义的|Young people are often idealistic.|
+impulsive|B2|ɪmˈpʌlsɪv|冲动的|Don't be impulsive with money.|
+insecure|B2|ˌɪnsɪˈkjʊə|缺乏安全感的|She feels insecure about her looks.|
+introverted|B2|ˈɪntrəvɜːtɪd|内向的|He is introverted and quiet.|ant:outgoing
+irritable|B2|ˈɪrɪtəbl|易怒的|I get irritable when I'm hungry.|
+moody|B2|ˈmuːdi|喜怒无常的|Teenagers can be moody.|
+narrow-minded|B2|ˌnærəʊ ˈmaɪndɪd|心胸狭窄的|Don't be so narrow-minded.|ant:open-minded
+open-minded|B2|ˌəʊpən ˈmaɪndɪd|思想开明的|She is open-minded about new ideas.|
+naive|B2|naɪˈiːv|天真的|It was naive to trust him.|
+obstinate|B2|ˈɒbstɪnət|顽固的|He is too obstinate to change.|syn:stubborn
+passionate|B2|ˈpæʃənət|热情的|She is passionate about music.|
+practical|B2|ˈpræktɪkl|实际的；务实的|He is a practical person.|
+resourceful|B2|rɪˈzɔːsfl|足智多谋的|She is resourceful in a crisis.|
+self-centred|B2|ˌself ˈsentəd|自我中心的|He is too self-centred to listen.|syn:selfish
+straightforward|B2|ˌstreɪtˈfɔːwəd|坦率的；简单的|She is very straightforward.|
+supportive|B2|səˈpɔːtɪv|支持的|My parents are very supportive.|
+thoughtful|B2|ˈθɔːtfl|体贴的|It was thoughtful of you to call.|
+thoughtless|B2|ˈθɔːtləs|欠考虑的|That was a thoughtless remark.|ant:thoughtful
+trustworthy|B2|ˈtrʌstwɜːði|值得信任的|She is a trustworthy friend.|
+vain|B2|veɪn|自负的|He is vain about his hair.|
+witty|B2|ˈwɪti|机智风趣的|He gave a witty speech.|
+## 外貌（FCE）
+attractive|B2|əˈtræktɪv|有吸引力的|She is very attractive.|
+bald|B2|bɔːld|秃顶的|My grandad is bald.|
+freckles|B2|ˈfreklz|雀斑|She has freckles on her nose.|
+glamorous|B2|ˈɡlæmərəs|迷人的|She looked glamorous at the party.|
+muscular|B2|ˈmʌskjələ|肌肉发达的|He is tall and muscular.|
+overweight|B2|ˌəʊvəˈweɪt|超重的|The doctor said he was overweight.|
+plump|B2|plʌmp|丰满的|The baby has plump cheeks.|
+skinny|B2|ˈskɪni|极瘦的|He was a skinny boy.|syn:thin
+wrinkle|B2|ˈrɪŋkl|皱纹|My grandma has a wrinkle on her forehead.|
+complexion|B2|kəmˈplekʃn|肤色|She has a pale complexion.|
+## 人生（FCE）
+adolescent|B2|ˌædəˈlesnt|青少年|An adolescent needs a lot of sleep.|syn:teenager
+adulthood|B2|ˈædʌlthʊd|成年|He reached adulthood at eighteen.|
+infancy|B2|ˈɪnfənsi|婴儿期|She lived in Spain in her infancy.|
+pensioner|B2|ˈpenʃənə|领养老金的人|Every pensioner gets a free bus pass.|
+orphan|B2|ˈɔːfn|孤儿|The orphan lived with his aunt.|
+widow|B2|ˈwɪdəʊ|寡妇|She became a widow at sixty.|
+divorce|B2|dɪˈvɔːs|离婚|Her parents got a divorce.|
+engagement|B2|ɪnˈɡeɪdʒmənt|订婚|They announced their engagement.|
+anniversary|B2|ˌænɪˈvɜːsəri|周年纪念|It's our wedding anniversary.|
+inherit|B2|ɪnˈherɪt|继承|She will inherit the house.|
+companion|B2|kəmˈpæniən|同伴|The dog was his only companion.|
+peer|B2|pɪə|同龄人|Teenagers care about their peer group.|
+mentor|B2|ˈmentɔː|导师|She was my mentor at work.|
+role model|B2|ˈrəʊl mɒdl|榜样|My mum is my role model.|
+# 身体与健康 | body
+## 身体（FCE）
+skeleton|B2|ˈskelɪtn|骨骼|The skeleton protects our organs.|
+skull|B2|skʌl|头骨|The skull protects the brain.|
+spine|B2|spaɪn|脊柱|Sit up straight to protect your spine.|
+lung|B2|lʌŋ|肺|Smoking damages your lung.|
+kidney|B2|ˈkɪdni|肾|He needs a new kidney.|
+liver|B2|ˈlɪvə|肝|The liver cleans the blood.|
+organ|B2|ˈɔːɡən|器官|The heart is an organ.|
+vein|B2|veɪn|静脉|Blood flows through the vein.|
+nerve|B2|nɜːv|神经|A nerve carries messages to the brain.|
+limb|B2|lɪm|四肢|He broke a limb in the crash.|
+palm|B2|pɑːm|手掌|She read my palm.|
+fist|B2|fɪst|拳头|He made a fist.|
+heel|B2|hiːl|脚后跟|My heel hurts.|
+eyelash|B2|ˈaɪlæʃ|睫毛|There's an eyelash on your cheek.|
+jaw|B2|dʒɔː|下巴；颌|He broke his jaw.|
+waist|B2|weɪst|腰|She wears a belt round her waist.|sound:waste
+## 健康（FCE 三）
+allergy|B2|ˈælədʒi|过敏|He has an allergy to nuts.|root:allergic
+asthma|B2|ˈæsmə|哮喘|She uses an inhaler for her asthma.|
+cancer|B2|ˈkænsə|癌症|Smoking can cause cancer.|
+diabetes|B2|ˌdaɪəˈbiːtiːz|糖尿病|Diabetes affects blood sugar.|
+nausea|B2|ˈnɔːziə|恶心|The medicine can cause nausea.|
+sprain|B2|spreɪn|扭伤|I sprain my ankle every winter.|
+fracture|B2|ˈfræktʃə|骨折|The X-ray showed a fracture.|
+therapy|B2|ˈθerəpi|治疗|She is having therapy for her back.|
+remedy|B2|ˈremədi|疗法|Honey is a good remedy for a cough.|
+ward|B2|wɔːd|病房|He is in the children's ward.|
+paramedic|B2|ˌpærəˈmedɪk|医护人员|The paramedic arrived quickly.|
+stretcher|B2|ˈstretʃə|担架|They carried him on a stretcher.|
+contagious|B2|kənˈteɪdʒəs|传染的|The disease is contagious.|
+immune|B2|ɪˈmjuːn|免疫的|I'm immune to chickenpox.|
+obesity|B2|əʊˈbiːsəti|肥胖症|Obesity is a growing problem.|
+hygiene|B2|ˈhaɪdʒiːn|卫生|Good hygiene stops infections.|

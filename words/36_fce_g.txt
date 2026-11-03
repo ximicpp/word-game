@@ -1,0 +1,68 @@
+# 衣服与打扮 | clothes
+## 时尚（FCE 二）
+garment|B2|ˈɡɑːmənt|服装|Wash this garment by hand.|
+apron|B2|ˈeɪprən|围裙|Wear an apron when you cook.|
+overalls|B2|ˈəʊvərɔːlz|工装裤|The mechanic wore blue overalls.|
+waistcoat|B2|ˈweɪskəʊt|马甲|He wore a waistcoat to the wedding.|
+slippers|B2|ˈslɪpəz|拖鞋|Put on your slippers.|
+sandals|B2|ˈsændlz|凉鞋|I wear sandals in summer.|
+heels|B2|hiːlz|高跟鞋|She can't walk in heels.|
+lace|B2|leɪs|鞋带；蕾丝|Tie your lace.|
+embroidered|B2|ɪmˈbrɔɪdəd|绣花的|She wore an embroidered dress.|
+catwalk|B2|ˈkætwɔːk|T 台|Models walked down the catwalk.|
+trend|B2|trend|潮流|This is the latest trend.|
+baggy|B2|ˈbæɡi|宽松的|He wears baggy jeans.|ant:tight
+matching|B2|ˈmætʃɪŋ|相配的|She wore a matching hat and scarf.|
+scruffy|B2|ˈskrʌfi|邋遢的|His clothes look scruffy.|ant:smart
+smart|B2|smɑːt|整洁漂亮的|You look smart in that suit.|
+cosmetics|B2|kɒzˈmetɪks|化妆品|She sells cosmetics.|
+lipstick|B2|ˈlɪpstɪk|口红|She wore red lipstick.|
+# 家与居住 | home
+## 家居（FCE）
+interior|B2|ɪnˈtɪəriə|内部|The interior of the house is modern.|ant:exterior
+exterior|B2|ɪkˈstɪəriə|外部|We painted the exterior.|
+loft|B2|lɒft|阁楼|We store boxes in the loft.|syn:attic
+porch|B2|pɔːtʃ|门廊|Leave the parcel in the porch.|
+patio|B2|ˈpætiəʊ|露台|We had breakfast on the patio.|
+hedge|B2|hedʒ|树篱|Dad cut the hedge.|
+drain|B2|dreɪn|下水道|The drain is blocked.|
+plumbing|B2|ˈplʌmɪŋ|管道系统|The plumbing is old.|
+insulation|B2|ˌɪnsjuˈleɪʃn|隔热层|Good insulation saves energy.|
+radiator|B2|ˈreɪdieɪtə|暖气片|The radiator is hot.|
+socket|B2|ˈsɒkɪt|插座|Plug it into the socket.|
+mattress|B2|ˈmætrəs|床垫|This mattress is too soft.|
+duvet|B2|ˈduːveɪ|羽绒被|I need a warmer duvet.|
+ornament|B2|ˈɔːnəmənt|装饰品|She has a china ornament on the shelf.|
+mess|B2|mes|乱七八糟|Your room is a mess!|
+vacuum|B2|ˈvækjuəm|用吸尘器清扫|I vacuum the floor on Saturdays.|
+dust|B2|dʌst|灰尘；掸灰|There is dust on the TV.|
+laundry|B2|ˈlɔːndri|要洗的衣物|I do the laundry on Sundays.|
+detergent|B2|dɪˈtɜːdʒənt|洗涤剂|Use a little detergent.|
+# 食物与饮料 | food
+## 饮食（FCE 二）
+beverage|B2|ˈbevərɪdʒ|饮料|A hot beverage is served at ten.|syn:drink
+dairy|B2|ˈdeəri|乳制品|Milk and cheese are dairy products.|
+grain|B2|ɡreɪn|谷物|Rice is a grain.|
+herb|B2|hɜːb|香草|Add some fresh herbs. Basil is a herb.|
+spice|B2|spaɪs|香料|Pepper is a spice.|root:spicy
+poultry|B2|ˈpəʊltri|家禽|Poultry includes chicken and duck.|
+pork|B2|pɔːk|猪肉|I don't eat pork.|
+tender|B2|ˈtendə|嫩的|The meat is tender.|ant:tough
+tough|B2|tʌf|老的；坚韧的|The steak was tough.|
+crispy|B2|ˈkrɪspi|酥脆的|I love crispy bacon.|
+juicy|B2|ˈdʒuːsi|多汁的|The peach is juicy.|
+savoury|B2|ˈseɪvəri|咸味的|I prefer savoury snacks.|ant:sweet
+nutritious|B2|njuˈtrɪʃəs|有营养的|Vegetables are nutritious.|
+stale|B2|steɪl|不新鲜的|The bread is stale.|ant:fresh
+rotten|B2|ˈrɒtn|腐烂的|The apple is rotten.|
+edible|B2|ˈedəbl|可食用的|Are these mushrooms edible?|
+broccoli|B2|ˈbrɒkəli|西兰花|Broccoli is good for you.|
+aubergine|B2|ˈəʊbəʒiːn|茄子|I made aubergine curry.|
+plum|B2|plʌm|李子|This plum is sweet.|
+## 餐厅（FCE）
+service|B2|ˈsɜːvɪs|服务|The service was excellent.|
+cutlery|B2|ˈkʌtləri|餐具|Put the cutlery on the table.|
+buffet|B2|ˈbʊfeɪ|自助餐|Breakfast is a buffet.|
+banquet|B2|ˈbæŋkwɪt|宴会|There was a banquet for the king.|syn:feast
+feast|B2|fiːst|盛宴|We had a feast at the festival.|
+treat|B2|triːt|款待；美食|Ice cream is a special treat.|

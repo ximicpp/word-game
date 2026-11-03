@@ -1,0 +1,66 @@
+# 描述事物 | describe
+## 描述（FCE 三）
+ambiguous|B2|æmˈbɪɡjuəs|含糊的|The question was ambiguous.|syn:vague
+apparent|B2|əˈpærənt|明显的|It was apparent that she was tired.|syn:obvious
+authentic|B2|ɔːˈθentɪk|真正的|This is authentic Italian pizza.|syn:genuine
+awkward|B2|ˈɔːkwəd|尴尬的；笨拙的|There was an awkward silence.|
+brilliant|B2|ˈbrɪliənt|极好的；聪明的|What a brilliant idea!|
+chaotic|B2|keɪˈɒtɪk|混乱的|The traffic was chaotic.|
+compact|B2|kəmˈpækt|小巧的|It's a compact car.|
+comprehensive|B2|ˌkɒmprɪˈhensɪv|全面的|It's a comprehensive guide.|
+controversial|B2|ˌkɒntrəˈvɜːʃl|有争议的|It's a controversial decision.|
+delicate|B2|ˈdelɪkət|精致的；易碎的|This glass is delicate.|syn:fragile
+dense|B2|dens|密集的|The forest is dense.|
+dramatic|B2|drəˈmætɪk|戏剧性的|There was a dramatic change.|
+dull|B2|dʌl|乏味的；暗淡的|The film was dull.|syn:boring
+elaborate|B2|ɪˈlæbərət|精心制作的|They made an elaborate cake.|
+extraordinary|B2|ɪkˈstrɔːdnri|非凡的|She has extraordinary talent.|
+fascinating|B2|ˈfæsɪneɪtɪŋ|迷人的|The book is fascinating.|
+flawless|B2|ˈflɔːləs|完美无瑕的|Her English is flawless.|syn:perfect
+gigantic|B2|dʒaɪˈɡæntɪk|巨大的|A gigantic wave hit the ship.|
+gorgeous|B2|ˈɡɔːdʒəs|非常漂亮的|What a gorgeous dress!|
+hilarious|B2|hɪˈleəriəs|极其好笑的|The film was hilarious.|syn:funny
+immense|B2|ɪˈmens|巨大的|It was an immense task.|
+impressive|B2|ɪmˈpresɪv|令人印象深刻的|Her results were impressive.|
+inconsistent|B2|ˌɪnkənˈsɪstənt|不一致的|His story is inconsistent.|
+ingenious|B2|ɪnˈdʒiːniəs|巧妙的|It's an ingenious idea.|
+innovative|B2|ˈɪnəveɪtɪv|创新的|It's an innovative design.|
+magnificent|B2|mæɡˈnɪfɪsnt|壮丽的|The palace is magnificent.|
+marvellous|B2|ˈmɑːvələs|了不起的|We had a marvellous time.|
+monotonous|B2|məˈnɒtənəs|单调的|The work is monotonous.|syn:tedious
+neat|B2|niːt|整洁的|Her handwriting is neat.|syn:tidy
+notorious|B2|nəʊˈtɔːriəs|臭名昭著的|The road is notorious for accidents.|
+obscure|B2|əbˈskjʊə|鲜为人知的|He is an obscure poet.|
+outstanding|B2|aʊtˈstændɪŋ|杰出的|She is an outstanding student.|
+peculiar|B2|pɪˈkjuːliə|奇怪的|There's a peculiar smell.|syn:strange
+precious|B2|ˈpreʃəs|珍贵的|Time is precious.|
+profound|B2|prəˈfaʊnd|深刻的|It had a profound effect on me.|
+rare|B2|reə|稀有的|It's a rare bird.|
+robust|B2|rəʊˈbʌst|结实的|This bike is robust.|
+spectacular|B2|spekˈtækjələ|壮观的|The fireworks were spectacular.|
+sophisticated|B2|səˈfɪstɪkeɪtɪd|复杂精密的；老练的|It's a sophisticated machine.|
+sparkling|B2|ˈspɑːklɪŋ|闪闪发光的；起泡的|I'd like sparkling water.|
+steep|B2|stiːp|陡峭的|The hill is steep.|
+sticky|B2|ˈstɪki|黏的|My hands are sticky.|
+striking|B2|ˈstraɪkɪŋ|引人注目的|She has striking blue eyes.|
+superb|B2|suːˈpɜːb|极好的|The food was superb.|syn:excellent
+trivial|B2|ˈtrɪviəl|琐碎的|It's a trivial problem.|
+typical|B2|ˈtɪpɪkl|典型的|It's a typical English breakfast.|
+vast|B2|vɑːst|广阔的|The desert is vast.|
+vulnerable|B2|ˈvʌlnərəbl|脆弱的|Old people are vulnerable to the cold.|
+## 状态（FCE）
+available|B2|əˈveɪləbl|可用的|Is this seat available?|
+aware|B2|əˈweə|意识到的|Are you aware of the danger?|
+capable|B2|ˈkeɪpəbl|有能力的|She is capable of winning.|
+compatible|B2|kəmˈpætəbl|兼容的|This app is compatible with my phone.|
+eligible|B2|ˈelɪdʒəbl|有资格的|You are eligible for a discount.|
+entitled|B2|ɪnˈtaɪtld|有权的|You are entitled to a refund.|
+exempt|B2|ɪɡˈzempt|被免除的|Children are exempt from the fee.|
+familiar|B2|fəˈmɪliə|熟悉的|This song sounds familiar.|
+liable|B2|ˈlaɪəbl|有责任的|You are liable for the damage.|
+prone|B2|prəʊn|易于……的|He is prone to colds.|
+relevant|B2|ˈreləvənt|相关的|Is this relevant to the topic?|ant:irrelevant
+irrelevant|B2|ɪˈreləvənt|无关的|That point is irrelevant.|
+reliant|B2|rɪˈlaɪənt|依赖的|We are reliant on cars.|
+subject to|B2|ˈsʌbdʒɪkt tə|取决于|Prices are subject to change.|
+vacant|B2|ˈveɪkənt|空着的|The flat is vacant.|syn:empty

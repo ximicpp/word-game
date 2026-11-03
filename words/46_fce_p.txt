@@ -1,0 +1,63 @@
+# 人物与家庭 | people
+## 社会（FCE 二）
+authority|B2|ɔːˈθɒrəti|权威；当局|The local authority runs the schools.|
+bureaucracy|B2|bjʊəˈrɒkrəsi|官僚主义|There is too much bureaucracy.|
+campaign|B2|kæmˈpeɪn|运动；宣传活动|They started a campaign to save the park.|
+civilian|B2|səˈvɪliən|平民|Each civilian was told to stay inside.|
+conflict|B2|ˈkɒnflɪkt|冲突|The conflict lasted years.|
+corruption|B2|kəˈrʌpʃn|腐败|Corruption is a big problem.|
+democracy|B2|dɪˈmɒkrəsi|民主|We live in a democracy.|
+discrimination|B2|dɪˌskrɪmɪˈneɪʃn|歧视|Discrimination is illegal.|
+emigrate|B2|ˈemɪɡreɪt|移居国外|They plan to emigrate to Canada.|
+immigrant|B2|ˈɪmɪɡrənt|移民|Her father was an immigrant.|
+immigration|B2|ˌɪmɪˈɡreɪʃn|移民|Immigration is a big topic.|
+independence|B2|ˌɪndɪˈpendəns|独立|The country gained independence.|
+legislation|B2|ˌledʒɪsˈleɪʃn|立法|New legislation bans smoking.|
+minister|B2|ˈmɪnɪstə|部长|The minister gave a speech.|
+parliament|B2|ˈpɑːləmənt|议会|Parliament passed the law.|
+policy|B2|ˈpɒləsi|政策|The school has a new policy.|
+politics|B2|ˈpɒlətɪks|政治|I'm not interested in politics.|
+president|B2|ˈprezɪdənt|总统；主席|The president visited the city.|
+refugee|B2|ˌrefjuˈdʒiː|难民|The refugee found a new home.|
+rights|B2|raɪts|权利|Everyone has rights.|
+riot|B2|ˈraɪət|暴乱|There was a riot in the city.|
+welfare|B2|ˈwelfeə|福利|Animal welfare is important.|
+## 法律（FCE）
+accuse|B2|əˈkjuːz|指控|They accuse him of stealing.|
+arrest|B2|əˈrest|逮捕|The police will arrest the thief.|
+burglar|B2|ˈbɜːɡlə|入室盗贼|A burglar broke into the house.|
+burglary|B2|ˈbɜːɡləri|入室盗窃|There was a burglary next door.|
+fraud|B2|frɔːd|欺诈|He was arrested for fraud.|
+guilty|B2|ˈɡɪlti|有罪的；内疚的|He was found guilty.|ant:innocent
+innocent|B2|ˈɪnəsnt|无辜的|She is innocent.|
+judge|B2|dʒʌdʒ|法官|The judge spoke to the jury.|
+jury|B2|ˈdʒʊəri|陪审团|The jury said he was guilty.|
+lawsuit|B2|ˈlɔːsuːt|诉讼|They filed a lawsuit.|
+offence|B2|əˈfens|罪行|It's an offence to drive drunk.|
+punish|B2|ˈpʌnɪʃ|惩罚|They will punish the thief.|
+punishment|B2|ˈpʌnɪʃmənt|惩罚|The punishment was too harsh.|
+robbery|B2|ˈrɒbəri|抢劫|There was a bank robbery.|
+shoplifting|B2|ˈʃɒplɪftɪŋ|商店行窃|Shoplifting is a crime.|
+smuggle|B2|ˈsmʌɡl|走私|They tried to smuggle drugs.|
+theft|B2|θeft|盗窃|He was arrested for theft.|
+trial|B2|ˈtraɪəl|审判|The trial lasted a week.|
+verdict|B2|ˈvɜːdɪkt|裁决|The jury gave its verdict.|
+# 工作与职业 | work
+## 商业（FCE 二）
+acquisition|B2|ˌækwɪˈzɪʃn|收购|The acquisition cost millions.|
+asset|B2|ˈæset|资产|She is an asset to the team.|
+bankrupt|B2|ˈbæŋkrʌpt|破产的|The company went bankrupt.|
+competitor|B2|kəmˈpetɪtə|竞争对手|Our competitor lowered prices.|
+economy|B2|ɪˈkɒnəmi|经济|The economy is growing.|
+export|B2|ˈekspɔːt|出口|China exports many goods. We export cars.|ant:import
+import|B2|ˈɪmpɔːt|进口|We import oil.|
+inflation|B2|ɪnˈfleɪʃn|通货膨胀|Inflation is rising.|
+invoice|B2|ˈɪnvɔɪs|发票|Send me the invoice.|
+logo|B2|ˈləʊɡəʊ|标志|The company has a new logo.|
+marketing|B2|ˈmɑːkɪtɪŋ|营销|She works in marketing.|
+merger|B2|ˈmɜːdʒə|合并|The merger created a big company.|
+revenue|B2|ˈrevənjuː|收入|Revenue rose last year.|
+sponsor|B2|ˈspɒnsə|赞助|A bank will sponsor the team.|
+stock|B2|stɒk|库存；股票|The shop has no stock.|
+turnover|B2|ˈtɜːnəʊvə|营业额|The firm has a high turnover.|
+venture|B2|ˈventʃə|风险投资；企业|It's a new business venture.|

@@ -1,0 +1,70 @@
+# 自然与天气 | nature
+## 天气（FCE）
+drizzle|B2|ˈdrɪzl|毛毛雨|It's only a light drizzle.|
+downpour|B2|ˈdaʊnpɔː|倾盆大雨|We got wet in the downpour.|
+thunderstorm|B2|ˈθʌndəstɔːm|雷暴|There was a thunderstorm last night.|
+gale|B2|ɡeɪl|大风|A gale blew the roof off.|
+blizzard|B2|ˈblɪzəd|暴风雪|The blizzard closed the roads.|
+heatwave|B2|ˈhiːtweɪv|热浪|There is a heatwave in Spain.|
+overcast|B2|ˌəʊvəˈkɑːst|阴天的|The sky is overcast.|syn:cloudy
+chilly|B2|ˈtʃɪli|寒冷的|It's chilly this morning.|syn:cold
+scorching|B2|ˈskɔːtʃɪŋ|酷热的|It was a scorching day.|
+damp|B2|dæmp|潮湿的|The walls are damp.|
+muggy|B2|ˈmʌɡi|闷热的|It's hot and muggy.|syn:humid
+changeable|B2|ˈtʃeɪndʒəbl|多变的|The weather is changeable.|
+## 自然（FCE 三）
+canyon|B2|ˈkænjən|峡谷|We visited the Grand Canyon.|
+crater|B2|ˈkreɪtə|火山口；坑|The volcano has a huge crater.|
+dune|B2|djuːn|沙丘|We climbed a sand dune.|
+estuary|B2|ˈestʃuəri|河口|Birds feed in the estuary.|
+marsh|B2|mɑːʃ|沼泽|Frogs live in the marsh.|
+meadow|B2|ˈmedəʊ|草地|Cows grazed in the meadow.|
+plateau|B2|ˈplætəʊ|高原|Tibet is a high plateau.|
+reef|B2|riːf|礁|We swam near the coral reef.|
+summit|B2|ˈsʌmɪt|山顶|We reached the summit.|syn:peak
+swamp|B2|swɒmp|沼泽|Alligators live in the swamp.|syn:marsh
+tropical|B2|ˈtrɒpɪkl|热带的|It's a tropical island.|
+vegetation|B2|ˌvedʒəˈteɪʃn|植被|The vegetation is thick.|
+rainforest|B2|ˈreɪnfɒrɪst|雨林|The rainforest is home to many animals.|
+mineral|B2|ˈmɪnərəl|矿物|Iron is a mineral.|
+fossil|B2|ˈfɒsl|化石|We found a fossil on the beach.|
+pebble|B2|ˈpebl|鹅卵石|He threw a pebble into the sea.|
+boulder|B2|ˈbəʊldə|巨石|A boulder blocked the road.|
+## 动植物（FCE）
+wasp|B2|wɒsp|黄蜂|A wasp flew into the room.|
+moth|B2|mɒθ|蛾子|A moth flew round the lamp.|
+beetle|B2|ˈbiːtl|甲虫|A beetle crawled across the path.|
+caterpillar|B2|ˈkætəpɪlə|毛毛虫|A caterpillar becomes a butterfly.|
+snail|B2|sneɪl|蜗牛|A snail is very slow.|
+worm|B2|wɜːm|虫；蠕虫|The bird ate a worm.|
+lizard|B2|ˈlɪzəd|蜥蜴|A lizard sat on the rock.|hyper:reptile
+tortoise|B2|ˈtɔːtəs|乌龟|The tortoise is a hundred years old.|
+seal|B2|siːl|海豹|We saw a seal on the rocks.|
+hedgehog|B2|ˈhedʒhɒɡ|刺猬|A hedgehog came into the garden.|
+mole|B2|məʊl|鼹鼠|A mole dug holes in the lawn.|
+herd|B2|hɜːd|兽群|A herd of cows crossed the road.|
+flock|B2|flɒk|鸟群；羊群|A flock of birds flew south.|
+beak|B2|biːk|鸟喙|The bird has a long beak.|
+claw|B2|klɔː|爪|The cat has sharp claws. One claw is broken.|
+paw|B2|pɔː|爪子|The dog hurt its paw.|
+horn|B2|hɔːn|角|The bull has long horns. One horn is broken.|
+trunk|B2|trʌŋk|树干；象鼻|The elephant lifted its trunk.|
+bark|B2|bɑːk|树皮；狗叫|Dogs bark at strangers.|
+thorn|B2|θɔːn|刺|Roses have thorns. A thorn cut my finger.|
+petal|B2|ˈpetl|花瓣|A petal fell from the rose.|
+weed|B2|wiːd|杂草|Pull out every weed.|
+harvest|B2|ˈhɑːvɪst|收获|The harvest was good this year.|
+crop|B2|krɒp|庄稼|Rain helps the crop grow.|
+## 环境（FCE 二）
+carbon|B2|ˈkɑːbən|碳|Cars produce carbon dioxide.|
+fossil fuel|B2|ˌfɒsl ˈfjuːəl|化石燃料|Coal is a fossil fuel.|
+toxic|B2|ˈtɒksɪk|有毒的|The river is full of toxic waste.|syn:poisonous
+poisonous|B2|ˈpɔɪzənəs|有毒的|Some mushrooms are poisonous.|
+biodegradable|B2|ˌbaɪəʊdɪˈɡreɪdəbl|可生物降解的|Use biodegradable bags.|
+compost|B2|ˈkɒmpɒst|堆肥|We make compost from leaves.|
+footprint|B2|ˈfʊtprɪnt|足迹|Reduce your carbon footprint.|
+extinction|B2|ɪkˈstɪŋkʃn|灭绝|Many animals face extinction.|root:extinct
+conserve|B2|kənˈsɜːv|节约；保护|Conserve energy at home.|
+wind farm|B2|ˈwɪnd fɑːm|风力发电场|There is a wind farm on the hill.|
+solar panel|B2|ˌsəʊlə ˈpænl|太阳能板|We put a solar panel on the roof.|
+nuclear|B2|ˈnjuːkliə|核能的|They built a nuclear power station.|

@@ -1,0 +1,87 @@
+# 旅行与交通 | travel
+## 旅行（FCE 二）
+backpacking|B2|ˈbækpækɪŋ|背包旅行|We went backpacking in Asia.|
+breathtaking|B2|ˈbreθteɪkɪŋ|惊人的；壮观的|The view was breathtaking.|
+cancellation|B2|ˌkænsəˈleɪʃn|取消|There was a cancellation, so we got a room.|
+check-in|B2|ˈtʃek ɪn|登机手续|Check-in closes at nine.|
+deck|B2|dek|甲板|We sat on the deck of the ship.|
+disembark|B2|ˌdɪsɪmˈbɑːk|下船；下飞机|Passengers will disembark soon.|ant:board
+embark|B2|ɪmˈbɑːk|上船；开始|We embark on our trip tomorrow.|
+expedition|B2|ˌekspəˈdɪʃn|探险|They went on an expedition to the Arctic.|
+hitchhike|B2|ˈhɪtʃhaɪk|搭便车|It's not safe to hitchhike.|
+hospitality|B2|ˌhɒspɪˈtæləti|好客|Thank you for your hospitality.|
+inclusive|B2|ɪnˈkluːsɪv|包含一切的|The price is inclusive of meals.|
+lodge|B2|lɒdʒ|小屋|We stayed in a ski lodge.|
+off the beaten track|B2|ɒf ðə ˈbiːtn træk|人迹罕至的|The village is off the beaten track.|
+overbooked|B2|ˌəʊvəˈbʊkt|超额预订的|The flight was overbooked.|
+picturesque|B2|ˌpɪktʃəˈresk|风景如画的|It's a picturesque village.|syn:scenic
+pilgrimage|B2|ˈpɪlɡrɪmɪdʒ|朝圣|They went on a pilgrimage.|
+porter|B2|ˈpɔːtə|行李员|The porter carried our bags.|
+refreshments|B2|rɪˈfreʃmənts|茶点|Refreshments will be served.|
+retreat|B2|rɪˈtriːt|静修地|It's a quiet mountain retreat.|
+safari|B2|səˈfɑːri|游猎|We saw lions on safari.|
+self-catering|B2|ˌself ˈkeɪtərɪŋ|自己做饭的|We rented a self-catering flat.|
+sightseer|B2|ˈsaɪtsiːə|观光者|Each sightseer took photos.|
+terminal|B2|ˈtɜːmɪnl|航站楼|Our flight leaves from terminal two.|
+transit|B2|ˈtrænzɪt|中转|We were in transit for six hours.|
+trek|B2|trek|徒步旅行|We did a three-day trek.|
+wanderlust|B2|ˈwɒndəlʌst|旅行癖|She has a strong wanderlust.|
+accommodate|B2|əˈkɒmədeɪt|容纳|The hotel can accommodate fifty guests.|
+## 交通（FCE 二）
+aisle|B2|aɪl|过道|I'd like an aisle seat.|sound:isle
+cabin|B2|ˈkæbɪn|机舱；船舱|The cabin crew were friendly.|
+cockpit|B2|ˈkɒkpɪt|驾驶舱|The pilot is in the cockpit.|
+runway|B2|ˈrʌnweɪ|跑道|The plane is on the runway.|
+turbulence|B2|ˈtɜːbjələns|气流颠簸|There was some turbulence.|
+crossroads|B2|ˈkrɒsrəʊdz|十字路口|Turn left at the crossroads.|
+junction|B2|ˈdʒʌŋkʃn|交叉路口|Leave the motorway at junction five.|
+toll|B2|təʊl|通行费|We paid a toll on the bridge.|
+speed limit|B2|ˈspiːd lɪmɪt|限速|The speed limit is thirty.|
+speeding|B2|ˈspiːdɪŋ|超速|He was fined for speeding.|
+breakdown|B2|ˈbreɪkdaʊn|故障|We had a breakdown on the motorway.|
+breakdown truck|B2|ˈbreɪkdaʊn trʌk|拖车|A breakdown truck came to help.|
+reverse|B2|rɪˈvɜːs|倒车|Reverse into the parking space.|
+steer|B2|stɪə|驾驶；操纵|Steer the boat to the left.|
+swerve|B2|swɜːv|突然转向|The driver had to swerve.|
+skid|B2|skɪd|打滑|Cars skid on ice.|
+headlights|B2|ˈhedlaɪts|车头灯|Turn your headlights on.|
+windscreen|B2|ˈwɪndskriːn|挡风玻璃|The windscreen is dirty.|
+bonnet|B2|ˈbɒnɪt|引擎盖|Open the bonnet.|
+carriage|B2|ˈkærɪdʒ|车厢|The train has eight carriages. The first carriage is quiet.|
+season ticket|B2|ˈsiːzn tɪkɪt|季票|I bought a season ticket.|
+rush hour|B2|ˈrʌʃ aʊə|高峰时间|Avoid the rush hour.|
+traffic jam|B2|ˈtræfɪk dʒæm|交通堵塞|We were stuck in a traffic jam.|
+## 地点（FCE）
+continent|B2|ˈkɒntɪnənt|大陆|Africa is a continent.|
+peninsula|B2|pəˈnɪnsjələ|半岛|Italy is a peninsula.|
+province|B2|ˈprɒvɪns|省|Canada has ten provinces. Each province has a capital.|
+territory|B2|ˈterətri|领土|This is our territory.|
+border|B2|ˈbɔːdə|边界|We crossed the border.|
+frontier|B2|ˈfrʌntɪə|边境|The frontier is closed.|syn:border
+equator|B2|ɪˈkweɪtə|赤道|It's hot at the equator.|
+hemisphere|B2|ˈhemɪsfɪə|半球|Australia is in the southern hemisphere.|
+latitude|B2|ˈlætɪtjuːd|纬度|What is the latitude of Paris?|
+# 城镇与地点 | town
+## 城市（FCE 二）
+metropolis|B2|məˈtrɒpəlɪs|大都市|Tokyo is a huge metropolis.|
+borough|B2|ˈbʌrə|自治市镇|She lives in a London borough.|
+municipal|B2|mjuˈnɪsɪpl|市政的|The municipal library is free.|
+civic|B2|ˈsɪvɪk|城市的；公民的|The civic centre is in the square.|
+landfill|B2|ˈlændfɪl|垃圾填埋场|Most rubbish goes to landfill.|
+sewage|B2|ˈsuːɪdʒ|污水|Sewage must be treated.|
+slum|B2|slʌm|贫民窟|Many people live in a slum.|
+commuter belt|B2|kəˈmjuːtə belt|通勤带|They live in the commuter belt.|
+high-rise|B2|ˈhaɪ raɪz|高层建筑|They live in a high-rise flat.|
+block of flats|B2|ˌblɒk əv ˈflæts|公寓楼|We live in a block of flats.|
+estate|B2|ɪˈsteɪt|住宅区|They live on a new estate.|
+plaza|B2|ˈplɑːzə|广场|There is a café in the plaza.|
+arcade|B2|ɑːˈkeɪd|拱廊；游戏厅|We played games in the arcade.|
+pedestrian zone|B2|pəˈdestriən zəʊn|步行街|Cars can't enter the pedestrian zone.|
+lamppost|B2|ˈlæmppəʊst|路灯柱|He leaned against a lamppost.|
+graffiti|B2|ɡrəˈfiːti|涂鸦|There is graffiti on the wall.|
+litter|B2|ˈlɪtə|垃圾|Don't drop litter.|syn:rubbish
+town hall|B2|ˌtaʊn ˈhɔːl|市政厅|The meeting is at the town hall.|
+courthouse|B2|ˈkɔːthaʊs|法院|He went to the courthouse.|
+prison|B2|ˈprɪzn|监狱|He was sent to prison.|syn:jail
+jail|B2|dʒeɪl|监狱|The thief went to jail.|
+cemetery|B2|ˈsemətri|墓地|My grandparents are buried in the cemetery.|

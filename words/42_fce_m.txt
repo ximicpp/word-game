@@ -1,0 +1,76 @@
+# 娱乐与文化 | culture
+## 艺术（FCE 二）
+abstract|B2|ˈæbstrækt|抽象的|I don't understand abstract art.|
+acoustic|B2|əˈkuːstɪk|原声的|He plays acoustic guitar.|
+audition|B2|ɔːˈdɪʃn|试镜|She has an audition tomorrow.|
+backstage|B2|ˌbækˈsteɪdʒ|在后台|We went backstage after the show.|
+ballet|B2|ˈbæleɪ|芭蕾舞|She dances ballet.|
+blockbuster|B2|ˈblɒkbʌstə|大片|The film was a blockbuster.|
+choreographer|B2|ˈkɒriˈɒɡrəfə|编舞者|The choreographer planned the dance.|
+composer|B2|kəmˈpəʊzə|作曲家|Mozart was a great composer.|
+conductor|B2|kənˈdʌktə|指挥|The conductor raised his arms.|
+encore|B2|ˈɒŋkɔː|返场|The crowd shouted for an encore.|
+gig|B2|ɡɪɡ|演出|We went to a gig last night.|syn:concert
+landscape painting|B2|ˈlændskeɪp peɪntɪŋ|风景画|She loves landscape painting.|
+melody|B2|ˈmelədi|旋律|The melody is beautiful.|syn:tune
+rhythm|B2|ˈrɪðəm|节奏|Clap to the rhythm.|
+lyricist|B2|ˈlɪrɪsɪst|作词人|The lyricist wrote the words.|
+performer|B2|pəˈfɔːmə|表演者|She is a great performer.|
+sequel|B2|ˈsiːkwəl|续集|The sequel is better than the first film.|
+special effects|B2|ˌspeʃl ɪˈfekts|特效|The special effects were brilliant.|
+studio|B2|ˈstjuːdiəʊ|工作室；演播室|They recorded the song in a studio.|
+venue|B2|ˈvenjuː|场地|The venue holds two thousand people.|
+## 文学（FCE）
+anthology|B2|ænˈθɒlədʒi|选集|It's an anthology of poems.|
+climax|B2|ˈklaɪmæks|高潮|The climax of the film is exciting.|
+villain|B2|ˈvɪlən|反派|The villain was caught.|
+heroine|B2|ˈherəʊɪn|女主角|The heroine is brave.|
+narrator|B2|nəˈreɪtə|叙述者|The narrator is a child.|
+paperback|B2|ˈpeɪpəbæk|平装书|I bought a paperback.|
+setting|B2|ˈsetɪŋ|背景|The setting is a small village.|
+thriller|B2|ˈθrɪlə|惊悚片|I love a good thriller.|
+bestseller|B2|ˌbestˈselə|畅销书|Her book is a bestseller.|
+## 文化（FCE 二）
+ceremony|B2|ˈserəməni|典礼|The wedding ceremony was short.|
+carnival|B2|ˈkɑːnɪvl|狂欢节|We went to the carnival in Rio.|
+folk|B2|fəʊk|民间的|I like folk music.|
+festive|B2|ˈfestɪv|节日的|There is a festive mood.|
+heritage site|B2|ˈherɪtɪdʒ saɪt|遗产地|It's a world heritage site.|
+etiquette|B2|ˈetɪket|礼仪|Learn the local etiquette.|
+religious|B2|rɪˈlɪdʒəs|宗教的|It's a religious festival.|
+worship|B2|ˈwɜːʃɪp|崇拜|People worship in the temple.|
+# 时间与数量 | time
+## 时间（FCE 二）
+beforehand|B2|bɪˈfɔːhænd|事先|Tell me beforehand.|
+duration|B2|djuˈreɪʃn|持续时间|The duration of the course is six weeks.|
+fortnight|B2|ˈfɔːtnaɪt|两星期|We went away for a fortnight.|
+from time to time|B2|frəm ˌtaɪm tə ˈtaɪm|有时|I see him from time to time.|
+in advance|B2|ɪn ədˈvɑːns|提前|Book in advance.|
+interval|B2|ˈɪntəvl|间隔；幕间休息|There is an interval after an hour.|
+lifetime|B2|ˈlaɪftaɪm|一生|It's the trip of a lifetime.|
+long-term|B2|ˌlɒŋ ˈtɜːm|长期的|We need a long-term plan.|ant:short-term
+short-term|B2|ˌʃɔːt ˈtɜːm|短期的|It's a short-term job.|
+millennium|B2|mɪˈleniəm|千年|We celebrated the new millennium.|
+overnight|B2|ˌəʊvəˈnaɪt|一夜之间|It happened overnight.|
+prior|B2|ˈpraɪə|在前的|You need prior experience.|
+simultaneously|B2|ˌsɪmlˈteɪniəsli|同时|They spoke simultaneously.|
+temporarily|B2|ˈtemprərəli|暂时|The shop is temporarily closed.|
+up to date|B2|ˌʌp tə ˈdeɪt|最新的|Keep your software up to date.|ant:out of date
+out of date|B2|ˌaʊt əv ˈdeɪt|过时的|This map is out of date.|
+## 数量（FCE 二）
+abundant|B2|əˈbʌndənt|丰富的|Fish are abundant here.|ant:scarce
+scarce|B2|skeəs|稀少的|Water is scarce in the desert.|
+ample|B2|ˈæmpl|充足的|There is ample time.|syn:plenty
+bulk|B2|bʌlk|大量|Buy rice in bulk.|
+fraction|B2|ˈfrækʃn|小部分；分数|It costs a fraction of the price.|
+handful|B2|ˈhændfʊl|一把；少数|Only a handful of people came.|
+infinite|B2|ˈɪnfɪnət|无限的|Space is infinite.|
+numerous|B2|ˈnjuːmərəs|许多的|I have told him numerous times.|syn:many
+sufficient|B2|səˈfɪʃnt|足够的|We have sufficient food.|syn:enough
+surplus|B2|ˈsɜːpləs|剩余|There is a surplus of food.|
+volume|B2|ˈvɒljuːm|体积；音量|Turn the volume down.|
+capacity|B2|kəˈpæsəti|容量|The stadium has a capacity of sixty thousand.|
+dimension|B2|daɪˈmenʃn|尺寸；维度|Each dimension of the box is ten centimetres.|
+measurement|B2|ˈmeʒəmənt|测量|Take a measurement of the window.|
+estimate|B2|ˈestɪmeɪt|估计|Can you estimate the cost?|
+triple|B2|ˈtrɪpl|三倍的|He did a triple jump.|

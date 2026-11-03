@@ -1,0 +1,95 @@
+# 日常动作 | actions
+## 动作（FCE 四）
+abolish|B2|əˈbɒlɪʃ|废除|They want to abolish the rule.|
+accumulate|B2|əˈkjuːmjəleɪt|积累|Dust can accumulate quickly.|
+alert|B2|əˈlɜːt|提醒；警觉的|Alert the police!|
+allocate|B2|ˈæləkeɪt|分配|We allocate money to each class.|
+apparel|B2|əˈpærəl|服装|The shop sells sports apparel.|
+arise|B2|əˈraɪz|出现|Problems may arise.|
+attain|B2|əˈteɪn|达到|She hopes to attain her goal.|syn:achieve
+boost|B2|buːst|提升|Exercise can boost your mood.|
+collapse|B2|kəˈlæps|倒塌|The old bridge might collapse.|
+compensate|B2|ˈkɒmpenseɪt|补偿|They will compensate you for the delay.|
+compile|B2|kəmˈpaɪl|汇编|We compile a list of names.|
+conform|B2|kənˈfɔːm|遵从|You must conform to the rules.|
+cultivate|B2|ˈkʌltɪveɪt|种植；培养|Farmers cultivate rice here.|
+decline|B2|dɪˈklaɪn|下降；谢绝|Sales began to decline.|
+deteriorate|B2|dɪˈtɪəriəreɪt|恶化|His health began to deteriorate.|ant:improve
+deprive|B2|dɪˈpraɪv|剥夺|Don't deprive yourself of sleep.|
+derive|B2|dɪˈraɪv|源自|Many words derive from Latin.|
+detect|B2|dɪˈtekt|察觉|The machine can detect metal.|
+deter|B2|dɪˈtɜː|阻止|Cameras deter thieves.|
+diminish|B2|dɪˈmɪnɪʃ|减少|The pain will diminish.|syn:decrease
+disrupt|B2|dɪsˈrʌpt|扰乱|The strike will disrupt trains.|
+dissolve|B2|dɪˈzɒlv|溶解|Sugar will dissolve in water.|
+endure|B2|ɪnˈdjʊə|忍耐|We had to endure the cold.|
+enforce|B2|ɪnˈfɔːs|执行|The police enforce the law.|
+evacuate|B2|ɪˈvækjueɪt|疏散|They had to evacuate the building.|
+evolve|B2|iˈvɒlv|进化；演变|Languages evolve over time.|
+exploit|B2|ɪkˈsplɔɪt|剥削；利用|Don't exploit your workers.|
+fade|B2|feɪd|褪色；逐渐消失|The colours will fade in the sun.|
+flourish|B2|ˈflʌrɪʃ|繁荣|Plants flourish in sunlight.|
+forbid|B2|fəˈbɪd|禁止|I forbid you to go.|syn:prohibit
+foster|B2|ˈfɒstə|培养；寄养|Schools foster creativity.|
+glance|B2|ɡlɑːns|瞥一眼|She gave a quick glance at her watch.|
+glare|B2|ɡleə|怒视|Don't glare at me.|
+gaze|B2|ɡeɪz|凝视|We gaze at the stars.|syn:stare
+stare|B2|steə|盯着看|Don't stare at people.|
+heighten|B2|ˈhaɪtn|加强|Music can heighten the tension.|
+hinder|B2|ˈhɪndə|阻碍|Bad weather will hinder the work.|
+illustrate|B2|ˈɪləstreɪt|说明；插图|Let me illustrate with an example.|
+impose|B2|ɪmˈpəʊz|强加|Don't impose your views on others.|
+induce|B2|ɪnˈdjuːs|引起|The pill can induce sleep.|
+intervene|B2|ˌɪntəˈviːn|介入|The teacher had to intervene.|
+isolate|B2|ˈaɪsəleɪt|隔离|Doctors isolate sick patients.|
+linger|B2|ˈlɪŋɡə|逗留|The smell will linger for days.|
+mislead|B2|ˌmɪsˈliːd|误导|Don't mislead your readers.|
+obstruct|B2|əbˈstrʌkt|阻挡|Don't obstruct the road.|syn:block
+outweigh|B2|ˌaʊtˈweɪ|胜过|The benefits outweigh the costs.|
+penetrate|B2|ˈpenɪtreɪt|穿透|Light can't penetrate the water.|
+persist|B2|pəˈsɪst|坚持；持续|The pain may persist for a few days.|
+prolong|B2|prəˈlɒŋ|延长|Don't prolong the meeting.|syn:extend
+provoke|B2|prəˈvəʊk|激怒；引起|Don't provoke the dog.|
+recede|B2|rɪˈsiːd|后退|The water began to recede.|
+regain|B2|rɪˈɡeɪn|恢复|He tried to regain his balance.|
+relieve|B2|rɪˈliːv|缓解|This will relieve the pain.|
+retrieve|B2|rɪˈtriːv|取回|The dog can retrieve the ball.|
+revive|B2|rɪˈvaɪv|复苏|They tried to revive the old tradition.|
+shrink|B2|ʃrɪŋk|缩水|Wool jumpers shrink in hot water.|
+soak|B2|səʊk|浸泡|Soak the beans overnight.|
+sustain|B2|səˈsteɪn|维持|We can't sustain this pace.|
+transform|B2|trænsˈfɔːm|改变|The new park will transform the area.|
+undermine|B2|ˌʌndəˈmaɪn|削弱|Don't undermine her confidence.|
+uphold|B2|ʌpˈhəʊld|维护|We must uphold the law.|
+vanish|B2|ˈvænɪʃ|消失|The magician made the coin vanish.|syn:disappear
+verify|B2|ˈverɪfaɪ|核实|Please verify your email.|syn:check
+withstand|B2|wɪðˈstænd|经受住|The building can withstand earthquakes.|
+# 描述事物 | describe
+## 程度与方式（FCE）
+absolutely|B2|ˈæbsəluːtli|绝对地|You're absolutely right.|
+barely|B2|ˈbeəli|几乎不|I can barely see.|syn:hardly
+hardly|B2|ˈhɑːdli|几乎不|I hardly know him.|
+considerably|B2|kənˈsɪdərəbli|相当大地|Prices rose considerably.|
+deliberately|B2|dɪˈlɪbərətli|故意地|He broke it deliberately.|ant:accidentally
+accidentally|B2|ˌæksɪˈdentəli|意外地|I accidentally deleted the file.|
+entirely|B2|ɪnˈtaɪəli|完全地|I entirely agree.|syn:completely
+exceptionally|B2|ɪkˈsepʃənəli|格外地|She is exceptionally clever.|
+fundamentally|B2|ˌfʌndəˈmentəli|根本上|The plan is fundamentally wrong.|
+increasingly|B2|ɪnˈkriːsɪŋli|越来越|It's increasingly hot.|
+merely|B2|ˈmɪəli|仅仅|It's merely a game.|syn:only
+mostly|B2|ˈməʊstli|大部分|The audience was mostly young.|
+necessarily|B2|ˌnesəˈserəli|必然|Expensive isn't necessarily better.|
+noticeably|B2|ˈnəʊtɪsəbli|明显地|It's noticeably colder.|
+partially|B2|ˈpɑːʃəli|部分地|The road is partially closed.|
+practically|B2|ˈpræktɪkli|几乎|The bottle is practically empty.|
+presumably|B2|prɪˈzjuːməbli|大概|Presumably he'll come later.|
+reluctantly|B2|rɪˈlʌktəntli|勉强地|She reluctantly agreed.|
+roughly|B2|ˈrʌfli|大约|It costs roughly ten pounds.|syn:approximately
+scarcely|B2|ˈskeəsli|几乎不|I could scarcely believe it.|
+seemingly|B2|ˈsiːmɪŋli|表面上|It was a seemingly simple task.|
+slightly|B2|ˈslaɪtli|稍微|It's slightly too big.|
+solely|B2|ˈsəʊlli|唯一地|It's solely my fault.|
+somewhat|B2|ˈsʌmwɒt|有点|I was somewhat surprised.|
+thoroughly|B2|ˈθʌrəli|彻底地|Wash your hands thoroughly.|
+utterly|B2|ˈʌtəli|完全地|It was utterly useless.|
+virtually|B2|ˈvɜːtʃuəli|几乎|It's virtually impossible.|

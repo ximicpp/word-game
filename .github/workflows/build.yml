@@ -1,0 +1,75 @@
+name: 构建与发布
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    name: 单文件网页
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node tools/build-offline.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: word-game-html
+          path: dist/单词星系-离线版.html
+          if-no-files-found: error
+
+  android:
+    name: Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '11'
+      - uses: android-actions/setup-android@v3
+      - name: 安装 Android SDK
+        run: sdkmanager 'platforms;android-34' 'build-tools;34.0.0'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '7.3.3'
+      - name: 构建调试签名 APK
+        working-directory: android-offline
+        run: gradle --no-daemon assembleDebug
+      - name: 整理产物
+        run: |
+          mkdir -p dist
+          cp android-offline/app/build/outputs/apk/debug/app-debug.apk dist/单词星系-Android-debug.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: word-game-android
+          path: dist/单词星系-Android-debug.apk
+          if-no-files-found: error
+
+  release:
+    name: 发布 Release
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: [web, android]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: word-game-*
+          path: dist
+          merge-multiple: true
+      - name: 发布构建产物
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" dist/* --verify-tag --generate-notes --notes 'Android APK 使用临时调试密钥签名，仅供体验；不同构建之间可能无法直接覆盖安装。'

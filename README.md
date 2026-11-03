@@ -30,3 +30,15 @@ word|A2|ipa|中文|例句（必须包含这个词）|syn:xx;ant:yy;hyper:zz;soun
 ```
 
 级别写 A2 / B1 / B2。运行 `node tools/build.js` 生成 `data.js`：自动补充读音相同或押韵、拼写相近、同词根与合成词、中文释义相同、例句里的搭配、同主题的连线，并读入 `words/links.txt` 里手写的反义、近义、上下位和搭配表；保证每种词库组合下每个星系内部都连通，分出星座并算好布局。构建会检查例句、重复词和孤立词，有错误时不输出。`node tools/dedupe.js` 可删除重复的词条。
+
+## 单文件离线版
+
+运行 `node tools/build-offline.js`，会生成 `dist/单词星系-离线版.html`。将这个文件发给朋友，下载后用浏览器打开即可游玩，无需网络；离线版使用系统字体。游戏进度保存在各自的浏览器中，浏览器对本地文件存储的处理可能不同。
+
+## 自动构建与发布
+
+GitHub Actions 在推送分支、提交或更新 Pull Request 时自动构建，也可以在 Actions 页手动运行“构建与发布”。运行完成后，从该次运行的 Artifacts 下载 `word-game-html` 或 `word-game-android`。网页文件下载解压后即可离线打开。
+
+推送以 `v` 开头的标签（例如 `v1.0.0`）会在两个构建都成功后创建 GitHub Release，并附上 HTML 和 APK。创建标签和推送由维护者执行；仓库需要启用 Actions 和允许工作流创建 Release。已有同名 Release 时发布步骤会失败，避免覆盖已有文件。
+
+Android 使用 Java 11、Gradle 7.3.3、Android SDK 34 和 Build Tools 34.0.0；本地可在 `android-offline` 目录运行 `gradle assembleDebug`。当前 APK 使用构建机器临时生成的调试密钥签名，适合体验，不保证不同构建可以直接覆盖安装，也不适合应用商店发布。需要稳定升级或正式发布时，应配置并安全保管固定的正式签名密钥。

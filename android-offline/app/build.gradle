@@ -1,0 +1,31 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace 'com.ximicpp.wordgame.offline'
+    compileSdk 34
+    buildToolsVersion '34.0.0'
+    defaultConfig {
+        applicationId 'com.ximicpp.wordgame.offline'
+        minSdk 23
+        targetSdk 34
+        versionCode 2
+        versionName '1.1'
+    }
+    buildTypes { release { signingConfig signingConfigs.debug; minifyEnabled false } }
+    sourceSets.main.assets.srcDir "$buildDir/generated/gameAssets"
+}
+
+tasks.register('prepareGameAssets') {
+    def gameRoot = rootProject.file('..')
+    inputs.files new File(gameRoot, 'index.html'), new File(gameRoot, 'data.js')
+    def targetDir = file("$buildDir/generated/gameAssets")
+    outputs.dir targetDir
+    doLast {
+        targetDir.mkdirs()
+        def html = new File(gameRoot, 'index.html').getText('UTF-8')
+        html = html.replaceAll('(?m)^<link[^>]+https://fonts\\.(googleapis|gstatic)\\.com[^>]*>\\s*', '')
+        new File(targetDir, 'index.html').setText(html, 'UTF-8')
+        copy { from new File(gameRoot, 'data.js'); into targetDir }
+    }
+}
+preBuild.dependsOn tasks.named('prepareGameAssets')

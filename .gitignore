@@ -1,0 +1,4 @@
+dist/
+android-offline/.gradle/
+android-offline/**/build/
+android-offline/local.properties

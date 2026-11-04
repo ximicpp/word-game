@@ -172,6 +172,30 @@ const CASES = [
   ],
   ending: '猪师傅在后院搭了个铺满落叶的小木箱，把小刺猬轻轻放了进去。从此面包店夜里安安静静。春天小刺猬醒来，在面包店门口留下了一片新叶子🍃。',
 },
+{
+  id: 'trophy', lv: 'PET', emoji: '🏆', title: '运动会的奖杯不见了', client: '🦘 袋鼠教练',
+  brief: '运动会就在周六，学校大厅玻璃柜里的银奖杯却不见了。冠军们拿什么呢？',
+  docs: [
+    { kind: 'letter', from: '🦘 袋鼠教练的求助信', text: 'Our sports day [competition] is on Saturday, but the silver cup has gone! It always stands in the glass case in the school hall. On Monday it was there, but it didn\'t look very [shiny]. On Tuesday morning the case was empty. The children are all very {nervous} now. What will the winners get?' },
+    { kind: 'chat', from: '🐭 鼹鼠阿姨（学校清洁员）', text: 'I clean the hall every evening. On Monday evening I saw Mr Beaver near the glass case. He looked at the cup carefully and wrote something in a little book. Then he left with a big bag. I didn\'t think it was [strange], because he often helps the school.' },
+    { kind: 'note', from: '🧾 教练桌上，压在书下面的小纸片', text: '[Receipt|receipt] from Beaver\'s Silver Shop. One silver cup: [polish] it and add this year\'s date. Ready to [collect] on Friday after three o\'clock. Paid by the school.' },
+  ],
+  words: [
+    { k: 'competition', m: '比赛', e: '🏅' },
+    { k: 'shiny', m: '闪亮的', e: '✨' },
+    { k: 'strange', m: '奇怪的', e: '🤔' },
+    { k: 'receipt', m: '收据，小票', e: '🧾' },
+    { k: 'polish', m: '擦亮', e: '🧽' },
+    { k: 'collect', m: '取走，领回', e: '🙌' },
+  ],
+  extra: [{ m: '打碎', e: '💥' }, { m: '暗淡的', e: '🌫️' }],
+  steps: [
+    { type: 'choice', q: '周一时奖杯 didn\'t look very shiny，说明什么？', opts: ['奖杯有点发暗，需要擦一擦', '奖杯是全新的', '奖杯被打碎了'], a: 0, hint: 'shiny 是什么意思？不怎么 shiny 呢？', why: 'shiny 是“闪亮的”。奖杯不太亮了，正需要好好擦一擦。' },
+    { type: 'pick', q: '哪句话说出了奖杯被拿去做什么？', ans: ['One silver cup: polish it', 'Receipt from Beaver'], hint: '找找那张小纸片上写了什么。', why: '这是河狸银器店的收据（receipt）：奖杯是送去擦亮（polish）的，学校已经付了钱。' },
+    { type: 'choice', q: '教练什么时候、去哪里能拿回奖杯？', opts: ['周五下午三点以后，去河狸银器店', '周六比赛时它自己回来', '去问鼹鼠阿姨要'], a: 0, hint: 'Ready to collect on ...？', why: 'collect 是“取回”。周五下午三点后去河狸的银器店就能取回。' },
+  ],
+  ending: '原来是校长请河狸先生把奖杯擦亮，却忘了告诉教练。周五下午，袋鼠教练取回了闪闪发亮的奖杯，底座上还刻好了今年的日期。周六的运动会上，奖杯在阳光下亮得晃眼！',
+},
 // ───────────── FCE ─────────────
 {
   id: 'snowman', lv: 'FCE', emoji: '⛄', title: '雪人去哪儿了？', client: '🐰 小兔露西',
@@ -222,5 +246,54 @@ const CASES = [
     { type: 'choice', q: '最好的办法是什么？', opts: ['在灯塔旁边给鸟一家搭个新窝，再把灯擦干净', '把灯关掉，等它们走', '让渔船以后别出海'], a: 0, hint: '灯光很必要（essential），鸟一家也需要地方住。', why: '灯塔必须亮，鸟一家也要有安全的家。给它们搬个新窝，两边都照顾到了。' },
   ],
   ending: '大家在灯塔旁的平台上搭了个结实的新窝，小心地把蛋搬过去。当晚灯光又稳稳亮起，渔船全都平安回港。小海鸥破壳那天，灯塔特意为它们闪了三下✨。',
+},
+{
+  id: 'balloon', lv: 'FCE', emoji: '🎈', title: '热气球飞去哪儿了？', client: '🦛 河马镇长',
+  brief: '节日要用的大红热气球，一夜之间从草地上消失了。有人说是被人偷偷开走了……',
+  docs: [
+    { kind: 'letter', from: '🦛 河马镇长的求助信', text: 'This morning our big red balloon for the festival had disappeared from the field! Some people [assume] that somebody took it for a secret ride, but nobody in town is missing. The basket was empty when we tied it up last night. The festival starts on Sunday, and I\'m really worried.' },
+    { kind: 'radio', from: '📻 小镇电台（昨天傍晚）', text: 'Here is the weather [forecast]. Tonight strong winds will blow from the west. We [warn] everyone to tie down tents, boats and anything light.' },
+    { kind: 'chat', from: '🐷 猪大婶（住在东边山坡）', text: 'I get up very early to feed my chickens. At dawn I saw something big and red [drifting|drift] slowly over the eastern hills. Soon it was only a tiny dot on the [horizon].' },
+    { kind: 'chat', from: '🐰 小兔助手本', text: 'I\'m afraid it\'s my fault. I heard the forecast on the radio, but I [ignored|ignore] it. I only used one rope, and the knot was a bit {loose}.' },
+  ],
+  words: [
+    { k: 'assume', m: '想当然地认为', e: '💭' },
+    { k: 'forecast', m: '预报', e: '📡' },
+    { k: 'warn', m: '提醒，警告', e: '⚠️' },
+    { k: 'drift', m: '漂，慢慢飘', e: '🍃' },
+    { k: 'horizon', m: '地平线', e: '🌅' },
+    { k: 'ignore', m: '不理会', e: '🙉' },
+  ],
+  extra: [{ m: '修理', e: '🔧' }, { m: '迅速地冲', e: '🚀' }],
+  steps: [
+    { type: 'choice', q: '有人 assume 气球被偷偷开走了。这个想法对吗？', opts: ['不对，篮子是空的，镇上也没人不见', '对，一定有人坐上去了', '对，是镇长自己开走的'], a: 0, hint: 'assume 是“想当然地认为”。镇长还说了什么事实？', why: '篮子本来就是空的，镇上也没有人不见，所以“有人开走”只是想当然。' },
+    { type: 'pick', q: '哪句话说出了气球飞走的原因？', ans: ['I only used one rope', 'Tonight strong winds will blow from the west', 'but I ignored it'], hint: '看看电台说了什么，再看看小兔本做了什么。', why: '夜里刮大风，小兔本没理会（ignore）预报，只绑了一根绳子，结还松了。' },
+    { type: 'choice', q: '应该去哪儿找气球？', opts: ['⛰️ 东边的山那边', '🌊 西边的海上', '🏘️ 小镇中心'], a: 0, hint: '风从哪边吹来？猪大婶看到气球往哪儿飘？', why: '西风把气球往东吹，猪大婶看到它飘（drift）过东边的山，变成地平线（horizon）上的小点。' },
+  ],
+  ending: '大家开着拖拉机往东找，终于在一大片向日葵田里找到了气球，一点没坏！小兔本学会了用两根绳子、打两个结。星期天的节日上，红气球稳稳升空，本坐在篮子里朝大家挥手。',
+},
+{
+  id: 'museum', lv: 'FCE', emoji: '🦕', title: '恐龙蛋不见了！', client: '🦊 小狐狸芬',
+  brief: '班级参观博物馆，最有名的恐龙蛋展柜却是空的！大家都说被人拿走了。',
+  docs: [
+    { kind: 'letter', from: '🦊 芬的求助信', text: 'Today our class visited the town museum. I really wanted to see the famous dinosaur egg, but its glass box was empty! A boy said, "Somebody has taken it!" Soon everybody was whispering, and the {rumour} spread round the whole museum.' },
+    { kind: 'note', from: '📋 展柜旁边的小告示', text: 'Dear visitors, this [exhibit] has been [temporarily] removed. Our experts are working to [restore] a small [crack] in the shell. It will be back in its place on 1st December. We are sorry if you are disappointed.' },
+    { kind: 'chat', from: '🐘 博物馆保安象伯伯', text: 'The egg is over sixty million years old and extremely [fragile], so we moved it at night, when the museum was closed. Lots of children walked past the notice without reading it, so they [misunderstood|misunderstand] what had happened.' },
+  ],
+  words: [
+    { k: 'exhibit', m: '展品', e: '🖼️' },
+    { k: 'temporarily', m: '暂时地', e: '⏳' },
+    { k: 'restore', m: '修复', e: '🛠️' },
+    { k: 'crack', m: '裂缝', e: '⚡' },
+    { k: 'fragile', m: '易碎的', e: '🥚' },
+    { k: 'misunderstand', m: '误会，理解错', e: '😕' },
+  ],
+  extra: [{ m: '永远地', e: '♾️' }, { m: '结实的', e: '🧱' }],
+  steps: [
+    { type: 'pick', q: '哪句话说明恐龙蛋只是暂时不在？', ans: 'this exhibit has been temporarily removed', hint: '读读展柜旁边的小告示。', why: 'temporarily 是“暂时地”。展品只是暂时被拿走，12 月 1 日就会回来。' },
+    { type: 'choice', q: '为什么要在夜里搬恐龙蛋？', opts: ['它非常易碎，要在没人的时候小心搬', '怕被别人看到', '白天保安要睡觉'], a: 0, hint: 'fragile 是什么意思？', why: 'fragile 是“易碎的”。六千万年的蛋一碰就可能坏，所以趁闭馆没人时小心搬走。' },
+    { type: 'choice', q: '大家为什么都以为蛋被人拿走了？', opts: ['没读告示就下结论，传言越传越广', '真的有人把它拿走了', '恐龙蛋自己孵出来跑了'], a: 0, hint: '象伯伯说孩子们走过告示时做了什么？', why: '大家没读告示，误会（misunderstood）了，一句猜测就变成了传遍全馆的传言。' },
+  ],
+  ending: '芬把告示大声读给全班听，大家这才松了口气。12 月 1 日，修好的恐龙蛋回到了展柜，裂缝几乎看不出来了。博物馆还在告示旁边画了一幅大大的图：“恐龙蛋去看医生啦！”',
 },
 ];

@@ -123,6 +123,7 @@ header h1{font-size:20px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text
 .nw .w{font-weight:800;font-family:Georgia,serif;font-size:17px}
 .nw .m{color:var(--ok);font-weight:700;margin-left:6px}
 .nw .s{color:var(--soft);font-size:13px;font-family:Georgia,serif;line-height:1.5;margin-top:2px}
+.blank{display:inline-block;min-width:70px;border-bottom:3px solid var(--hlb);color:transparent}
 .empty{color:var(--soft);text-align:center;padding:30px 0}
 </style>
 </head>
@@ -193,7 +194,14 @@ header h1{font-size:20px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text
 <section id="note" class="hidden">
   <header><button class="back" data-home>← 小镇</button><h1>📒 侦探笔记本</h1></header>
   <p style="color:var(--soft);font-size:14px;margin:0 0 12px;line-height:1.6">破案时认出的单词都记在这里。它们会在以后的案件里再出现，那时会带紫色虚线，点一下就能想起意思。</p>
+  <button class="big hidden" id="quizBtn" style="margin-bottom:14px">🔁 老朋友小测（5 题）</button>
   <div id="noteList"></div>
+</section>
+
+<!-- 复习小测 -->
+<section id="quiz" class="hidden">
+  <header><button class="back" id="quizBack">← 笔记本</button><h1>🔁 老朋友小测</h1><span class="pill" id="qzProg"></span></header>
+  <div id="qzBody"></div>
 </section>
 
 </div>
@@ -205,7 +213,7 @@ header h1{font-size:20px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text
 <script>
 const KEY = 'word-detective-v1';
 const LV = { KET: 'KET 小镇街区', PET: 'PET 河边新区', FCE: 'FCE 海边与山坡' };
-const RANKS = [[0, '🔍', '见习小侦探'], [6, '🕵️', '小侦探'], [13, '🎖️', '金牌小侦探'], [21, '🏆', '小镇大侦探']];
+const RANKS = [[0, '🔍', '见习小侦探'], [8, '🕵️', '小侦探'], [18, '🎖️', '金牌小侦探'], [28, '🏆', '小镇大侦探']];
 let save = { done: {}, words: {}, sound: true };
 try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s) save = Object.assign(save, s); } catch (e) {}
 function store() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} }
@@ -225,8 +233,20 @@ const sWin = () => [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => beep
 let toastT;
 function toast(html, ms = 2600) { const t = $('#toast'); t.innerHTML = html; t.classList.remove('hidden'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.add('hidden'), ms); }
 
+const canSpeak = 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
+function speak(t) {
+  if (!canSpeak) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(t); u.lang = 'en-GB'; u.rate = .85;
+    const v = speechSynthesis.getVoices().find(v => /^en[-_]GB/i.test(v.lang)) || speechSynthesis.getVoices().find(v => /^en/i.test(v.lang));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+
 function show(id) {
-  for (const s of ['home', 'intro', 'play', 'end', 'note']) $('#' + s).classList.toggle('hidden', s !== id);
+  for (const s of ['home', 'intro', 'play', 'end', 'note', 'quiz']) $('#' + s).classList.toggle('hidden', s !== id);
   $('#tray').classList.toggle('hidden', id !== 'play');
   $('#toast').classList.add('hidden');
   window.scrollTo(0, 0);
@@ -354,7 +374,7 @@ function trayWords() {
     <div class="ctx">${ctx}</div>
     <div class="mgrid">${G.cards.filter(cd => !G.matched.has(cd.k)).map(cd => `<button class="mc" data-c="${esc(cd.k)}" ${off.has(cd.k) ? 'disabled' : ''}><span class="e">${cd.e}</span>${esc(cd.m)}</button>`).join('')}</div>
     ${G.msg ? `<div class="msg ${G.msg[0]}">${G.msg[1]}</div>` : ''}
-    <div class="row"><button class="hintb" id="unsel">换一个词</button></div>`;
+    <div class="row"><button class="hintb" id="unsel">换一个词</button>${canSpeak ? `<button class="hintb" id="say" data-t="${esc(st)}">🔈 读这句</button>` : ''}</div>`;
 }
 function dispOf(k) { const m = G.c.docs.map(d => d.text).join(' ').match(new RegExp('\\[([^\\]|]+)\\|' + k + '\\]')); return m ? m[1] : k; }
 
@@ -406,6 +426,7 @@ function renderTray() {
     tapWord(k); flash(senOfWord(k));
   });
   t.querySelectorAll('.mc').forEach(b => b.onclick = () => chooseMeaning(b.dataset.c, b));
+  const sy = $('#say'); if (sy) sy.onclick = () => speak(sy.dataset.t);
   const u = $('#unsel'); if (u) u.onclick = () => { G.sel = null; G.msg = null; renderDocs(); renderTray(); };
   t.querySelectorAll('.opt').forEach(b => b.onclick = () => answer(+b.dataset.j, b));
   const hb = $('#hint'); if (hb) hb.onclick = () => { G.msg = ['try', '💡 ' + esc(curStep().hint)]; hintFlash(); renderTray(); };
@@ -469,7 +490,7 @@ function finish() {
   for (const w of c.words) {
     if (!save.words[w.k]) newW.push(w.k);
     const el = G.sens.find(t => new RegExp('\\b' + dispOf(w.k) + '\\b').test(t)) || '';
-    save.words[w.k] = { w: w.k, m: w.m, e: w.e, from: c.title, cid: c.id, s: el.trim() };
+    save.words[w.k] = Object.assign(save.words[w.k] || {}, { w: w.k, d: dispOf(w.k), m: w.m, e: w.e, from: c.title, cid: c.id, s: el.trim() });
   }
   store(); sWin();
   show('end');
@@ -494,12 +515,72 @@ function notebook() {
     h += `<div class="fam"><h3>${c.emoji} ${esc(c.title)}</h3>` + ws.map(w => {
       const x = save.words[w.k];
       const s = esc(x.s).replace(new RegExp('\\b' + dispOf2(c, w.k) + '\\b'), '<b>$&</b>');
-      return `<div class="nw"><div class="e">${w.e}</div><div><span class="w">${esc(w.k)}</span><span class="m">${esc(w.m)}</span><div class="s">${s}</div></div></div>`;
+      return `<div class="nw" data-t="${esc(x.s)}" title="点一下朗读"><div class="e">${w.e}</div><div><span class="w">${esc(w.k)}</span><span class="m">${esc(w.m)}</span><div class="s">${s}</div></div></div>`;
     }).join('') + '</div>';
   }
+  const n = Object.values(save.words).filter(w => w.s).length;
+  $('#quizBtn').classList.toggle('hidden', n < 5);
+  setTimeout(() => $('#noteList').querySelectorAll('.nw').forEach(el => el.onclick = () => speak(el.dataset.t)));
   $('#noteList').innerHTML = h || '<div class="empty">还没有破过案件。<br>去小镇接第一个案子吧！</div>';
 }
 function dispOf2(c, k) { const m = c.docs.map(d => d.text).join(' ').match(new RegExp('\\[([^\\]|]+)\\|' + k + '\\]')); return m ? m[1] : k; }
+
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const vis = id => !$('#' + id).classList.contains('hidden');
+  if (/^[1-9]$/.test(e.key)) {
+    const scope = vis('quiz') ? '#qzBody' : vis('play') ? '#trayIn' : null; if (!scope) return;
+    const bs = [...document.querySelectorAll(scope + ' .opt, ' + scope + ' .mc')].filter(b => !b.disabled);
+    const b = bs[+e.key - 1]; if (b) { e.preventDefault(); b.click(); }
+  } else if (e.key === 'Enter') {
+    const b = vis('play') ? $('#nextStep') : vis('quiz') ? $('#qzNext') : null; if (b) { e.preventDefault(); b.click(); }
+  }
+});
+
+// ───── 老朋友小测 ─────
+let Q = null;
+const blankRe = d => new RegExp('\\b' + d.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+function quizStart() {
+  const pool = Object.entries(save.words).filter(([k, w]) => w.s && blankRe(w.d || k).test(w.s));
+  if (pool.length < 5) return;
+  // 先复习次数少的，再随机
+  const pick = shuffle(pool).sort((a, b) => (a[1].r || 0) - (b[1].r || 0)).slice(0, 5);
+  Q = { list: shuffle(pick), i: 0, miss: 0, done: false, off: new Set(), pool };
+  show('quiz'); quizRender();
+}
+function quizRender() {
+  $('#qzProg').textContent = Math.min(Q.i + 1, 5) + '/5';
+  if (Q.i >= Q.list.length) {
+    const ok = 5 - Math.min(Q.miss, 5);
+    $('#qzBody').innerHTML = `<div class="card center"><div class="bigemoji">${Q.miss === 0 ? '🌟' : '👏'}</div>
+      <div class="title">复习完成！</div><div style="color:var(--soft)">${Q.miss === 0 ? '5 题全部一次答对，老朋友都记得你！' : `再试了 ${Q.miss} 次，多见几次就熟啦。`}</div></div>
+      <div style="display:grid;gap:10px"><button class="big" id="qzAgain">再来 5 题</button><button class="big alt" id="qzNote">回到笔记本</button></div>`;
+    $('#qzAgain').onclick = quizStart; $('#qzNote').onclick = notebook; return;
+  }
+  const [k, w] = Q.list[Q.i], d = w.d || k;
+  if (!Q.opts) {
+    const others = shuffle(Q.pool.filter(([k2]) => k2 !== k)).slice(0, 3).map(([k2, w2]) => w2.d || k2);
+    Q.opts = shuffle([d].concat(others));
+  }
+  const sen = esc(w.s).replace(blankRe(d), m => Q.done ? `<b style="background:var(--okbg);border-radius:4px;padding:0 3px">${m}</b>` : '<span class="blank">______</span>');
+  $('#qzBody').innerHTML = `<div class="card"><div style="color:var(--soft);font-size:13px;font-weight:700;margin-bottom:6px">${Q.off.size || Q.done ? `${w.e} 提示：意思是“${esc(w.m)}”` : '空格里该填哪个老朋友？'} · 来自《${esc(w.from)}》</div>
+    <div class="doc letter" style="border:0;box-shadow:none;padding:0;background:none">${sen}</div></div>
+    <div class="opts">${Q.opts.map((o, j) => `<button class="opt ${Q.done && o === d ? 'ok' : ''}" data-o="${esc(o)}" style="font-family:Georgia,serif" ${(Q.done && o !== d) || Q.off.has(o) ? 'disabled' : ''}>${esc(o)}</button>`).join('')}</div>
+    ${Q.msg ? `<div class="msg ${Q.msg[0]}">${Q.msg[1]}</div>` : ''}
+    ${Q.done ? `<div class="row"><button class="next" id="qzNext">${Q.i + 1 < 5 ? '下一题 →' : '看结果'}</button>${canSpeak ? `<button class="hintb" id="qzSay">🔈</button>` : ''}</div>` : ''}`;
+  $('#qzBody').querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    if (Q.done) return;
+    if (b.dataset.o === d) {
+      Q.done = true; sGood(); Q.msg = ['good', `✓ <b>${esc(d)}</b> = ${w.e} ${esc(w.m)}`];
+      w.r = (w.r || 0) + 1; store();
+    } else { Q.miss++; sBad(); Q.off.add(b.dataset.o); Q.msg = ['try', '再试一次！读读整句话，哪个词放进去说得通？']; }
+    quizRender();
+  });
+  const n = $('#qzNext'); if (n) n.onclick = () => { Q.i++; Q.done = false; Q.opts = null; Q.off = new Set(); Q.msg = null; quizRender(); };
+  const sy = $('#qzSay'); if (sy) sy.onclick = () => speak(w.s);
+}
+$('#quizBtn').onclick = quizStart;
+$('#quizBack').onclick = notebook;
 
 home();
 </script>

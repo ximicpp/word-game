@@ -52,11 +52,18 @@ const EXTRA = {
 };
 for (const [w, e] of Object.entries(EXTRA)) if (!lib[w]) lib[w] = { w, rel: "", ...e };
 
+// ---------- 小学生不合适的词：中文里有这些字，或是打仗、犯罪、烟酒类的词 ----------
+const KID_SKIP = /[咒魔鬼怪杀死血尸毒枪炮]/;
+const KID_WORDS = new Set(`war gun weapon bomb murder murderer kill attack fight army soldier battle crime criminal prison prisoner
+violence violent terror terrorist terrorism drug drugs alcohol cigarette smoke smoking drunk sexy sex enemy wound wounded hunt hunter
+thief steal rob robber robbery burglar burglary victim injure injury hurt shoot arrest jail knife sword gamble gambling beer wine`.split(/\s+/));
+
 // ---------- 选词 ----------
 const out = [], idx = {}, errs = [];
 for (const e of Object.values(lib)){
   if (!e.th || SKIP_THEME.has(e.th) || !POS[e.w] || !/^[a-z]+$/.test(e.w)) continue;
   if (!["A2", "B1", "B2"].includes(e.lv)) continue;
+  if (KID_SKIP.test(e.cn) || KID_WORDS.has(e.w)) continue;
   if (!new RegExp(`\\b${e.w}\\b`, "i").test(e.ex)) { errs.push("例句没有原词：" + e.w); continue; }
   idx[e.w] = out.length;
   out.push({ w: e.w, pos: POS[e.w], th: e.th, lv: e.lv, cn: e.cn, ex: e.ex, fam: [], ant: [] });

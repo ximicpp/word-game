@@ -577,7 +577,7 @@ function render(){
     d.className = `sc t-${e.pos}${S.lock.has(k) ? " lock" : ""}${S.coins < cost(i) ? " poor" : ""}`;
     const us = allUnits();
     const mate = o ? "" : us.some(u => W[u.w].ant.includes(e.w)) ? "🎆" : us.some(u => W[u.w].fam.some(f => e.fam.includes(f))) ? "💪" : us.some(u => W[u.w].th === e.th) ? "🛡" : "";
-    d.innerHTML = `<span class="cost">${cost(i)}🪙</span>${o ? `<span class="up">升${o.star + 1}★</span>` : mate ? `<span class="up" title="能和你的词宝凑组合">🤝${mate}</span>` : ""}<span class="face">${T.face}</span><span class="w" style="font-size:${e.w.length > 9 ? 11 : 13}px">${esc(e.w)}</span><span class="pos">${T.pos}</span><span class="th">${DATA.themes[e.th].icon}</span>`;
+    d.innerHTML = `<span class="cost">${cost(i)}🪙</span>${o ? `<span class="up">升${o.star + 1}★</span>`  : ""}<span class="face">${T.face}</span><span class="w" style="font-size:${e.w.length > 9 ? 11 : 13}px">${esc(e.w)}</span><span class="pos">${T.pos}</span><span class="th">${DATA.themes[e.th].icon}${mate ? ` <b style="color:var(--ok)">🤝${mate}</b>` : ""}</span>`;
     d.onclick = () => buy(k);
     shop.appendChild(d);
   });

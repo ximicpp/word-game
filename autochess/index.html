@@ -263,7 +263,6 @@ const TYPE = {
 const STAR_MUL = [0, 1, 1.8, 3];
 const ROWS = 3, COLS = 4, BENCH = 6, SHOP = 5, MAX_ROUND = 15, START_HEARTS = 20, MAX_LVL = 9;
 const THEME_TIERS = [2, 4, 6], FAM_TIERS = [2, 3, 4];
-const SHIELD = [0, .3, .55, .8, 1], FAMBUFF = [0, .35, .7, 1.1, 1.4];
 // 词卡档次 1–4：A2=1，B1=2，B2=3；9 个字母以上的长词再 +1。档次就是价格
 const tierOf = i => Math.min(4, ({ A2: 1, B1: 2, B2: 3 }[W[i].lv] || 1) + (W[i].w.length >= 9 ? 1 : 0));
 const cost = i => tierOf(i);
@@ -274,11 +273,29 @@ const XP_NEED = { 3: 4, 4: 8, 5: 12, 6: 18, 7: 26, 8: 36 };
 const XP_COST = 4;
 // 小星灵回合：不扣爱心，掉道具
 const PVE = new Set([1, 4, 8, 12]);
-const CLASS_TIERS = { n: [2, 4], v: [2, 4], adj: [2, 4], adv: [2, 3] };
-const CLASS_EFF = { n: [0, .25, .5], v: [0, .2, .45], adj: [0, .3, .6], adv: [0, .25, .5] };
-const CLASS_TEXT = { n: t => `盾盾宝能量 +${CLASS_EFF.n[t] * 100}%`, v: t => `冲冲宝力气 +${CLASS_EFF.v[t] * 100}%`, adj: t => `星光宝砸得更开 +${CLASS_EFF.adj[t] * 100}%`, adv: t => `闪闪宝更快 +${CLASS_EFF.adv[t] * 100}%` };
+const CLASS_TIERS = { n: [2, 4, 6], v: [2, 4, 6], adj: [2, 4, 6], adv: [2, 3, 4] };
+// 组合每一档的效果（同班同学/一家人第 4 档、对对碰/好朋友第 2 档 = 答对关系题加强）
+const FX = {
+  theme: { shield: [0, .3, .45, .6, .75], pop: [0, 0, .6, .9, 1.2], regrow: [0, 0, 0, .5, .6] },
+  fam:   { atk: [0, .2, .35, .5, .65], stack: [0, .02, .03, .04, .05] },
+  syn:   { fast: [0, 1.3, 1.45], relay: [0, .5, .8] },
+  n:     { hp: [0, .2, .4, .6], reflect: [0, 0, .25, .4] },
+  v:     { atk: [0, .2, .35, .5] },
+  adj:   { splash: [0, .2, .4, .6], daze: [0, 0, .25, .4] },
+  adv:   { fast: [0, .2, .35, .5], dodge: [0, 0, .2, .3] },
+};
+const TIER_TEXT = {
+  theme: ["", "开场每只有护盾泡泡（30%）", "护盾 45%；护盾被打破时💥泡泡爆开，砸最近的对手", "护盾 60%；泡泡爆开更响，爆完还会再长出一半护盾", "护盾 75%；爆开更响，再长出更多护盾"],
+  fam:   ["", "力气 +20%；家里谁打一下，全家力气再 +2%（越打越有劲💪）", "力气 +35%；每打一下全家 +3%", "力气 +50%；每打一下全家 +4%", "力气 +65%；每打一下全家 +5%"],
+  ant:   ["", "第 3 秒一起放🎆烟花，打最近的 3 个对手", "烟花更大，而且每 6 秒再放一次"],
+  syn:   ["", "两只出手快 30%；一只累了去休息，另一只🔁接力：力气 +50%、技能条马上加满", "出手快 45%；接力时力气 +80%"],
+  n:     ["", "盾盾宝能量 +20%", "能量 +40%；被打时🔁弹回去 25% 伤害", "能量 +60%；弹回去 40% 伤害"],
+  v:     ["", "冲冲宝力气 +20%", "力气 +35%；第一下🚀跳到后排，打最远的对手 2 倍伤害", "力气 +50%；跳后排，而且每第 4 下都是 2 倍"],
+  adj:   ["", "星光宝砸得更开（旁边的对手 +20%）", "砸得更开 +40%；被砸中的对手😵晃眼，出手变慢", "砸得更开 +60%；晃眼更久"],
+  adv:   ["", "闪闪宝出手快 20%", "快 35%；20% 机会💨闪开对手的攻击", "快 50%；30% 机会闪开"],
+};
 const BANKS = { ket: { name: "KET", lv: ["A2"] }, pet: { name: "KET+PET", lv: ["A2", "B1"] }, fce: { name: "KET+PET+FCE", lv: ["A2", "B1", "B2"] } };
-const comboEffect = (kind, tier, id) => kind === "theme" ? `开场护盾 ${Math.round(SHIELD[tier] * 100)}%` : kind === "fam" ? `力气 +${Math.round(FAMBUFF[tier] * 100)}%` : kind === "ant" ? "开场放烟花" : kind === "syn" ? "两只都更快 +30%" : CLASS_TEXT[id](tier);
+const comboEffect = (kind, tier, id) => (TIER_TEXT[kind === "cls" ? id : kind] || [])[tier] || "";
 const ITEMS = {
   bag:    { icon: "🎒", name: "能量书包", text: "能量 +30%" },
   crayon: { icon: "🖍️", name: "彩虹蜡笔", text: "力气 +25%" },
@@ -313,7 +330,7 @@ function beep(kind){
   if (!SAVE.sound) return;
   try {
     AC = AC || new (window.AudioContext || window.webkitAudioContext)();
-    const seq = { ok: [660, 880], no: [300, 220], up: [523, 659, 784, 1047], pop: [900], fire: [400, 800, 1200], win: [523, 659, 784], lose: [392, 330] }[kind] || [600];
+    const seq = { ok: [660, 880], no: [300, 220], up: [523, 659, 784, 1047], pop: [900], fire: [400, 800, 1200], proc: [880, 1320], burst: [500, 300], win: [523, 659, 784], lose: [392, 330] }[kind] || [600];
     seq.forEach((f, k) => {
       const o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + k * .09;
       o.type = kind === "pop" ? "triangle" : "sine"; o.frequency.value = f;
@@ -436,7 +453,7 @@ function combosOf(board, boosted = new Set()){
       seen.add(key);
       const mine = cells.filter(c => c.w === u.w);
       const touching = mine.some(a => other.some(b => adjacent(a.k, b.k)));
-      res.push({ kind: "syn", key, a: u.w, b: j, tier: touching ? 1 : 0, members: [u.w, j] });
+      res.push({ kind: "syn", key, a: u.w, b: j, tier: touching ? (boosted.has(key) ? 2 : 1) : 0, members: [u.w, j] });
     }
   }
   // 同类队：同一种词宝（词性）不同的词凑够 2/4 只
@@ -448,13 +465,20 @@ function combosOf(board, boosted = new Set()){
   }
   return res;
 }
+function comboName(c){
+  if (c.kind === "theme"){ const t = DATA.themes[c.id]; return `🛡 ${t.icon}${t.name} 同班同学`; }
+  if (c.kind === "fam") return `💪 ${c.id} 一家人`;
+  if (c.kind === "cls"){ const T = TYPE[c.id]; return `${T.face} ${T.name}队`; }
+  if (c.kind === "syn") return `💞 ${W[c.a].w}≈${W[c.b].w} 好朋友`;
+  return `🎆 ${W[c.a].w}↔${W[c.b].w} 对对碰`;
+}
+function comboTiers(c){ return c.kind === "theme" ? THEME_TIERS : c.kind === "fam" ? FAM_TIERS : c.kind === "cls" ? CLASS_TIERS[c.id] : null; }
 function comboLabel(c){
-  const eff = c.tier ? "：" + comboEffect(c.kind, c.tier, c.id) : "";
-  if (c.kind === "theme"){ const t = DATA.themes[c.id]; return `🛡 ${t.icon}${t.name} 同班同学 ${c.n}${c.next ? "/" + c.next : ""}${eff || `（再 ${2 - c.n} 只）`}`; }
-  if (c.kind === "fam") return `💪 ${c.id} 一家人 ${c.n}${c.next ? "/" + c.next : ""}${eff}`;
-  if (c.kind === "cls"){ const T = TYPE[c.id]; return `${T.face} ${T.name}队 ${c.n}${c.next ? "/" + c.next : ""}${eff || `（${T.pos}再 ${c.next - c.n} 个）`}`; }
-  if (c.kind === "syn") return `💞 ${W[c.a].w}≈${W[c.b].w} 好朋友${c.tier ? eff : "（要挨着站）"}`;
-  return `🎆 ${W[c.a].w}↔${W[c.b].w} 对对碰${c.tier ? eff : "（要挨着站）"}`;
+  const ts = comboTiers(c);
+  if (!ts) return `${comboName(c)}${c.tier ? "" : "（要挨着站）"}`;
+  const base = ts.filter(x => c.n >= x).length;
+  const pips = ts.map((x, k) => k < base ? "●" : "○").join("");
+  return `${comboName(c)} ${pips} ${c.n}${c.next ? "/" + c.next : ""}`;
 }
 const BADGE = { theme: "🛡", fam: "💪", ant: "🎆", syn: "💞", cls: "" };
 const KIND_NAME = { theme: "同班同学", fam: "一家人", ant: "对对碰", syn: "好朋友", cls: "同类队" };
@@ -485,21 +509,32 @@ function makeFighters(board, side, boosted, spirit){
     F.push(f);
   });
   for (const c of combos.filter(c => c.kind === "cls")){
-    const eff = CLASS_EFF[c.id][c.tier];
+    const t = c.tier, X = FX[c.id];
     F.filter(f => f.pos === c.id).forEach(f => {
-      if (c.id === "n") f.hp *= 1 + eff; else if (c.id === "v") f.atk *= 1 + eff;
-      else if (c.id === "adj") f.splash += eff; else f.cd /= 1 + eff;
+      f.clsKey = c.key;
+      if (c.id === "n"){ f.hp *= 1 + X.hp[t]; f.reflect = X.reflect[t]; }
+      else if (c.id === "v"){ f.atk *= 1 + X.atk[t]; f.rush = t >= 2; f.every4 = t >= 3; }
+      else if (c.id === "adj"){ f.splash += X.splash[t]; f.daze = X.daze[t]; }
+      else { f.cd /= 1 + X.fast[t]; f.dodge = X.dodge[t]; }
     });
   }
   F.forEach(f => { f.hp = Math.round(f.hp); f.max = f.hp; });
   board.forEach((u, k) => { if (u && (u.items || []).includes("hat")){ const f = F.find(x => x.id === side + ":" + k); f.shield = Math.round(f.max * .3); } });
   const synDone = new Set();
   for (const c of combos){
-    const ms = F.filter(f => c.members.includes(f.w));
-    if (c.kind === "theme") ms.forEach(f => f.shield = Math.max(f.shield, Math.round(f.max * SHIELD[c.tier])));
-    if (c.kind === "fam") ms.forEach(f => { f.atk *= 1 + FAMBUFF[c.tier]; f.fam = true; });
-    if (c.kind === "syn") ms.forEach(f => { if (!synDone.has(f.id)){ synDone.add(f.id); f.cd /= 1.3; } });
+    const ms = F.filter(f => c.members.includes(f.w)), t = c.tier;
+    if (c.kind === "theme") ms.forEach(f => {
+      f.shield = Math.max(f.shield, Math.round(f.max * FX.theme.shield[t]));
+      f.themeKey = c.key;
+      if (FX.theme.pop[t]) f.pop = { dmg: f.shield * FX.theme.pop[t], regrow: FX.theme.regrow[t], s0: f.shield };
+    });
+    if (c.kind === "fam") ms.forEach(f => { f.atk *= 1 + FX.fam.atk[t]; f.fam = c.key; f.famGroup = ms; f.famStep = FX.fam.stack[t]; });
+    if (c.kind === "syn") ms.forEach(f => {
+      if (!synDone.has(f.id)){ synDone.add(f.id); f.cd /= FX.syn.fast[t]; }
+      f.buddies = (f.buddies || []).concat(ms.filter(x => x.w !== f.w).map(x => ({ x, relay: FX.syn.relay[t], key: c.key })));
+    });
   }
+  F.forEach(f => f.base = f.atk);
   return { F, combos };
 }
 function simulate(myBoard, enBoard, myBoost, enBoost, spirit){
@@ -509,15 +544,50 @@ function simulate(myBoard, enBoard, myBoost, enBoost, spirit){
   const dist = (a, b) => Math.abs(a.row - b.row) + Math.abs(a.col - b.col) * 0.6;
   const near1 = (a, b) => Math.abs(a.row - b.row) + Math.abs(a.col - b.col) === 1;
   ev.push({ t: 0, type: "start", combos: [A.combos, B.combos] });
-  const fireAt = 3, fired = new Set();
-  const hurt = (target, dmg, t, from) => {
-    if (target.hp <= 0) return;
+  // 每个组合这场帮了多少（赛后展示）
+  const help = [{}, {}];
+  const add = (side, key, n) => { if (key && n > 0) help[side][key] = (help[side][key] || 0) + n; };
+  const proc = (f, text, t) => ev.push({ t, type: "proc", id: f.id, side: f.side, text });
+  const hurt = (target, dmg, t, from, tag) => {
+    if (target.hp <= 0) return 0;
+    if (from && target.dodge && Math.random() < target.dodge){ proc(target, "💨 闪开", t); add(target.side, target.clsKey, Math.round(dmg)); return 0; }
     if (from && from.lucky && Math.random() < from.lucky) dmg *= 2;
     dmg = Math.max(1, Math.round(dmg));
+    const had = target.shield;
     let s = Math.min(target.shield, dmg); target.shield -= s; target.hp -= (dmg - s);
+    if (target.themeKey) add(target.side, target.themeKey, s);
     if (target.hp > 0) target.mp = Math.min(100, target.mp + 6 * target.mpGain);
     ev.push({ t, type: "hit", from: from && from.id, to: target.id, dmg, hp: Math.max(0, target.hp), shield: target.shield, max: target.max, mp: target.mp, fam: !!(from && from.fam), blocked: s });
-    if (target.hp <= 0){ target.hp = 0; ev.push({ t, type: "rest", id: target.id }); }
+    if (from && from.fam) add(from.side, from.fam, dmg);
+    if (from && from.relayed) add(from.side, from.relayed, dmg);
+    if (tag) add(tag[0], tag[1], dmg);
+    // 同班同学：护盾被打破时泡泡爆开
+    if (had > 0 && target.shield <= 0 && target.pop && !target.popUsed){
+      target.popUsed = true;
+      const foes = alive(1 - target.side);
+      if (foes.length){
+        const v = foes.slice().sort((x, y) => dist(target, x) - dist(target, y))[0];
+        proc(target, "💥 泡泡爆开", t);
+        ev.push({ t, type: "burst", from: target.id, to: v.id });
+        hurt(v, target.pop.dmg, t, null, [target.side, target.themeKey]);
+      }
+      if (target.pop.regrow && target.hp > 0){ target.shield = Math.round(target.pop.s0 * target.pop.regrow); ev.push({ t, type: "shield", id: target.id, shield: target.shield, max: target.max }); }
+    }
+    // 盾盾宝队：弹回去
+    if (from && target.reflect && from.hp > 0 && target.hp > 0){
+      const r = dmg * target.reflect;
+      if (Math.random() < .35) proc(target, "🔁 弹回去", t);
+      hurt(from, r, t, null, [target.side, target.clsKey]);
+    }
+    if (target.hp <= 0){
+      target.hp = 0; ev.push({ t, type: "rest", id: target.id });
+      // 好朋友：接力
+      for (const b of target.buddies || []){
+        const x = b.x;
+        if (x.hp > 0 && !x.relayed){ x.relayed = b.key; x.atk *= 1 + b.relay; x.mp = 100; proc(x, "🔁 接力！", t); }
+      }
+    }
+    return dmg;
   };
   const skill = (f, target, foes, t) => {
     ev.push({ t, type: "skill", from: f.id, pos: f.pos, mp: 0 });
@@ -529,15 +599,25 @@ function simulate(myBoard, enBoard, myBoost, enBoost, spirit){
       foes.filter(x => x !== target && near1(x, target)).forEach(x => hurt(x, f.atk, t, f));
     } else shuffle(foes).slice(0, 3).forEach(x => hurt(x, f.atk * 1.2, t, f));
   };
+  const famCheer = (f, t) => {
+    if (!f.famGroup) return;
+    f.famGroup.forEach(x => { if (x.hp > 0) x.atk += x.base * f.famStep; });
+    f.famHits = (f.famHits || 0) + 1;
+    if (f.famHits % 4 === 0) proc(f, `💪 越打越有劲 +${Math.round(f.famStep * 100 * f.famHits)}%`, t);
+  };
+  const nextFire = {};
   let t = 0;
   const DT = 0.05, END = 25;
   while (t < END && alive(0).length && alive(1).length){
     t = +(t + DT).toFixed(2);
     // 对对碰烟花
-    if (t >= fireAt){
+    {
       for (const [side, pack] of [[0, A], [1, B]]){
         for (const c of pack.combos.filter(c => c.kind === "ant")){
-          if (fired.has(side + c.key)) continue; fired.add(side + c.key);
+          const nk = side + c.key;
+          if (nextFire[nk] === undefined) nextFire[nk] = 3;
+          if (t < nextFire[nk]) continue;
+          nextFire[nk] = c.tier >= 2 ? t + 6 : Infinity;
           const ms = pack.F.filter(f => c.members.includes(f.w) && f.hp > 0);
           if (!ms.length) continue;
           const foes = alive(1 - side);
@@ -545,7 +625,7 @@ function simulate(myBoard, enBoard, myBoost, enBoost, spirit){
           const power = ms.reduce((s, f) => s + f.atk, 0) * 3 * (c.tier >= 2 ? 1.5 : 1);
           const tgt = foes.slice().sort((x, y) => dist(ms[0], x) - dist(ms[0], y)).slice(0, 3);
           ev.push({ t, type: "fire", side, from: ms[0].id, label: `${W[c.a].w} ↔ ${W[c.b].w}`, to: tgt.map(f => f.id) });
-          tgt.forEach(f => hurt(f, power / tgt.length + 6, t, null));
+          tgt.forEach(f => hurt(f, power / tgt.length + 6, t, null, [side, c.key]));
         }
       }
     }
@@ -559,13 +639,20 @@ function simulate(myBoard, enBoard, myBoost, enBoost, spirit){
       let target;
       if (f.pos === "adv") target = foes.slice().sort((x, y) => dist(f, y) - dist(f, x) || x.hp - y.hp)[0];
       else target = foes.slice().sort((x, y) => dist(f, x) - dist(f, y) || x.hp - y.hp)[0];
-      if (f.mp >= 100){ f.mp = 0; skill(f, target, foes, t); continue; }
+      if (f.mp >= 100){ f.mp = 0; skill(f, target, foes, t); famCheer(f, t); continue; }
       f.mp = Math.min(100, f.mp + 10 * f.mpGain);
-      ev.push({ t, type: "atk", from: f.id, to: target.id, pos: f.pos, fam: !!f.fam, mp: f.mp });
-      hurt(target, f.atk, t, f);
+      let mul = 1, tag = null;
+      f.hits = (f.hits || 0) + 1;
+      if (f.rush && f.hits === 1){ target = foes.slice().sort((x, y) => dist(f, y) - dist(f, x))[0]; mul = 2; tag = [f.side, f.clsKey]; proc(f, "🚀 跳到后排", t); }
+      else if (f.every4 && f.hits % 4 === 0){ mul = 2; tag = [f.side, f.clsKey]; proc(f, "🚀 2 倍", t); }
+      ev.push({ t, type: "atk", from: f.id, to: target.id, pos: f.pos, fam: !!f.fam, mp: f.mp, rush: mul > 1 });
+      hurt(target, f.atk * mul, t, f, tag);
       if (f.pos === "adj"){
-        foes.filter(x => x !== target && x.hp > 0 && near1(x, target)).forEach(x => hurt(x, f.atk * f.splash, t, f));
+        const hitList = [target, ...foes.filter(x => x !== target && x.hp > 0 && near1(x, target))];
+        hitList.slice(1).forEach(x => hurt(x, f.atk * f.splash, t, f, f.clsKey && f.splash > .5 ? [f.side, f.clsKey] : null));
+        if (f.daze){ hitList.forEach(x => { if (x.hp > 0) x.timer += f.daze; }); if (Math.random() < .3) proc(target, "😵 晃眼", t); }
       }
+      famCheer(f, t);
     }
   }
   const left = s => alive(s).reduce((sum, f) => sum + f.hp / f.max, 0);
@@ -574,7 +661,7 @@ function simulate(myBoard, enBoard, myBoost, enBoost, spirit){
   if (a && !b) win = 1; else if (b && !a) win = -1;
   else { const la = left(0), lb = left(1); win = la > lb + 0.05 ? 1 : lb > la + 0.05 ? -1 : 0; }
   ev.push({ t: t + 0.4, type: "end", win, mine: a, theirs: b });
-  return { ev, win, mine: a, theirs: b, dur: t };
+  return { ev, win, mine: a, theirs: b, dur: t, help, combos: [A.combos, B.combos] };
 }
 
 // ================= 对手：同场的 7 支队伍 / 小星灵 =================
@@ -691,13 +778,12 @@ function render(){
   });
   // 组合
   const cs = combosOf(S.board, S.boosted).filter(c => c.tier || c.kind !== "cls" || c.n >= 1 && c.next - c.n === 1).sort((a, b) => (b.tier > 0) - (a.tier > 0));
-  $("combos").innerHTML = cs.length ? cs.slice(0, 8).map((c, n) => `<button class="chip ${c.tier ? "on" : c.kind === "ant" || c.kind === "syn" ? "hint" : ""}" data-n="${n}">${esc(comboLabel(c))}${S.boosted.has(c.key) && c.tier ? ' <span class="boost">+加强</span>' : ""}</button>`).join("")
+  $("combos").innerHTML = cs.length ? cs.slice(0, 8).map((c, n) => `<button class="chip ${c.tier ? "on" : c.kind === "ant" || c.kind === "syn" ? "hint" : ""}" data-n="${n}">${esc(comboLabel(c))}${S.boosted.has(c.key) && c.tier ? ' <span class="boost">+加强</span>' : ""}${c.next && c.next - c.n === 1 && c.tier ? ' <span class="boost">差 1 只升档</span>' : ""}</button>`).join("")
     : `<span class="chip">还没有组合：同主题 2 只、同词根 2 只、同词性 2 只、反义词或近义词挨着站都会触发</span>`;
   $("combos").querySelectorAll("button").forEach(b => b.onclick = () => {
     const c = cs[+b.dataset.n];
     document.querySelectorAll("#myHalf .unit, #bench .unit").forEach(n => { if (c.members.includes(+n.dataset.w)){ n.classList.remove("pop"); void n.offsetWidth; n.classList.add("pop"); } });
-    const what = { theme: "同主题的词宝 2/4/6 只在草地上：开场每只得到护盾泡泡，先挡掉伤害", fam: "同一个词根家族 2/3/4 只在草地上：家族成员力气变大", ant: "一对反义词上下或左右挨着站：比赛 3 秒时一起放烟花，打到 3 个对手", syn: "一对近义词（意思差不多）上下或左右挨着站：两只都出手更快", cls: "同一种词性的不同单词凑够 2/4 个（副词 2/3 个）：这种词宝都变强" }[c.kind];
-    toast(what, 2800);
+    comboInfo(c);
   });
   $("stickers").innerHTML = S.stickers.map((st, n) => `<button class="chip hint" data-n="${n}">🏷️ 变变贴纸 ${st}</button>`).join("");
   $("stickers").querySelectorAll("button").forEach(b => b.onclick = () => useSticker(+b.dataset.n));
@@ -736,6 +822,20 @@ function render(){
   $("odds").textContent = `Lv${S.lvl} 小屋里会出现：` + ODDS[S.lvl].map((p, t) => p ? `${t + 1}🪙卡 ${p}%` : "").filter(Boolean).join(" · ");
   $("fightBtn").disabled = onBoard() === 0;
   $("hint").textContent = hintText();
+}
+// 点组合标签：看每一档的效果、现在在第几档、还差几只
+function comboInfo(c){
+  const ts = comboTiers(c), id = c.kind === "cls" ? c.id : c.kind;
+  const how = { theme: "同一个主题的不同单词放上草地", fam: "同一个词根家族的单词放上草地", ant: "一对反义词上下或左右挨着站", syn: "一对近义词（意思差不多）上下或左右挨着站", cls: `${TYPE[c.id] && TYPE[c.id].pos}的不同单词放上草地` }[c.kind];
+  const rows = TIER_TEXT[id].map((txt, k) => {
+    if (!k) return "";
+    const need = ts ? (ts[k - 1] ? `${ts[k - 1]} 只` : "答对关系题") : k === 1 ? "挨着站" : "答对关系题";
+    const on = c.tier === k, done = c.tier > k;
+    return `<div class="li" style="${on ? "background:#e3f8ea;border:2px solid var(--ok)" : done ? "opacity:.6" : ""}"><b>${on ? "✅ " : ""}${need}</b>：${esc(txt)}</div>`;
+  }).join("");
+  const names = c.members.map(i => esc(W[i].w)).join("、");
+  const tail = ts && c.next ? `再放 ${c.next - c.n} 只就升到下一档！` : c.tier ? "" : "还没生效";
+  openModal(`<h2 style="margin:0 0 4px">${esc(comboName(c))}</h2><div class="qsub" style="text-align:left">${how}。现在：${names}${tail ? " · " + tail : ""}</div><div class="list">${rows}</div><div class="mrow"><button class="btn" onclick="closeModal()">知道了</button></div>`);
 }
 function renderLobby(){
   const foe = S.phase === "battle" && S.enemy && S.enemy.team;
@@ -1113,7 +1213,8 @@ function play(result){
     const board = side ? S.enemy.board : S.board;
     start.combos[side].forEach(c => {
       const ks = board.map((u, k) => u && c.members.includes(u.w) ? k : -1).filter(k => k >= 0);
-      const txt = c.kind === "theme" ? `🛡 ${DATA.themes[c.id].name}同班同学` : c.kind === "fam" ? `💪 ${DATA.fams[c.id].note}` : c.kind === "syn" ? `💞 ${W[c.a].w}≈${W[c.b].w}` : c.kind === "cls" ? `${TYPE[c.id].face} ${TYPE[c.id].name}队` : null;
+      const lv = c.tier > 1 ? ` 第${c.tier}档` : "";
+      const txt = c.kind === "theme" ? `🛡 ${DATA.themes[c.id].name}同班同学${lv}` : c.kind === "fam" ? `💪 ${c.id} 一家人${lv}` : c.kind === "syn" ? `💞 ${W[c.a].w}≈${W[c.b].w}` : c.kind === "cls" ? `${TYPE[c.id].face} ${TYPE[c.id].name}队${lv}` : null;
       if (!txt) return;
       setTimeout(() => ks.forEach((k, n) => floatText(el(side + ":" + k), n ? BADGE[c.kind] || TYPE[c.id].face : txt, side ? "#c2410c" : "#2b7a3d")), delay += 380);
     });
@@ -1124,6 +1225,7 @@ function play(result){
   banner.className = "float"; banner.textContent = "比赛开始！我方组合 " + count(0); banner.style.cssText = "left:50%;top:46%;font-size:17px;color:#2b7a3d";
   $("field").appendChild(banner); setTimeout(() => banner.remove(), 1900);
   const t0 = performance.now() + Math.max(900, delay + 300);
+  const lastProc = {}; let lastBeep = 0;
   let k = 1;
   const tick = () => {
     if (S.phase !== "battle") return;
@@ -1137,6 +1239,14 @@ function play(result){
         f.classList.remove("cast"); void f.offsetWidth; f.classList.add("cast");
         floatText(f, SKILL[e.pos].icon + " " + SKILL[e.pos].name, e.from[0] === "1" ? "#c2410c" : "#7a5b00"); beep("pop");
       }
+      else if (e.type === "proc"){
+        const n = el(e.id); if (!n) continue;
+        const now2 = performance.now();
+        if ((lastProc[e.id] || 0) + 650 / speed < now2){ lastProc[e.id] = now2; floatText(n, e.text, e.side ? "#c2410c" : "#1d6fd1"); }
+        n.classList.remove("cast"); void n.offsetWidth; n.classList.add("cast");
+        if (lastBeep + 250 < now2){ lastBeep = now2; beep("proc"); }
+      }
+      else if (e.type === "burst"){ projectile(el(e.from), el(e.to), "💥"); beep("burst"); }
       else if (e.type === "shield"){
         const n = el(e.id); if (!n) continue;
         n.querySelector(".hp b").style.width = Math.min(100, e.shield / e.max * 100) + "%"; n.classList.add("bubble");
@@ -1181,10 +1291,16 @@ function endBattle(r){
   const face = win > 0 ? "🎉" : win < 0 ? "🌧️" : "🤝";
   const gameOver = S.hearts <= 0 || !aliveTeams().length || S.round >= MAX_ROUND;
   const income = [`基础 +${base}`, interest && `利息 +${interest}`, winB && "获胜 +1", streakB && `${S.winStreak >= 2 ? "连胜" : "连败"} ${run} 场 +${streakB}`, star && `连对小星星 +${star}`].filter(Boolean).join("，");
+  const VERB = { theme: "挡住和砸出", fam: "全家打出", ant: "烟花打出", syn: "接力后打出", n: "弹回去", v: "跳后排打出", adj: "砸旁边打出", adv: "闪开" };
+  const helpRows = r.combos[0].filter(c => c.tier && r.help[0][c.key]).map(c => ({ c, n: Math.round(r.help[0][c.key]) })).sort((a, b) => b.n - a.n).slice(0, 4);
+  const maxN = Math.max(1, ...helpRows.map(x => x.n));
+  const helpHTML = helpRows.length ? `<div class="li" style="text-align:left;margin-top:6px"><b>✨ 本场组合表现</b>${helpRows.map(({ c, n }) => `<div style="display:flex;align-items:center;gap:6px;font-size:13px;margin-top:3px"><span style="flex:0 0 52%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${esc(comboName(c))}</span><span style="flex:1;height:8px;background:#e6eef6;border-radius:4px;overflow:hidden"><i style="display:block;height:100%;width:${n / maxN * 100}%;background:var(--ok)"></i></span><span style="white-space:nowrap">${VERB[c.kind === "cls" ? c.id : c.kind]} ${n}</span></div>`).join("")}</div>`
+    : (r.combos[0].some(c => c.tier) ? "" : `<div class="li" style="text-align:left;margin-top:6px">💡 这场没有组合。凑一个组合，词宝会厉害很多！</div>`);
   const news = [...others.filter(([t]) => t === en.team).map(([t, d]) => `${t.face}${t.name} -${d}❤️`), ...outNow.map(t => `${t.face}${t.name} 出局了`)];
   const m = openModal(`<div class="result"><div class="big">${face}</div><h2>${title}</h2>
     <div class="qsub">${pve ? (win > 0 ? "小星灵留下了道具" : "小星灵回合不扣爱心") : win < 0 ? `对面还剩 ${r.theirs} 只，少了 ${lost} 颗爱心 ❤️` : win > 0 ? `我方还剩 ${r.mine} 只` : "双方都还有能量"}</div>
-    ${drops.length ? `<div class="li" style="text-align:left">🎁 得到道具：${drops.map(k => `${ITEMS[k].icon}<b>${ITEMS[k].name}</b>（${ITEMS[k].text}）`).join("、")}</div>` : ""}
+    ${helpHTML}
+    ${drops.length ? `<div class="li" style="text-align:left;margin-top:6px">🎁 得到道具：${drops.map(k => `${ITEMS[k].icon}<b>${ITEMS[k].name}</b>（${ITEMS[k].text}）`).join("、")}</div>` : ""}
     <div class="li" style="text-align:left;margin-top:6px">下回合词币：${income}${S.xp !== undefined && S.lvl < MAX_LVL ? "；经验 +2" : ""}</div>
     ${news.length ? `<div class="li" style="text-align:left;margin-top:6px">📣 ${news.join("；")} · 你现在第 ${myPlace()} 名</div>` : `<div class="li" style="text-align:left;margin-top:6px">📣 你现在第 ${myPlace()} 名，还剩 ${aliveTeams().length + (S.hearts > 0 ? 1 : 0)} 支小队</div>`}
     ${gotSticker ? `<div class="li" style="text-align:left;margin-top:6px">🏷️ 得到变变贴纸 <b>${gotSticker}</b>：${esc(STICK_NOTE[gotSticker])}。能贴在 ${stickerTargets(gotSticker).map(([a]) => a).join("、")} 身上</div>` : ""}

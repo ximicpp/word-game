@@ -66,7 +66,7 @@ for (const e of Object.values(lib)){
   if (KID_SKIP.test(e.cn) || KID_WORDS.has(e.w)) continue;
   if (!new RegExp(`\\b${e.w}\\b`, "i").test(e.ex)) { errs.push("例句没有原词：" + e.w); continue; }
   idx[e.w] = out.length;
-  out.push({ w: e.w, pos: POS[e.w], th: e.th, lv: e.lv, cn: e.cn, ex: e.ex, fam: [], ant: [] });
+  out.push({ w: e.w, pos: POS[e.w], th: e.th, lv: e.lv, cn: e.cn, ex: e.ex, fam: [], ant: [], syn: [] });
 }
 
 // ---------- 反义对 ----------
@@ -78,6 +78,11 @@ antLine.split(";").forEach(p => { const [a, b] = p.trim().split(/\s+/); if (a &&
 `hot-cold fast-slow quickly-slowly win-lose buy-sell borrow-lend arrive-leave open-close happy-sad strong-weak cheap-expensive wet-dry
 careful-careless useful-useless upstairs-downstairs early-late tidy-messy friendly-unfriendly laugh-cry import-export happily-sadly
 quietly-loudly clean-dirty`.split(/\s+/).forEach(p => addAnt(...p.split("-")));
+// ---------- 近义（好朋友）：同词性才算 ----------
+const addSyn = (a, b) => { if (idx[a] === undefined || idx[b] === undefined || a === b) return; const A = out[idx[a]], B = out[idx[b]]; if (A.pos !== B.pos) return; if (!A.syn.includes(b)) A.syn.push(b); if (!B.syn.includes(a)) B.syn.push(a); };
+for (const e of Object.values(lib)) for (const r of e.rel.split(";")){ const [k, v] = r.split(":"); if (k === "syn" && v) v.split(",").forEach(x => addSyn(e.w, x.trim())); }
+const synLine = links[links.findIndex(l => l.trim() === "## syn") + 1] || "";
+synLine.split(";").forEach(p => { const [a, b] = p.trim().split(/\s+/); if (a && b) addSyn(a, b); });
 // un- 开头的反义（unhappy ↔ happy）
 for (const e of out) if (e.w.startsWith("un") && idx[e.w.slice(2)] !== undefined) addAnt(e.w, e.w.slice(2));
 
@@ -127,5 +132,5 @@ const re = /\/\*DATA\*\/[\s\S]*?\/\*END DATA\*\//;
 if (!re.test(html)){ console.error("index.html 里找不到 /*DATA*/ … /*END DATA*/"); process.exit(1); }
 fs.writeFileSync(file, html.replace(re, () => `/*DATA*/${data}/*END DATA*/`));
 const by = k => out.reduce((m, e) => (m[e[k]] = (m[e[k]] || 0) + 1, m), {});
-console.log(`写入 ${out.length} 个词，${Object.keys(famOut).length} 个家族，${out.filter(e => e.ant.length).length} 个词有反义词；词性`, by("pos"), "级别", by("lv"), "主题", Object.keys(usedThemes).length);
+console.log(`写入 ${out.length} 个词，${Object.keys(famOut).length} 个家族，${out.filter(e => e.ant.length).length} 个词有反义词，${out.filter(e => e.syn.length).length} 个词有近义词；词性`, by("pos"), "级别", by("lv"), "主题", Object.keys(usedThemes).length);
 console.log("家族样例：", Object.keys(famOut).slice(0, 40).map(b => b + ":" + out.filter(e => e.fam.includes(b)).map(e => e.w).join("/")).join("  "));

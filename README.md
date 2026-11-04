@@ -52,7 +52,7 @@ Android 使用 Java 11、Gradle 7.3.3、Android SDK 34 和 Build Tools 34.0.0；
 
 ## 词宝小队（独立原型，`autochess/`）
 
-单词自走棋：答对题请来单词小精灵“词宝”，同主题、同词根、反义词排在一起触发组合，两队自动比赛。和单词星系是两个独立的游戏，共用这个仓库。
+单词自走棋：答对题请来单词小精灵“词宝”，同主题、同词根、同词性、反义词、近义词排在一起触发组合；8 支小队同场，有等级、利息、技能、道具和小星灵回合。和单词星系是两个独立的游戏，共用这个仓库。
 
 - 打开 `autochess/index.html` 即可玩（单文件，无需构建）；发布后地址为 `https://ximicpp.github.io/word-game/autochess/`。
 - 词池由 `node tools/build-autochess.js` 从 `words/*.txt` 生成，详见 `autochess/README.md`。

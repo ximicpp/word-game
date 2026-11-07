@@ -469,6 +469,50 @@ details.fold[open] summary{margin-bottom:10px}
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
 }
+
+/* v1.10 清爽星空：只显示选中的词和它的相关词的名字；悬停时显示 */
+#net.allv .node:not(.sel):not(.nbl):not(:hover):not(:focus-visible) text:not(.luck){display:none!important}
+#net.allv.v-lit.v-lit .node.lit.lit text:not(.gain):not(.luck){display:block!important}
+#net.allv .edge:not(.lit):not(.half):not(.hl){opacity:.045}
+#net.allv .edge.weak:not(.lit):not(.half):not(.hl){opacity:.02}
+#net.allv .edge.half:not(.hl){opacity:.1}
+/* 部分点亮：从亮的一端透出光 */
+.hglow{stroke:var(--lamp);stroke-linecap:round;pointer-events:none}
+.hglow.h1{stroke-width:1.4;opacity:.22}
+.hglow.h2{stroke-width:1.8;opacity:.4}
+#net.sel-on #halfs{opacity:.25}
+#net.allv .edge.lit:not(.hl){opacity:.6;stroke-width:1.5}
+#net.allv .edge.weak.lit:not(.hl){opacity:.16;stroke-width:1.1}
+#net.sel-on .edge.lit:not(.hl){opacity:.22}
+#net.v-ready #halfs,#net.v-lit #halfs{display:none}
+.node.ready.near .dot{stroke:#b9a26a}
+.node.ready.near.imp2 .dot{stroke:#cdb373}
+.node.ready.near.imp3 .dot{stroke:#e2c47e}
+/* 答题进度：外圈一段段亮起 */
+.node .prog{fill:none;stroke:none}
+.node.charging .prog{stroke:var(--lamp);stroke-width:2.6;stroke-linecap:round;transition:stroke-dasharray .5s ease-out;filter:drop-shadow(0 0 3px rgba(255,201,92,.8))}
+/* 点亮：先暗后燃起 */
+.node .dot{transform-box:fill-box;transform-origin:center}
+.node.ignite .dot{animation:ignite 1.1s cubic-bezier(.2,.8,.3,1.2) .38s backwards}
+.node.ignite .halo{animation:igniteHalo 1.6s ease-out .38s backwards}
+.node.ignite text{animation:igniteTxt 1.2s ease-out .5s backwards}
+@keyframes ignite{0%{transform:scale(.35);fill:#56648a;opacity:.6}35%{transform:scale(1.9);fill:#fff;opacity:1}100%{transform:scale(1)}}
+@keyframes igniteHalo{0%{opacity:0;transform:scale(.3)}30%{opacity:.95;transform:scale(1.6)}100%{transform:scale(1)}}
+@keyframes igniteTxt{0%{opacity:0;fill:#fff}100%{opacity:1}}
+.wave{fill:none;stroke:#ffe3a3;stroke-width:2.5;transform-box:fill-box;transform-origin:center;animation:wave 1.1s ease-out backwards}
+@keyframes wave{0%{opacity:.95;transform:scale(1);stroke-width:3}100%{opacity:0;transform:scale(var(--s));stroke-width:.4}}
+.beam line{fill:none;stroke-linecap:round;stroke-dasharray:1 1;stroke-dashoffset:1;animation:beam var(--d) cubic-bezier(.4,0,.2,1) forwards}
+.beam .bw{stroke:var(--lamp);stroke-width:7;opacity:.28}
+.beam .bc{stroke:#fff6dc;stroke-width:2.4}
+.beam.out{transition:opacity .45s;opacity:0}
+@keyframes beam{to{stroke-dashoffset:0}}
+#net .edge.lit.wait{opacity:.1!important;stroke-dasharray:4 5}
+.node.ping .halo{animation:ping .85s ease-out}
+.node.ping .dot{animation:pingDot .6s ease-out}
+@keyframes ping{0%{opacity:.9;transform:scale(.5)}100%{transform:scale(1.15)}}
+@keyframes pingDot{40%{transform:scale(1.5);fill:#fff}}
+.fxtxt{font-family:var(--f-cn);font-size:14px;font-weight:700;fill:var(--lamp);paint-order:stroke;stroke:var(--sky);stroke-width:4px;animation:fxtxt 1.8s ease-out forwards;pointer-events:none}
+@keyframes fxtxt{0%{opacity:0;transform:translateY(6px)}20%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0;transform:translateY(-8px)}}
 </style>
 </head>
 <body>
@@ -490,7 +534,7 @@ details.fold[open] summary{margin-bottom:10px}
   <main>
     <div class="stage">
       <canvas class="sky" id="sky" aria-hidden="true"></canvas>
-      <svg id="net" role="img" aria-label="单词关系网"><g id="vp"><g id="cglow"></g><g id="edges"></g><g id="bundles"></g><g id="nodes"></g><g id="xnb"></g><g id="supers"></g><g id="fx"></g></g></svg>
+      <svg id="net" role="img" aria-label="单词关系网"><g id="vp"><g id="cglow"></g><g id="edges"></g><g id="halfs"></g><g id="bundles"></g><g id="nodes"></g><g id="xnb"></g><g id="supers"></g><g id="fx"></g></g></svg>
       <nav class="gbar" id="gbar" aria-label="星系"></nav>
       <div class="tip" id="tip" role="status" hidden><p></p><button type="button">知道了</button></div>
       <div class="mapkey" id="mapkey"></div>
@@ -690,6 +734,7 @@ function build(g){
     n.appendChild(el("circle",{class:"halo",r:22}));
     n.appendChild(el("circle",{class:"ring",r:10}));
     n.appendChild(el("circle",{class:"dot",r:6}));
+    n.appendChild(el("circle",{class:"prog",r:11,pathLength:1,transform:"rotate(-90)"}));
     const t = el("text",{y:24,"text-anchor":"middle"}); t.textContent = w; n.appendChild(t);
     const tc = el("text",{y:38,"text-anchor":"middle",class:"cnl"}); tc.textContent = cn1(w); n.appendChild(tc);
     n.appendChild(el("text",{y:-15,"text-anchor":"middle",class:"gain"}));
@@ -747,19 +792,24 @@ let selected = null, selCons = null;
 function paint(){
   const rec = new Set(candidates().filter(c => inView(c.w)).slice(0, 3).map(c => c.w)), luck = lucky();
   const nbS = selected ? nbSet(selected) : null;
+  // 相关词太多时只给最重要的 14 个标名字（已点亮的优先），其余悬停才显示
+  const nbL = nbS ? new Set([...nbS].filter(inView).sort((a, b) => (isLit(b) - isLit(a)) || (IMP[b] - IMP[a])).slice(0, 14)) : null;
   VW().forEach(w => { const n = nodeEls[w], s = status(w);
     n.classList.toggle("lit", s === "lit"); n.classList.toggle("ready", s === "ready"); n.classList.toggle("locked", s === "locked");
-    n.classList.toggle("sel", w === selected); n.classList.toggle("nb", !!nbS && w !== selected && nbS.has(w)); n.classList.toggle("rec", rec.has(w)); n.classList.toggle("lucky", w === luck);
+    n.classList.toggle("sel", w === selected); n.classList.toggle("nb", !!nbS && w !== selected && nbS.has(w)); n.classList.toggle("nbl", !!nbL && nbL.has(w)); n.classList.toggle("rec", rec.has(w)); n.classList.toggle("lucky", w === luck);
     [1,2,3].forEach(k => n.classList.toggle("s"+k, s === "lit" && (S.stars[w]||3) === k));
     n.classList.toggle("fade", isFading(w)); n.classList.toggle("giant", isGiant(w)); n.classList.toggle("gone", rep(w) !== w);
     n.querySelector(".gain").textContent = s === "ready" && consLeft(w) === 0 ? "连成星座" : "";
-    n.classList.toggle("imp2", tierOf(w) === 2); n.classList.toggle("imp3", tierOf(w) === 3); });
+    n.classList.toggle("imp2", tierOf(w) === 2); n.classList.toggle("imp3", tierOf(w) === 3);
+    n.classList.toggle("near", s !== "lit" && adj[w].some(e => e.t !== "topic" && isLit(e.w))); });
   const near = selected ? new Set([...nbSet(selected)].map(rep)) : null;
   const selId = selected || (selCons !== null ? "c" + selCons : null);
   edgeEls.forEach(({i, l}) => { const [a,b] = D.edges[i]; const la = isLit(a), lb = isLit(b);
     l.classList.toggle("lit", la && lb); l.classList.toggle("half", la !== lb);
     l.classList.toggle("hl", !!selected && (a === selected || b === selected));
-    l.classList.toggle("off", rep(a) !== a || rep(b) !== b); });
+    l.classList.toggle("off", rep(a) !== a || rep(b) !== b);
+    l.classList.toggle("wait", !!igniting && la && lb && (a === igniting || b === igniting)); });
+  paintHalf(); svg.classList.toggle("sel-on", !!selected);
   gB.textContent = "";
   bundles().forEach(bd => { const pa = posOf(bd.ra), pb = posOf(bd.rb);
     const ts = new Set(bd.list.map(i => D.edges[i][2]));
@@ -1013,7 +1063,7 @@ function renderHome(){
     <div class="note" style="margin-top:0">拖动、滚轮或双指移动缩放地图，所有单词都在这一整张星空里。越亮越大的星越重要，题目也越多。点亮的词过几天会变暗，答 1 题就能擦亮。</div>
     <div class="keys">${TYPE_ORDER.map(t => `<span style="--c:var(--t-${t})"><i></i>${TYPES[t].name}</span>`).join("")}</div>
     <div class="note">正确率 ${S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "—"} · 最高连击 ${S.best} · 星座 ${GC.flat().filter(consDone).length} / ${NCONS}</div>
-    <div class="note">单词星系 v1.9 · 当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。</div>
+    <div class="note">单词星系 v1.10 · 当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。</div>
     <div class="foot"><span></span><button class="ghost" id="resetBtn" type="button">重新开始</button></div></details>`;
   panel.innerHTML = html; bind(panel);
   document.getElementById("resetBtn").onclick = askReset;
@@ -1171,6 +1221,7 @@ function renderQuiz(){
   if (z.done) return z.mode === "review" ? renderReviewDone() : renderResult();
   const q = z.qs[z.i], N = z.qs.length;
   const right = z.picked !== null && q.opts[z.picked].key === q.answer;
+  setProg(w, z.mode === "review" ? 0 : (z.i + (right ? 1 : 0)) / N);
   const pips = z.qs.map((_,k) => `<i class="${k < z.i ? "ok" : k === z.i ? (z.picked === null ? "now" : right ? "ok" : "no") : ""}"></i>`).join("");
   let html = `<div class="qhead"><div class="eyebrow">${z.mode === "review" ? "擦亮" : "挑战"} ${esc(w)}</div><div class="pips">${pips}</div><button class="qx" id="quit" type="button" aria-label="退出答题">✕</button></div>
     <div class="q">${q.html}</div><div class="opts">`;
@@ -1188,7 +1239,7 @@ function renderQuiz(){
   }
   panel.innerHTML = html;
   panel.querySelectorAll("[data-k]").forEach(b => b.onclick = () => answer(+b.dataset.k));
-  document.getElementById("quit").onclick = () => { quiz = null; renderPanel(); };
+  document.getElementById("quit").onclick = () => { quiz = null; setProg(w, 0); renderPanel(); };
   const r = document.getElementById("retry"); if (r) { r.onclick = retryQ; r.focus(); }
   const h = document.getElementById("hint"); if (h) h.onclick = () => { if (S.dust < HINT_COST) return; S.dust -= HINT_COST;
     q.cut = shuffle(q.opts.map((o,k) => k).filter(k => q.opts[k].key !== q.answer)).slice(0, 2); save(); paint(); renderQuiz(); };
@@ -1198,6 +1249,9 @@ function renderQuiz(){
     const ex = panel.querySelector(".explain"); if (ex && small()) ex.scrollIntoView({block:"nearest", behavior:"smooth"}); }
   else panel.onclick = null;
 }
+// 答题时地图上这颗星外圈按进度一点点亮起来
+function setProg(w, f){ document.querySelectorAll(".node.charging").forEach(n => { if (n.dataset.w !== w || !f) { n.classList.remove("charging"); n.querySelector(".prog").style.strokeDasharray = ""; } });
+  const n = nodeEls[w]; if (!n || !f) return; n.classList.add("charging"); n.querySelector(".prog").style.strokeDasharray = `${f.toFixed(3)} 1`; }
 function answer(k){ const z = quiz, q = z.qs[z.i]; if (z.picked !== null) return; z.picked = k; const ok = q.opts[k].key === q.answer;
   S.answered++;
   if (ok){ S.correct++; S.combo++; if (S.combo > S.best) S.best = S.combo; sfx("ok");
@@ -1213,17 +1267,44 @@ function retryQ(){ const z = quiz, all = gensFor(z.w, z.mode);
 function nextQ(){ clearTimeout(autoT); panel.onclick = null; const z = quiz; if (!z || z.done || z.picked === null) return;
   if (z.i < z.qs.length - 1){ z.i++; z.picked = null; renderQuiz(); } else if (z.mode === "review") finishReview(); else lightUp(z.w); }
 
-// 点亮动画：星点四散，连到新解锁词的线流动一下
-const gFx = document.getElementById("fx");
-function burst(w, unlocked){ if (matchMedia("(prefers-reduced-motion: reduce)").matches || !nodeEls[w]) return;
-  for (let k = 0; k < 10; k++){ const a = k / 10 * Math.PI * 2 + Math.random() * .4, r = 26 + Math.random() * 22;
-    const c = el("circle", {class:"spark", cx:P[w].x, cy:P[w].y, r: 1.6 + Math.random() * 1.6});
-    c.style.setProperty("--dx", (Math.cos(a) * r).toFixed(1) + "px"); c.style.setProperty("--dy", (Math.sin(a) * r).toFixed(1) + "px");
-    gFx.appendChild(c); setTimeout(() => c.remove(), 1000); }
-  const nu = new Set(unlocked);
-  edgeEls.forEach(({i, l}) => { const [a, b] = D.edges[i]; if ((a === w && nu.has(b)) || (b === w && nu.has(a))) {
-    l.classList.remove("flow"); void l.getBBox(); l.classList.add("flow"); setTimeout(() => l.classList.remove("flow"), 2800); } }); }
-function pop(w){ const g = nodeEls[w]; if (!g) return; g.classList.remove("pop"); void g.getBBox(); g.classList.add("pop"); }
+// 部分点亮：一端点亮的边，从亮的那一端往外透出一段渐暗的光
+const gFx = document.getElementById("fx"), gH = document.getElementById("halfs"), RM = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+let igniting = null;
+function paintHalf(){ gH.textContent = "";
+  edgeEls.forEach(({i, l}) => { if (!l.classList.contains("half") || l.classList.contains("off")) return;
+    let [a, b, t] = D.edges[i]; if (t === "topic") return; if (!isLit(a)) [a, b] = [b, a];
+    const dx = P[b].x - P[a].x, dy = P[b].y - P[a].y, d = Math.hypot(dx, dy) || 1;
+    [[Math.min(.45, 46 / d), "h1"], [Math.min(.22, 22 / d), "h2"]].forEach(([f, c]) => gH.appendChild(el("line", {x1:P[a].x, y1:P[a].y, x2:P[a].x + dx * f, y2:P[a].y + dy * f, class:"hglow " + c}))); }); }
+// 点亮动画：镜头对准 → 星星由暗到亮“燃起”，冲击波扩散、星点四散 → 光沿着连线一条条流向已点亮的邻居，邻居闪一下回应
+function pop(w){ const g = nodeEls[w]; if (!g) return; g.classList.remove("ping"); void g.getBBox(); g.classList.add("ping"); setTimeout(() => g.classList.remove("ping"), 900); }
+function ignite(w, done){
+  const n = nodeEls[w]; if (!n) return done && done();
+  const T = tierOf(w), nbs = [...new Set(adj[w].filter(e => isLit(e.w) && inView(e.w) && rep(e.w) === e.w).map(e => e.w))]
+    .sort((x, y) => Math.hypot(P[x].x - P[w].x, P[x].y - P[w].y) - Math.hypot(P[y].x - P[w].x, P[y].y - P[w].y)).slice(0, 12);
+  if (RM()) { igniting = null; paint(); return done && done(); }
+  const D0 = 380, STEP = 130, BEAM = 520;
+  n.classList.remove("ignite"); void n.getBBox(); n.classList.add("ignite");
+  setTimeout(() => {
+    for (let k = 0; k < T; k++){ const c = el("circle", {class:"wave", cx:P[w].x, cy:P[w].y, r:8}); c.style.setProperty("--s", 4 + T * 2.2); c.style.animationDelay = k * 160 + "ms"; gFx.appendChild(c); setTimeout(() => c.remove(), 1300 + k * 160); }
+    const ns = 8 + T * 4;
+    for (let k = 0; k < ns; k++){ const a = k / ns * Math.PI * 2 + Math.random() * .4, r = 24 + T * 8 + Math.random() * 26;
+      const c = el("circle", {class:"spark", cx:P[w].x, cy:P[w].y, r: 1.4 + Math.random() * 1.8});
+      c.style.setProperty("--dx", (Math.cos(a) * r).toFixed(1) + "px"); c.style.setProperty("--dy", (Math.sin(a) * r).toFixed(1) + "px");
+      gFx.appendChild(c); setTimeout(() => c.remove(), 1100); }
+  }, D0 + 120);
+  const els = {}; edgeEls.forEach(({i, l}) => { const [a, b] = D.edges[i]; if (a === w) els[b] = l; else if (b === w) els[a] = l; });
+  nbs.forEach((x, k) => { const t0 = D0 + 520 + k * STEP;
+    setTimeout(() => { const g = el("g", {class:"beam"});
+      [["bw", 7], ["bc", 2.4]].forEach(([c]) => g.appendChild(el("line", {x1:P[w].x, y1:P[w].y, x2:P[x].x, y2:P[x].y, pathLength:1, class:c})));
+      g.style.setProperty("--d", BEAM + "ms"); gFx.appendChild(g);
+      if (k % 2 === 0) sfx("tick", k);
+      setTimeout(() => { if (els[x]) els[x].classList.remove("wait");
+        const m = nodeEls[x]; if (m) { m.classList.remove("ping"); void m.getBBox(); m.classList.add("ping"); setTimeout(() => m.classList.remove("ping"), 900); }
+        g.classList.add("out"); setTimeout(() => g.remove(), 500); }, BEAM); }, t0); });
+  const end = D0 + 520 + Math.max(0, nbs.length - 1) * STEP + BEAM + 200;
+  if (nbs.length > 1) setTimeout(() => { const t = el("text", {x:P[w].x, y:P[w].y - 26 - T * 3, class:"fxtxt", "text-anchor":"middle"}); t.textContent = `+${nbs.length} 条星光`; gFx.appendChild(t); setTimeout(() => t.remove(), 1800); }, end - 300);
+  setTimeout(() => { igniting = null; edgeEls.forEach(({l}) => l.classList.remove("wait")); n.classList.remove("ignite"); done && done(); }, end);
+  return end; }
 function lightUp(w){
   const z = quiz;
   const before = new Set(readySet), openBefore = openG.slice();
@@ -1237,14 +1318,16 @@ function lightUp(w){
   z.done = true; z.stars = stars; z.unlocked = [...readySet].filter(x => !before.has(x));
   z.newGal = GAL.map((_, g) => g).filter(g => openG[g] && !openBefore[g]);
   const ci = consOf[w]; z.newCons = ci !== undefined && consDone(ci) ? ci : null;
-  if (z.newCons !== null) fold(z.newCons, true);          // 连成的星座自动收起成一颗大星
+
   z.lucky = S.luck && S.luck.d === today() && S.luck.w === w && !S.luck.got;
   if (z.lucky) S.luck.got = true;
   z.dust = dustFor(w, stars) * (z.lucky ? 2 : 1) + (z.newCons !== null ? CONS_BONUS : 0); S.dust += z.dust;
   streakHit = null; z.goal = bumpDaily(); z.streak = streakHit;
   z.galDone = false;
-  save(); paint(); pop(w); burst(w, z.unlocked);
-  setTimeout(() => { if (quiz === z) fitWords([w, ...z.unlocked.filter(x => gOf(x) === cur)], small() ? 420 : 620, true); }, 450);   // 稍稍拉远，看到新解锁的星
+  igniting = w; setProg(w, 0); save(); paint();
+  { const mx = small() ? 420 : 620, ns = adj[w].map(e => e.w).filter(x => isLit(x) && inView(x) && rep(x) === x && Math.hypot(P[x].x - P[w].x, P[x].y - P[w].y) < mx * .6);
+    fitWords([w, ...ns], mx, true); }                     // 镜头对准新星和已点亮的邻居，再播放点亮动画
+  ignite(w, () => { if (z.newCons !== null) { fold(z.newCons, true); paint(); } });   // 连成的星座等光流完再收起成一颗大星
   if (z.goal || z.galDone || z.lvUp || z.ms.length || z.streak) meteor(8);
   sfx(z.newCons !== null || z.lvUp || z.ms.length || z.streak ? "cons" : "light");
   if (z.newCons !== null) meteor(5); else if (stars === 3) meteor(1);
@@ -1327,11 +1410,11 @@ document.addEventListener("keydown", e => { if (!quiz || e.target.closest("input
 let AC = null;
 function sfx(kind){ if (S.mute) return;
   try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume();
-    const seq = {ok:[[880,0],[1319,.07]], bad:[[220,0],[175,.12]], light:[[523,0],[659,.08],[784,.16],[1047,.24]], cons:[[523,0],[659,.1],[784,.2],[1047,.3],[1568,.42]]}[kind];
+    const seq = {ok:[[880,0],[1319,.07]], bad:[[220,0],[175,.12]], light:[[523,0],[659,.08],[784,.16],[1047,.24]], cons:[[523,0],[659,.1],[784,.2],[1047,.3],[1568,.42]], tick:[[[1175,1319,1568,1760,2093,2349][Math.min(5, Math.floor((arguments[1]||0)/2))],0]]}[kind];
     const t0 = AC.currentTime;
     seq.forEach(([f, dt]) => { const o = AC.createOscillator(), g = AC.createGain();
       o.type = kind === "bad" ? "triangle" : "sine"; o.frequency.value = f;
-      g.gain.setValueAtTime(0.0001, t0 + dt); g.gain.exponentialRampToValueAtTime(kind === "bad" ? 0.12 : 0.09, t0 + dt + 0.015);
+      g.gain.setValueAtTime(0.0001, t0 + dt); g.gain.exponentialRampToValueAtTime(kind === "bad" ? 0.12 : kind === "tick" ? 0.035 : 0.09, t0 + dt + 0.015);
       g.gain.exponentialRampToValueAtTime(0.0001, t0 + dt + 0.28);
       o.connect(g); g.connect(AC.destination); o.start(t0 + dt); o.stop(t0 + dt + 0.3); }); } catch(e){} }
 const stage = document.querySelector(".stage");

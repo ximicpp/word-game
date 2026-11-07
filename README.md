@@ -57,10 +57,14 @@ word|A2|ipa|中文|例句（必须包含这个词）|syn:xx;ant:yy;hyper:zz;soun
 
 运行 `node tools/build-offline.js`，会生成 `dist/单词星系-离线版.html`。将这个文件发给朋友，下载后用浏览器打开即可游玩，无需网络；离线版使用系统字体。游戏进度保存在各自的浏览器中，浏览器对本地文件存储的处理可能不同。
 
+## 微信小游戏版
+
+`minigame/` 是微信小游戏工程，用 Canvas 重画界面，玩法和网页版一致。微信开发者工具里导入这个目录即可预览和上传。说明、浏览器预览方法和上线步骤见 [minigame/README.md](minigame/README.md)。
+
 ## 自动构建与发布
 
-GitHub Actions 在推送分支、提交或更新 Pull Request 时自动构建，也可以在 Actions 页手动运行“构建与发布”。运行完成后，从该次运行的 Artifacts 下载 `word-game-html` 或 `word-game-android`。网页文件下载解压后即可离线打开。
+GitHub Actions 在推送分支、提交或更新 Pull Request 时自动构建，也可以在 Actions 页手动运行“构建与发布”。运行完成后，从该次运行的 Artifacts 下载 `word-game-html`、`word-game-android` 或 `word-game-minigame`（微信小游戏工程，解压后用开发者工具导入）。网页文件下载解压后即可离线打开。
 
-推送以 `v` 开头的标签（例如 `v1.0.0`）会在两个构建都成功后创建 GitHub Release，并附上 HTML 和 APK。创建标签和推送由维护者执行；仓库需要启用 Actions 和允许工作流创建 Release。已有同名 Release 时发布步骤会失败，避免覆盖已有文件。
+推送以 `v` 开头的标签（例如 `v1.0.0`）会在三个构建都成功后创建 GitHub Release，并附上 HTML、APK 和小游戏工程。创建标签和推送由维护者执行；仓库需要启用 Actions 和允许工作流创建 Release。已有同名 Release 时发布步骤会失败，避免覆盖已有文件。
 
 Android 使用 Java 11、Gradle 7.3.3、Android SDK 34 和 Build Tools 34.0.0；本地可在 `android-offline` 目录运行 `gradle assembleDebug`。当前 APK 使用构建机器临时生成的调试密钥签名，适合体验，不保证不同构建可以直接覆盖安装，也不适合应用商店发布。需要稳定升级或正式发布时，应配置并安全保管固定的正式签名密钥。

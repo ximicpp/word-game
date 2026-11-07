@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>单词星系 · 小游戏预览</title>
+<style>
+  html,body{margin:0;height:100%;background:#05080f;overflow:hidden}
+  #phone{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);touch-action:none;box-shadow:0 0 0 1px #26324d,0 20px 60px rgba(0,0,0,.6);border-radius:12px;overflow:hidden}
+  #phone canvas{display:block;width:100%;height:100%}
+  #capsule{position:absolute;border:1px solid rgba(255,255,255,.25);border-radius:16px;background:rgba(0,0,0,.25);pointer-events:none;
+    display:flex;align-items:center;justify-content:space-around;color:#fff;font:14px sans-serif}
+  #sheet{position:absolute;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end}
+  #sheet div{width:100%;background:#f7f7f7;font:16px -apple-system,sans-serif;color:#111}
+  #sheet button{display:block;width:100%;padding:14px;border:0;border-top:1px solid #ddd;background:#fff;font:inherit}
+  #sheet .t{padding:18px;text-align:center}
+</style>
+</head>
+<body>
+<!-- 在浏览器里模拟微信小游戏环境，方便调试界面。不会打包进小游戏。
+     用法：在仓库根目录运行 python3 -m http.server 8000，打开 http://localhost:8000/minigame/dev/preview.html
+     参数：?w=390&h=844 手机尺寸；?days=3 模拟 3 天后；?reset=1 清空存档 -->
+<div id="phone"><div id="capsule">··· ◉</div><div id="sheet"><div></div></div></div>
+<script src="wx-shim.js"></script>
+<script>
+// 极简 CommonJS 加载器：同步读取 minigame/ 下的文件
+(function(){
+  const cache = {};
+  const norm = p => { const out = []; p.split("/").forEach(s => { if (s === "..") out.pop(); else if (s && s !== ".") out.push(s); }); return out.join("/"); };
+  function load(path){
+    if (cache[path]) return cache[path].exports;
+    const x = new XMLHttpRequest(); x.open("GET", "../" + path, false); x.send();
+    if (x.status !== 200) throw new Error("找不到 " + path);
+    const module = cache[path] = { exports: {} }, dir = path.split("/").slice(0, -1).join("/");
+    new Function("module", "exports", "require", x.responseText + "\n//# sourceURL=" + path)(module, module.exports, p => load(norm((dir ? dir + "/" : "") + p).replace(/(\.js)?$/, ".js")));
+    return module.exports;
+  }
+  load("game.js");
+})();
+</script>
+</body>
+</html>

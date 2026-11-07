@@ -536,6 +536,18 @@ details.fold[open] summary{margin-bottom:10px}
 .node.hov .dot{stroke:#fff;stroke-width:1.2}
 #net .node.hov.hov text:not(.gain):not(.luck):not(.cnl){display:block!important;opacity:1;fill:var(--ink)}
 #net .node.hov.hov.lit text:not(.gain):not(.luck):not(.cnl){fill:#fff3d6}
+
+/* 热力场底图 */
+#heat{pointer-events:none}
+#heat .hm{opacity:0;transition:opacity 1.4s ease;image-rendering:auto}
+#heat .hm.on{opacity:1}
+#net.sel-on #heat{opacity:.55;transition:opacity .4s}
+#net.v-ready #heat{opacity:.3}
+#net.allv .node.lit .halo{opacity:.12}
+#net.allv .node.lit.imp2 .halo{opacity:.18}
+#net.allv .node.lit.imp3 .halo{opacity:.26}
+#net.allv.far .edge.lit:not(.hl){opacity:.3}
+#net.allv.far .edge.weak.lit:not(.hl){opacity:.08}
 </style>
 </head>
 <body>
@@ -557,7 +569,7 @@ details.fold[open] summary{margin-bottom:10px}
   <main>
     <div class="stage">
       <canvas class="sky" id="sky" aria-hidden="true"></canvas>
-      <svg id="net" role="img" aria-label="单词关系网"><g id="vp"><g id="cglow"></g><g id="edges"></g><g id="halfs"></g><g id="bundles"></g><g id="nodes"></g><g id="xnb"></g><g id="supers"></g><g id="fx"></g></g></svg>
+      <svg id="net" role="img" aria-label="单词关系网"><g id="vp"><g id="heat"><image class="hm"/><image class="hm"/></g><g id="cglow"></g><g id="edges"></g><g id="halfs"></g><g id="bundles"></g><g id="nodes"></g><g id="xnb"></g><g id="supers"></g><g id="fx"></g></g></svg>
       <nav class="gbar" id="gbar" aria-label="星系"></nav>
       <div class="tip" id="tip" role="status" hidden><p></p><button type="button">知道了</button></div>
       <div class="mapkey" id="mapkey"></div>
@@ -866,7 +878,7 @@ function paint(){
   sk.title = `连续 ${sn} 天${S.guard ? ` · 守护星 ${S.guard} 颗` : ""}（每天点亮或擦亮 1 颗就算）`;
   document.getElementById("goal").classList.toggle("done", dg.done);
   const mb = document.getElementById("muteBtn"); mb.textContent = S.mute ? "静音" : "音效"; mb.setAttribute("aria-pressed", String(!S.mute));
-  renderBar(); renderKey(); paintX();
+  renderBar(); renderKey(); paintX(); heatSoon();
 }
 // 地图图例：已学会 / 可挑战 / 未解锁，点一下只看这一类；单词本按星座列出全部词
 const VIEW_NAME = {lit:"已学会", ready:"未学会", locked:"未解锁"};
@@ -977,6 +989,38 @@ svg.addEventListener("pointermove", e => { if (!ptrs.has(e.pointerId)) return; c
 function up(e){ if (!ptrs.has(e.pointerId)) return; ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch0 = null;
   if (!ptrs.size){ svg.classList.remove("dragging"); if (moved < 6) { downCons !== null ? selectCons(downCons) : downNode ? select(downNode) : select(null); } } }
 svg.addEventListener("pointerup", up); svg.addEventListener("pointercancel", up);
+
+
+// ---------- 热力场底图 ----------
+// 每颗点亮的星是一个热源：星等越高、星级越高越热，变暗待擦亮的只剩余温，恒星更热。
+// 所有热源叠加成一个场，按温度上色画在最底层：零散点亮时是一个个暖点，连成片后会融成一块块“暖大陆”。
+const HEAT_CELL = 6, HEAT_STOP = [[0,[40,30,90,0]],[.12,[52,38,120,.22]],[.3,[120,52,140,.32]],[.5,[214,96,84,.4]],[.72,[255,170,80,.46]],[1,[255,212,150,.52]]];
+const heatImgs = [...document.querySelectorAll("#heat .hm")]; let heatKey = "", heatCur = 0, heatT = 0;
+function heatColor(h){ for (let k = 1; k < HEAT_STOP.length; k++){ const [t1, c1] = HEAT_STOP[k], [t0, c0] = HEAT_STOP[k-1];
+    if (h <= t1){ const f = (h - t0) / (t1 - t0); return c0.map((v, i) => v + (c1[i] - v) * f); } } return HEAT_STOP[HEAT_STOP.length-1][1]; }
+const HEAT_LUT = Array.from({length:256}, (_, i) => heatColor(i / 255));
+function heatSoon(){ clearTimeout(heatT); heatT = setTimeout(drawHeat, 30); }
+function drawHeat(){
+  if (igniting) { heatT = setTimeout(drawHeat, 400); return; }     // 点亮动画放完再升温
+  const src = VW().filter(isLit);
+  const key = BANK + "|" + src.map(w => w + (S.stars[w]||3) + (isFading(w) ? "f" : "") + (isGiant(w) ? "g" : "")).join(",");
+  if (key === heatKey) return; heatKey = key;
+  const B = BBall, W = Math.ceil(B.w / HEAT_CELL), H = Math.ceil(B.h / HEAT_CELL), f = new Float32Array(W * H);
+  src.forEach(w => { const T = tierOf(w), sg = (24 + T * 9) / HEAT_CELL, R = Math.ceil(sg * 3), inv = 1 / (2 * sg * sg);
+    const a = (.55 + T * .2) * [0, .6, .8, 1][S.stars[w] || 3] * (isFading(w) ? .35 : 1) * (isGiant(w) ? 1.35 : 1);
+    const cx = (P[w].x - B.x) / HEAT_CELL, cy = (P[w].y - B.y) / HEAT_CELL;
+    for (let y = Math.max(0, Math.floor(cy - R)); y <= Math.min(H - 1, Math.ceil(cy + R)); y++){ const dy = y - cy, o = y * W;
+      for (let x = Math.max(0, Math.floor(cx - R)); x <= Math.min(W - 1, Math.ceil(cx + R)); x++){ const dx = x - cx; f[o + x] += a * Math.exp(-(dx*dx + dy*dy) * inv); } } });
+  const c = document.createElement("canvas"); c.width = W; c.height = H; const ctx = c.getContext("2d"), im = ctx.createImageData(W, H), d = im.data;
+  for (let i = 0; i < f.length; i++){ if (f[i] < .02) continue; const h = 1 - Math.exp(-f[i] * .75);
+    // 淡淡的等温线：温度每升一档有一条细亮线，像地形图
+    const band = h * 7 % 1, line = h > .1 && band < .07 ? .07 : 0;
+    const col = HEAT_LUT[Math.min(255, Math.round(h * 255))];
+    d[i*4] = col[0]; d[i*4+1] = col[1]; d[i*4+2] = col[2]; d[i*4+3] = Math.round(Math.min(1, col[3] + line) * 255); }
+  ctx.putImageData(im, 0, 0);
+  const next = heatImgs[1 - heatCur], prev = heatImgs[heatCur];
+  Object.entries({href:c.toDataURL(), x:B.x, y:B.y, width:W * HEAT_CELL, height:H * HEAT_CELL, preserveAspectRatio:"none"}).forEach(([k, v]) => next.setAttribute(k, v));
+  next.classList.add("on"); prev.classList.remove("on"); heatCur = 1 - heatCur; }
 
 // ---------- 面板 ----------
 const panel = document.getElementById("panel");
@@ -1563,7 +1607,7 @@ if (!guarded && S.dust >= GUARD_COST && streakNow() >= 2 && !S.guard) tip("guard
 if (!S.lit.length) tip("first");
 if (fadingWords().length) tip("fade");
 let rz; addEventListener("resize", () => { setVB(); clearTimeout(rz); rz = setTimeout(sky, 200); });
-window.__wn = { nodeAt, get S(){ return S; }, set S(v){ S = v; recalc(); }, D, GENS, qMeaning, qRelation, qBlank, qLink, status, candidates, get quiz(){ return quiz; },
+window.__wn = { nodeAt, heatNow(){ heatKey = ""; const t = performance.now(); drawHeat(); return performance.now() - t; }, get S(){ return S; }, set S(v){ S = v; recalc(); }, D, GENS, qMeaning, qRelation, qBlank, qLink, status, candidates, get quiz(){ return quiz; },
   refresh(){ recalc(); build(cur); paint(); renderPanel(); }, save, CONS, recalc, nextQ, lvOf, examPassed, showLevel, startQuiz, weekly, isGiant, giantCount, streakNow, guardCheck, openBook, qLetters, drawGens, select, switchGal, qnOf, tierOf, IMP };
 })();
 </script>

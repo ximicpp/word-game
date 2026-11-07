@@ -316,7 +316,7 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .luckline{display:flex;align-items:center;gap:8px;margin-top:14px;padding:9px 12px;border-radius:10px;border:1px dashed rgba(255,201,92,.55);background:none;color:var(--lamp);font-size:14px;width:100%;text-align:left}
 .luckline b{font-family:var(--f-word);font-size:16px}
 .luckline span{margin-left:auto;font-size:12px;color:var(--muted)}
-.gal.next{border-style:dashed}
+.gal.next{border-style:dashed;opacity:.6}
 .bankb{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;padding:3px 8px;color:var(--lamp);border-color:rgba(255,201,92,.4)}
 .banks{display:grid;gap:8px;margin-top:4px}
 .bank{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;text-align:left;padding:12px 14px;border-radius:10px;background:var(--sky-2);border:1px solid var(--rule)}
@@ -726,11 +726,9 @@ function openBook(tab){ if (busy()) { toast("先完成这一轮答题"); return;
 // 星系切换条
 const gbar = document.getElementById("gbar");
 function renderBar(){
-  // 只列出已开放的星系，再加一个“下一个”，其余先不显示
-  const nextG = GAL.findIndex((_, g) => !openG[g]);
+  // 列出全部星系；没开放的显示还要点亮几颗
   gbar.innerHTML = GAL.map((G, g) => { const n = GW[g].filter(isLit).length, open = openG[g], has = GW[g].some(w => readySet.has(w));
-    if (!open && g !== nextG) return "";
-    if (!open) return `<button type="button" class="gal next" disabled>${esc(G.name)}<span>再亮 ${g * OPEN_STEP - litArr.length} 颗</span></button>`;
+    if (!open) return `<button type="button" class="gal next" disabled title="再点亮 ${g * OPEN_STEP - litArr.length} 颗开放，或者点亮和它有连线的词">${esc(G.name)}<span>${GW[g].length} 词 · 再亮 ${g * OPEN_STEP - litArr.length}</span></button>`;
     return `<button type="button" class="gal${g === cur ? " cur" : ""}${has && g !== cur ? " has" : ""}${n === GW[g].length ? " full" : ""}" data-g="${g}">${esc(G.name)}<span>${n === GW[g].length ? "★" : `${n}/${GW[g].length}`}</span></button>`; }).join("");
   gbar.querySelectorAll("[data-g]").forEach(b => b.onclick = () => switchGal(+b.dataset.g));
   const c = gbar.querySelector(".cur"); if (c && !gbar.dataset.scrolled){ c.scrollIntoView({inline:"center", block:"nearest"}); gbar.dataset.scrolled = 1; }
@@ -1075,7 +1073,10 @@ function renderQuiz(){
   const r = document.getElementById("retry"); if (r) { r.onclick = retryQ; r.focus(); }
   const h = document.getElementById("hint"); if (h) h.onclick = () => { if (S.dust < HINT_COST) return; S.dust -= HINT_COST;
     q.cut = shuffle(q.opts.map((o,k) => k).filter(k => q.opts[k].key !== q.answer)).slice(0, 2); save(); paint(); renderQuiz(); };
-  if (right) { autoT = setTimeout(nextQ, AUTO_MS); panel.onclick = e => { if (!e.target.closest("#quit")) { panel.onclick = null; nextQ(); } }; }
+  // 答对：停留看解答，再自动下一题。点任意处继续的监听要等这次点击结束后再挂上，否则点答案的这一下会冒泡上来直接跳过解答
+  if (right) { autoT = setTimeout(nextQ, AUTO_MS); const z0 = z, i0 = z.i;
+    setTimeout(() => { if (quiz === z0 && z0.i === i0 && z0.picked !== null) panel.onclick = e => { if (!e.target.closest("#quit")) { panel.onclick = null; nextQ(); } }; }, 0);
+    const ex = panel.querySelector(".explain"); if (ex && small()) ex.scrollIntoView({block:"nearest", behavior:"smooth"}); }
   else panel.onclick = null;
 }
 function answer(k){ const z = quiz, q = z.qs[z.i]; if (z.picked !== null) return; z.picked = k; const ok = q.opts[k].key === q.answer;

@@ -99,7 +99,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 380px;min-height:0}
 .node.lit .halo{opacity:.22}
 .node.lit text{fill:#fff3d6;font-weight:700}
 .node.sel .ring{stroke:#fff;stroke-width:2;stroke-dasharray:none;animation:none}
-.node.dim{opacity:.35}
+.node.dim{opacity:.22}
 .node:focus{outline:none}
 .node:focus-visible .ring{stroke:#fff;stroke-width:2}
 .node.pop .halo{animation:pop 1.2s ease-out}
@@ -236,13 +236,13 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .preview{margin-top:16px;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:13px;color:var(--muted);padding:12px 14px;border-radius:10px;background:var(--sky-2);border:1px solid var(--rule)}
 .preview b{color:var(--ink);font-weight:600}
 .cands{display:grid;gap:6px}
-.cand{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:center;padding:7px 10px;border-radius:8px;background:var(--sky-2);border:1px solid rgba(159,216,255,.4);text-align:left;font-size:12px;color:var(--muted)}
+.cand{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:7px 10px;border-radius:8px;background:var(--sky-2);border:1px solid rgba(159,216,255,.4);text-align:left;font-size:12px;color:var(--muted)}
 .cand b{font-family:var(--f-word);font-size:15px;color:var(--ink);font-weight:500}
 .tools{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.tool{background:none;border:1px dashed rgba(255,201,92,.5);color:var(--lamp);border-radius:8px;padding:6px 10px;font-size:13px}
+.tool{background:none;border:1px solid rgba(255,201,92,.5);color:var(--lamp);border-radius:8px;padding:6px 10px;font-size:13px}
 .tool:disabled{opacity:.4;cursor:not-allowed}
 .ctabar .cta{margin-top:16px}
-.tip{position:absolute;left:max(12px,env(safe-area-inset-left,0px));bottom:12px;z-index:25;width:min(440px,calc(100% - 76px));
+.tip{position:absolute;left:max(12px,env(safe-area-inset-left,0px));bottom:52px;z-index:25;width:min(440px,calc(100% - 76px));
   background:#1b2742;border:1px solid rgba(255,201,92,.6);border-radius:12px;padding:14px 16px;box-shadow:0 10px 40px rgba(0,0,0,.5);display:flex;gap:12px;align-items:flex-start}
 .tip p{margin:0;font-size:15px;flex:1}
 .tip p b{color:var(--lamp)}
@@ -259,6 +259,7 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .node.rec .ring{stroke-width:2.5}
 .node.lucky .ring{stroke:var(--lamp);stroke-dasharray:2 3}
 .node .luck{font-size:13px;fill:var(--lamp);opacity:0;pointer-events:none}
+.node:not(.lucky) .luck{display:none}
 .node.lucky .luck{opacity:1;animation:twinkle 1.6s ease-in-out infinite}
 @keyframes twinkle{50%{opacity:.35}}
 .edge.flow{stroke-dasharray:5 7;stroke-width:2.6;opacity:1;animation:flow .9s linear 3}
@@ -271,10 +272,52 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .goal .bg{stroke:var(--rule)}
 .goal .fg{stroke:var(--lamp);stroke-linecap:round;transition:stroke-dashoffset .6s}
 .goal.done{color:var(--lamp)}
-.luckline{display:flex;align-items:center;gap:8px;margin-top:14px;padding:9px 12px;border-radius:10px;border:1px dashed rgba(255,201,92,.55);background:none;color:var(--lamp);font-size:14px;width:100%;text-align:left}
+/* v1.9：地图图例、筛选和单词本 */
+.mapkey{position:absolute;left:max(12px,env(safe-area-inset-left,0px));bottom:12px;z-index:4;display:flex;flex-wrap:wrap;gap:4px;max-width:calc(100% - 70px)}
+.mapkey button{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:5px 9px;border-radius:99px;background:rgba(20,30,52,.9);border:1px solid var(--rule);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.mapkey button.on{border-color:var(--lamp);color:var(--ink)}
+.mapkey b{font-weight:700;color:var(--ink)}
+.mapkey i{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.mapkey .k-lit{background:var(--lamp);box-shadow:0 0 6px var(--lamp)}
+.mapkey .k-ready{border:none;background:#5d6a94;transform:scale(.7)}
+.mapkey .k-locked{background:var(--dim)}
+.mapkey .book{color:var(--lamp);border-color:rgba(255,201,92,.5)}
+.node .cnl{display:none;font-family:var(--f-cn);font-size:11px;font-weight:400}
+#net.v-lit .node.lit .cnl{display:block;fill:#e8d6a8}
+#net.v-lit .node:not(.lit),#net.v-ready .node.locked{opacity:.08}
+#net.v-lit .node:not(.lit) text,#net.v-ready .node.locked text{display:none}
+#net.v-ready .node.lit{opacity:.35}
+#net.v-lit .edge:not(.lit),#net.v-ready .edge:not(.half){opacity:.03}
+.book-card{max-width:640px;max-height:min(86vh,760px);display:flex;flex-direction:column;padding:20px}
+.book-card .tabs{display:flex;gap:6px;margin:10px 0 12px;flex-wrap:wrap}
+.book-card .tabs button{font-size:13px;padding:5px 12px;border-radius:99px;border:1px solid var(--rule);background:transparent;color:var(--muted)}
+.book-card .tabs button.on{border-color:var(--lamp);color:var(--lamp)}
+.book-list{overflow-y:auto;flex:1;min-height:0;margin:0 -6px;padding:0 6px}
+.bgrp{margin-bottom:14px}
+.bgrp h3{font-size:13px;font-weight:700;color:var(--lamp);margin:0 0 6px;display:flex;justify-content:space-between}
+.bgrp h3 span{color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
+.bw{display:flex;flex-wrap:wrap;gap:6px}
+.bw button{font-size:13px;padding:4px 9px;border-radius:8px;border:1px solid var(--rule);background:var(--sky-2);color:var(--muted);text-align:left;line-height:1.3}
+.bw button b{font-family:var(--f-word);font-weight:600}
+.bw button small{display:block;font-size:11px;color:#c9b88a}
+.bw .lit{border-color:rgba(255,201,92,.55);color:var(--ink)}
+.bw .lit b{color:var(--lamp)}
+.bw .ready{border-color:var(--ready);color:var(--ink)}
+.bw .locked{opacity:.55}
+.q .spellw{display:block;font-size:30px;letter-spacing:.06em;margin-top:8px}
+.q .spellw .gap{color:var(--lamp);letter-spacing:.15em}
+.stk i{font-style:normal}
+.stk{font-family:var(--f-mono);font-size:11px;color:#2b1d00;background:var(--lamp);border-radius:99px;padding:1px 7px;font-weight:700}
+.streak{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0 4px;padding:10px 12px;background:var(--sky-2);border:1px solid var(--rule);border-radius:10px;font-size:13px}
+.streak b{font-size:20px;color:var(--lamp);font-variant-numeric:tabular-nums}
+.streak .ms{font-size:12px;color:var(--muted);margin-top:4px;display:flex;flex-wrap:wrap;gap:4px 8px}
+.streak .ms .on{color:var(--lamp)}
+.guardb{font-size:12px;padding:6px 10px;border-radius:8px;border:1px solid var(--lamp);background:transparent;color:var(--lamp);cursor:pointer;white-space:nowrap}
+.guardb:disabled{opacity:.45;cursor:default}
+.luckline{display:flex;align-items:center;gap:8px;margin-top:14px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,201,92,.55);background:none;color:var(--lamp);font-size:14px;width:100%;text-align:left}
 .luckline b{font-family:var(--f-word);font-size:16px}
 .luckline span{margin-left:auto;font-size:12px;color:var(--muted)}
-.gal.next{border-style:dashed}
+.gal.next{opacity:.6}
 .bankb{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;padding:3px 8px;color:var(--lamp);border-color:rgba(255,201,92,.4)}
 .banks{display:grid;gap:8px;margin-top:4px}
 .bank{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;text-align:left;padding:12px 14px;border-radius:10px;background:var(--sky-2);border:1px solid var(--rule)}
@@ -296,7 +339,7 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .gal.has{border-color:rgba(159,216,255,.5)}
 .gal:disabled{opacity:.38;cursor:not-allowed}
 .gal.full{background:var(--lamp-soft)}
-#net.far .node.locked text{display:none}
+#net.far .node.locked text,#net.far .node.ready:not(.rec):not(.sel):not(.nb):not(.imp3) text{display:none}
 #net.far .node.locked .dot{r:4}
 .meta{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;margin-top:10px;font-size:13px;color:var(--muted)}
 .meta b{color:var(--ink);font-weight:600}
@@ -318,12 +361,83 @@ details.fold[open] summary{margin-bottom:10px}
 .keys i{width:12px;height:3px;border-radius:2px;background:var(--c)}
 .foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px}
 .links{display:grid;gap:4px;margin-top:8px}
+/* 选中一个词：相关的词全部显示名字，侧栏列出关系 */
+#net .node.nb,#net .node.sel{opacity:1!important}
+#net .node.nb text:not(.gain):not(.luck):not(.cnl),#net .node.sel text:not(.gain):not(.luck):not(.cnl){display:block!important;opacity:1;fill:var(--ink)}
+#net .node.nb.lit text:not(.gain):not(.luck):not(.cnl){fill:#fff3d6}
+#net .node.nb.locked .dot{fill:#6b7898}
+#net .edge.hl{opacity:1!important;display:inline}
+/* 自由浏览：没学会的词是安静的小点，只有推荐、选中、幸运星才有虚线圈 */
+.node.ready:not(.rec):not(.sel):not(.lucky) .ring{stroke:none;animation:none}
+/* 没点亮：星和边都是虚线；两端都点亮的边才是亮的实线 */
+.node.ready .dot{fill:none;stroke:#56648a;stroke-width:1.3;stroke-dasharray:2 2}
+.node.ready.imp2 .dot{stroke:#7181a8;stroke-width:1.5}
+.node.ready.imp3 .dot{stroke:#9aa8cf;stroke-width:1.8}
+.node.ready.rec .dot,.node.ready.sel .dot,.node.ready.nb .dot{stroke:var(--ink)}
+#net .edge:not(.lit),#net .bundle.half,.xedge{stroke-dasharray:4 5}
+#net .edge.lit{stroke-dasharray:none}
+.node.ready.imp3 text{fill:#c8d2ec}
+.cand .mag{color:var(--lamp);font-size:11px}
+.node.ready text{fill:var(--muted)}
+.node.ready.rec text{fill:var(--ink)}
+/* 重要词：更大、点亮后更亮 */
+/* 星等：没点亮时是暗淡的小点（越重要越大一点），点亮后按星等变亮变大 */
+.node.ready .dot{r:3}
+.node.ready.imp2 .dot{r:4}
+.node.ready.imp3 .dot{r:5.2}
+.node.ready.rec .dot,.node.ready.sel .dot,.node.ready.nb .dot{r:5}
+.node.lit .dot{r:5}
+.node.lit.imp2 .dot{r:6.5}
+.node.lit.imp3 .dot{r:8.5}
+#net.allv .edge{opacity:.07}
+#net.allv .edge.weak{opacity:.035}
+#net.allv .edge.half{opacity:.22}
+#net.allv .edge.lit{opacity:.95;stroke-width:2.2}
+#net.allv .edge.hl{opacity:1}
+.node.imp3 text{font-size:15px;font-weight:700}
+.node.lit.imp2 .halo{opacity:.36}
+.node.lit.imp3 .halo{opacity:.5;transform:scale(1.2)}
+.node.lit.imp3 .dot{fill:#fff1c4}
+.node.lit.fade.imp2 .halo,.node.lit.fade.imp3 .halo{opacity:.08}
+.imp{font-size:12px;color:var(--lamp)}
+.cand .cn1{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.glabel{font-family:var(--f-cn);font-size:90px;font-weight:700;fill:var(--lamp);opacity:.55;pointer-events:none;paint-order:stroke;stroke:var(--sky);stroke-width:10px}
+#net.allv .edge.xg{opacity:.035}
+#net.allv:not(.far) .glabel{opacity:.12}
+#net.allv .edge.xg.lit{opacity:.25}
+#net.allv .edge.xg.hl{opacity:1}
+#net.allv.far .node:not(.lit):not(.sel):not(.nb):not(.rec) text{display:none}
+#net.allv .clabel{display:none}
+.xedge{stroke-width:2;stroke-dasharray:5 4;opacity:.9}
+#net .xnode text{display:block!important;opacity:1;fill:var(--ink)}
+#net .xnode .xgal{font-family:var(--f-cn);font-size:10px;font-weight:400;fill:var(--muted)}
+#net .xnode.lit text:not(.xgal){fill:#fff3d6}
+#net .xnode .dot{fill:#6b7898}
+#net .xnode.lit .dot{fill:var(--lamp)}
+#net .xnode.ready .dot{fill:var(--sky)}
+.rel{display:grid;gap:6px;margin-top:8px}
+.rel button{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;text-align:left;padding:8px 10px;border-radius:10px;background:var(--sky-2);border:1px solid var(--rule);color:var(--muted);font-size:13px;line-height:1.4}
+.rel button:hover{border-color:var(--ready)}
+.rel .t{grid-row:span 2;align-self:start;font-size:12px;color:var(--c);border:1px solid var(--c);border-radius:6px;padding:1px 6px;white-space:nowrap;margin-top:2px}
+.rel .h{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
+.rel .h b{font-family:var(--f-word);font-weight:600;font-size:15px;color:var(--ink)}
+.rel .h .st{font-size:11px;padding:0 6px;border-radius:99px;border:1px solid var(--rule)}
+.rel .lit .h b{color:var(--lamp)}
+.rel .lit .st{color:var(--lamp);border-color:rgba(255,201,92,.5)}
+.rel .ready .st{color:var(--ready);border-color:var(--ready)}
+.rel .h .cnm{color:#c9b88a}
+.rel .h .gx{font-size:11px;color:var(--muted)}
+.pairs{display:grid;gap:3px;margin-top:6px;font-size:13px;color:var(--muted)}
+.pairs b{font-family:var(--f-word);font-weight:500;color:var(--ink)}
+.pairs i{font-style:normal;color:var(--c)}
 .links div{font-size:13px;color:var(--muted)}
 .links b{font-family:var(--f-word);font-weight:500;color:var(--ink)}
 .links i{font-style:normal;color:var(--c)}
 
 @media (max-width:820px){
-  .goal span{display:none}
+  .goal #goalTxt{display:none}
+  .stk i{display:none}
+  .stk{padding:1px 5px}
   .brand h1{display:none}
   .ghost{white-space:nowrap}
   .combo{display:none!important}
@@ -343,7 +457,10 @@ details.fold[open] summary{margin-bottom:10px}
   main.focus{grid-template-rows:minmax(170px,30%) 1fr}
   .toast{bottom:auto;top:calc(64px + env(safe-area-inset-top,0px))}
   .ctabar{position:sticky;bottom:0;margin:0 -16px;padding:0 16px 12px;background:linear-gradient(transparent,var(--panel) 30%);z-index:2}
-  .tip{bottom:8px;padding:10px 12px}.tip p{font-size:14px}
+  .tip{bottom:46px;padding:10px 12px}
+  .mapkey{bottom:8px;gap:3px;flex-wrap:nowrap}
+  .mapkey button{padding:4px 7px;font-size:11px;gap:4px}
+  .mapkey button .kt{display:none}.tip p{font-size:14px}
   .zoom button{width:30px;height:30px}
   .zoom{bottom:8px}
   .q{font-size:17px;margin:12px 0 10px}
@@ -352,6 +469,90 @@ details.fold[open] summary{margin-bottom:10px}
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
 }
+
+/* v1.10 清爽星空：只显示选中的词和它的相关词的名字；悬停时显示 */
+#net.allv .node:not(.sel):not(.nbl):not(.hov):not(:focus-visible) text:not(.luck){display:none!important}
+#net.allv.v-lit.v-lit .node.lit.lit text:not(.gain):not(.luck){display:block!important}
+#net.allv .edge:not(.lit):not(.half):not(.hl){opacity:.045}
+#net.allv .edge.weak:not(.lit):not(.half):not(.hl){opacity:.02}
+#net.allv .edge.half:not(.hl){opacity:.1}
+/* 部分点亮：从亮的一端透出光 */
+.hglow{stroke:var(--lamp);stroke-linecap:round;pointer-events:none}
+.hglow.h1{stroke-width:1.4;opacity:.22}
+.hglow.h2{stroke-width:1.8;opacity:.4}
+#net.sel-on #halfs{opacity:.25}
+#net.allv .edge.lit:not(.hl){opacity:.6;stroke-width:1.5}
+#net.allv .edge.weak.lit:not(.hl){opacity:.16;stroke-width:1.1}
+#net.sel-on .edge.lit:not(.hl){opacity:.22}
+#net.v-ready #halfs,#net.v-lit #halfs{display:none}
+/* 答题进度：外圈一段段亮起 */
+.node .chg{fill:none;stroke:none}
+.node.charging .chg{stroke:var(--lamp);stroke-width:2.6;stroke-linecap:round;transition:stroke-dasharray .5s ease-out;filter:drop-shadow(0 0 3px rgba(255,201,92,.8))}
+/* 点亮：先暗后燃起 */
+.node .dot{transform-box:fill-box;transform-origin:center}
+.node.ignite .dot{animation:ignite 1.1s cubic-bezier(.2,.8,.3,1.2) .38s backwards}
+.node.ignite .halo{animation:igniteHalo 1.6s ease-out .38s backwards}
+.node.ignite text{animation:igniteTxt 1.2s ease-out .5s backwards}
+@keyframes ignite{0%{transform:scale(.35);fill:#56648a;opacity:.6}35%{transform:scale(1.9);fill:#fff;opacity:1}100%{transform:scale(1)}}
+@keyframes igniteHalo{0%{opacity:0;transform:scale(.3)}30%{opacity:.95;transform:scale(1.6)}100%{transform:scale(1)}}
+@keyframes igniteTxt{0%{opacity:0;fill:#fff}100%{opacity:1}}
+.wave{fill:none;stroke:#ffe3a3;stroke-width:2.5;transform-box:fill-box;transform-origin:center;animation:wave 1.1s ease-out backwards}
+@keyframes wave{0%{opacity:.95;transform:scale(1);stroke-width:3}100%{opacity:0;transform:scale(var(--s));stroke-width:.4}}
+.beam line{fill:none;stroke-linecap:round;stroke-dasharray:1 1;stroke-dashoffset:1;animation:beam var(--d) cubic-bezier(.4,0,.2,1) forwards}
+.beam .bw{stroke:var(--lamp);stroke-width:7;opacity:.28}
+.beam .bc{stroke:#fff6dc;stroke-width:2.4}
+.beam.out{transition:opacity .45s;opacity:0}
+@keyframes beam{to{stroke-dashoffset:0}}
+#net .edge.lit.wait{opacity:.1!important;stroke-dasharray:4 5}
+.node.ping .halo{animation:ping .85s ease-out}
+.node.ping .dot{animation:pingDot .6s ease-out}
+@keyframes ping{0%{opacity:.9;transform:scale(.5)}100%{transform:scale(1.15)}}
+@keyframes pingDot{40%{transform:scale(1.5);fill:#fff}}
+.fxtxt{font-family:var(--f-cn);font-size:14px;font-weight:700;fill:var(--lamp);paint-order:stroke;stroke:var(--sky);stroke-width:4px;animation:fxtxt 1.8s ease-out forwards;pointer-events:none}
+@keyframes fxtxt{0%{opacity:0;transform:translateY(6px)}20%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0;transform:translateY(-8px)}}
+
+/* v1.10b 清晰星空：平时没点亮的星是实心小暗点、没点亮的边不画；只有选中词的连线和相关词才用虚线 */
+#net.allv .edge:not(.lit):not(.hl){display:none}
+#net.allv .edge.hl:not(.lit){stroke-dasharray:4 5}
+.node.ready .dot{stroke:none;stroke-dasharray:none;fill:#3e4a6a}
+.node.ready .dot{r:1.8}
+.node.ready.imp2 .dot{r:2.5;fill:#4f5c84;stroke:none}
+.node.ready.imp3 .dot{r:3.3;fill:#5d6a94;stroke:none}
+.node.ready.near .dot{fill:#5a5446}
+.node.ready.near.imp2 .dot{fill:#6b6250}
+.node.ready.near.imp3 .dot{fill:#847455}
+.node.ready.sel .dot,.node.ready.nb .dot,.node.ready.rec .dot,.node.ready.nb.imp2 .dot,.node.ready.nb.imp3 .dot,.node.ready.sel.imp2 .dot,.node.ready.sel.imp3 .dot,.node.ready.rec.imp2 .dot,.node.ready.rec.imp3 .dot{r:4.5;fill:var(--sky);stroke:var(--ink);stroke-width:1.4;stroke-dasharray:2 2}
+#net.sel-on .node.ready:not(.sel):not(.nb) .dot{opacity:.5}
+
+/* v1.10c 全部改用实线：没点亮的连线用细一点、淡一点的实线区分 */
+#net .edge,#net .edge.hl:not(.lit),#net.allv .edge.hl:not(.lit),#net .bundle.half,.xedge,#net .edge.lit.wait{stroke-dasharray:none!important}
+#net .edge.hl:not(.lit){opacity:.55!important;stroke-width:1.4}
+.node .ring,.node.ready .ring,.node.lucky .ring,.node.lit.fade .ring{stroke-dasharray:none!important}
+.node.ready.sel .dot,.node.ready.nb .dot,.node.ready.rec .dot,.node.ready.nb.imp2 .dot,.node.ready.nb.imp3 .dot,.node.ready.sel.imp2 .dot,.node.ready.sel.imp3 .dot,.node.ready.rec.imp2 .dot,.node.ready.rec.imp3 .dot{stroke-dasharray:none}
+
+/* 点击和悬停按最近的星判断，图形本身不接收指针 */
+#nodes .node,#nodes .node *{pointer-events:none}
+.node.hov .dot{stroke:#fff;stroke-width:1.2}
+#net .node.hov.hov text:not(.gain):not(.luck):not(.cnl){display:block!important;opacity:1;fill:var(--ink)}
+#net .node.hov.hov.lit text:not(.gain):not(.luck):not(.cnl){fill:#fff3d6}
+
+/* 热力场底图 */
+#heat{pointer-events:none}
+#heat .hm{opacity:0;transition:opacity 1.4s ease;image-rendering:auto}
+#heat .hm.on{opacity:1}
+#net.sel-on #heat{opacity:.55;transition:opacity .4s}
+#net.v-ready #heat{opacity:.3}
+#net.allv .node.lit .halo{opacity:.12}
+#net.allv .node.lit.imp2 .halo{opacity:.18}
+#net.allv .node.lit.imp3 .halo{opacity:.26}
+#net.allv.far .edge.lit:not(.hl){opacity:.3}
+#net.allv.far .edge.weak.lit:not(.hl){opacity:.08}
+
+/* 性能：连线合成 path，去掉大量元素上的过渡动画 */
+#edges path,#halfs path{fill:none}
+.edge{transition:none}
+.hglow{stroke-width:1.6;opacity:.32}
+.node.lit:not(.imp2):not(.imp3):not(.giant):not(.sel) .halo{display:none}
 </style>
 </head>
 <body>
@@ -364,7 +565,7 @@ details.fold[open] summary{margin-bottom:10px}
       <div class="count"><b id="litN">0</b> / <span id="totN">0</span></div>
       <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
     </button>
-    <div class="goal" id="goal" title="今日目标：点亮或擦亮 10 颗星"><svg viewBox="0 0 20 20" aria-hidden="true"><circle class="bg" cx="10" cy="10" r="8"/><circle class="fg" id="goalRing" cx="10" cy="10" r="8" stroke-dasharray="50.27" stroke-dashoffset="50.27"/></svg><span id="goalTxt">今日 0/10</span></div>
+    <div class="goal" id="goal" title="今日目标：点亮或擦亮 10 颗星"><svg viewBox="0 0 20 20" aria-hidden="true"><circle class="bg" cx="10" cy="10" r="8"/><circle class="fg" id="goalRing" cx="10" cy="10" r="8" stroke-dasharray="50.27" stroke-dashoffset="50.27"/></svg><span id="goalTxt">今日 0/10</span><span class="stk" id="stkN" hidden></span></div>
     <div class="dust" id="dustStat" title="星尘：点亮单词获得，答题时可以换提示卡">星尘 0</div>
     <div class="combo" id="comboStat" hidden></div>
     <button class="ghost polish" id="polishBtn" type="button" hidden></button>
@@ -373,9 +574,10 @@ details.fold[open] summary{margin-bottom:10px}
   <main>
     <div class="stage">
       <canvas class="sky" id="sky" aria-hidden="true"></canvas>
-      <svg id="net" role="img" aria-label="单词关系网"><g id="vp"><g id="cglow"></g><g id="edges"></g><g id="bundles"></g><g id="nodes"></g><g id="supers"></g><g id="fx"></g></g></svg>
+      <svg id="net" role="img" aria-label="单词关系网"><g id="vp"><g id="heat"><image class="hm"/><image class="hm"/></g><g id="cglow"></g><g id="edges"></g><g id="halfs"></g><g id="bundles"></g><g id="nodes"></g><g id="xnb"></g><g id="supers"></g><g id="fx"></g></g></svg>
       <nav class="gbar" id="gbar" aria-label="星系"></nav>
       <div class="tip" id="tip" role="status" hidden><p></p><button type="button">知道了</button></div>
+      <div class="mapkey" id="mapkey"></div>
       <div class="zoom"><button id="zin" type="button" aria-label="放大">+</button><button id="zout" type="button" aria-label="缩小">−</button><button id="zfit" type="button" aria-label="全部显示">⤢</button></div>
     </div>
     <aside id="panel" aria-live="polite"></aside>
@@ -408,7 +610,7 @@ const SHIFT = (parseFloat(new URLSearchParams(location.search).get("days")) || 0
 const now = () => Date.now() + SHIFT;
 const HINT_COST = 30, CONS_BONUS = 30;
 const OPEN_STEP = 12;                           // 每点亮 12 个词开放一个新星系
-const AUTO_MS = 1300;
+const AUTO_MS = 3500;                          // 答对后停留 3.5 秒看解答，点任意处可以马上继续
 // 观星者等级：按累计点亮数（所有词库合计）升级；前几级 1–2 天一级，之后约一周一级
 const LV_AT = [0,10,25,45,70,100,140,190,250,320,400,500,620,760,920,1100,1300,1550,1800,2100,2400,2750,3100,3400,3716];
 const LV_TITLE = ["见习观星者","寻星人","引星人","星图师","星河旅人","星系领航员","星海守望者"];
@@ -418,6 +620,8 @@ const titleOf = lv => LV_TITLE[Math.min(LV_TITLE.length - 1, Math.floor((lv - 1)
 const EXAMS = [{lv:"A2", name:"KET", note:"A2 Key"}, {lv:"B1", name:"PET", note:"B1 Preliminary"}, {lv:"B2", name:"FCE", note:"B2 First"}];
 const EXAM_N = {}; Object.values(RAW.words).forEach(d => EXAM_N[d.lv] = (EXAM_N[d.lv] || 0) + 1);
 const QUARTERS = [25, 50, 75, 100];
+const STREAK_MS = [3, 7, 14, 30, 50, 100, 200, 365];  // 连续天数里程碑
+const GUARD_COST = 100, GUARD_MAX = 2;          // 守护星：漏一天自动保住连续天数
 const GOAL = 10, GOAL_BONUS = 50;               // 今日目标：点亮或擦亮 10 颗星                           // 答对后自动进入下一题
 
 // ---------- 图结构 ----------
@@ -439,8 +643,15 @@ function GW_START(){ return GAL.map((_, g) => WORDS.filter(w => gOf(w) === g).so
 // 难度 1–3：A2 为 1、B1 为 2；读音或字形易混的邻居有 2 个以上再加 1
 const DIFF = {}; WORDS.forEach(w => { const n = adj[w].filter(e => e.t === "sound" || e.t === "form").length;
   DIFF[w] = Math.min(3, LV_RANK[D.words[w].lv] + 1 + (n >= 2 ? 1 : 0)); });
-const QN = 3;                                   // 每个词随机抽 3 道题
-const dustFor = (w, stars) => DIFF[w] * 10 + stars * 5;
+// 重要度：强关系（不算“同主题”）越多越重要。重要的词题目更多（3–5 道），点亮后更亮更大
+const IMP = {}; WORDS.forEach(w => IMP[w] = new Set(adj[w].filter(e => e.t !== "topic").map(e => e.w)).size);
+const IMP_AT = (() => { const v = WORDS.map(w => IMP[w]).sort((a, b) => a - b); return [v[Math.floor(v.length * .6)], v[Math.floor(v.length * .88)]]; })();
+const tierOf = w => IMP[w] >= Math.max(IMP_AT[1], 6) ? 3 : IMP[w] >= Math.max(IMP_AT[0], 3) ? 2 : 1;
+const qnOf = w => 2 + tierOf(w);
+// 星等：一等星最亮、最重要、题目最多（5 题）；二等星 4 题；三等星 3 题
+const MAG = {3:"一等星", 2:"二等星", 1:"三等星"};
+const impHtml = w => { const t = tierOf(w); return `<span class="imp" title="和 ${IMP[w]} 个词有关系；越重要越亮，题目也越多">${MAG[t]} ${"★".repeat(t)}${"☆".repeat(3 - t)} · ${qnOf(w)} 题</span>`; };
+const dustFor = (w, stars) => tierOf(w) * 15 + stars * 5;
 const diffHtml = w => `<span class="diff" title="难度 ${DIFF[w]}">${[1,2,3].map(k => `<i class="${k <= DIFF[w] ? "on" : ""}"></i>`).join("")}</span>`;
 
 // ---------- 状态 ----------
@@ -450,10 +661,12 @@ function load(){ try { const v = JSON.parse(localStorage.getItem(KEY)); if (v &&
   S.lit = [...new Set(S.lit.filter(w => RAW.words[w]))]; S.bank = BANK;
   if (S.v !== 2){ S.folded = []; S.v = 2; }        // 旧原型的存档：星座编号变了
   S.lit.forEach(w => { if (!S.stars[w]) S.stars[w] = 3; if (!S.mem[w]) S.mem[w] = {lv:0, due: now() + DAY}; });
-  if (!GAL[S.gal] || !GW[S.gal].length) S.gal = 0;
+  if (S.gal !== "all" && (!GAL[S.gal] || !GW[S.gal].length)) S.gal = 0;
   // 老存档：已经达到的等级和里程碑直接记上，不补弹庆祝
   if (!S.ms) { S.ms = {}; examPassed().forEach(k => S.ms[k] = ""); }
   if (!S.lvl) S.lvl = lvOf(S.lit.length);
+  if (!S.sms) { S.sms = {}; const c = streakNow(); STREAK_MS.forEach(m => { if (m <= c) S.sms[m] = ""; }); }
+  if (S.guard === undefined) S.guard = 0;
   recalc(); S.folded = S.folded.filter(i => CONS[i] && consDone(i)); }
 // 本地日期，作为“今天”的键
 const dayKey = t => { const d = new Date(t); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); };
@@ -462,14 +675,26 @@ function daily(){ if (!S.daily || S.daily.d !== today()) S.daily = {d: today(), 
 // 记一颗星（点亮或擦亮）；完成今日目标时返回 true
 function bumpDaily(){ const g = daily(); g.n++;
   if (!S.streak) S.streak = {d:"", c:0};
-  if (S.streak.d !== g.d){ S.streak.c = S.streak.d === dayKey(now() - DAY) ? S.streak.c + 1 : 1; S.streak.d = g.d; }
+  if (S.streak.d !== g.d){ S.streak.c = S.streak.d === dayKey(now() - DAY) ? S.streak.c + 1 : 1; S.streak.d = g.d;
+    if (S.streak.c > (S.streak.best || 0)) S.streak.best = S.streak.c;
+    if (!S.sms) S.sms = {};
+    if (STREAK_MS.includes(S.streak.c) && !(S.streak.c in S.sms)) { S.sms[S.streak.c] = today(); streakHit = S.streak.c; } }
   if (g.n >= GOAL && !g.done){ g.done = true; S.dust += GOAL_BONUS; return true; } return false; }
+let streakHit = null;                           // 这一次刚达到的连续天数里程碑
+const dayDiff = (a, b) => { const [y1, m1, d1] = a.split("-"), [y2, m2, d2] = b.split("-"); return Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / DAY); };
+// 现在还算数的连续天数：最后一次是今天或昨天才算
+function streakNow(){ const k = S.streak; if (!k || !k.d || !k.c) return 0; const g = dayDiff(k.d, today()); return g <= 1 ? k.c : 0; }
+// 打开时检查：漏了几天，守护星够就自动用掉，连续天数接着算
+function guardCheck(){ const k = S.streak; if (!k || !k.d || !k.c) return null;
+  const miss = dayDiff(k.d, today()) - 1; if (miss < 1) return null;
+  const have = S.guard || 0; if (have < miss) return null;
+  S.guard = have - miss; k.d = dayKey(now() - DAY); save(); return miss; }
 // 幸运星：每天一颗，点亮它星尘翻倍
 const hash = str => { let h = 2166136261; for (const c of str) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
 function lucky(){ if (!S.luck) S.luck = {d:"", w:null, got:false};
   const L = S.luck, t = today();
   if (L.d === t) return L.got || !readySet.has(L.w) ? null : L.w;
-  const st = new Set(STARTS), pool = [...readySet].filter(w => gOf(w) === cur && !st.has(w)); const all = pool.length ? pool : [...readySet].filter(w => !st.has(w));
+  const all = [...readySet].filter(w => tierOf(w) >= 2); if (!all.length) all.push(...readySet);
   if (!all.length) return null;
   all.sort(); S.luck = {d: t, w: all[hash(t) % all.length], got: false}; save(); return S.luck.w; }
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
@@ -484,9 +709,9 @@ let litSet = new Set(), readySet = new Set(), openG = [], litArr = [];
 // 点亮集合变化后重新计算：哪些词能挑战、哪些星系已开放
 function recalc(){
   litArr = S.lit.filter(w => D.words[w]); litSet = new Set(litArr); const ra = new Set();
-  litArr.forEach(w => adj[w].forEach(e => { if (!litSet.has(e.w)) ra.add(e.w); }));
-  openG = GAL.map((_, g) => g === 0 || litArr.length >= g * OPEN_STEP || GW[g].some(w => litSet.has(w) || ra.has(w)));
-  GAL.forEach((_, g) => { const s = STARTS[g]; if (openG[g] && !litSet.has(s)) ra.add(s); });
+  // 自由浏览：所有星系都开放，任何没点亮的词都可以做题点亮
+  WORDS.forEach(w => { if (!litSet.has(w)) ra.add(w); });
+  openG = GAL.map(() => true);
   readySet = ra;
 }
 const isLit = w => litSet.has(w);
@@ -504,16 +729,21 @@ const consLeft = w => consOf[w] === undefined ? null : CONS[consOf[w]].words.fil
 const starHtml = n => `<span class="stars" aria-label="${n} 颗星">${"★".repeat(n)}<i>${"★".repeat(3-n)}</i></span>`;
 function dueText(w){ const m = S.mem[w]; if (!m) return ""; const d = Math.ceil((m.due - now()) / DAY);
   return d <= 0 ? "星光变暗了，答 1 题就能擦亮" : d === 1 ? "明天需要擦亮一次" : `${d} 天后需要擦亮`; }
-// 推荐顺序：当前星系优先 → 能连成星座 → 解锁多 → 难度低
+// 推荐顺序：当前星系优先 → 能连成星座 → 挨着已点亮的词 → 重要的词 → 难度低
+let candKey = "", candVal = null;
 function candidates(prefer){
+  const k = prefer ? null : S.lit.length + "|" + readySet.size + "|" + cur + "|" + S.lit[S.lit.length - 1];
+  if (k && k === candKey) return candVal.slice();
   const pf = prefer || new Set();
-  return [...readySet].map(w => ({w, g: gainOf(w).length, cl: consLeft(w)}))
+  const r = [...readySet].map(w => ({w, g: IMP[w], cl: consLeft(w), nl: adj[w].some(e => litSet.has(e.w))}))
     .sort((a, b) => ((gOf(b.w) === cur) - (gOf(a.w) === cur)) || (pf.has(b.w) - pf.has(a.w)) || ((b.cl === 0) - (a.cl === 0))
-      || (b.g - a.g) || (DIFF[a.w] - DIFF[b.w]) || (a.w < b.w ? -1 : 1));
+      || (b.nl - a.nl) || (b.g - a.g) || (DIFF[a.w] - DIFF[b.w]) || (a.w < b.w ? -1 : 1));
+  if (k) { candKey = k; candVal = r; return r.slice(); } return r;
 }
 
 // ---------- 位置 ----------
 const P = {}; WORDS.forEach(w => P[w] = {x: D.words[w].p[0], y: D.words[w].p[1]});
+// 坐标是整张星空里的位置（不分星系）
 const BBg = GAL.map((_, g) => { const xs = GW[g].map(w => P[w].x), ys = GW[g].map(w => P[w].y);
   const x0 = Math.min(...xs), y0 = Math.min(...ys);
   return {x: x0 - 70, y: y0 - 90, w: Math.max(...xs) - x0 + 140, h: Math.max(...ys) - y0 + 150}; });
@@ -521,6 +751,8 @@ const CP = CONS.map(c => ({ x: c.words.reduce((s,w) => s + P[w].x, 0) / c.words.
   top: Math.min(...c.words.map(w => P[w].y)) }));
 // 显示位置：被收起的词显示在它的星座大星上。连线数据本身从不改变。
 const rep = w => (consOf[w] !== undefined && isFolded(consOf[w])) ? "c" + consOf[w] : w;
+const BBall = (() => { const xs = WORDS.map(w => P[w].x), ys = WORDS.map(w => P[w].y); const x0 = Math.min(...xs), y0 = Math.min(...ys);
+  return {x: x0 - 120, y: y0 - 160, w: Math.max(...xs) - x0 + 240, h: Math.max(...ys) - y0 + 260}; })();
 const posOf = id => /^c\d+$/.test(id) ? CP[+id.slice(1)] : P[id];
 
 // ---------- 绘制（一次只画一个星系） ----------
@@ -528,30 +760,31 @@ const NS = "http://www.w3.org/2000/svg";
 const svg = document.getElementById("net"), gE = document.getElementById("edges"), gN = document.getElementById("nodes");
 const gB = document.getElementById("bundles"), gG = document.getElementById("cglow"), gS = document.getElementById("supers");
 const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
-let cur = 0, BB = BBg[0], edgeEls = [], nodeEls = {}, glowEls = {}, superEls = {};
-function build(g){
-  cur = g; S.gal = g; BB = BBg[g];
-  [gE, gN, gB, gG, gS].forEach(x => x.textContent = "");
-  edgeEls = GE[g].map(i => { const [a,b,t] = D.edges[i];
-    const l = el("line", {x1:P[a].x,y1:P[a].y,x2:P[b].x,y2:P[b].y,class:"edge" + (t === "topic" ? " weak" : ""),stroke:`var(--t-${t})`}); gE.appendChild(l); return {i, l}; });
-  nodeEls = {};
-  GW[g].forEach(w => {
-    const n = el("g", {class:"node", transform:`translate(${P[w].x},${P[w].y})`, tabindex:"0", role:"button", "aria-label":w});
-    n.appendChild(el("circle",{class:"halo",r:22}));
-    n.appendChild(el("circle",{class:"ring",r:10}));
-    n.appendChild(el("circle",{class:"dot",r:6}));
-    const t = el("text",{y:24,"text-anchor":"middle"}); t.textContent = w; n.appendChild(t);
-    n.appendChild(el("text",{y:-15,"text-anchor":"middle",class:"gain"}));
-    const lk = el("text",{x:12,y:-7,class:"luck"}); lk.textContent = "✦"; n.appendChild(lk);
-    n.dataset.w = w;
-    n.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(w); } });
-    gN.appendChild(n); nodeEls[w] = n; });
-  glowEls = {}; superEls = {};
-  GC[g].forEach(i => { const c = CONS[i], set = new Set(c.words);
+let cur = 0, BB = BBg[0], edgeEls = [], edgeKey = "", nodeEls = {}, glowEls = {}, superEls = {};
+// 全图模式：一次画出所有星系和所有连线（包括跨星系的）
+let ALLV = false;
+const ALL_E = D.edges.map((_, i) => i), ALL_C = GC.flat();
+const VW = () => ALLV ? WORDS : GW[cur], VE = () => ALLV ? ALL_E : GE[cur], VC = () => ALLV ? ALL_C : GC[cur];
+const inView = w => ALLV || gOf(w) === cur;
+// 星星的各个部件按需创建：大部分星平时只有一个小圆点，DOM 少了，拖动和缩放才流畅
+const PART = {
+  halo: n => el("circle", {class:"halo", r:22}),
+  ring: n => el("circle", {class:"ring", r:10}),
+  chg:  n => el("circle", {class:"chg", r:11, pathLength:1, transform:"rotate(-90)"}),
+  text: n => { const t = el("text", {y:24, "text-anchor":"middle", class:"lbl"}); t.textContent = n.dataset.w; return t; },
+  cnl:  n => { const t = el("text", {y:38, "text-anchor":"middle", class:"cnl"}); t.textContent = cn1(n.dataset.w); return t; },
+  gain: n => el("text", {y:-15, "text-anchor":"middle", class:"gain"}),
+  luck: n => { const t = el("text", {x:12, y:-7, class:"luck"}); t.textContent = "✦"; return t; } };
+const BELOW = {halo:1, ring:1};
+function part(n, k){ const sel = k === "text" ? ".lbl" : "." + k; let e = n.querySelector(sel); if (e) return e;
+  e = PART[k](n); if (BELOW[k]) n.insertBefore(e, n.querySelector(".dot")); else n.appendChild(e); return e; }
+// 星座的光和收起后的大星也按需创建
+function mkGlow(i){ const c = CONS[i], set = new Set(c.words);
     const gl = el("g", {});
-    GE[g].forEach(k => { const [a,b] = D.edges[k]; if (set.has(a) && set.has(b)) gl.appendChild(el("line", {x1:P[a].x,y1:P[a].y,x2:P[b].x,y2:P[b].y,class:"cglow"})); });
+    GE[c.g].forEach(k => { const [a,b] = D.edges[k]; if (set.has(a) && set.has(b)) gl.appendChild(el("line", {x1:P[a].x,y1:P[a].y,x2:P[b].x,y2:P[b].y,class:"cglow"})); });
     const t = el("text", {x:CP[i].x, y:CP[i].top - 18, "text-anchor":"middle", class:"clabel"}); t.textContent = c.name; gl.appendChild(t);
-    gG.appendChild(gl); glowEls[i] = gl;
+    gG.appendChild(gl); return glowEls[i] = gl; }
+function mkSuper(i){ const c = CONS[i];
     const s = el("g", {class:"super", transform:`translate(${CP[i].x},${CP[i].y})`, tabindex:"0", role:"button", "aria-label":c.name});
     s.appendChild(el("circle", {class:"halo", r:38}));
     const rays = el("g", {class:"rays"});
@@ -563,34 +796,75 @@ function build(g){
     const tt = el("text", {y:48, "text-anchor":"middle"}); tt.textContent = c.name; s.appendChild(tt);
     s.dataset.c = i;
     s.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCons(i); } });
-    gS.appendChild(s); superEls[i] = s; });
+    gS.appendChild(s); return superEls[i] = s; }
+function build(g){
+  ALLV = g === "all"; if (!ALLV) cur = g; S.gal = g; BB = ALLV ? BBall : BBg[g];
+  svg.classList.toggle("allv", ALLV);
+  [gE, gN, gB, gG, gS].forEach(x => x.textContent = "");
+  edgeEls = []; edgeKey = "";
+  nodeEls = {};
+  VW().forEach(w => {
+    const n = el("g", {class:"node", transform:`translate(${P[w].x},${P[w].y})`, tabindex:"0", role:"button", "aria-label":w});
+    n.appendChild(el("circle",{class:"dot",r:6}));
+    n.dataset.w = w; n._c = "node";
+    n.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(w); } });
+    n.addEventListener("focus", () => { part(n, "text"); part(n, "ring"); });
+    gN.appendChild(n); nodeEls[w] = n; });
+  glowEls = {}; superEls = {};
   fitActive();
 }
 // 收起后的连线：两端换成显示位置，同一对位置之间的多条原始连线合成一束
 function bundles(){
   const m = new Map();
-  GE[cur].forEach(i => { const [a,b] = D.edges[i]; const ra = rep(a), rb = rep(b);
+  VE().forEach(i => { const [a,b] = D.edges[i]; const ra = rep(a), rb = rep(b);
     if ((ra === a && rb === b) || ra === rb) return;
     const key = [ra, rb].sort().join("|");
     if (!m.has(key)) m.set(key, {ra, rb, list:[]}); m.get(key).list.push(i); });
   return [...m.values()];
 }
 
+// 别的星系里的相关词：地图一次只画一个星系，选中词时把它们临时摆在选中词周围，连线用虚线
+function xNeighbors(w){ if (!w || ALLV || gOf(w) !== cur) return [];
+  const seen = new Map(); adj[w].forEach(e => { if (gOf(e.w) !== cur && !seen.has(e.w)) seen.set(e.w, e.t); });
+  const list = [...seen].map(([x, t]) => ({w: x, t})), n = list.length, R = n > 10 ? 170 : n > 5 ? 140 : 115;
+  return list.map((o, k) => { const a = -Math.PI / 2 + (k + .5) * 2 * Math.PI / Math.max(n, 1);
+    return {...o, x: P[w].x + Math.cos(a) * R, y: P[w].y + Math.sin(a) * R}; }); }
+function paintX(){ const gX = document.getElementById("xnb"); gX.textContent = "";
+  xNeighbors(selected).forEach(o => { const p0 = P[selected];
+    gX.appendChild(el("line", {x1:p0.x, y1:p0.y, x2:o.x, y2:o.y, class:"xedge", stroke:`var(--t-${o.t})`}));
+    const st = status(o.w), n = el("g", {class:`node xnode ${st}`, transform:`translate(${o.x},${o.y})`, tabindex:"0", role:"button", "aria-label":`${o.w}（${GAL[gOf(o.w)].name}）`});
+    n.appendChild(el("circle", {class:"halo", r:16})); n.appendChild(el("circle", {class:"ring", r:9})); n.appendChild(el("circle", {class:"dot", r:5}));
+    const t = el("text", {y:22, "text-anchor":"middle"}); t.textContent = o.w; n.appendChild(t);
+    const g = el("text", {y:35, "text-anchor":"middle", class:"xgal"}); g.textContent = GAL[gOf(o.w)].name; n.appendChild(g);
+    n.dataset.w = o.w; n.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(o.w); } });
+    gX.appendChild(n); }); }
+
 let selected = null, selCons = null;
 function paint(){
-  const rec = new Set(candidates().filter(c => gOf(c.w) === cur).slice(0, 3).map(c => c.w)), luck = lucky();
-  GW[cur].forEach(w => { const n = nodeEls[w], s = status(w);
-    n.classList.toggle("lit", s === "lit"); n.classList.toggle("ready", s === "ready"); n.classList.toggle("locked", s === "locked");
-    n.classList.toggle("sel", w === selected); n.classList.toggle("rec", rec.has(w)); n.classList.toggle("lucky", w === luck);
-    [1,2,3].forEach(k => n.classList.toggle("s"+k, s === "lit" && (S.stars[w]||3) === k));
-    n.classList.toggle("fade", isFading(w)); n.classList.toggle("giant", isGiant(w)); n.classList.toggle("gone", rep(w) !== w);
-    n.querySelector(".gain").textContent = s === "ready" ? (consLeft(w) === 0 ? "连成星座" : gainOf(w).length ? "解锁" + gainOf(w).length : "") : ""; });
-  const near = selected ? new Set([...nbSet(selected)].map(rep)) : null;
+  const rec = new Set(candidates().filter(c => inView(c.w)).slice(0, 3).map(c => c.w)), luck = lucky();
+  const nbS = selected ? nbSet(selected) : null;
+  // 相关词太多时只给最重要的 14 个标名字（已点亮的优先），其余悬停才显示
+  const nbL = nbS ? new Set([...nbS].filter(inView).sort((a, b) => (isLit(b) - isLit(a)) || (IMP[b] - IMP[a])).slice(0, 14)) : null;
+  const near = selected ? new Set([...nbSet(selected)].map(rep)) : null, vLit = (S.view || "all") === "lit";
+  VW().forEach(w => { const n = nodeEls[w], s = status(w), T = tierOf(w), lit = s === "lit";
+    const nb = !!nbS && w !== selected && nbS.has(w), fade = isFading(w), giant = isGiant(w), isSel = w === selected, isRec = rec.has(w), isLuck = w === luck;
+    let c = "node " + s + (T > 1 ? " imp" + T : "");
+    if (isSel) c += " sel"; if (nb) c += " nb"; if (nbL && nbL.has(w)) c += " nbl"; if (isRec) c += " rec"; if (isLuck) c += " lucky";
+    if (lit) c += " s" + (S.stars[w] || 3); if (fade) c += " fade"; if (giant) c += " giant"; if (rep(w) !== w) c += " gone";
+    if (!lit && adj[w].some(e => e.t !== "topic" && isLit(e.w))) c += " near";
+    if ((!!selected && !isSel && !near.has(w)) || (selCons !== null && consOf[w] !== selCons)) c += " dim";
+    for (const k of ["hov", "ping", "ignite", "charging"]) if (n.classList.contains(k)) c += " " + k;
+    if (c !== n._c) { n.setAttribute("class", c); n._c = c; }
+    if (lit || n.classList.contains("ping")) part(n, "halo");
+    if (isSel || isRec || isLuck || fade || giant) part(n, "ring");
+    if (isSel || (nbL && nbL.has(w)) || !ALLV || (vLit && lit)) part(n, "text");
+    if (vLit && lit) part(n, "cnl");
+    if (isLuck) part(n, "luck");
+    if (isSel || isRec) part(n, "gain").textContent = s === "ready" && consLeft(w) === 0 ? "连成星座" : "";
+    else { const g = n.querySelector(".gain"); if (g) g.textContent = ""; } });
   const selId = selected || (selCons !== null ? "c" + selCons : null);
-  edgeEls.forEach(({i, l}) => { const [a,b] = D.edges[i]; const la = isLit(a), lb = isLit(b);
-    l.classList.toggle("lit", la && lb); l.classList.toggle("half", la !== lb);
-    l.classList.toggle("hl", !!selected && (a === selected || b === selected));
-    l.classList.toggle("off", rep(a) !== a || rep(b) !== b); });
+  paintEdges();
+  svg.classList.toggle("sel-on", !!selected);
   gB.textContent = "";
   bundles().forEach(bd => { const pa = posOf(bd.ra), pb = posOf(bd.rb);
     const ts = new Set(bd.list.map(i => D.edges[i][2]));
@@ -599,12 +873,12 @@ function paint(){
       stroke: ts.size === 1 ? `var(--t-${[...ts][0]})` : "#d9dfec"}));
     if (bd.list.length > 1){ const g = el("g", {class:"bcount", transform:`translate(${(pa.x+pb.x)/2},${(pa.y+pb.y)/2})`});
       g.appendChild(el("circle", {r:8})); const t = el("text", {}); t.textContent = bd.list.length; g.appendChild(t); gB.appendChild(g); } });
-  GC[cur].forEach(i => { const c = CONS[i], done = consDone(i), f = isFolded(i);
-    glowEls[i].style.display = done && !f ? "" : "none";
-    const g = superEls[i]; g.style.display = f ? "" : "none";
+  VC().forEach(i => { const c = CONS[i], done = consDone(i), f = isFolded(i);
+    if (done && !f) (glowEls[i] || mkGlow(i)).style.display = ""; else if (glowEls[i]) glowEls[i].style.display = "none";
+    if (!f) { if (superEls[i]) superEls[i].style.display = "none"; return; }
+    const g = superEls[i] || mkSuper(i); g.style.display = "";
     g.classList.toggle("fade", c.words.some(isFading)); g.classList.toggle("sel", selCons === i);
     g.classList.toggle("dim", !!selected && !near.has("c" + i)); });
-  GW[cur].forEach(w => nodeEls[w].classList.toggle("dim", (!!selected && w !== selected && !near.has(w)) || (selCons !== null && consOf[w] !== selCons)));
   // 顶栏：等级 + 到下一级的进度（满级后显示当前词库总进度）
   const nL = S.lit.length, lv = lvOf(nL), top = lv >= LV_AT.length;
   document.getElementById("lvN").textContent = "Lv." + lv;
@@ -617,26 +891,59 @@ function paint(){
   const pb = document.getElementById("polishBtn"), nf = fadingWords().length; pb.hidden = !nf; pb.textContent = `待擦亮 ${nf}`;
   const dg = daily(), gp = Math.min(1, dg.n / GOAL);
   document.getElementById("goalRing").setAttribute("stroke-dashoffset", (50.27 * (1 - gp)).toFixed(2));
-  document.getElementById("goalTxt").textContent = dg.done ? `今日完成${S.streak && S.streak.c > 1 ? ` · 连续 ${S.streak.c} 天` : ""}` : `今日 ${dg.n}/${GOAL}`;
+  document.getElementById("goalTxt").textContent = dg.done ? "今日完成" : `今日 ${dg.n}/${GOAL}`;
+  const sn = streakNow(), sk = document.getElementById("stkN"); sk.hidden = sn < 2;
+  sk.innerHTML = `${sn}天${S.guard ? `<i> ${"◆".repeat(S.guard)}</i>` : ""}`;
+  sk.title = `连续 ${sn} 天${S.guard ? ` · 守护星 ${S.guard} 颗` : ""}（每天点亮或擦亮 1 颗就算）`;
   document.getElementById("goal").classList.toggle("done", dg.done);
   const mb = document.getElementById("muteBtn"); mb.textContent = S.mute ? "静音" : "音效"; mb.setAttribute("aria-pressed", String(!S.mute));
-  renderBar();
+  renderBar(); renderKey(); paintX(); heatSoon();
 }
+// 地图图例：已学会 / 可挑战 / 未解锁，点一下只看这一类；单词本按星座列出全部词
+const VIEW_NAME = {lit:"已学会", ready:"未学会", locked:"未解锁"};
+function renderKey(){ const ws = VW(), c = {lit:0, ready:0, locked:0}; ws.forEach(w => c[status(w)]++);
+  const v = S.view || "all"; svg.classList.toggle("v-lit", v === "lit"); svg.classList.toggle("v-ready", v === "ready");
+  const k = document.getElementById("mapkey");
+  k.innerHTML = ["lit","ready"].map(t => `<button type="button" data-v="${t}" class="${v === t ? "on" : ""}" aria-label="${VIEW_NAME[t]} ${c[t]}" title="${t === "locked" ? "还没解锁：先点亮旁边的星" : v === t ? "显示全部" : "只看" + VIEW_NAME[t]}"><i class="k-${t}"></i><span class="kt">${VIEW_NAME[t]}</span> <b>${c[t]}</b></button>`).join("")
+    + `<button type="button" class="book" id="bookBtn">单词本</button>`;
+  k.querySelectorAll("[data-v]").forEach(b => b.onclick = () => { const t = b.dataset.v; if (t === "locked") { openBook("locked"); return; }
+    S.view = (S.view || "all") === t ? "all" : t; save(); renderKey(); if (S.view === "lit") tip("view"); });
+  document.getElementById("bookBtn").onclick = () => openBook(); }
+function openBook(tab){ if (busy()) { toast("先完成这一轮答题"); return; }
+  tab = tab || "all";
+  const groups = ALL_C.map(i => ({name: CONS[i].name, ws: CONS[i].words}));
+  const inC = new Set(groups.flatMap(g => g.ws)), rest = WORDS.filter(w => !inC.has(w));
+  if (rest.length) groups.push({name: "其他", ws: rest});
+  const order = {lit:0, ready:1, locked:2};
+  const c = {lit:0, ready:0, locked:0}; GW[cur].forEach(w => c[status(w)]++);
+  const list = groups.map(g => { const ws = g.ws.filter(w => tab === "all" || status(w) === tab).sort((a, b) => order[status(a)] - order[status(b)] || (a < b ? -1 : 1));
+    if (!ws.length) return ""; const n = g.ws.filter(isLit).length;
+    return `<div class="bgrp"><h3>${esc(g.name)}<span>${n} / ${g.ws.length}</span></h3><div class="bw">${ws.map(w => { const st = status(w);
+      return `<button type="button" class="${st}" data-w="${w}"><b>${esc(w)}</b><small>${esc(cn1(w))}${isGiant(w) ? " · 恒星" : ""}</small></button>`; }).join("")}</div></div>`; }).join("");
+  modal.innerHTML = `<div class="card book-card"><h2 style="margin:0">单词本</h2>
+    <div class="tabs">${[["all", `全部 ${GW[cur].length}`], ["lit", `已学会 ${c.lit}`], ["ready", `未学会 ${c.ready}`]].map(([k, t]) => `<button type="button" data-tab="${k}" class="${k === tab ? "on" : ""}">${t}</button>`).join("")}</div>
+    <div class="book-list">${list || `<p class="note">这里还没有词。</p>`}</div>
+    <p class="note" style="margin:10px 0 0">按星座分组；金色是已学会。点一个词在地图上找到它。</p>
+    <div class="row"><button class="cta alt" id="no" type="button">关闭</button></div></div>`;
+  modal.hidden = false;
+  document.getElementById("no").onclick = () => modal.hidden = true;
+  modal.querySelectorAll("[data-tab]").forEach(b => b.onclick = () => openBook(b.dataset.tab));
+  modal.querySelectorAll("[data-w]").forEach(b => b.onclick = () => { const w = b.dataset.w; modal.hidden = true;
+    if (S.view && S.view !== "all" && status(w) !== S.view) S.view = "all";
+    select(w); }); }
 
 // 星系切换条
 const gbar = document.getElementById("gbar");
 function renderBar(){
-  // 只列出已开放的星系，再加一个“下一个”，其余先不显示
-  const nextG = GAL.findIndex((_, g) => !openG[g]);
-  gbar.innerHTML = GAL.map((G, g) => { const n = GW[g].filter(isLit).length, open = openG[g], has = GW[g].some(w => readySet.has(w));
-    if (!open && g !== nextG) return "";
-    if (!open) return `<button type="button" class="gal next" disabled>${esc(G.name)}<span>再亮 ${g * OPEN_STEP - litArr.length} 颗</span></button>`;
-    return `<button type="button" class="gal${g === cur ? " cur" : ""}${has && g !== cur ? " has" : ""}${n === GW[g].length ? " full" : ""}" data-g="${g}">${esc(G.name)}<span>${n === GW[g].length ? "★" : `${n}/${GW[g].length}`}</span></button>`; }).join("");
-  gbar.querySelectorAll("[data-g]").forEach(b => b.onclick = () => switchGal(+b.dataset.g));
+  // 列出全部星系；没开放的显示还要点亮几颗
+  gbar.innerHTML = `<button type="button" class="gal${ALLV ? " cur" : ""}" data-g="all">全图<span>${litArr.length}/${WORDS.length}</span></button>` + GAL.map((G, g) => { const n = GW[g].filter(isLit).length, open = openG[g], has = GW[g].some(w => readySet.has(w));
+    if (!open) return `<button type="button" class="gal next${g === cur ? " cur" : ""}" disabled title="再点亮 ${g * OPEN_STEP - litArr.length} 颗开放，或者点亮和它有连线的词">${esc(G.name)}<span>${GW[g].length} 词 · 再亮 ${g * OPEN_STEP - litArr.length}</span></button>`;
+    return `<button type="button" class="gal${g === cur && !ALLV ? " cur" : ""}${has && g !== cur ? " has" : ""}${n === GW[g].length ? " full" : ""}" data-g="${g}">${esc(G.name)}<span>${n === GW[g].length ? "★" : `${n}/${GW[g].length}`}</span></button>`; }).join("");
+  gbar.querySelectorAll("[data-g]").forEach(b => b.onclick = () => switchGal(b.dataset.g === "all" ? "all" : +b.dataset.g));
   const c = gbar.querySelector(".cur"); if (c && !gbar.dataset.scrolled){ c.scrollIntoView({inline:"center", block:"nearest"}); gbar.dataset.scrolled = 1; }
 }
 function switchGal(g){ if (busy()) { toast("先完成这一轮答题"); return; }
-  if (g === cur) { fit(true); return; }
+  if (g === cur && !ALLV || g === "all" && ALLV) { fit(true); return; }
   // 切换星系：先淡出拉远，再在新星系里从远处推近
   const vp = document.getElementById("vp"); vp.classList.add("swap");
   glide({x: vb.x - vb.w * .3, y: vb.y - vb.h * .3, w: vb.w * 1.6, h: vb.h * 1.6});
@@ -647,17 +954,20 @@ function switchGal(g){ if (busy()) { toast("先完成这一轮答题"); return; 
 
 // ---------- 平移缩放 ----------
 let vb = {...BB};
+let svgR = null; new ResizeObserver(() => { svgR = null; }).observe(svg);
 function setVB(){ svg.setAttribute("viewBox", `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
-  const r = svg.getBoundingClientRect(); const scale = Math.max(vb.w / (r.width || 1), vb.h / (r.height || 1));
-  svg.classList.toggle("far", scale > .8); }      // 缩得很小时，未解锁的词不显示名字
+  const r = svgR || (svgR = svg.getBoundingClientRect()); const scale = Math.max(vb.w / (r.width || 1), vb.h / (r.height || 1));
+  const far = scale > .8; if (far !== svg.classList.contains("far")) { svg.classList.toggle("far", far); paintEdges(); } }      // 缩得很小时，未解锁的词不显示名字
 const go = (to, anim) => { if (anim) glide(to); else { glideT++; vb = to; setVB(); } };
 function fit(anim){ go({...BB}, anim); }
 // 只看已点亮和能挑战的区域（开局时整张星系太大，起点会显得很小）
-function fitActive(anim){ const ws = GW[cur].filter(w => status(w) !== "locked" && rep(w) === w);
-  if (!ws.length || ws.length > GW[cur].length * .6) return fit(anim);
+function fitActive(anim){ if (ALLV){ const ls = litArr.filter(w => rep(w) === w), rc = candidates().slice(0, 6).map(c => c.w);
+    return fitWords(ls.length > 300 ? rc : ls.concat(rc), small() ? 520 : 900, anim); }
+  const ws = GW[cur].filter(w => status(w) === "lit" && rep(w) === w);
+  if (ws.length < 8 || ws.length > GW[cur].length * .6) return fit(anim);
   fitWords(ws, small() ? 460 : 760, anim); }
-function fitWords(ws, mn, anim){
-  const xs = ws.map(w => P[w].x), ys = ws.map(w => P[w].y);
+function fitWords(ws, mn, anim, extra){
+  const xs = ws.map(w => P[w].x).concat((extra || []).map(o => o.x)), ys = ws.map(w => P[w].y).concat((extra || []).map(o => o.y));
   const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
   const r = svg.getBoundingClientRect(), asp = (r.height || 1) / (r.width || 1);
   let w = Math.max(Math.max(...xs) - Math.min(...xs) + 220, mn), h = Math.max(Math.max(...ys) - Math.min(...ys) + 220, mn * asp);
@@ -674,10 +984,23 @@ document.getElementById("zfit").onclick = () => fit(true);
 svg.addEventListener("wheel", e => { e.preventDefault(); zoom(e.deltaY > 0 ? 1.12 : .89, e.clientX, e.clientY); }, {passive:false});
 const ptrs = new Map(); let moved = 0, downNode = null, downCons = null, pinch0 = null;
 svg.addEventListener("pointerdown", e => { ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY}); moved = 0;
-  const n = e.target.closest(".node"); downNode = n ? n.dataset.w : null;
+  downNode = nodeAt(e.clientX, e.clientY);
   const c = e.target.closest(".super"); downCons = c ? +c.dataset.c : null;
   svg.setPointerCapture(e.pointerId); svg.classList.add("dragging");
   if (ptrs.size === 2){ const [a,b] = [...ptrs.values()]; pinch0 = Math.hypot(a.x-b.x, a.y-b.y); } });
+// 点中哪个词：按离手指/鼠标最近的星来算（只算看得见的），不靠图形层叠，避免点到旁边大星的光晕
+function nodeAt(cx, cy){
+  const m = document.getElementById("vp").getScreenCTM(); if (!m) return null;
+  const R = (matchMedia("(pointer: coarse)").matches ? 26 : 18) / m.a, v = S.view || "all";
+  const pt = svg.createSVGPoint(); pt.x = cx; pt.y = cy; const q = pt.matrixTransform(m.inverse());
+  let best = null, bd = R;
+  for (const w in nodeEls){ const n = nodeEls[w]; if (rep(w) !== w || (v !== "all" && status(w) !== v)) continue;
+    const d = Math.hypot(P[w].x - q.x, P[w].y - q.y); if (d < bd) { bd = d; best = w; } }
+  return best; }
+let hoverW = null;
+svg.addEventListener("pointermove", e => { if (e.pointerType === "mouse" && !ptrs.size) { const w = nodeAt(e.clientX, e.clientY);
+    if (w !== hoverW) { if (hoverW && nodeEls[hoverW]) nodeEls[hoverW].classList.remove("hov"); hoverW = w; if (w) { part(nodeEls[w], "text"); nodeEls[w].classList.add("hov"); } svg.style.cursor = w ? "pointer" : ""; } } });
+svg.addEventListener("pointerleave", () => { if (hoverW && nodeEls[hoverW]) nodeEls[hoverW].classList.remove("hov"); hoverW = null; });
 svg.addEventListener("pointermove", e => { if (!ptrs.has(e.pointerId)) return; const prev = ptrs.get(e.pointerId); const p = {x:e.clientX, y:e.clientY};
   if (ptrs.size === 1){ glideT++; const r = svg.getBoundingClientRect(); const scale = Math.max(vb.w / r.width, vb.h / r.height);
     vb.x -= (p.x-prev.x)*scale; vb.y -= (p.y-prev.y)*scale; setVB(); moved += Math.abs(p.x-prev.x)+Math.abs(p.y-prev.y); }
@@ -686,6 +1009,38 @@ svg.addEventListener("pointermove", e => { if (!ptrs.has(e.pointerId)) return; c
 function up(e){ if (!ptrs.has(e.pointerId)) return; ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch0 = null;
   if (!ptrs.size){ svg.classList.remove("dragging"); if (moved < 6) { downCons !== null ? selectCons(downCons) : downNode ? select(downNode) : select(null); } } }
 svg.addEventListener("pointerup", up); svg.addEventListener("pointercancel", up);
+
+
+// ---------- 热力场底图 ----------
+// 每颗点亮的星是一个热源：星等越高、星级越高越热，变暗待擦亮的只剩余温，恒星更热。
+// 所有热源叠加成一个场，按温度上色画在最底层：零散点亮时是一个个暖点，连成片后会融成一块块“暖大陆”。
+const HEAT_CELL = 6, HEAT_STOP = [[0,[40,30,90,0]],[.12,[52,38,120,.22]],[.3,[120,52,140,.32]],[.5,[214,96,84,.4]],[.72,[255,170,80,.46]],[1,[255,212,150,.52]]];
+const heatImgs = [...document.querySelectorAll("#heat .hm")]; let heatKey = "", heatCur = 0, heatT = 0;
+function heatColor(h){ for (let k = 1; k < HEAT_STOP.length; k++){ const [t1, c1] = HEAT_STOP[k], [t0, c0] = HEAT_STOP[k-1];
+    if (h <= t1){ const f = (h - t0) / (t1 - t0); return c0.map((v, i) => v + (c1[i] - v) * f); } } return HEAT_STOP[HEAT_STOP.length-1][1]; }
+const HEAT_LUT = Array.from({length:256}, (_, i) => heatColor(i / 255));
+function heatSoon(){ clearTimeout(heatT); heatT = setTimeout(drawHeat, 30); }
+function drawHeat(){
+  if (igniting) { heatT = setTimeout(drawHeat, 400); return; }     // 点亮动画放完再升温
+  const src = VW().filter(isLit);
+  const key = BANK + "|" + src.map(w => w + (S.stars[w]||3) + (isFading(w) ? "f" : "") + (isGiant(w) ? "g" : "")).join(",");
+  if (key === heatKey) return; heatKey = key;
+  const B = BBall, W = Math.ceil(B.w / HEAT_CELL), H = Math.ceil(B.h / HEAT_CELL), f = new Float32Array(W * H);
+  src.forEach(w => { const T = tierOf(w), sg = (24 + T * 9) / HEAT_CELL, R = Math.ceil(sg * 3), inv = 1 / (2 * sg * sg);
+    const a = (.55 + T * .2) * [0, .6, .8, 1][S.stars[w] || 3] * (isFading(w) ? .35 : 1) * (isGiant(w) ? 1.35 : 1);
+    const cx = (P[w].x - B.x) / HEAT_CELL, cy = (P[w].y - B.y) / HEAT_CELL;
+    for (let y = Math.max(0, Math.floor(cy - R)); y <= Math.min(H - 1, Math.ceil(cy + R)); y++){ const dy = y - cy, o = y * W;
+      for (let x = Math.max(0, Math.floor(cx - R)); x <= Math.min(W - 1, Math.ceil(cx + R)); x++){ const dx = x - cx; f[o + x] += a * Math.exp(-(dx*dx + dy*dy) * inv); } } });
+  const c = document.createElement("canvas"); c.width = W; c.height = H; const ctx = c.getContext("2d"), im = ctx.createImageData(W, H), d = im.data;
+  for (let i = 0; i < f.length; i++){ if (f[i] < .02) continue; const h = 1 - Math.exp(-f[i] * .75);
+    // 淡淡的等温线：温度每升一档有一条细亮线，像地形图
+    const band = h * 7 % 1, line = h > .1 && band < .07 ? .07 : 0;
+    const col = HEAT_LUT[Math.min(255, Math.round(h * 255))];
+    d[i*4] = col[0]; d[i*4+1] = col[1]; d[i*4+2] = col[2]; d[i*4+3] = Math.round(Math.min(1, col[3] + line) * 255); }
+  ctx.putImageData(im, 0, 0);
+  const next = heatImgs[1 - heatCur], prev = heatImgs[heatCur];
+  Object.entries({href:c.toDataURL(), x:B.x, y:B.y, width:W * HEAT_CELL, height:H * HEAT_CELL, preserveAspectRatio:"none"}).forEach(([k, v]) => next.setAttribute(k, v));
+  next.classList.add("on"); prev.classList.remove("on"); heatCur = 1 - heatCur; }
 
 // ---------- 面板 ----------
 const panel = document.getElementById("panel");
@@ -699,10 +1054,12 @@ function setFocus(on){ if (mainEl.classList.contains("focus") === on) return; ma
 
 function select(w){ if (busy()) { if (w) toast("先完成这一轮答题"); return; }
   const back = !w && (quiz || selected || selCons !== null);
-  if (w && gOf(w) !== cur) build(gOf(w));
+  if (w && !inView(w)) build(gOf(w));
   if (w && rep(w) !== w) { S.folded = S.folded.filter(i => i !== consOf[w]); }   // 选中收起的词：先展开它的星座
   quiz = null; selected = w; selCons = null; save(); paint(); renderPanel(); panel.scrollTop = 0;
-  if (w && small()) focusOn(P[w]); else if (w) ensureVisible(P[w]); else if (back) fitActive(true); }   // 回到首页时拉远
+  if (w) { const ns = [w, ...[...nbSet(w)].filter(x => inView(x) && rep(x) === x)]; const mx = small() ? 520 : 900, near = ns.filter(x => Math.hypot(P[x].x - P[w].x, P[x].y - P[w].y) < mx / 2);
+    fitWords(near, small() ? 360 : 560, true, xNeighbors(w)); }
+  else if (back) fitActive(true); }   // 回到首页时拉远
 function selectCons(i){ if (busy()) { toast("先完成这一轮答题"); return; }
   quiz = null; selected = null; selCons = i; paint(); renderPanel(); panel.scrollTop = 0;
   if (small()) focusOn(CP[i]); }
@@ -730,11 +1087,11 @@ function bind(root){
   root.querySelectorAll("[data-start]").forEach(b => b.onclick = () => startQuiz(b.dataset.start, "light"));
   root.querySelectorAll("[data-review]").forEach(b => b.onclick = () => startQuiz(b.dataset.review, "review"));
 }
-function metaHtml(w){ const g = gainOf(w).length, cl = consLeft(w);
+function metaHtml(w){ const cl = consLeft(w);
   const lk = w === lucky() ? `<span class="go">✦ 幸运星 星尘翻倍</span>` : "";
-  return `<div class="meta">${lk}${diffHtml(w)}<span>${g ? `解锁 <b>${g}</b>` : "不解锁新词"}</span>${cl === 0 ? `<span class="go">点亮就连成${esc(CONS[consOf[w]].name)}</span>` : cl !== null ? `<span>${esc(CONS[consOf[w]].name)}还差 ${cl}</span>` : ""}<span>星尘 +${dustFor(w,1)}~${dustFor(w,3)}</span></div>`; }
+  return `<div class="meta">${lk}${impHtml(w)}${cl === 0 ? `<span class="go">点亮就连成${esc(CONS[consOf[w]].name)}</span>` : cl !== null ? `<span>${esc(CONS[consOf[w]].name)}还差 ${cl}</span>` : ""}<span>星尘 +${dustFor(w,1)}~${dustFor(w,3)}</span></div>`; }
 function candHtml(list){ return `<div class="cands">${list.map(({w, g, cl}) =>
-  `<button type="button" class="cand" data-start="${w}"><b>${esc(w)}</b>${diffHtml(w)}<span>${g ? "解锁 " + g : "—"}</span><span>${cl === 0 ? "连成星座" : gOf(w) !== cur ? esc(GAL[gOf(w)].name) : ""}</span></button>`).join("")}</div>`; }
+  `<button type="button" class="cand" data-start="${w}"><b>${esc(w)}</b><span class="cn1">${esc(cn1(w))}</span><span class="mag">${"★".repeat(tierOf(w))}</span><span>${cl === 0 ? "连成星座" : ""}</span></button>`).join("")}</div>`; }
 
 function renderPanel(){
   clearTimeout(autoT); setFocus(!!quiz);
@@ -744,18 +1101,14 @@ function renderPanel(){
   const w = selected, d = D.words[w], s = status(w);
   let html = `<div class="word">${esc(w)}</div><div class="ipa">/${esc(d.ipa)}/</div>`;
   if (s === "ready"){
-    html += metaHtml(w) + `<div class="ctabar"><button class="cta" data-start="${w}" type="button">开始挑战 · ${QN} 题</button></div>`;
-  } else if (s === "locked"){
-    html += `<div class="hidden-cn">还没解锁。先点亮它旁边的星（地图上亮着的连线）。</div>`;
+    html += `<div class="cn">${esc(d.cn)}</div><div class="ex">${esc(d.ex)}</div>` + metaHtml(w) + `<div class="ctabar"><button class="cta" data-start="${w}" type="button">做题点亮 · ${qnOf(w)} 题</button></div>`;
   } else {
     html += `<div class="cn">${esc(d.cn)}</div><div class="ex">${esc(d.ex)}</div>
       <div class="meta">${starHtml(S.stars[w]||3)}${isGiant(w) ? `<span class="giantb">恒星</span>` : ""}<span>${dueText(w)}</span></div>`;
     if (isFading(w)) html += `<div class="ctabar"><button class="cta" data-review="${w}" type="button">擦亮它 · 1 题</button></div>`;
     else if ((S.stars[w]||3) < 3) html += `<button class="cta alt" data-review="${w}" type="button">再答 1 题，多拿一颗星</button>`;
-    const lk = adj[w].filter(e => isLit(e.w));
-    if (lk.length) html += `<div class="sec"><div class="eyebrow">点亮的连线 · ${lk.length}</div><div class="links">` +
-      lk.map(e => `<div style="--c:var(--t-${e.t})"><i>${TYPES[e.t].name}</i> <b data-go="${esc(e.w)}" style="cursor:pointer">${esc(e.w)}</b>：${esc(e.note)}</div>`).join("") + `</div></div>`;
   }
+  html += relHtml(w);
   const ci = consOf[w];
   if (ci !== undefined){ const c = CONS[ci], n = c.words.filter(isLit).length;
     html += `<div class="sec"><button type="button" class="consrow ${n === c.words.length ? "done" : ""}" data-cons="${ci}">${esc(c.name)}<span>${n} / ${c.words.length}</span></button></div>`; }
@@ -764,6 +1117,21 @@ function renderPanel(){
   document.getElementById("home").onclick = () => select(null);
 }
 
+// 相关单词：按关系类型排列；已学会的带中文；别的星系的词标出星系名。再列出这些词彼此之间的连线
+const ST_NAME = {lit:"已学会", ready:"未学会", locked:"未解锁"};
+function relHtml(w){
+  const es = adj[w].slice().sort((a, b) => TYPE_ORDER.indexOf(a.t) - TYPE_ORDER.indexOf(b.t) || (status(a.w) === "lit" ? 0 : 1) - (status(b.w) === "lit" ? 0 : 1) || (a.w < b.w ? -1 : 1));
+  if (!es.length) return "";
+  let html = `<div class="sec"><div class="eyebrow">相关单词 · ${es.length}</div><div class="rel">` + es.map(e => { const st = status(e.w);
+    return `<button type="button" class="${st}" data-go="${esc(e.w)}" style="--c:var(--t-${e.t})"><span class="t">${TYPES[e.t].name}</span>
+      <span class="h"><b>${esc(e.w)}</b><span class="st">${ST_NAME[st]}</span><span class="cnm">${esc(cn1(e.w))}</span></span>
+      <span>${esc(e.note)}</span></button>`; }).join("") + `</div></div>`;
+  const ns = new Set(es.map(e => e.w)), seen = new Set(), pairs = [];
+  ns.forEach(a => adj[a].forEach(e => { if (!ns.has(e.w)) return; const k = [a, e.w].sort().join("|"); if (seen.has(k)) return; seen.add(k); pairs.push([a, e.w, e.t]); }));
+  if (pairs.length) html += `<div class="sec"><div class="eyebrow">这些词之间 · ${pairs.length} 条连线</div><div class="pairs">` +
+    pairs.slice(0, 16).map(([a, b, t]) => `<div style="--c:var(--t-${t})"><b data-go="${esc(a)}" style="cursor:pointer">${esc(a)}</b> — <b data-go="${esc(b)}" style="cursor:pointer">${esc(b)}</b> <i>${TYPES[t].name}</i></div>`).join("") +
+    (pairs.length > 16 ? `<div>…还有 ${pairs.length - 16} 条</div>` : "") + `</div></div>`;
+  return html; }
 function renderCons(){
   const i = selCons, c = CONS[i], done = consDone(i), f = isFolded(i), n = c.words.filter(isLit).length;
   let html = `<div class="eyebrow">星座 · ${n} / ${c.words.length}</div><div class="word" style="font-family:var(--f-cn)">${esc(c.name)}</div>`;
@@ -779,24 +1147,24 @@ function renderCons(){
 function renderHome(){
   const fades = fadingWords(), cands = candidates();
   let html = "";
-  if (litArr.length < 3) html += `<p class="lede">答对题目就能点亮单词。点亮一颗星，它旁边的星就能挑战了。</p>`;
+  if (litArr.length < 3) html += `<p class="lede">在星系里随便逛：点任何一颗星都能看到意思、例句和相关的词。想学会哪个，就做题把它点亮。越重要的词题目越多，点亮后也越亮。</p>`;
   if (litArr.length === WORDS.length) html += `<div class="big">全部点亮！</div>`;
   if (fades.length) html += `<button class="cta" data-review="${fades[0]}" type="button" style="margin-top:0">擦亮变暗的星 · 还有 ${fades.length} 颗</button>`;
   const lw = lucky();
   if (cands.length){ const t = cands[0], w = t.w;
-    html += `<div class="sec" style="${fades.length ? "" : "margin-top:0"}"><div class="eyebrow">下一颗${gOf(w) !== cur ? " · " + esc(GAL[gOf(w)].name) : ""}</div>
+    html += `<div class="sec" style="${fades.length ? "" : "margin-top:0"}"><div class="eyebrow">下一颗</div>
       <div class="word">${esc(w)}</div><div class="ipa">/${esc(D.words[w].ipa)}/</div>${metaHtml(w)}
-      <div class="ctabar"><button class="cta ${fades.length ? "alt" : ""}" data-start="${w}" type="button">开始挑战 · ${QN} 题</button></div></div>`;
+      <div class="ctabar"><button class="cta ${fades.length ? "alt" : ""}" data-start="${w}" type="button">做题点亮 · ${qnOf(w)} 题</button></div></div>`;
     if (lw && lw !== w) html += `<button type="button" class="luckline" data-start="${lw}">✦ 今天的幸运星 <b>${esc(lw)}</b><span>星尘翻倍</span></button>`;
     if (cands.length > 1) html += `<div class="sec"><div class="eyebrow">也可以选 · ${cands.length - 1}</div>${candHtml(cands.slice(1, 7))}</div>`; }
-  const cs = GC[cur], done = cs.filter(consDone).length;
-  html += `<details class="fold"><summary>${esc(GAL[cur].name)} · 星座 ${done} / ${cs.length}</summary><div class="conslist">${cs.map(i => { const c = CONS[i], n = c.words.filter(isLit).length;
+  const cs = ALL_C.filter(i => CONS[i].words.some(isLit)).sort((a, b) => CONS[b].words.filter(isLit).length / CONS[b].words.length - CONS[a].words.filter(isLit).length / CONS[a].words.length).slice(0, 30), done = ALL_C.filter(consDone).length;
+  html += `<details class="fold"><summary>星座 ${done} / ${ALL_C.length}</summary><div class="conslist">${cs.map(i => { const c = CONS[i], n = c.words.filter(isLit).length;
       return `<button type="button" class="consrow ${n === c.words.length ? "done" : ""}" data-cons="${i}">${esc(c.name)}<span>${n} / ${c.words.length}</span></button>`; }).join("")}</div></details>`;
   html += `<details class="fold"><summary>说明与记录</summary>
-    <div class="note" style="margin-top:0">拖动、滚轮或双指移动缩放地图，上方切换星系。每点亮 ${OPEN_STEP} 个词开放一个新星系。点亮的词过几天会变暗，答 1 题就能擦亮。</div>
+    <div class="note" style="margin-top:0">拖动、滚轮或双指移动缩放地图，所有单词都在这一整张星空里。越亮越大的星越重要，题目也越多。点亮的词过几天会变暗，答 1 题就能擦亮。</div>
     <div class="keys">${TYPE_ORDER.map(t => `<span style="--c:var(--t-${t})"><i></i>${TYPES[t].name}</span>`).join("")}</div>
     <div class="note">正确率 ${S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "—"} · 最高连击 ${S.best} · 星座 ${GC.flat().filter(consDone).length} / ${NCONS}</div>
-    <div class="note">单词星系 v1.7 · 当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。</div>
+    <div class="note">单词星系 v1.10 · 当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。</div>
     <div class="foot"><span></span><button class="ghost" id="resetBtn" type="button">重新开始</button></div></details>`;
   panel.innerHTML = html; bind(panel);
   document.getElementById("resetBtn").onclick = askReset;
@@ -895,6 +1263,27 @@ function qSpell(w){
   return { gen:"spell", html:`哪个拼写是对的？<span class="sent" style="font-family:var(--f-cn)">${esc(D.words[w].cn)}</span>`, opts, answer:w,
     explain:`正确拼写：<b>${esc(w)}</b> /${esc(D.words[w].ipa)}/` };
 }
+// 补字母：挖掉两个最容易拼错的字母，从几种写法里挑出对的
+function qLetters(w){
+  const V = "aeiou", wins = [];
+  for (let i = 1; i + 2 <= w.length; i++){ const seg = w.slice(i, i + 2), alts = new Set();
+    if (!V.includes(seg[0]) && !V.includes(seg[1]) && seg[0] !== seg[1]) continue;     // 只挖元音或双写字母
+    alts.add(seg[1] + seg[0]);
+    for (let k = 0; k < 2; k++) if (V.includes(seg[k])) for (const v of V) alts.add(seg.slice(0, k) + v + seg.slice(k + 1));
+    if (seg[0] === seg[1]) alts.add(seg[0]); else if (!V.includes(seg[1])) alts.add(seg[0] + seg[1] + seg[1]);
+    if (V.includes(seg[0]) && V.includes(seg[1])) for (const a of V) for (const b of V) alts.add(a + b);
+    const ok = [...alts].filter(a => a !== seg && !/^([aiu])\1$/.test(a) && !RAW.words[w.slice(0, i) + a + w.slice(i + 2)]);
+    if (ok.length >= 3) wins.push({i, seg, ok, score: (V.includes(seg[0]) && V.includes(seg[1]) ? 2 : 0) + (seg[0] === seg[1] ? 2 : 0) + (i > 1 ? 1 : 0)}); }
+  if (!wins.length) return qSpell(w);
+  const best = Math.max(...wins.map(x => x.score)), c = pick(wins.filter(x => x.score === best));
+  // 干扰项：对调、换一个元音这种“像”的优先
+  const near = c.ok.filter(a => a.length === 2 && [...a].filter((ch, k) => ch !== c.seg[k]).length === 1 || a === c.seg[1] + c.seg[0] || a.length !== 2);
+  const ds = [...shuffle(near), ...shuffle(c.ok)].filter((a, k, arr) => arr.indexOf(a) === k).slice(0, 3);
+  const shown = `${esc(w.slice(0, c.i))}<b class="gap">__</b>${esc(w.slice(c.i + 2))}`;
+  const opts = shuffle([c.seg, ...ds]).map(x => ({key:x, label:x, en:true}));
+  return { gen:"letters", html:`补上缺的字母<span class="w spellw">${shown}</span><span class="sent" style="font-family:var(--f-cn)">${esc(D.words[w].cn)}</span>`, opts, answer:c.seg,
+    explain:`正确拼写：<b>${esc(w.slice(0, c.i))}<u>${esc(c.seg)}</u>${esc(w.slice(c.i + 2))}</b> /${esc(D.words[w].ipa)}/` };
+}
 // 看音标选词：读音或字形相近的词做干扰
 function qIpa(w){
   const ipa = D.words[w].ipa; const seen = new Set([ipa]);
@@ -905,19 +1294,22 @@ function qIpa(w){
   return { gen:"ipa", html:`<span class="w" style="font-family:var(--f-ipa);font-weight:400">/${esc(ipa)}/</span> 是哪个词？`, opts, answer:w,
     explain:`/${esc(ipa)}/ 是 <b>${esc(w)}</b>：${esc(D.words[w].cn)}`, showCn:true };
 }
-const GENS = {meaning:qMeaning, reverse:qReverse, relation:qRelation, blank:qBlank, spell:qSpell, ipa:qIpa, link:qLink};
+const GENS = {meaning:qMeaning, reverse:qReverse, relation:qRelation, blank:qBlank, spell:qSpell, letters:qLetters, ipa:qIpa, link:qLink};
 // 这个词能出哪些题型
 function gensFor(w, mode){ const g = ["meaning","reverse","blank","ipa"];
-  if (canSpell(w)) g.push("spell");
+  if (canSpell(w)) g.push("spell", "letters");
   if (mode === "review") { if (adj[w].some(e => isLit(e.w))) g.push("link"); }
   else if (adj[w].length) g.push("relation");
   return g; }
-// 点亮：随机抽 3 种不同题型，其中至少一道考意思（看英文选中文或看中文选英文）
+// 点亮：随机抽 3 种不同题型：一道考意思（看英文选中文或看中文选英文）、一道考拼写（能拼的词），其余随机
+const SPELL_G = ["spell", "letters"];
 function drawGens(w){ const all = gensFor(w, "light"), first = pick(["meaning","reverse"]);
-  return shuffle([first, ...shuffle(all.filter(g => g !== "meaning" && g !== "reverse").concat(first === "meaning" ? ["reverse"] : ["meaning"])).slice(0, QN - 1)]); }
+  const sp = all.some(g => SPELL_G.includes(g)) ? [pick(SPELL_G)] : [];
+  const rest = shuffle(all.filter(g => g !== "meaning" && g !== "reverse" && !SPELL_G.includes(g)).concat(first === "meaning" ? ["reverse"] : ["meaning"]));
+  return shuffle([first, ...sp, ...rest].slice(0, qnOf(w))); }
 
 function startQuiz(w, mode){
-  if (gOf(w) !== cur) build(gOf(w));
+  if (!inView(w)) build(gOf(w));
   selected = w; selCons = null;
   const gens = mode === "review" ? [pick(gensFor(w, "review"))] : drawGens(w);
   quiz = { w, mode, used: new Set(gens), qs: gens.map(g => GENS[g](w)), i:0, miss:0, picked:null, done:false, wasDue: isFading(w) };
@@ -930,6 +1322,7 @@ function renderQuiz(){
   if (z.done) return z.mode === "review" ? renderReviewDone() : renderResult();
   const q = z.qs[z.i], N = z.qs.length;
   const right = z.picked !== null && q.opts[z.picked].key === q.answer;
+  setProg(w, z.mode === "review" ? 0 : (z.i + (right ? 1 : 0)) / N);
   const pips = z.qs.map((_,k) => `<i class="${k < z.i ? "ok" : k === z.i ? (z.picked === null ? "now" : right ? "ok" : "no") : ""}"></i>`).join("");
   let html = `<div class="qhead"><div class="eyebrow">${z.mode === "review" ? "擦亮" : "挑战"} ${esc(w)}</div><div class="pips">${pips}</div><button class="qx" id="quit" type="button" aria-label="退出答题">✕</button></div>
     <div class="q">${q.html}</div><div class="opts">`;
@@ -940,20 +1333,26 @@ function renderQuiz(){
   html += `</div>`;
   if (z.picked !== null){
     html += `<div class="explain ${right ? "" : "bad"}">${right ? "<b>答对了。</b> " : "<b>答错了。</b> "}${q.explain}</div>`;
-    html += right ? `<div class="auto" style="--d:${AUTO_MS}ms"><i></i></div>` : `<div class="ctabar"><button class="cta" id="retry" type="button">再答一次</button></div>`;
+    html += right ? `<div class="auto" style="--d:${AUTO_MS}ms"><i></i></div><div class="note" style="margin-top:6px;text-align:center">看完解答，点任意处继续</div>` : `<div class="ctabar"><button class="cta" id="retry" type="button">再答一次</button></div>`;
   } else {
     if (!q.cut && S.dust >= HINT_COST) html += `<div class="tools"><button type="button" class="tool" id="hint">提示卡：去掉两个错误选项 · 星尘 ${HINT_COST}</button></div>`;
     if (z.miss) html += `<div class="note">答错 ${z.miss} 次，这颗星会暗一些。</div>`;
   }
   panel.innerHTML = html;
   panel.querySelectorAll("[data-k]").forEach(b => b.onclick = () => answer(+b.dataset.k));
-  document.getElementById("quit").onclick = () => { quiz = null; renderPanel(); };
+  document.getElementById("quit").onclick = () => { quiz = null; setProg(w, 0); renderPanel(); };
   const r = document.getElementById("retry"); if (r) { r.onclick = retryQ; r.focus(); }
   const h = document.getElementById("hint"); if (h) h.onclick = () => { if (S.dust < HINT_COST) return; S.dust -= HINT_COST;
     q.cut = shuffle(q.opts.map((o,k) => k).filter(k => q.opts[k].key !== q.answer)).slice(0, 2); save(); paint(); renderQuiz(); };
-  if (right) { autoT = setTimeout(nextQ, AUTO_MS); panel.onclick = e => { if (!e.target.closest("#quit")) { panel.onclick = null; nextQ(); } }; }
+  // 答对：停留看解答，再自动下一题。点任意处继续的监听要等这次点击结束后再挂上，否则点答案的这一下会冒泡上来直接跳过解答
+  if (right) { autoT = setTimeout(nextQ, AUTO_MS); const z0 = z, i0 = z.i;
+    setTimeout(() => { if (quiz === z0 && z0.i === i0 && z0.picked !== null) panel.onclick = e => { if (!e.target.closest("#quit")) { panel.onclick = null; nextQ(); } }; }, 0);
+    const ex = panel.querySelector(".explain"); if (ex && small()) ex.scrollIntoView({block:"nearest", behavior:"smooth"}); }
   else panel.onclick = null;
 }
+// 答题时地图上这颗星外圈按进度一点点亮起来
+function setProg(w, f){ document.querySelectorAll(".node.charging").forEach(n => { if (n.dataset.w !== w || !f) { n.classList.remove("charging"); const c = n.querySelector(".chg"); if (c) c.style.strokeDasharray = ""; } });
+  const n = nodeEls[w]; if (!n || !f) return; n.classList.add("charging"); part(n, "chg").style.strokeDasharray = `${f.toFixed(3)} 1`; }
 function answer(k){ const z = quiz, q = z.qs[z.i]; if (z.picked !== null) return; z.picked = k; const ok = q.opts[k].key === q.answer;
   S.answered++;
   if (ok){ S.correct++; S.combo++; if (S.combo > S.best) S.best = S.combo; sfx("ok");
@@ -969,17 +1368,64 @@ function retryQ(){ const z = quiz, all = gensFor(z.w, z.mode);
 function nextQ(){ clearTimeout(autoT); panel.onclick = null; const z = quiz; if (!z || z.done || z.picked === null) return;
   if (z.i < z.qs.length - 1){ z.i++; z.picked = null; renderQuiz(); } else if (z.mode === "review") finishReview(); else lightUp(z.w); }
 
-// 点亮动画：星点四散，连到新解锁词的线流动一下
-const gFx = document.getElementById("fx");
-function burst(w, unlocked){ if (matchMedia("(prefers-reduced-motion: reduce)").matches || !nodeEls[w]) return;
-  for (let k = 0; k < 10; k++){ const a = k / 10 * Math.PI * 2 + Math.random() * .4, r = 26 + Math.random() * 22;
-    const c = el("circle", {class:"spark", cx:P[w].x, cy:P[w].y, r: 1.6 + Math.random() * 1.6});
-    c.style.setProperty("--dx", (Math.cos(a) * r).toFixed(1) + "px"); c.style.setProperty("--dy", (Math.sin(a) * r).toFixed(1) + "px");
-    gFx.appendChild(c); setTimeout(() => c.remove(), 1000); }
-  const nu = new Set(unlocked);
-  edgeEls.forEach(({i, l}) => { const [a, b] = D.edges[i]; if ((a === w && nu.has(b)) || (b === w && nu.has(a))) {
-    l.classList.remove("flow"); void l.getBBox(); l.classList.add("flow"); setTimeout(() => l.classList.remove("flow"), 2800); } }); }
-function pop(w){ const g = nodeEls[w]; if (!g) return; g.classList.remove("pop"); void g.getBBox(); g.classList.add("pop"); }
+// 部分点亮：一端点亮的边，从亮的那一端往外透出一段渐暗的光
+const gFx = document.getElementById("fx"), gH = document.getElementById("halfs"), RM = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+let igniting = null;
+// 连线不再一条一个元素：同类型的亮线合成一条 path，选中词的连线单独画；一端点亮的光也合成一条 path
+function paintEdges(){
+  const far = svg.classList.contains("far");
+  const key = [S.lit.length, S.folded.join("."), selected, igniting, far, S.view].join("|");
+  if (key === edgeKey) return; edgeKey = key;
+  const lit = {}, half = [], hl = []; edgeEls = [];
+  VE().forEach(i => { const [a, b, t] = D.edges[i]; const la = isLit(a), lb = isLit(b);
+    if (!la && !lb) { if (selected && (a === selected || b === selected) && rep(a) === a && rep(b) === b) hl.push([i, false]); return; }
+    if (rep(a) !== a || rep(b) !== b) return;
+    const isHl = !!selected && (a === selected || b === selected);
+    if (la && lb) { if (igniting && (a === igniting || b === igniting)) { hl.push([i, true, true]); return; }
+      if (isHl) { hl.push([i, true]); return; }
+      if (t === "topic" && far) return;
+      (lit[t] = lit[t] || []).push(`M${P[a].x} ${P[a].y}L${P[b].x} ${P[b].y}`); return; }
+    if (isHl) hl.push([i, false]);
+    if (t === "topic" || far) return;          // 缩远时一端点亮的光由热力场代替，不再逐条画
+    let [x, y] = la ? [a, b] : [b, a]; const dx = P[y].x - P[x].x, dy = P[y].y - P[x].y, d = Math.hypot(dx, dy) || 1, f = Math.min(.4, 40 / d);
+    half.push(`M${P[x].x} ${P[x].y}l${(dx * f).toFixed(1)} ${(dy * f).toFixed(1)}`); });
+  gE.textContent = ""; gH.textContent = "";
+  Object.entries(lit).forEach(([t, ds]) => gE.appendChild(el("path", {d: ds.join(""), class: "edge lit" + (t === "topic" ? " weak" : ""), stroke: `var(--t-${t})`})));
+  hl.forEach(([i, isLit2, wait]) => { const [a, b, t] = D.edges[i];
+    const l = el("line", {x1:P[a].x, y1:P[a].y, x2:P[b].x, y2:P[b].y, class: "edge hl" + (isLit2 ? " lit" : "") + (wait ? " wait" : "") + (t === "topic" ? " weak" : ""), stroke:`var(--t-${t})`});
+    gE.appendChild(l); edgeEls.push({i, l}); });
+  if (half.length) gH.appendChild(el("path", {d: half.join(""), class: "hglow"})); }
+// 点亮动画：镜头对准 → 星星由暗到亮“燃起”，冲击波扩散、星点四散 → 光沿着连线一条条流向已点亮的邻居，邻居闪一下回应
+function pop(w){ const g = nodeEls[w]; if (!g) return; part(g, "halo"); g.classList.remove("ping"); void g.getBBox(); g.classList.add("ping"); setTimeout(() => g.classList.remove("ping"), 900); }
+function ignite(w, done){
+  const n = nodeEls[w]; if (!n) return done && done();
+  const T = tierOf(w), nbs = [...new Set(adj[w].filter(e => isLit(e.w) && inView(e.w) && rep(e.w) === e.w).map(e => e.w))]
+    .sort((x, y) => Math.hypot(P[x].x - P[w].x, P[x].y - P[w].y) - Math.hypot(P[y].x - P[w].x, P[y].y - P[w].y)).slice(0, 12);
+  if (RM()) { igniting = null; paint(); return done && done(); }
+  part(n, "halo"); nbs.forEach(x => nodeEls[x] && part(nodeEls[x], "halo"));
+  const D0 = 380, STEP = 130, BEAM = 520;
+  n.classList.remove("ignite"); void n.getBBox(); n.classList.add("ignite");
+  setTimeout(() => {
+    for (let k = 0; k < T; k++){ const c = el("circle", {class:"wave", cx:P[w].x, cy:P[w].y, r:8}); c.style.setProperty("--s", 4 + T * 2.2); c.style.animationDelay = k * 160 + "ms"; gFx.appendChild(c); setTimeout(() => c.remove(), 1300 + k * 160); }
+    const ns = 8 + T * 4;
+    for (let k = 0; k < ns; k++){ const a = k / ns * Math.PI * 2 + Math.random() * .4, r = 24 + T * 8 + Math.random() * 26;
+      const c = el("circle", {class:"spark", cx:P[w].x, cy:P[w].y, r: 1.4 + Math.random() * 1.8});
+      c.style.setProperty("--dx", (Math.cos(a) * r).toFixed(1) + "px"); c.style.setProperty("--dy", (Math.sin(a) * r).toFixed(1) + "px");
+      gFx.appendChild(c); setTimeout(() => c.remove(), 1100); }
+  }, D0 + 120);
+  const els = {}; edgeEls.forEach(({i, l}) => { const [a, b] = D.edges[i]; if (a === w) els[b] = l; else if (b === w) els[a] = l; });
+  nbs.forEach((x, k) => { const t0 = D0 + 520 + k * STEP;
+    setTimeout(() => { const g = el("g", {class:"beam"});
+      [["bw", 7], ["bc", 2.4]].forEach(([c]) => g.appendChild(el("line", {x1:P[w].x, y1:P[w].y, x2:P[x].x, y2:P[x].y, pathLength:1, class:c})));
+      g.style.setProperty("--d", BEAM + "ms"); gFx.appendChild(g);
+      if (k % 2 === 0) sfx("tick", k);
+      setTimeout(() => { if (els[x]) els[x].classList.remove("wait");
+        const m = nodeEls[x]; if (m) { m.classList.remove("ping"); void m.getBBox(); m.classList.add("ping"); setTimeout(() => m.classList.remove("ping"), 900); }
+        g.classList.add("out"); setTimeout(() => g.remove(), 500); }, BEAM); }, t0); });
+  const end = D0 + 520 + Math.max(0, nbs.length - 1) * STEP + BEAM + 200;
+  if (nbs.length > 1) setTimeout(() => { const t = el("text", {x:P[w].x, y:P[w].y - 26 - T * 3, class:"fxtxt", "text-anchor":"middle"}); t.textContent = `+${nbs.length} 条星光`; gFx.appendChild(t); setTimeout(() => t.remove(), 1800); }, end - 300);
+  setTimeout(() => { igniting = null; n.classList.remove("ignite"); paint(); done && done(); }, end);
+  return end; }
 function lightUp(w){
   const z = quiz;
   const before = new Set(readySet), openBefore = openG.slice();
@@ -993,16 +1439,18 @@ function lightUp(w){
   z.done = true; z.stars = stars; z.unlocked = [...readySet].filter(x => !before.has(x));
   z.newGal = GAL.map((_, g) => g).filter(g => openG[g] && !openBefore[g]);
   const ci = consOf[w]; z.newCons = ci !== undefined && consDone(ci) ? ci : null;
-  if (z.newCons !== null) fold(z.newCons, true);          // 连成的星座自动收起成一颗大星
+
   z.lucky = S.luck && S.luck.d === today() && S.luck.w === w && !S.luck.got;
   if (z.lucky) S.luck.got = true;
   z.dust = dustFor(w, stars) * (z.lucky ? 2 : 1) + (z.newCons !== null ? CONS_BONUS : 0); S.dust += z.dust;
-  z.goal = bumpDaily();
-  z.galDone = GW[gOf(w)].every(isLit);
-  save(); paint(); pop(w); burst(w, z.unlocked);
-  setTimeout(() => { if (quiz === z) fitWords([w, ...z.unlocked.filter(x => gOf(x) === cur)], small() ? 420 : 620, true); }, 450);   // 稍稍拉远，看到新解锁的星
-  if (z.goal || z.galDone || z.lvUp || z.ms.length) meteor(8);
-  sfx(z.newCons !== null || z.lvUp || z.ms.length ? "cons" : "light");
+  streakHit = null; z.goal = bumpDaily(); z.streak = streakHit;
+  z.galDone = false;
+  igniting = w; setProg(w, 0); save(); paint();
+  { const mx = small() ? 420 : 620, ns = adj[w].map(e => e.w).filter(x => isLit(x) && inView(x) && rep(x) === x && Math.hypot(P[x].x - P[w].x, P[x].y - P[w].y) < mx * .6);
+    fitWords([w, ...ns], mx, true); }                     // 镜头对准新星和已点亮的邻居，再播放点亮动画
+  ignite(w, () => { if (z.newCons !== null) { fold(z.newCons, true); paint(); } });   // 连成的星座等光流完再收起成一颗大星
+  if (z.goal || z.galDone || z.lvUp || z.ms.length || z.streak) meteor(8);
+  sfx(z.newCons !== null || z.lvUp || z.ms.length || z.streak ? "cons" : "light");
   if (z.newCons !== null) meteor(5); else if (stars === 3) meteor(1);
   tip("stars"); if (z.unlocked.length) tip("choose"); if (z.newCons !== null) tip("cons"); if (z.newGal.length) tip("galaxy");
   renderResult();
@@ -1010,8 +1458,11 @@ function lightUp(w){
 // 阶段完成卡：考纲里程碑优先，其次升级；回顾这一阶段学了什么
 const examOf = lv => EXAMS.find(e => e.lv === lv);
 function msText(k){ const [l, q] = k.split(":"), e = examOf(l); return q === "100" ? `${e.name} 词汇全部点亮！` : q === "50" ? `${e.name} 词汇点亮一半了！` : `${e.name} 词汇点亮 ${q}%！`; }
+function streakHtml(n){ const nx = STREAK_MS.find(m => m > n);
+  return `<div class="badge stage"><b>${n >= 365 ? "连续一整年！" : `连续 ${n} 天！`}</b><p>你已经连续 ${n} 天来点亮星星了。每天哪怕只点亮或擦亮 1 颗，连续天数就不会断。</p>
+    <p class="note" style="margin:6px 0 0">${nx ? `下一个里程碑：${nx} 天。` : ""}${(S.guard || 0) < GUARD_MAX ? `可以在“我的星图”里用 ${GUARD_COST} 星尘换守护星，哪天忘了来，它会帮你保住连续天数。` : ""}</p></div>`; }
 function stageHtml(z){
-  let html = "";
+  let html = z.streak ? streakHtml(z.streak) : "";
   if (z.ms.length){ const k = z.ms[z.ms.length - 1], l = k.split(":")[0], n = examLit()[l] || 0;
     html += `<div class="badge stage"><b>${esc(msText(k))}</b><p>${examOf(l).note} 的 ${EXAM_N[l]} 个词里，你已经点亮了 ${n} 个。</p><p class="note" style="margin:6px 0 0">${mdText(today())}达成 · 在顶栏的等级里可以看到所有里程碑。</p></div>`; }
   if (z.lvUp){ const a = LV_AT[z.lvUp - 2], b = LV_AT[z.lvUp - 1], ws = S.lit.slice(a, b);
@@ -1032,13 +1483,14 @@ function renderResult(){
   if (z.lucky) html += `<div class="badge"><b>✦ 幸运星</b><p>今天的幸运星，星尘翻倍。</p></div>`;
   if (c) html += `<div class="badge"><b>新星座：${esc(c.name)}</b><p>${esc(c.note)}</p><p class="note" style="margin:6px 0 0">已收起成一颗大星，点它可以展开。</p></div>`;
   if (cands.length){ const t = cands[0];
-    html += `<div class="ctabar"><button class="cta" data-start="${t.w}" type="button">继续：${esc(t.w)} · ${QN} 题</button></div>`;
+    html += `<div class="ctabar"><button class="cta" data-start="${t.w}" type="button">继续：${esc(t.w)} · ${qnOf(t.w)} 题</button></div>`;
     if (cands.length > 1) html += `<div class="sec"><div class="eyebrow">${z.unlocked.length ? `新解锁 ${z.unlocked.length} 个` : "也可以选"}</div>${candHtml(cands.slice(1, 5))}</div>`; }
   else html += `<button class="cta alt" id="home" type="button">回到星图</button>`;
   panel.innerHTML = html; bind(panel);
   const hb = document.getElementById("home"); if (hb) hb.onclick = () => { quiz = null; select(null); };
   if (litArr.length === WORDS.length) toast("整片单词星系都点亮了！");
   else if (z.ms.length) toast(msText(z.ms[z.ms.length - 1]));
+  else if (z.streak) toast(`连续 ${z.streak} 天！`);
   else if (z.lvUp) toast(`升到 Lv.${z.lvUp} · ${titleOf(z.lvUp)}！`);
   else if (z.goal) toast(`今日目标完成！星尘 +${GOAL_BONUS}`);
   else if (c) toast(`连成了${c.name}！`);
@@ -1052,17 +1504,19 @@ function finishReview(){
   z.giant = was < GIANT_LV && m.lv >= GIANT_LV; z.near = !z.giant && m.lv === GIANT_LV - 1;
   z.gain = z.miss === 0 && (S.stars[w] || 3) < 3; if (z.gain) S.stars[w] = (S.stars[w] || 3) + 1;
   z.dust = z.wasDue && z.miss === 0 ? 5 : 0; S.dust += z.dust;
-  if (bumpDaily()) { toast(`今日目标完成！星尘 +${GOAL_BONUS}`); meteor(8); }
-  save(); z.done = true; paint(); pop(w); sfx(z.giant ? "cons" : "light"); if (z.giant) meteor(5); else if (z.miss === 0) meteor(1); renderReviewDone();
+  streakHit = null; if (bumpDaily()) { toast(`今日目标完成！星尘 +${GOAL_BONUS}`); meteor(8); }
+  z.streak = streakHit; if (z.streak) { toast(`连续 ${z.streak} 天！`); meteor(8); }
+  save(); z.done = true; paint(); pop(w); sfx(z.giant || z.streak ? "cons" : "light"); if (z.giant) meteor(5); else if (z.miss === 0) meteor(1); renderReviewDone();
 }
 function renderReviewDone(){
   const z = quiz, w = z.w; const d = Math.round((S.mem[w].due - now()) / DAY); const f = fadingWords();
   let html = `<div class="eyebrow">擦亮成功</div><div class="big">${esc(w)}</div><div class="meta" style="margin-top:0">${starHtml(S.stars[w]||3)}${z.dust ? `<span class="dust">星尘 +${z.dust}</span>` : ""}</div>
     <div class="cn">${esc(D.words[w].cn)}</div>
     <div class="note">${z.gain ? "一次答对，多了一颗星！" : ""}${z.wasDue ? `下次 ${d} 天后再来看看它。` : ""}${z.near ? "再擦亮一次就成为恒星。" : ""}</div>`;
+  if (z.streak) html += streakHtml(z.streak);
   if (z.giant) html += `<div class="badge stage"><b>新恒星：${esc(w)}</b><p>它已经通过 ${GIANT_LV} 轮复习，算是真正记住了。现在一共有 ${giantCount()} 颗恒星。</p><p class="note" style="margin:6px 0 0">恒星 ${INTERVALS[GIANT_LV]} 天才需要擦亮一次；答错会退回普通星。</p></div>`;
   if (f.length) html += `<div class="ctabar"><button class="cta" data-review="${f[0]}" type="button">擦亮下一颗 · 还有 ${f.length} 颗</button></div>`;
-  else { const c = candidates(); html += c.length ? `<div class="ctabar"><button class="cta" data-start="${c[0].w}" type="button">继续：${esc(c[0].w)} · ${QN} 题</button></div>` : ""; }
+  else { const c = candidates(); html += c.length ? `<div class="ctabar"><button class="cta" data-start="${c[0].w}" type="button">继续：${esc(c[0].w)} · ${qnOf(c[0].w)} 题</button></div>` : ""; }
   panel.innerHTML = html; bind(panel);
   document.querySelector("[data-start],[data-review]")?.focus({preventScroll:true});
 }
@@ -1077,11 +1531,11 @@ document.addEventListener("keydown", e => { if (!quiz || e.target.closest("input
 let AC = null;
 function sfx(kind){ if (S.mute) return;
   try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume();
-    const seq = {ok:[[880,0],[1319,.07]], bad:[[220,0],[175,.12]], light:[[523,0],[659,.08],[784,.16],[1047,.24]], cons:[[523,0],[659,.1],[784,.2],[1047,.3],[1568,.42]]}[kind];
+    const seq = {ok:[[880,0],[1319,.07]], bad:[[220,0],[175,.12]], light:[[523,0],[659,.08],[784,.16],[1047,.24]], cons:[[523,0],[659,.1],[784,.2],[1047,.3],[1568,.42]], tick:[[[1175,1319,1568,1760,2093,2349][Math.min(5, Math.floor((arguments[1]||0)/2))],0]]}[kind];
     const t0 = AC.currentTime;
     seq.forEach(([f, dt]) => { const o = AC.createOscillator(), g = AC.createGain();
       o.type = kind === "bad" ? "triangle" : "sine"; o.frequency.value = f;
-      g.gain.setValueAtTime(0.0001, t0 + dt); g.gain.exponentialRampToValueAtTime(kind === "bad" ? 0.12 : 0.09, t0 + dt + 0.015);
+      g.gain.setValueAtTime(0.0001, t0 + dt); g.gain.exponentialRampToValueAtTime(kind === "bad" ? 0.12 : kind === "tick" ? 0.035 : 0.09, t0 + dt + 0.015);
       g.gain.exponentialRampToValueAtTime(0.0001, t0 + dt + 0.28);
       o.connect(g); g.connect(AC.destination); o.start(t0 + dt); o.stop(t0 + dt + 0.3); }); } catch(e){} }
 const stage = document.querySelector(".stage");
@@ -1138,10 +1592,17 @@ function showLevel(){ if (busy()) { toast("先完成这一轮答题"); return; }
     <div class="mbar"><i style="width:${lvBar}%"></i></div>
     <p>${top ? "已经满级了！" : `再点亮 <b style="color:var(--lamp)">${LV_AT[lv] - n}</b> 颗升到 Lv.${lv + 1}${titleOf(lv + 1) !== titleOf(lv) ? " · " + titleOf(lv + 1) : ""}。`}一共点亮了 ${n} 个词，其中 <b style="color:var(--lamp)">${giantCount()}</b> 颗恒星。</p>
     ${exams}
-    <div class="statline">连续 ${S.streak && S.streak.c ? S.streak.c : 0} 天 · 星座 ${GC.flat().filter(consDone).length} / ${NCONS} · 正确率 ${S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "—"} · 最高连击 ${S.best}</div>
+    <div class="streak"><div><div>连续 <b>${streakNow()}</b> 天 <small style="color:var(--muted)">· 最长 ${Math.max(S.streak && S.streak.best || 0, streakNow())} 天</small></div>
+      <div class="ms">${STREAK_MS.slice(0, 6).map(m => `<span class="${m in (S.sms || {}) ? "on" : ""}">${m in (S.sms || {}) ? "★" : "☆"} ${m}天</span>`).join("")}</div></div>
+      <div style="text-align:right"><div style="margin-bottom:4px">守护星 ${"◆".repeat(S.guard || 0)}${"◇".repeat(GUARD_MAX - (S.guard || 0))}</div>
+      <button type="button" class="guardb" id="buyGuard"${(S.guard || 0) >= GUARD_MAX || S.dust < GUARD_COST ? " disabled" : ""}>${(S.guard || 0) >= GUARD_MAX ? "已经存满" : `${GUARD_COST} 星尘换 1 颗`}</button></div></div>
+    <p class="note" style="margin:4px 0 0">每天点亮或擦亮 1 颗星就算连续。守护星最多存 ${GUARD_MAX} 颗，哪天没来会自动用掉 1 颗，连续天数不会断。</p>
+    <div class="statline">星座 ${GC.flat().filter(consDone).length} / ${NCONS} · 正确率 ${S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "—"} · 最高连击 ${S.best}</div>
     <div class="row"><button class="cta alt" id="no" type="button">关闭</button></div></div>`;
   modal.hidden = false;
-  document.getElementById("no").onclick = () => modal.hidden = true; }
+  document.getElementById("no").onclick = () => modal.hidden = true;
+  document.getElementById("buyGuard").onclick = () => { if ((S.guard || 0) >= GUARD_MAX || S.dust < GUARD_COST) return;
+    S.dust -= GUARD_COST; S.guard = (S.guard || 0) + 1; save(); paint(); sfx("ok"); toast("得到 1 颗守护星"); showLevel(); }; }
 document.getElementById("lvBtn").onclick = showLevel;
 document.getElementById("bankBtn").textContent = BANKS[BANK].name;
 document.getElementById("bankBtn").onclick = askBank;
@@ -1159,10 +1620,12 @@ document.getElementById("muteBtn").onclick = () => { S.mute = !S.mute; save(); p
 const TIPS = {
   first:  "点<b>开始挑战</b>，答对几道题就能点亮这颗星。",
   stars:  "点亮了！一次全对得 <b>3 颗星</b>，答错会暗一些。拿到的<b>星尘</b>可以换提示卡。",
-  choose: "旁边的星能挑战了。地图上的“<b>解锁 3</b>”表示点亮它能再打开 3 颗星。按推荐走，或者自己挑。",
+  choose: "地图上每颗星都能点开看看，想学哪个就点<b>做题点亮</b>。大一点的星是<b>重要词</b>，题目多一些，点亮后更亮。",
   hint:   "星尘够了！答题时可以用<b>提示卡</b>去掉两个错误选项。",
   cons:   "连成<b>星座</b>了！它已经收起成一颗大星，点它可以展开。",
   galaxy: "开放了新的<b>星系</b>！在地图上方切换。",
+  view:   "现在只显示<b>已学会</b>的词，下面写着中文意思。再点一次回到全部。",
+  guard:  "星尘够了！点顶栏的<b>等级</b>，可以用 100 星尘换一颗<b>守护星</b>：哪天忘了来，它会帮你保住连续天数。",
   fade:   "有的星<b>变暗</b>了，说明该复习了。答对 1 题就能把它擦亮。"
 };
 const tipQ = [];
@@ -1178,12 +1641,14 @@ function sky(){ const c = document.getElementById("sky"), r = c.getBoundingClien
   let sd = 11; const rn = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
   for (let k = 0; k < r.width * r.height / 2600; k++){ x.globalAlpha = .15 + rn() * .45; x.fillStyle = rn() < .15 ? "#ffe6b0" : "#cfd8ff";
     x.beginPath(); x.arc(rn() * r.width, rn() * r.height, rn() < .92 ? .7 : 1.3, 0, 7); x.fill(); } }
-load(); sky(); build(S.gal); paint(); renderPanel(); weekly();
+load(); const guarded = guardCheck(); sky(); setTimeout(sky, 400); build("all"); document.getElementById("gbar").hidden = true; paint(); renderPanel(); weekly();
+if (guarded) setTimeout(() => toast(`守护星帮你保住了连续 ${S.streak.c} 天（用掉 ${guarded} 颗）`), 600);
+if (!guarded && S.dust >= GUARD_COST && streakNow() >= 2 && !S.guard) tip("guard");
 if (!S.lit.length) tip("first");
 if (fadingWords().length) tip("fade");
 let rz; addEventListener("resize", () => { setVB(); clearTimeout(rz); rz = setTimeout(sky, 200); });
-window.__wn = { get S(){ return S; }, set S(v){ S = v; recalc(); }, D, GENS, qMeaning, qRelation, qBlank, qLink, status, candidates, get quiz(){ return quiz; },
-  refresh(){ recalc(); build(cur); paint(); renderPanel(); }, save, CONS, recalc, nextQ, lvOf, examPassed, showLevel, startQuiz, weekly, isGiant, giantCount };
+window.__wn = { nodeAt, paint, setVB, get vb(){ return vb; }, heatNow(){ heatKey = ""; const t = performance.now(); drawHeat(); return performance.now() - t; }, get S(){ return S; }, set S(v){ S = v; recalc(); }, D, GENS, qMeaning, qRelation, qBlank, qLink, status, candidates, get quiz(){ return quiz; },
+  refresh(){ recalc(); build(cur); paint(); renderPanel(); }, save, CONS, recalc, nextQ, lvOf, examPassed, showLevel, startQuiz, weekly, isGiant, giantCount, streakNow, guardCheck, openBook, qLetters, drawGens, select, switchGal, qnOf, tierOf, IMP };
 })();
 </script>
 </body>

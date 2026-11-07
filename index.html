@@ -99,7 +99,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 380px;min-height:0}
 .node.lit .halo{opacity:.22}
 .node.lit text{fill:#fff3d6;font-weight:700}
 .node.sel .ring{stroke:#fff;stroke-width:2;stroke-dasharray:none;animation:none}
-.node.dim{opacity:.35}
+.node.dim{opacity:.22}
 .node:focus{outline:none}
 .node:focus-visible .ring{stroke:#fff;stroke-width:2}
 .node.pop .halo{animation:pop 1.2s ease-out}
@@ -259,6 +259,7 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .node.rec .ring{stroke-width:2.5}
 .node.lucky .ring{stroke:var(--lamp);stroke-dasharray:2 3}
 .node .luck{font-size:13px;fill:var(--lamp);opacity:0;pointer-events:none}
+.node:not(.lucky) .luck{display:none}
 .node.lucky .luck{opacity:1;animation:twinkle 1.6s ease-in-out infinite}
 @keyframes twinkle{50%{opacity:.35}}
 .edge.flow{stroke-dasharray:5 7;stroke-width:2.6;opacity:1;animation:flow .9s linear 3}
@@ -360,6 +361,27 @@ details.fold[open] summary{margin-bottom:10px}
 .keys i{width:12px;height:3px;border-radius:2px;background:var(--c)}
 .foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px}
 .links{display:grid;gap:4px;margin-top:8px}
+/* 选中一个词：相关的词全部显示名字，侧栏列出关系 */
+#net .node.nb,#net .node.sel{opacity:1!important}
+#net .node.nb text:not(.gain):not(.luck):not(.cnl),#net .node.sel text:not(.gain):not(.luck):not(.cnl){display:block!important;opacity:1;fill:var(--ink)}
+#net .node.nb.lit text:not(.gain):not(.luck):not(.cnl){fill:#fff3d6}
+#net .node.nb.locked .dot{fill:#6b7898}
+#net .edge.hl{opacity:1!important;display:inline}
+.rel{display:grid;gap:6px;margin-top:8px}
+.rel button{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;text-align:left;padding:8px 10px;border-radius:10px;background:var(--sky-2);border:1px solid var(--rule);color:var(--muted);font-size:13px;line-height:1.4}
+.rel button:hover{border-color:var(--ready)}
+.rel .t{grid-row:span 2;align-self:start;font-size:12px;color:var(--c);border:1px solid var(--c);border-radius:6px;padding:1px 6px;white-space:nowrap;margin-top:2px}
+.rel .h{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px}
+.rel .h b{font-family:var(--f-word);font-weight:600;font-size:15px;color:var(--ink)}
+.rel .h .st{font-size:11px;padding:0 6px;border-radius:99px;border:1px solid var(--rule)}
+.rel .lit .h b{color:var(--lamp)}
+.rel .lit .st{color:var(--lamp);border-color:rgba(255,201,92,.5)}
+.rel .ready .st{color:var(--ready);border-color:var(--ready);border-style:dashed}
+.rel .h .cnm{color:#c9b88a}
+.rel .h .gx{font-size:11px;color:var(--muted)}
+.pairs{display:grid;gap:3px;margin-top:6px;font-size:13px;color:var(--muted)}
+.pairs b{font-family:var(--f-word);font-weight:500;color:var(--ink)}
+.pairs i{font-style:normal;color:var(--c)}
 .links div{font-size:13px;color:var(--muted)}
 .links b{font-family:var(--f-word);font-weight:500;color:var(--ink)}
 .links i{font-style:normal;color:var(--c)}
@@ -644,9 +666,10 @@ function bundles(){
 let selected = null, selCons = null;
 function paint(){
   const rec = new Set(candidates().filter(c => gOf(c.w) === cur).slice(0, 3).map(c => c.w)), luck = lucky();
+  const nbS = selected ? nbSet(selected) : null;
   GW[cur].forEach(w => { const n = nodeEls[w], s = status(w);
     n.classList.toggle("lit", s === "lit"); n.classList.toggle("ready", s === "ready"); n.classList.toggle("locked", s === "locked");
-    n.classList.toggle("sel", w === selected); n.classList.toggle("rec", rec.has(w)); n.classList.toggle("lucky", w === luck);
+    n.classList.toggle("sel", w === selected); n.classList.toggle("nb", !!nbS && w !== selected && nbS.has(w)); n.classList.toggle("rec", rec.has(w)); n.classList.toggle("lucky", w === luck);
     [1,2,3].forEach(k => n.classList.toggle("s"+k, s === "lit" && (S.stars[w]||3) === k));
     n.classList.toggle("fade", isFading(w)); n.classList.toggle("giant", isGiant(w)); n.classList.toggle("gone", rep(w) !== w);
     n.querySelector(".gain").textContent = s === "ready" ? (consLeft(w) === 0 ? "连成星座" : gainOf(w).length ? "解锁" + gainOf(w).length : "") : ""; });
@@ -800,7 +823,8 @@ function select(w){ if (busy()) { if (w) toast("先完成这一轮答题"); retu
   if (w && gOf(w) !== cur) build(gOf(w));
   if (w && rep(w) !== w) { S.folded = S.folded.filter(i => i !== consOf[w]); }   // 选中收起的词：先展开它的星座
   quiz = null; selected = w; selCons = null; save(); paint(); renderPanel(); panel.scrollTop = 0;
-  if (w && small()) focusOn(P[w]); else if (w) ensureVisible(P[w]); else if (back) fitActive(true); }   // 回到首页时拉远
+  if (w) { const ns = [w, ...[...nbSet(w)].filter(x => gOf(x) === gOf(w) && rep(x) === x)]; fitWords(ns, small() ? 440 : 640, true); }
+  else if (back) fitActive(true); }   // 回到首页时拉远
 function selectCons(i){ if (busy()) { toast("先完成这一轮答题"); return; }
   quiz = null; selected = null; selCons = i; paint(); renderPanel(); panel.scrollTop = 0;
   if (small()) focusOn(CP[i]); }
@@ -850,10 +874,8 @@ function renderPanel(){
       <div class="meta">${starHtml(S.stars[w]||3)}${isGiant(w) ? `<span class="giantb">恒星</span>` : ""}<span>${dueText(w)}</span></div>`;
     if (isFading(w)) html += `<div class="ctabar"><button class="cta" data-review="${w}" type="button">擦亮它 · 1 题</button></div>`;
     else if ((S.stars[w]||3) < 3) html += `<button class="cta alt" data-review="${w}" type="button">再答 1 题，多拿一颗星</button>`;
-    const lk = adj[w].filter(e => isLit(e.w));
-    if (lk.length) html += `<div class="sec"><div class="eyebrow">点亮的连线 · ${lk.length}</div><div class="links">` +
-      lk.map(e => `<div style="--c:var(--t-${e.t})"><i>${TYPES[e.t].name}</i> <b data-go="${esc(e.w)}" style="cursor:pointer">${esc(e.w)}</b>：${esc(e.note)}</div>`).join("") + `</div></div>`;
   }
+  html += relHtml(w);
   const ci = consOf[w];
   if (ci !== undefined){ const c = CONS[ci], n = c.words.filter(isLit).length;
     html += `<div class="sec"><button type="button" class="consrow ${n === c.words.length ? "done" : ""}" data-cons="${ci}">${esc(c.name)}<span>${n} / ${c.words.length}</span></button></div>`; }
@@ -862,6 +884,21 @@ function renderPanel(){
   document.getElementById("home").onclick = () => select(null);
 }
 
+// 相关单词：按关系类型排列；已学会的带中文；别的星系的词标出星系名。再列出这些词彼此之间的连线
+const ST_NAME = {lit:"已学会", ready:"可挑战", locked:"未解锁"};
+function relHtml(w){
+  const es = adj[w].slice().sort((a, b) => TYPE_ORDER.indexOf(a.t) - TYPE_ORDER.indexOf(b.t) || (status(a.w) === "lit" ? 0 : 1) - (status(b.w) === "lit" ? 0 : 1) || (a.w < b.w ? -1 : 1));
+  if (!es.length) return "";
+  let html = `<div class="sec"><div class="eyebrow">相关单词 · ${es.length}</div><div class="rel">` + es.map(e => { const st = status(e.w);
+    return `<button type="button" class="${st}" data-go="${esc(e.w)}" style="--c:var(--t-${e.t})"><span class="t">${TYPES[e.t].name}</span>
+      <span class="h"><b>${esc(e.w)}</b><span class="st">${ST_NAME[st]}</span>${st === "lit" ? `<span class="cnm">${esc(cn1(e.w))}</span>` : ""}${gOf(e.w) !== gOf(w) ? `<span class="gx">${esc(GAL[gOf(e.w)].name)}</span>` : ""}</span>
+      <span>${esc(e.note)}</span></button>`; }).join("") + `</div></div>`;
+  const ns = new Set(es.map(e => e.w)), seen = new Set(), pairs = [];
+  ns.forEach(a => adj[a].forEach(e => { if (!ns.has(e.w)) return; const k = [a, e.w].sort().join("|"); if (seen.has(k)) return; seen.add(k); pairs.push([a, e.w, e.t]); }));
+  if (pairs.length) html += `<div class="sec"><div class="eyebrow">这些词之间 · ${pairs.length} 条连线</div><div class="pairs">` +
+    pairs.slice(0, 16).map(([a, b, t]) => `<div style="--c:var(--t-${t})"><b data-go="${esc(a)}" style="cursor:pointer">${esc(a)}</b> — <b data-go="${esc(b)}" style="cursor:pointer">${esc(b)}</b> <i>${TYPES[t].name}</i></div>`).join("") +
+    (pairs.length > 16 ? `<div>…还有 ${pairs.length - 16} 条</div>` : "") + `</div></div>`;
+  return html; }
 function renderCons(){
   const i = selCons, c = CONS[i], done = consDone(i), f = isFolded(i), n = c.words.filter(isLit).length;
   let html = `<div class="eyebrow">星座 · ${n} / ${c.words.length}</div><div class="word" style="font-family:var(--f-cn)">${esc(c.name)}</div>`;

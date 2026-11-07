@@ -367,6 +367,13 @@ details.fold[open] summary{margin-bottom:10px}
 #net .node.nb.lit text:not(.gain):not(.luck):not(.cnl){fill:#fff3d6}
 #net .node.nb.locked .dot{fill:#6b7898}
 #net .edge.hl{opacity:1!important;display:inline}
+.xedge{stroke-width:2;stroke-dasharray:5 4;opacity:.9}
+#net .xnode text{display:block!important;opacity:1;fill:var(--ink)}
+#net .xnode .xgal{font-family:var(--f-cn);font-size:10px;font-weight:400;fill:var(--muted)}
+#net .xnode.lit text:not(.xgal){fill:#fff3d6}
+#net .xnode .dot{fill:#6b7898}
+#net .xnode.lit .dot{fill:var(--lamp)}
+#net .xnode.ready .dot{fill:var(--sky)}
 .rel{display:grid;gap:6px;margin-top:8px}
 .rel button{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;text-align:left;padding:8px 10px;border-radius:10px;background:var(--sky-2);border:1px solid var(--rule);color:var(--muted);font-size:13px;line-height:1.4}
 .rel button:hover{border-color:var(--ready)}
@@ -442,7 +449,7 @@ details.fold[open] summary{margin-bottom:10px}
   <main>
     <div class="stage">
       <canvas class="sky" id="sky" aria-hidden="true"></canvas>
-      <svg id="net" role="img" aria-label="单词关系网"><g id="vp"><g id="cglow"></g><g id="edges"></g><g id="bundles"></g><g id="nodes"></g><g id="supers"></g><g id="fx"></g></g></svg>
+      <svg id="net" role="img" aria-label="单词关系网"><g id="vp"><g id="cglow"></g><g id="edges"></g><g id="bundles"></g><g id="nodes"></g><g id="xnb"></g><g id="supers"></g><g id="fx"></g></g></svg>
       <nav class="gbar" id="gbar" aria-label="星系"></nav>
       <div class="tip" id="tip" role="status" hidden><p></p><button type="button">知道了</button></div>
       <div class="mapkey" id="mapkey"></div>
@@ -663,6 +670,22 @@ function bundles(){
   return [...m.values()];
 }
 
+// 别的星系里的相关词：地图一次只画一个星系，选中词时把它们临时摆在选中词周围，连线用虚线
+function xNeighbors(w){ if (!w || gOf(w) !== cur) return [];
+  const seen = new Map(); adj[w].forEach(e => { if (gOf(e.w) !== cur && !seen.has(e.w)) seen.set(e.w, e.t); });
+  const list = [...seen].map(([x, t]) => ({w: x, t})), n = list.length, R = n > 10 ? 170 : n > 5 ? 140 : 115;
+  return list.map((o, k) => { const a = -Math.PI / 2 + (k + .5) * 2 * Math.PI / Math.max(n, 1);
+    return {...o, x: P[w].x + Math.cos(a) * R, y: P[w].y + Math.sin(a) * R}; }); }
+function paintX(){ const gX = document.getElementById("xnb"); gX.textContent = "";
+  xNeighbors(selected).forEach(o => { const p0 = P[selected];
+    gX.appendChild(el("line", {x1:p0.x, y1:p0.y, x2:o.x, y2:o.y, class:"xedge", stroke:`var(--t-${o.t})`}));
+    const st = status(o.w), n = el("g", {class:`node xnode ${st}`, transform:`translate(${o.x},${o.y})`, tabindex:"0", role:"button", "aria-label":`${o.w}（${GAL[gOf(o.w)].name}）`});
+    n.appendChild(el("circle", {class:"halo", r:16})); n.appendChild(el("circle", {class:"ring", r:9})); n.appendChild(el("circle", {class:"dot", r:5}));
+    const t = el("text", {y:22, "text-anchor":"middle"}); t.textContent = o.w; n.appendChild(t);
+    const g = el("text", {y:35, "text-anchor":"middle", class:"xgal"}); g.textContent = GAL[gOf(o.w)].name; n.appendChild(g);
+    n.dataset.w = o.w; n.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(o.w); } });
+    gX.appendChild(n); }); }
+
 let selected = null, selCons = null;
 function paint(){
   const rec = new Set(candidates().filter(c => gOf(c.w) === cur).slice(0, 3).map(c => c.w)), luck = lucky();
@@ -711,7 +734,7 @@ function paint(){
   sk.title = `连续 ${sn} 天${S.guard ? ` · 守护星 ${S.guard} 颗` : ""}（每天点亮或擦亮 1 颗就算）`;
   document.getElementById("goal").classList.toggle("done", dg.done);
   const mb = document.getElementById("muteBtn"); mb.textContent = S.mute ? "静音" : "音效"; mb.setAttribute("aria-pressed", String(!S.mute));
-  renderBar(); renderKey();
+  renderBar(); renderKey(); paintX();
 }
 // 地图图例：已学会 / 可挑战 / 未解锁，点一下只看这一类；单词本按星座列出全部词
 const VIEW_NAME = {lit:"已学会", ready:"可挑战", locked:"未解锁"};
@@ -751,7 +774,7 @@ const gbar = document.getElementById("gbar");
 function renderBar(){
   // 列出全部星系；没开放的显示还要点亮几颗
   gbar.innerHTML = GAL.map((G, g) => { const n = GW[g].filter(isLit).length, open = openG[g], has = GW[g].some(w => readySet.has(w));
-    if (!open) return `<button type="button" class="gal next" disabled title="再点亮 ${g * OPEN_STEP - litArr.length} 颗开放，或者点亮和它有连线的词">${esc(G.name)}<span>${GW[g].length} 词 · 再亮 ${g * OPEN_STEP - litArr.length}</span></button>`;
+    if (!open) return `<button type="button" class="gal next${g === cur ? " cur" : ""}" disabled title="再点亮 ${g * OPEN_STEP - litArr.length} 颗开放，或者点亮和它有连线的词">${esc(G.name)}<span>${GW[g].length} 词 · 再亮 ${g * OPEN_STEP - litArr.length}</span></button>`;
     return `<button type="button" class="gal${g === cur ? " cur" : ""}${has && g !== cur ? " has" : ""}${n === GW[g].length ? " full" : ""}" data-g="${g}">${esc(G.name)}<span>${n === GW[g].length ? "★" : `${n}/${GW[g].length}`}</span></button>`; }).join("");
   gbar.querySelectorAll("[data-g]").forEach(b => b.onclick = () => switchGal(+b.dataset.g));
   const c = gbar.querySelector(".cur"); if (c && !gbar.dataset.scrolled){ c.scrollIntoView({inline:"center", block:"nearest"}); gbar.dataset.scrolled = 1; }
@@ -777,8 +800,8 @@ function fit(anim){ go({...BB}, anim); }
 function fitActive(anim){ const ws = GW[cur].filter(w => status(w) !== "locked" && rep(w) === w);
   if (!ws.length || ws.length > GW[cur].length * .6) return fit(anim);
   fitWords(ws, small() ? 460 : 760, anim); }
-function fitWords(ws, mn, anim){
-  const xs = ws.map(w => P[w].x), ys = ws.map(w => P[w].y);
+function fitWords(ws, mn, anim, extra){
+  const xs = ws.map(w => P[w].x).concat((extra || []).map(o => o.x)), ys = ws.map(w => P[w].y).concat((extra || []).map(o => o.y));
   const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
   const r = svg.getBoundingClientRect(), asp = (r.height || 1) / (r.width || 1);
   let w = Math.max(Math.max(...xs) - Math.min(...xs) + 220, mn), h = Math.max(Math.max(...ys) - Math.min(...ys) + 220, mn * asp);
@@ -823,7 +846,7 @@ function select(w){ if (busy()) { if (w) toast("先完成这一轮答题"); retu
   if (w && gOf(w) !== cur) build(gOf(w));
   if (w && rep(w) !== w) { S.folded = S.folded.filter(i => i !== consOf[w]); }   // 选中收起的词：先展开它的星座
   quiz = null; selected = w; selCons = null; save(); paint(); renderPanel(); panel.scrollTop = 0;
-  if (w) { const ns = [w, ...[...nbSet(w)].filter(x => gOf(x) === gOf(w) && rep(x) === x)]; fitWords(ns, small() ? 440 : 640, true); }
+  if (w) { const ns = [w, ...[...nbSet(w)].filter(x => gOf(x) === gOf(w) && rep(x) === x)]; fitWords(ns, small() ? 440 : 640, true, xNeighbors(w)); }
   else if (back) fitActive(true); }   // 回到首页时拉远
 function selectCons(i){ if (busy()) { toast("先完成这一轮答题"); return; }
   quiz = null; selected = null; selCons = i; paint(); renderPanel(); panel.scrollTop = 0;
@@ -1362,7 +1385,7 @@ if (!S.lit.length) tip("first");
 if (fadingWords().length) tip("fade");
 let rz; addEventListener("resize", () => { setVB(); clearTimeout(rz); rz = setTimeout(sky, 200); });
 window.__wn = { get S(){ return S; }, set S(v){ S = v; recalc(); }, D, GENS, qMeaning, qRelation, qBlank, qLink, status, candidates, get quiz(){ return quiz; },
-  refresh(){ recalc(); build(cur); paint(); renderPanel(); }, save, CONS, recalc, nextQ, lvOf, examPassed, showLevel, startQuiz, weekly, isGiant, giantCount, streakNow, guardCheck, openBook, qLetters, drawGens };
+  refresh(){ recalc(); build(cur); paint(); renderPanel(); }, save, CONS, recalc, nextQ, lvOf, examPassed, showLevel, startQuiz, weekly, isGiant, giantCount, streakNow, guardCheck, openBook, qLetters, drawGens, select };
 })();
 </script>
 </body>

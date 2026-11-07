@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>单词小侦探</title>
+<style>
+:root{
+  --bg:#f6efe1; --paper:#fffdf7; --ink:#2d2a26; --soft:#756d63; --line:#e4d7bf;
+  --kraft:#d9b98a; --hl:#ffe27a; --hlb:#f2b705; --ok:#2f9e5b; --okbg:#dff5e7;
+  --warn:#d9480f; --blue:#3b7ddd; --old:#8e6bd8; --tray:#fff8ea;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.wrap{max-width:600px;margin:0 auto;padding:12px 16px 32px}
+.hidden{display:none!important}
+header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+header h1{font-size:20px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{background:#fff;border:2px solid var(--line);border-radius:999px;padding:5px 11px;font-weight:700;font-size:14px;white-space:nowrap}
+.back{background:#fff;border:2px solid var(--line);border-radius:12px;padding:6px 10px;white-space:nowrap}
+.big{display:block;width:100%;background:var(--ink);color:#fff;border-radius:16px;padding:14px;font-size:17px;font-weight:800;text-align:center}
+.big.alt{background:#fff;color:var(--ink);border:2px solid var(--line)}
+
+/* home */
+.hero{background:var(--paper);border:2px solid var(--line);border-radius:20px;padding:14px 16px;margin-bottom:14px;display:flex;gap:14px;align-items:center}
+.hero .badge{font-size:44px;line-height:1}
+.hero .rk{font-weight:800;font-size:18px}
+.hero .sub{color:var(--soft);font-size:13px;margin-top:3px;line-height:1.5}
+.bar{height:8px;background:#efe4cf;border-radius:9px;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--hlb);border-radius:9px}
+.chap{margin:18px 0 8px;font-weight:800;color:var(--soft);font-size:14px;display:flex;align-items:center;gap:8px}
+.chap span{background:var(--ink);color:#fff;border-radius:8px;padding:1px 8px;font-size:12px}
+.cases{display:grid;gap:10px}
+.case{display:flex;align-items:center;gap:12px;text-align:left;background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:12px 14px;width:100%}
+.case .ic{width:50px;height:50px;border-radius:14px;background:#f3e4c4;display:grid;place-items:center;font-size:28px;flex:none}
+.case .t{font-weight:800;font-size:16px}
+.case .d{color:var(--soft);font-size:13px;margin-top:2px}
+.case .st{margin-left:auto;font-size:15px;white-space:nowrap;letter-spacing:1px}
+.case.locked{opacity:.5}
+.case.solved .ic{background:var(--okbg)}
+.notebtn{display:flex;align-items:center;gap:8px;width:100%;margin-top:18px;background:#fff;border:2px solid var(--line);border-radius:18px;padding:12px 14px;text-align:left;font-weight:800;font-size:16px}
+.notebtn small{font-weight:400;color:var(--soft)}
+
+/* intro / end */
+.card{background:var(--paper);border:2px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
+.center{text-align:center}
+.bigemoji{font-size:64px;line-height:1.1}
+.title{font-size:22px;font-weight:800;margin:8px 0 4px}
+.lvtag{display:inline-block;background:var(--ink);color:#fff;border-radius:8px;padding:1px 8px;font-size:12px;font-weight:700;vertical-align:middle}
+.brief{font-size:16px;line-height:1.7;color:#4a443d;margin:10px 0 0;text-align:left}
+.how{font-size:14px;line-height:1.7;color:var(--soft);margin:0;padding-left:20px;text-align:left}
+.stars{font-size:34px;letter-spacing:4px;margin:6px 0}
+.ending{font-size:16px;line-height:1.8;text-align:left}
+.wl{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.wchip{background:var(--okbg);border-radius:12px;padding:5px 10px;font-size:15px}
+.wchip small{color:var(--soft);margin-left:4px}
+
+/* play */
+.prog{display:flex;gap:6px;align-items:center;margin-bottom:10px;font-size:13px;color:var(--soft)}
+.prog b{color:var(--ink)}
+.steps{display:flex;gap:4px;margin-left:auto}
+.steps i{width:22px;height:6px;border-radius:4px;background:var(--line)}
+.steps i.done{background:var(--ok)}
+.steps i.now{background:var(--hlb)}
+.docs{display:grid;gap:12px}
+.doc{position:relative;border-radius:16px;padding:12px 14px 14px;font-size:17px;line-height:1.75;font-family:Georgia,"Times New Roman",serif}
+.doc .from{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;font-size:13px;color:var(--soft);font-weight:700;margin-bottom:4px}
+.doc.letter{background:var(--paper);border:2px solid var(--line);box-shadow:0 2px 0 var(--line)}
+.doc.chat{background:#eaf3ff;border:2px solid #cfe1fb;border-radius:4px 18px 18px 18px}
+.doc.note{background:#fff7b8;border:2px solid #f0e08a;transform:rotate(-.6deg)}
+.doc.radio{background:#e9f7ef;border:2px solid #c7ead5}
+.sen{border-radius:6px;transition:background .3s}
+.picking .sen{cursor:pointer;background:rgba(0,0,0,.035);box-shadow:0 0 0 1px rgba(0,0,0,.06);margin:0 1px}
+.picking .sen:hover{background:rgba(59,125,221,.12)}
+.sen.flash{background:#ffe9a8!important;box-shadow:0 0 0 2px #f5c542}
+.sen.right{background:var(--okbg)!important;box-shadow:0 0 0 2px #9bdab3}
+.sen.no{background:#fde2d6!important}
+.tw{background:var(--hl);border-radius:6px;padding:0 3px;font-weight:700;cursor:pointer;border-bottom:3px solid var(--hlb);white-space:nowrap}
+.tw.sel{background:#ffcf33;box-shadow:0 0 0 3px #ffb300}
+.tw.ok{background:var(--okbg);border-bottom-color:var(--ok);cursor:pointer}
+.tw .zh{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;font-size:12px;color:var(--ok);font-weight:700;margin-left:3px}
+.old{border-bottom:2px dotted var(--old);color:#5b3fae;cursor:pointer}
+.spacer{height:46vh}
+
+/* tray */
+.tray{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--tray);border-top:2px solid var(--kraft);box-shadow:0 -8px 24px rgba(80,60,20,.12);border-radius:20px 20px 0 0;max-height:52vh;overflow:auto;padding:12px 16px calc(14px + env(safe-area-inset-bottom))}
+.tray .in{max-width:600px;margin:0 auto}
+.task{font-weight:800;font-size:16px;line-height:1.5}
+.task small{display:block;font-weight:400;color:var(--soft);font-size:13px;margin-top:2px}
+.ctx{background:#fff;border:2px dashed var(--kraft);border-radius:12px;padding:8px 10px;margin:8px 0;font-family:Georgia,serif;font-size:15px;line-height:1.6}
+.ctx b{background:var(--hl);border-radius:4px;padding:0 3px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.mc{background:#fff;border:2px solid var(--line);border-radius:14px;padding:10px 8px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:6px;text-align:left;min-height:48px}
+.mc .e{font-size:20px;flex:none}
+.mc:disabled{opacity:.35;cursor:default;text-decoration:line-through}
+.mc.shake,.opt.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.opts{display:grid;gap:8px;margin-top:8px}
+.opt{background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px;font-size:16px;font-weight:700;text-align:left}
+.opt:disabled{opacity:.35;cursor:default}
+.opt.ok{background:var(--okbg);border-color:var(--ok);opacity:1}
+.msg{margin-top:8px;border-radius:12px;padding:8px 10px;font-size:14px;line-height:1.6}
+.msg.try{background:#fff0e6;color:#a33b06}
+.msg.good{background:var(--okbg);color:#1d6b3c}
+.row{display:flex;gap:8px;margin-top:10px}
+.hintb{background:#fff6d6;border:2px solid #f5d77a;border-radius:12px;padding:6px 12px;font-size:14px;font-weight:700}
+.next{flex:1;background:var(--ink);color:#fff;border-radius:14px;padding:12px;font-weight:800;font-size:16px}
+.wbar{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.wbar button{background:var(--hl);border-radius:10px;padding:4px 10px;font-weight:700;font-family:Georgia,serif;font-size:15px}
+.wbar button.ok{background:var(--okbg);color:var(--ok)}
+.toast{position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:9;width:max-content;background:#3d3352;color:#fff;border-radius:14px;padding:10px 14px;font-size:15px;max-width:90vw;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.pop{animation:pop .35s}
+@keyframes pop{50%{transform:scale(1.12)}}
+@media (prefers-reduced-motion:reduce){.pop,.mc.shake,.opt.shake{animation:none}}
+
+/* notebook */
+.fam{background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:10px}
+.fam h3{margin:0 0 6px;font-size:15px}
+.nw{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px dashed var(--line)}
+.nw:first-of-type{border-top:0}
+.nw .e{font-size:22px;width:28px;text-align:center;flex:none}
+.nw .w{font-weight:800;font-family:Georgia,serif;font-size:17px}
+.nw .m{color:var(--ok);font-weight:700;margin-left:6px}
+.nw .s{color:var(--soft);font-size:13px;font-family:Georgia,serif;line-height:1.5;margin-top:2px}
+.blank{display:inline-block;min-width:70px;border-bottom:3px solid var(--hlb);color:transparent}
+.empty{color:var(--soft);text-align:center;padding:30px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- 小镇首页 -->
+<section id="home">
+  <header><h1>🔍 单词小侦探</h1><button class="pill" id="snd">🔊</button></header>
+  <div class="hero">
+    <div class="badge" id="rkBadge">🔍</div>
+    <div style="flex:1">
+      <div class="rk" id="rkName"></div>
+      <div class="sub" id="rkSub"></div>
+      <div class="bar"><i id="rkBar"></i></div>
+    </div>
+  </div>
+  <div id="caseList"></div>
+  <button class="notebtn" id="openNote">📒 侦探笔记本 <small id="noteCount"></small></button>
+</section>
+
+<!-- 案件介绍 -->
+<section id="intro" class="hidden">
+  <header><button class="back" data-home>← 小镇</button><h1></h1></header>
+  <div class="card center">
+    <div class="bigemoji" id="inEmoji"></div>
+    <div class="title" id="inTitle"></div>
+    <div><span class="lvtag" id="inLv"></span> <span style="color:var(--soft);font-size:14px" id="inClient"></span></div>
+    <p class="brief" id="inBrief"></p>
+  </div>
+  <div class="card">
+    <b>怎么破案</b>
+    <ol class="how">
+      <li>读材料，点<b style="background:var(--hl);padding:0 3px;border-radius:4px">黄色的生词</b>，根据上下文选出它的意思。</li>
+      <li>认出全部生词后，回答侦探问题，有时要在材料里点出关键的那句话。</li>
+      <li>答错没关系，再试一次就好。卡住了就点 💡 提示。</li>
+    </ol>
+  </div>
+  <button class="big" id="startCase">开始调查 🔍</button>
+</section>
+
+<!-- 调查 -->
+<section id="play" class="hidden">
+  <header><button class="back" data-home>← 小镇</button><h1 id="plTitle"></h1></header>
+  <div class="prog"><span id="plPhase"></span><div class="steps" id="plSteps"></div></div>
+  <div class="docs" id="docs"></div>
+  <div class="spacer"></div>
+</section>
+
+<!-- 结案 -->
+<section id="end" class="hidden">
+  <header><button class="back" data-home>← 小镇</button><h1>结案啦！</h1></header>
+  <div class="card center">
+    <div class="bigemoji" id="enEmoji"></div>
+    <div class="title" id="enTitle"></div>
+    <div class="stars" id="enStars"></div>
+    <div style="color:var(--soft);font-size:14px" id="enNote"></div>
+  </div>
+  <div class="card"><div class="ending" id="enText"></div></div>
+  <div class="card"><b>新认识的小镇朋友</b><div class="wl" id="enWords"></div></div>
+  <div style="display:grid;gap:10px">
+    <button class="big" id="enNext">下一个案件 →</button>
+    <button class="big alt" data-home>回到小镇</button>
+  </div>
+</section>
+
+<!-- 笔记本 -->
+<section id="note" class="hidden">
+  <header><button class="back" data-home>← 小镇</button><h1>📒 侦探笔记本</h1></header>
+  <p style="color:var(--soft);font-size:14px;margin:0 0 12px;line-height:1.6">破案时认出的单词都记在这里。它们会在以后的案件里再出现，那时会带紫色虚线，点一下就能想起意思。</p>
+  <button class="big hidden" id="quizBtn" style="margin-bottom:14px">🔁 老朋友小测（5 题）</button>
+  <div id="noteList"></div>
+</section>
+
+<!-- 复习小测 -->
+<section id="quiz" class="hidden">
+  <header><button class="back" id="quizBack">← 笔记本</button><h1>🔁 老朋友小测</h1><span class="pill" id="qzProg"></span></header>
+  <div id="qzBody"></div>
+</section>
+
+</div>
+
+<div class="tray hidden" id="tray"><div class="in" id="trayIn"></div></div>
+<div class="toast hidden" id="toast"></div>
+
+<script src="cases.js"></script>
+<script>
+const KEY = 'word-detective-v1';
+const LV = { KET: 'KET 小镇街区', PET: 'PET 河边新区', FCE: 'FCE 海边与山坡' };
+const RANKS = [[0, '🔍', '见习小侦探'], [8, '🕵️', '小侦探'], [18, '🎖️', '金牌小侦探'], [28, '🏆', '小镇大侦探']];
+let save = { done: {}, words: {}, sound: true };
+try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s) save = Object.assign(save, s); } catch (e) {}
+function store() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} }
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const plain = t => t.replace(/[\[{]([^\]|}]+)(\|[^\]}]+)?[\]}]/g, '$1');
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const splitSen = t => t.match(/[^.!?]+[.!?]+["'”’]*\s*|[^.!?]+$/g) || [t];
+
+let ac;
+function beep(f, d = .08, type = 'sine', v = .07) { if (!save.sound) return; try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.value = f; g.gain.value = v; o.connect(g); g.connect(ac.destination); const t = ac.currentTime; g.gain.exponentialRampToValueAtTime(.0001, t + d); o.start(t); o.stop(t + d); } catch (e) {} }
+const sGood = () => { beep(660, .09); setTimeout(() => beep(880, .12), 90); };
+const sBad = () => beep(220, .16, 'triangle', .05);
+const sWin = () => [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => beep(f, .15), i * 120));
+
+let toastT;
+function toast(html, ms = 2600) { const t = $('#toast'); t.innerHTML = html; t.classList.remove('hidden'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.add('hidden'), ms); }
+
+const canSpeak = 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
+function speak(t) {
+  if (!canSpeak) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(t); u.lang = 'en-GB'; u.rate = .85;
+    const v = speechSynthesis.getVoices().find(v => /^en[-_]GB/i.test(v.lang)) || speechSynthesis.getVoices().find(v => /^en/i.test(v.lang));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+
+function show(id) {
+  for (const s of ['home', 'intro', 'play', 'end', 'note', 'quiz']) $('#' + s).classList.toggle('hidden', s !== id);
+  $('#tray').classList.toggle('hidden', id !== 'play');
+  $('#toast').classList.add('hidden');
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('[data-home]').forEach(b => b.onclick = home);
+
+// ───── 首页 ─────
+function totalStars() { return Object.values(save.done).reduce((a, b) => a + b, 0); }
+function unlocked(i) {
+  const c = CASES[i];
+  const first = CASES.findIndex(x => x.lv === c.lv);
+  return i === first || save.done[CASES[i - 1].id] != null || save.done[c.id] != null;
+}
+function home() {
+  show('home');
+  $('#snd').textContent = save.sound ? '🔊' : '🔇';
+  const st = totalStars(), max = CASES.length * 3;
+  let r = RANKS[0], nx = null;
+  RANKS.forEach((x, i) => { if (st >= x[0]) { r = x; nx = RANKS[i + 1]; } });
+  $('#rkBadge').textContent = r[1];
+  $('#rkName').textContent = r[2];
+  const solved = Object.keys(save.done).length;
+  $('#rkSub').textContent = `破案 ${solved}/${CASES.length} · ⭐ ${st}/${max}` + (nx ? ` · 再得 ${nx[0] - st} 颗星升为“${nx[2]}”` : ' · 最高等级！');
+  $('#rkBar').style.width = (st / max * 100) + '%';
+  let h = '', lv = '';
+  CASES.forEach((c, i) => {
+    if (c.lv !== lv) { if (lv) h += '</div>'; lv = c.lv; h += `<div class="chap"><span>${lv}</span>${LV[lv]}</div><div class="cases">`; }
+    const ok = unlocked(i), s = save.done[c.id];
+    h += `<button class="case ${ok ? '' : 'locked'} ${s != null ? 'solved' : ''}" data-i="${i}" ${ok ? '' : 'disabled'}>
+      <div class="ic">${ok ? c.emoji : '🔒'}</div>
+      <div><div class="t">${esc(c.title)}</div><div class="d">${ok ? esc(c.client) + ' · ' + c.words.length + ' 个生词' : '先破上一个案件'}</div></div>
+      <div class="st">${s != null ? '⭐'.repeat(s) + '<span style="opacity:.25">' + '⭐'.repeat(3 - s) + '</span>' : ''}</div></button>`;
+  });
+  $('#caseList').innerHTML = h + '</div>';
+  $('#caseList').querySelectorAll('.case').forEach(b => b.onclick = () => intro(+b.dataset.i));
+  $('#noteCount').textContent = `· 已认识 ${Object.keys(save.words).length} 个词`;
+}
+$('#snd').onclick = () => { save.sound = !save.sound; store(); $('#snd').textContent = save.sound ? '🔊' : '🔇'; };
+$('#openNote').onclick = notebook;
+
+// ───── 介绍 ─────
+let ci = 0, G = null;
+function intro(i) {
+  ci = i; const c = CASES[i];
+  show('intro');
+  $('#intro h1').textContent = '案件 ' + (i + 1);
+  $('#inEmoji').textContent = c.emoji; $('#inTitle').textContent = c.title;
+  $('#inLv').textContent = c.lv; $('#inClient').textContent = '委托人：' + c.client;
+  $('#inBrief').textContent = c.brief;
+}
+$('#startCase').onclick = () => start(ci);
+
+// ───── 调查 ─────
+function start(i) {
+  const c = CASES[i];
+  G = { c, phase: 'words', matched: new Set(), sel: null, wrong: {}, off: {}, step: 0, miss: 0, stepWrong: 0, offOpt: new Set(), msg: null, solvedStep: false, pickedNo: new Set() };
+  G.cards = shuffle(c.words.map(w => ({ k: w.k, m: w.m, e: w.e })).concat(c.extra.map((x, j) => ({ k: '_x' + j, m: x.m, e: x.e }))));
+  show('play');
+  $('#plTitle').textContent = c.emoji + ' ' + c.title;
+  renderDocs();
+  renderTray();
+}
+function wordOf(k) { return G.c.words.find(w => w.k === k); }
+function renderDocs() {
+  const c = G.c; let sid = 0;
+  G.sens = [];
+  $('#docs').innerHTML = c.docs.map(d => {
+    const body = splitSen(d.text).map(s => {
+      const id = sid++; G.sens.push(plain(s));
+      const html = esc(s).replace(/\[([^\]|]+)(?:\|([^\]]+))?\]/g, (_, disp, k) => {
+        k = k || disp; const ok = G.matched.has(k);
+        return `<span class="tw ${ok ? 'ok' : ''} ${G.sel === k ? 'sel' : ''}" data-k="${esc(k)}">${disp}${ok ? `<span class="zh">${esc(wordOf(k).m)}</span>` : ''}</span>`;
+      }).replace(/\{([^}|]+)(?:\|([^}]+))?\}/g, (_, disp, k) => {
+        k = k || disp; return save.words[k] ? `<span class="old" data-k="${esc(k)}">${disp}</span>` : disp;
+      });
+      return `<span class="sen" data-s="${id}">${html}</span>`;
+    }).join('');
+    return `<div class="doc ${d.kind}"><div class="from">${esc(d.from)}</div>${body}</div>`;
+  }).join('');
+  $('#docs').classList.toggle('picking', isPicking());
+  $('#docs').querySelectorAll('.tw').forEach(el => el.onclick = e => { e.stopPropagation(); if (isPicking()) return tapSentence(+el.closest('.sen').dataset.s, el.closest('.sen')); tapWord(el.dataset.k); });
+  $('#docs').querySelectorAll('.old').forEach(el => el.onclick = e => {
+    e.stopPropagation(); if (isPicking()) return tapSentence(+el.closest('.sen').dataset.s, el.closest('.sen'));
+    const w = save.words[el.dataset.k];
+    toast(`💜 老朋友 <b>${esc(w.w)}</b>：${w.e} ${esc(w.m)}<br><small>在《${esc(w.from)}》里认识的</small>`);
+  });
+  $('#docs').querySelectorAll('.sen').forEach(el => el.onclick = () => tapSentence(+el.dataset.s, el));
+  // 进度条
+  const n = c.steps.length;
+  $('#plSteps').innerHTML = '<i class="' + (G.phase === 'words' ? 'now' : 'done') + '"></i>' +
+    c.steps.map((_, j) => `<i class="${G.phase === 'words' ? '' : j < G.step || (j === G.step && G.solvedStep) ? 'done' : j === G.step ? 'now' : ''}"></i>`).join('');
+  $('#plPhase').innerHTML = G.phase === 'words' ? `第一步 <b>认出生词</b> ${G.matched.size}/${c.words.length}` : `第二步 <b>推理</b> ${Math.min(G.step + 1, n)}/${n}`;
+}
+const curStep = () => G.c.steps[G.step];
+const isPicking = () => G.phase === 'steps' && curStep().type === 'pick' && !G.solvedStep;
+function senOfWord(k) {
+  const el = $(`#docs .tw[data-k="${CSS.escape(k)}"]`);
+  return el ? el.closest('.sen') : null;
+}
+function flash(el) { if (!el) return; el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => el.classList.remove('flash'), 2200); }
+
+function tapWord(k) {
+  if (G.phase !== 'words' || G.matched.has(k)) {
+    const w = wordOf(k); if (w && G.matched.has(k)) toast(`<b>${esc(k)}</b>：${w.e} ${esc(w.m)}`); return;
+  }
+  G.sel = k; G.msg = null; beep(520, .05);
+  renderDocs(); renderTray();
+}
+
+function trayWords() {
+  const c = G.c;
+  if (!G.sel) {
+    const left = c.words.filter(w => !G.matched.has(w.k));
+    const first = G.matched.size === 0 && ci === 0;
+    return `<div class="task">${first ? '👆 先读一读上面的材料，再点一个黄色的生词' : '点材料里的黄色生词，选出它的意思'}
+      <small>还剩 ${left.length} 个。不懂没关系，读读它前后的句子猜一猜。</small></div>
+      <div class="wbar">${c.words.map(w => `<button class="${G.matched.has(w.k) ? 'ok' : ''}" data-k="${esc(w.k)}">${G.matched.has(w.k) ? '✓ ' : ''}${esc(dispOf(w.k))}</button>`).join('')}</div>
+      ${G.msg ? `<div class="msg ${G.msg[0]}">${G.msg[1]}</div>` : ''}`;
+  }
+  const k = G.sel, sen = senOfWord(k), st = sen ? G.sens[+sen.dataset.s] : '';
+  const disp = dispOf(k);
+  const ctx = esc(st).replace(new RegExp('\\b' + disp.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b'), '<b>$&</b>');
+  const off = G.off[k] || new Set();
+  return `<div class="task">“${esc(disp)}” 在这里是什么意思？</div>
+    <div class="ctx">${ctx}</div>
+    <div class="mgrid">${G.cards.filter(cd => !G.matched.has(cd.k)).map(cd => `<button class="mc" data-c="${esc(cd.k)}" ${off.has(cd.k) ? 'disabled' : ''}><span class="e">${cd.e}</span>${esc(cd.m)}</button>`).join('')}</div>
+    ${G.msg ? `<div class="msg ${G.msg[0]}">${G.msg[1]}</div>` : ''}
+    <div class="row"><button class="hintb" id="unsel">换一个词</button>${canSpeak ? `<button class="hintb" id="say" data-t="${esc(st)}">🔈 读这句</button>` : ''}</div>`;
+}
+function dispOf(k) { const m = G.c.docs.map(d => d.text).join(' ').match(new RegExp('\\[([^\\]|]+)\\|' + k + '\\]')); return m ? m[1] : k; }
+
+function chooseMeaning(cardK, btn) {
+  const k = G.sel;
+  if (cardK === k) {
+    G.matched.add(k); G.sel = null; sGood();
+    const w = wordOf(k);
+    G.msg = ['good', `✓ <b>${esc(dispOf(k))}</b> = ${w.e} ${esc(w.m)}`];
+    if (G.matched.size === G.c.words.length) { G.phase = 'steps'; G.msg = null; setTimeout(() => toast('🎉 生词全部认出来了！开始推理吧'), 200); }
+    renderDocs(); renderTray();
+    const el = $(`#docs .tw[data-k="${CSS.escape(k)}"]`); if (el) el.classList.add('pop');
+    return;
+  }
+  G.miss++; sBad();
+  G.wrong[k] = (G.wrong[k] || 0) + 1;
+  (G.off[k] = G.off[k] || new Set()).add(cardK);
+  const other = wordOf(cardK);
+  G.msg = ['try', other ? '这张卡是材料里另一个生词的意思哦。再试一次！' : '再试一次！看看黄色框里这句话，前后在说什么？'];
+  // 第二次错：再划掉一张干扰卡
+  if (G.wrong[k] >= 2) {
+    const rest = G.cards.filter(cd => cd.k !== k && !G.matched.has(cd.k) && !G.off[k].has(cd.k));
+    if (rest.length > 1) { G.off[k].add(rest[0].k); G.msg[1] += ' 已经帮你划掉一张。'; }
+  }
+  renderTray();
+  const b = $(`.mc[data-c="${CSS.escape(cardK)}"]`); if (b) { b.classList.add('shake'); }
+  flash(senOfWord(k));
+}
+
+function traySteps() {
+  const s = curStep(), n = G.c.steps.length;
+  let h = `<div class="task">🕵️ ${esc(s.q)}${s.type === 'pick' && !G.solvedStep ? '<small>👆 在上面的材料里点出那句话。</small>' : ''}</div>`;
+  if (s.type === 'choice') {
+    h += `<div class="opts">${s.opts.map((o, j) => `<button class="opt ${G.solvedStep && j === s.a ? 'ok' : ''}" data-j="${j}" ${G.solvedStep && j !== s.a || G.offOpt.has(j) ? 'disabled' : ''}>${esc(o)}</button>`).join('')}</div>`;
+  }
+  if (G.msg) h += `<div class="msg ${G.msg[0]}">${G.msg[1]}</div>`;
+  h += '<div class="row">';
+  if (!G.solvedStep) h += `<button class="hintb" id="hint">💡 提示</button>`;
+  else h += `<button class="next" id="nextStep">${G.step + 1 < n ? '下一个问题 →' : '🔍 结案！'}</button>`;
+  return h + '</div>';
+}
+
+function renderTray() {
+  $('#trayIn').innerHTML = G.phase === 'words' ? trayWords() : traySteps();
+  const t = $('#trayIn');
+  t.querySelectorAll('.wbar button').forEach(b => b.onclick = () => {
+    const k = b.dataset.k;
+    if (G.matched.has(k)) { const w = wordOf(k); toast(`<b>${esc(dispOf(k))}</b>：${w.e} ${esc(w.m)}`); return; }
+    tapWord(k); flash(senOfWord(k));
+  });
+  t.querySelectorAll('.mc').forEach(b => b.onclick = () => chooseMeaning(b.dataset.c, b));
+  const sy = $('#say'); if (sy) sy.onclick = () => speak(sy.dataset.t);
+  const u = $('#unsel'); if (u) u.onclick = () => { G.sel = null; G.msg = null; renderDocs(); renderTray(); };
+  t.querySelectorAll('.opt').forEach(b => b.onclick = () => answer(+b.dataset.j, b));
+  const hb = $('#hint'); if (hb) hb.onclick = () => { G.msg = ['try', '💡 ' + esc(curStep().hint)]; hintFlash(); renderTray(); };
+  const nb = $('#nextStep'); if (nb) nb.onclick = nextStep;
+  $('#tray').scrollTop = 0;
+}
+
+function hintFlash() {
+  const s = curStep();
+  if (s.type === 'pick' && G.stepWrong >= 2) {
+    const idx = G.sens.findIndex(t => [].concat(s.ans).some(a => t.includes(a)));
+    const el = $(`#docs .sen[data-s="${idx}"]`); if (el) flash(el.closest('.doc'));
+  }
+}
+
+function tapSentence(id, el) {
+  if (G.phase !== 'steps' || G.solvedStep) return;
+  const s = curStep(); if (s.type !== 'pick') return;
+  const ok = [].concat(s.ans).some(a => G.sens[id].includes(a));
+  if (ok) {
+    G.solvedStep = true; sGood();
+    G.msg = ['good', '✓ 找到了！' + esc(s.why)];
+    renderDocs(); renderTray();
+    const e2 = $(`#docs .sen[data-s="${id}"]`); e2.classList.add('right');
+    return;
+  }
+  G.miss++; G.stepWrong++; sBad();
+  el.classList.add('no'); setTimeout(() => el.classList.remove('no'), 900);
+  G.msg = ['try', '这句话说得通，不是它。再试一次！' + (G.stepWrong >= 1 ? '<br>💡 ' + esc(s.hint) : '') + (G.stepWrong >= 2 ? '<br>答案就在闪黄光的那段材料里。' : '')];
+  renderTray(); hintFlash();
+}
+
+function answer(j, btn) {
+  const s = curStep();
+  if (G.solvedStep) return;
+  if (j === s.a) {
+    G.solvedStep = true; sGood();
+    G.msg = ['good', '✓ 推理正确！' + esc(s.why)];
+    renderDocs(); renderTray(); return;
+  }
+  G.miss++; G.stepWrong++; sBad();
+  G.offOpt.add(j);
+  G.msg = ['try', '再试一次！💡 ' + esc(s.hint)];
+  renderTray();
+  const b = $(`.opt[data-j="${j}"]`); if (b) b.classList.add('shake');
+}
+
+function nextStep() {
+  if (G.step + 1 < G.c.steps.length) {
+    G.step++; G.solvedStep = false; G.stepWrong = 0; G.offOpt = new Set(); G.msg = null;
+    renderDocs(); renderTray();
+  } else finish();
+}
+
+// ───── 结案 ─────
+function finish() {
+  const c = G.c, stars = G.miss <= 1 ? 3 : G.miss <= 3 ? 2 : 1;
+  const before = save.done[c.id];
+  save.done[c.id] = Math.max(before || 0, stars);
+  const newW = [];
+  for (const w of c.words) {
+    if (!save.words[w.k]) newW.push(w.k);
+    const el = G.sens.find(t => new RegExp('\\b' + dispOf(w.k) + '\\b').test(t)) || '';
+    save.words[w.k] = Object.assign(save.words[w.k] || {}, { w: w.k, d: dispOf(w.k), m: w.m, e: w.e, from: c.title, cid: c.id, s: el.trim() });
+  }
+  store(); sWin();
+  show('end');
+  $('#enEmoji').textContent = c.emoji; $('#enTitle').textContent = c.title;
+  $('#enStars').innerHTML = '⭐'.repeat(stars) + '<span style="opacity:.2">' + '⭐'.repeat(3 - stars) + '</span>';
+  $('#enNote').textContent = G.miss === 0 ? '一次都没错，太厉害了！' : `再试了 ${G.miss} 次。` + (stars < 3 ? '错 1 次以内就能拿 3 颗星。' : '');
+  $('#enText').textContent = c.ending;
+  $('#enWords').innerHTML = c.words.map(w => `<span class="wchip">${w.e} <b>${esc(w.k)}</b><small>${esc(w.m)}</small></span>`).join('');
+  const nx = ci + 1 < CASES.length ? ci + 1 : null;
+  $('#enNext').classList.toggle('hidden', nx == null);
+  $('#enNext').textContent = nx != null && CASES[nx].lv !== c.lv ? `进入 ${CASES[nx].lv}：${CASES[nx].title} →` : '下一个案件 →';
+  $('#enNext').onclick = () => intro(nx);
+}
+
+// ───── 笔记本 ─────
+function notebook() {
+  show('note');
+  let h = '';
+  for (const c of CASES) {
+    const ws = c.words.filter(w => save.words[w.k] && save.words[w.k].cid === c.id);
+    if (!ws.length) continue;
+    h += `<div class="fam"><h3>${c.emoji} ${esc(c.title)}</h3>` + ws.map(w => {
+      const x = save.words[w.k];
+      const s = esc(x.s).replace(new RegExp('\\b' + dispOf2(c, w.k) + '\\b'), '<b>$&</b>');
+      return `<div class="nw" data-t="${esc(x.s)}" title="点一下朗读"><div class="e">${w.e}</div><div><span class="w">${esc(w.k)}</span><span class="m">${esc(w.m)}</span><div class="s">${s}</div></div></div>`;
+    }).join('') + '</div>';
+  }
+  const n = Object.values(save.words).filter(w => w.s).length;
+  $('#quizBtn').classList.toggle('hidden', n < 5);
+  setTimeout(() => $('#noteList').querySelectorAll('.nw').forEach(el => el.onclick = () => speak(el.dataset.t)));
+  $('#noteList').innerHTML = h || '<div class="empty">还没有破过案件。<br>去小镇接第一个案子吧！</div>';
+}
+function dispOf2(c, k) { const m = c.docs.map(d => d.text).join(' ').match(new RegExp('\\[([^\\]|]+)\\|' + k + '\\]')); return m ? m[1] : k; }
+
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const vis = id => !$('#' + id).classList.contains('hidden');
+  if (/^[1-9]$/.test(e.key)) {
+    const scope = vis('quiz') ? '#qzBody' : vis('play') ? '#trayIn' : null; if (!scope) return;
+    const bs = [...document.querySelectorAll(scope + ' .opt, ' + scope + ' .mc')].filter(b => !b.disabled);
+    const b = bs[+e.key - 1]; if (b) { e.preventDefault(); b.click(); }
+  } else if (e.key === 'Enter') {
+    const b = vis('play') ? $('#nextStep') : vis('quiz') ? $('#qzNext') : null; if (b) { e.preventDefault(); b.click(); }
+  }
+});
+
+// ───── 老朋友小测 ─────
+let Q = null;
+const blankRe = d => new RegExp('\\b' + d.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+function quizStart() {
+  const pool = Object.entries(save.words).filter(([k, w]) => w.s && blankRe(w.d || k).test(w.s));
+  if (pool.length < 5) return;
+  // 先复习次数少的，再随机
+  const pick = shuffle(pool).sort((a, b) => (a[1].r || 0) - (b[1].r || 0)).slice(0, 5);
+  Q = { list: shuffle(pick), i: 0, miss: 0, done: false, off: new Set(), pool };
+  show('quiz'); quizRender();
+}
+function quizRender() {
+  $('#qzProg').textContent = Math.min(Q.i + 1, 5) + '/5';
+  if (Q.i >= Q.list.length) {
+    const ok = 5 - Math.min(Q.miss, 5);
+    $('#qzBody').innerHTML = `<div class="card center"><div class="bigemoji">${Q.miss === 0 ? '🌟' : '👏'}</div>
+      <div class="title">复习完成！</div><div style="color:var(--soft)">${Q.miss === 0 ? '5 题全部一次答对，老朋友都记得你！' : `再试了 ${Q.miss} 次，多见几次就熟啦。`}</div></div>
+      <div style="display:grid;gap:10px"><button class="big" id="qzAgain">再来 5 题</button><button class="big alt" id="qzNote">回到笔记本</button></div>`;
+    $('#qzAgain').onclick = quizStart; $('#qzNote').onclick = notebook; return;
+  }
+  const [k, w] = Q.list[Q.i], d = w.d || k;
+  if (!Q.opts) {
+    const others = shuffle(Q.pool.filter(([k2]) => k2 !== k)).slice(0, 3).map(([k2, w2]) => w2.d || k2);
+    Q.opts = shuffle([d].concat(others));
+  }
+  const sen = esc(w.s).replace(blankRe(d), m => Q.done ? `<b style="background:var(--okbg);border-radius:4px;padding:0 3px">${m}</b>` : '<span class="blank">______</span>');
+  $('#qzBody').innerHTML = `<div class="card"><div style="color:var(--soft);font-size:13px;font-weight:700;margin-bottom:6px">${Q.off.size || Q.done ? `${w.e} 提示：意思是“${esc(w.m)}”` : '空格里该填哪个老朋友？'} · 来自《${esc(w.from)}》</div>
+    <div class="doc letter" style="border:0;box-shadow:none;padding:0;background:none">${sen}</div></div>
+    <div class="opts">${Q.opts.map((o, j) => `<button class="opt ${Q.done && o === d ? 'ok' : ''}" data-o="${esc(o)}" style="font-family:Georgia,serif" ${(Q.done && o !== d) || Q.off.has(o) ? 'disabled' : ''}>${esc(o)}</button>`).join('')}</div>
+    ${Q.msg ? `<div class="msg ${Q.msg[0]}">${Q.msg[1]}</div>` : ''}
+    ${Q.done ? `<div class="row"><button class="next" id="qzNext">${Q.i + 1 < 5 ? '下一题 →' : '看结果'}</button>${canSpeak ? `<button class="hintb" id="qzSay">🔈</button>` : ''}</div>` : ''}`;
+  $('#qzBody').querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    if (Q.done) return;
+    if (b.dataset.o === d) {
+      Q.done = true; sGood(); Q.msg = ['good', `✓ <b>${esc(d)}</b> = ${w.e} ${esc(w.m)}`];
+      w.r = (w.r || 0) + 1; store();
+    } else { Q.miss++; sBad(); Q.off.add(b.dataset.o); Q.msg = ['try', '再试一次！读读整句话，哪个词放进去说得通？']; }
+    quizRender();
+  });
+  const n = $('#qzNext'); if (n) n.onclick = () => { Q.i++; Q.done = false; Q.opts = null; Q.off = new Set(); Q.msg = null; quizRender(); };
+  const sy = $('#qzSay'); if (sy) sy.onclick = () => speak(w.s);
+}
+$('#quizBtn').onclick = quizStart;
+$('#quizBack').onclick = notebook;
+
+home();
+</script>
+</body>
+</html>

@@ -239,7 +239,7 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .cand{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:7px 10px;border-radius:8px;background:var(--sky-2);border:1px solid rgba(159,216,255,.4);text-align:left;font-size:12px;color:var(--muted)}
 .cand b{font-family:var(--f-word);font-size:15px;color:var(--ink);font-weight:500}
 .tools{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.tool{background:none;border:1px dashed rgba(255,201,92,.5);color:var(--lamp);border-radius:8px;padding:6px 10px;font-size:13px}
+.tool{background:none;border:1px solid rgba(255,201,92,.5);color:var(--lamp);border-radius:8px;padding:6px 10px;font-size:13px}
 .tool:disabled{opacity:.4;cursor:not-allowed}
 .ctabar .cta{margin-top:16px}
 .tip{position:absolute;left:max(12px,env(safe-area-inset-left,0px));bottom:52px;z-index:25;width:min(440px,calc(100% - 76px));
@@ -279,7 +279,7 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .mapkey b{font-weight:700;color:var(--ink)}
 .mapkey i{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
 .mapkey .k-lit{background:var(--lamp);box-shadow:0 0 6px var(--lamp)}
-.mapkey .k-ready{border:1.5px dashed var(--ready)}
+.mapkey .k-ready{border:none;background:#5d6a94;transform:scale(.7)}
 .mapkey .k-locked{background:var(--dim)}
 .mapkey .book{color:var(--lamp);border-color:rgba(255,201,92,.5)}
 .node .cnl{display:none;font-family:var(--f-cn);font-size:11px;font-weight:400}
@@ -302,7 +302,7 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .bw button small{display:block;font-size:11px;color:#c9b88a}
 .bw .lit{border-color:rgba(255,201,92,.55);color:var(--ink)}
 .bw .lit b{color:var(--lamp)}
-.bw .ready{border-style:dashed;border-color:var(--ready);color:var(--ink)}
+.bw .ready{border-color:var(--ready);color:var(--ink)}
 .bw .locked{opacity:.55}
 .q .spellw{display:block;font-size:30px;letter-spacing:.06em;margin-top:8px}
 .q .spellw .gap{color:var(--lamp);letter-spacing:.15em}
@@ -314,10 +314,10 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .streak .ms .on{color:var(--lamp)}
 .guardb{font-size:12px;padding:6px 10px;border-radius:8px;border:1px solid var(--lamp);background:transparent;color:var(--lamp);cursor:pointer;white-space:nowrap}
 .guardb:disabled{opacity:.45;cursor:default}
-.luckline{display:flex;align-items:center;gap:8px;margin-top:14px;padding:9px 12px;border-radius:10px;border:1px dashed rgba(255,201,92,.55);background:none;color:var(--lamp);font-size:14px;width:100%;text-align:left}
+.luckline{display:flex;align-items:center;gap:8px;margin-top:14px;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,201,92,.55);background:none;color:var(--lamp);font-size:14px;width:100%;text-align:left}
 .luckline b{font-family:var(--f-word);font-size:16px}
 .luckline span{margin-left:auto;font-size:12px;color:var(--muted)}
-.gal.next{border-style:dashed;opacity:.6}
+.gal.next{opacity:.6}
 .bankb{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;padding:3px 8px;color:var(--lamp);border-color:rgba(255,201,92,.4)}
 .banks{display:grid;gap:8px;margin-top:4px}
 .bank{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;text-align:left;padding:12px 14px;border-radius:10px;background:var(--sky-2);border:1px solid var(--rule)}
@@ -424,7 +424,7 @@ details.fold[open] summary{margin-bottom:10px}
 .rel .h .st{font-size:11px;padding:0 6px;border-radius:99px;border:1px solid var(--rule)}
 .rel .lit .h b{color:var(--lamp)}
 .rel .lit .st{color:var(--lamp);border-color:rgba(255,201,92,.5)}
-.rel .ready .st{color:var(--ready);border-color:var(--ready);border-style:dashed}
+.rel .ready .st{color:var(--ready);border-color:var(--ready)}
 .rel .h .cnm{color:#c9b88a}
 .rel .h .gx{font-size:11px;color:var(--muted)}
 .pairs{display:grid;gap:3px;margin-top:6px;font-size:13px;color:var(--muted)}
@@ -523,6 +523,12 @@ details.fold[open] summary{margin-bottom:10px}
 .node.ready.near.imp3 .dot{fill:#847455}
 .node.ready.sel .dot,.node.ready.nb .dot,.node.ready.rec .dot,.node.ready.nb.imp2 .dot,.node.ready.nb.imp3 .dot,.node.ready.sel.imp2 .dot,.node.ready.sel.imp3 .dot,.node.ready.rec.imp2 .dot,.node.ready.rec.imp3 .dot{r:4.5;fill:var(--sky);stroke:var(--ink);stroke-width:1.4;stroke-dasharray:2 2}
 #net.sel-on .node.ready:not(.sel):not(.nb) .dot{opacity:.5}
+
+/* v1.10c 全部改用实线：没点亮的连线用细一点、淡一点的实线区分 */
+#net .edge,#net .edge.hl:not(.lit),#net.allv .edge.hl:not(.lit),#net .bundle.half,.xedge,#net .edge.lit.wait{stroke-dasharray:none!important}
+#net .edge.hl:not(.lit){opacity:.55!important;stroke-width:1.4}
+.node .ring,.node.ready .ring,.node.lucky .ring,.node.lit.fade .ring{stroke-dasharray:none!important}
+.node.ready.sel .dot,.node.ready.nb .dot,.node.ready.rec .dot,.node.ready.nb.imp2 .dot,.node.ready.nb.imp3 .dot,.node.ready.sel.imp2 .dot,.node.ready.sel.imp3 .dot,.node.ready.rec.imp2 .dot,.node.ready.rec.imp3 .dot{stroke-dasharray:none}
 </style>
 </head>
 <body>

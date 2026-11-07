@@ -1,4 +1,4 @@
-// 词库构建脚本：读 words/*.txt，生成 data.js（单词、连线、星座、星系、布局坐标）。
+// 词库构建脚本：读 words/*.txt，生成 data.js（单词、连线、星座、主题、整张星空的布局坐标）。
 // 用法：node tools/build.js
 // 源文件格式见 words/README.md：每行 单词|级别|音标|中文|例句|关系
 const fs = require("fs"), path = require("path");
@@ -322,8 +322,28 @@ for (const g of galaxies){
     W.forEach(w => { const p = P[w]; p.vx -= p.x*0.006; p.vy -= p.y*0.006;
       p.x += Math.max(-20,Math.min(20,p.vx))*k; p.y += Math.max(-20,Math.min(20,p.vy))*k; p.vx *= .5; p.vy *= .5; });
   }
-  W.forEach(w => pos[w] = [Math.round(P[w].x), Math.round(P[w].y)]);
+  W.forEach(w => pos[w] = [P[w].x, P[w].y]);
 }
+// 一整张星空：先把各主题按网格摆开，再用全部连线（包括跨主题的）整体做一次力导向，让有关系的主题靠近
+{ const COLS = 5, CW = 1000, CH = 950, ALLW = order, N = ALLW.length, idx = {}; ALLW.forEach((w, i) => idx[w] = i);
+  const X = new Float64Array(N), Y = new Float64Array(N), VX = new Float64Array(N), VY = new Float64Array(N);
+  ALLW.forEach((w, i) => { const g = words[w].gal; X[i] = pos[w][0] * .85 + (g % COLS) * CW; Y[i] = pos[w][1] * .85 + Math.floor(g / COLS) * CH; });
+  const E = edges.map(([a, b, t]) => [idx[a], idx[b], words[a].gal === words[b].gal ? (consOf[a] !== undefined && consOf[a] === consOf[b] ? 2 : t === "topic" ? 0 : 1) : 3]);
+  const IT = 260, CELL = 140;
+  for (let it = 0; it < IT; it++){ const k = 1 - it / IT; const grid = new Map();
+    for (let i = 0; i < N; i++){ const key = Math.floor(X[i] / CELL) + "," + Math.floor(Y[i] / CELL); let c = grid.get(key); if (!c) grid.set(key, c = []); c.push(i); }
+    for (let i = 0; i < N; i++){ const cx = Math.floor(X[i] / CELL), cy = Math.floor(Y[i] / CELL);
+      for (let ox = -1; ox <= 1; ox++) for (let oy = -1; oy <= 1; oy++){ const c = grid.get((cx + ox) + "," + (cy + oy)); if (!c) continue;
+        for (const j of c){ if (j <= i) continue; let dx = X[i] - X[j], dy = Y[i] - Y[j]; let d2 = dx*dx + dy*dy || .01; if (d2 > CELL * CELL) continue;
+          const f = 4200 / d2, d = Math.sqrt(d2); dx /= d; dy /= d; VX[i] += dx*f; VY[i] += dy*f; VX[j] -= dx*f; VY[j] -= dy*f; } } }
+    for (const [u, v, kind] of E){ const dx = X[v] - X[u], dy = Y[v] - Y[u], d = Math.hypot(dx, dy) || .01;
+      const [L, s] = kind === 2 ? [70, .08] : kind === 1 ? [110, .03] : kind === 0 ? [120, .015] : [160, .004];
+      const f = (d - L) * s; VX[u] += dx/d*f; VY[u] += dy/d*f; VX[v] -= dx/d*f; VY[v] -= dy/d*f; }
+    let mx = 0, my = 0; for (let i = 0; i < N; i++){ mx += X[i]; my += Y[i]; } mx /= N; my /= N;
+    for (let i = 0; i < N; i++){ VX[i] -= (X[i] - mx) * .0006; VY[i] -= (Y[i] - my) * .0006;
+      X[i] += Math.max(-18, Math.min(18, VX[i])) * k; Y[i] += Math.max(-18, Math.min(18, VY[i])) * k; VX[i] *= .5; VY[i] *= .5; } }
+  let mx = 0, my = 0; for (let i = 0; i < N; i++){ mx += X[i]; my += Y[i]; } mx /= N; my /= N;
+  ALLW.forEach((w, i) => pos[w] = [Math.round(X[i] - mx), Math.round(Y[i] - my)]); }
 
 // ---------- 检查 ----------
 const lonely = order.filter(w => !adj[w].length);

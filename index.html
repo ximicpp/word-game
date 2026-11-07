@@ -532,7 +532,6 @@ details.fold[open] summary{margin-bottom:10px}
 
 /* 点击和悬停按最近的星判断，图形本身不接收指针 */
 #nodes .node,#nodes .node *{pointer-events:none}
-.node .hit{fill:transparent}
 .node.hov .dot{stroke:#fff;stroke-width:1.2}
 #net .node.hov.hov text:not(.gain):not(.luck):not(.cnl){display:block!important;opacity:1;fill:var(--ink)}
 #net .node.hov.hov.lit text:not(.gain):not(.luck):not(.cnl){fill:#fff3d6}
@@ -548,6 +547,12 @@ details.fold[open] summary{margin-bottom:10px}
 #net.allv .node.lit.imp3 .halo{opacity:.26}
 #net.allv.far .edge.lit:not(.hl){opacity:.3}
 #net.allv.far .edge.weak.lit:not(.hl){opacity:.08}
+
+/* 性能：连线合成 path，去掉大量元素上的过渡动画 */
+#edges path,#halfs path{fill:none}
+.edge{transition:none}
+.hglow{stroke-width:1.6;opacity:.32}
+.node.lit:not(.imp2):not(.imp3):not(.giant):not(.sel) .halo{display:none}
 </style>
 </head>
 <body>
@@ -725,11 +730,15 @@ const starHtml = n => `<span class="stars" aria-label="${n} 颗星">${"★".repe
 function dueText(w){ const m = S.mem[w]; if (!m) return ""; const d = Math.ceil((m.due - now()) / DAY);
   return d <= 0 ? "星光变暗了，答 1 题就能擦亮" : d === 1 ? "明天需要擦亮一次" : `${d} 天后需要擦亮`; }
 // 推荐顺序：当前星系优先 → 能连成星座 → 挨着已点亮的词 → 重要的词 → 难度低
+let candKey = "", candVal = null;
 function candidates(prefer){
+  const k = prefer ? null : S.lit.length + "|" + readySet.size + "|" + cur + "|" + S.lit[S.lit.length - 1];
+  if (k && k === candKey) return candVal.slice();
   const pf = prefer || new Set();
-  return [...readySet].map(w => ({w, g: IMP[w], cl: consLeft(w), nl: adj[w].some(e => litSet.has(e.w))}))
+  const r = [...readySet].map(w => ({w, g: IMP[w], cl: consLeft(w), nl: adj[w].some(e => litSet.has(e.w))}))
     .sort((a, b) => ((gOf(b.w) === cur) - (gOf(a.w) === cur)) || (pf.has(b.w) - pf.has(a.w)) || ((b.cl === 0) - (a.cl === 0))
       || (b.nl - a.nl) || (b.g - a.g) || (DIFF[a.w] - DIFF[b.w]) || (a.w < b.w ? -1 : 1));
+  if (k) { candKey = k; candVal = r; return r.slice(); } return r;
 }
 
 // ---------- 位置 ----------
@@ -751,39 +760,31 @@ const NS = "http://www.w3.org/2000/svg";
 const svg = document.getElementById("net"), gE = document.getElementById("edges"), gN = document.getElementById("nodes");
 const gB = document.getElementById("bundles"), gG = document.getElementById("cglow"), gS = document.getElementById("supers");
 const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
-let cur = 0, BB = BBg[0], edgeEls = [], nodeEls = {}, glowEls = {}, superEls = {};
+let cur = 0, BB = BBg[0], edgeEls = [], edgeKey = "", nodeEls = {}, glowEls = {}, superEls = {};
 // 全图模式：一次画出所有星系和所有连线（包括跨星系的）
 let ALLV = false;
 const ALL_E = D.edges.map((_, i) => i), ALL_C = GC.flat();
 const VW = () => ALLV ? WORDS : GW[cur], VE = () => ALLV ? ALL_E : GE[cur], VC = () => ALLV ? ALL_C : GC[cur];
 const inView = w => ALLV || gOf(w) === cur;
-function build(g){
-  ALLV = g === "all"; if (!ALLV) cur = g; S.gal = g; BB = ALLV ? BBall : BBg[g];
-  svg.classList.toggle("allv", ALLV);
-  [gE, gN, gB, gG, gS].forEach(x => x.textContent = "");
-  edgeEls = VE().map(i => { const [a,b,t] = D.edges[i];
-    const l = el("line", {x1:P[a].x,y1:P[a].y,x2:P[b].x,y2:P[b].y,class:"edge" + (t === "topic" ? " weak" : ""),stroke:`var(--t-${t})`}); gE.appendChild(l); return {i, l}; });
-  nodeEls = {};
-  VW().forEach(w => {
-    const n = el("g", {class:"node", transform:`translate(${P[w].x},${P[w].y})`, tabindex:"0", role:"button", "aria-label":w});
-    n.appendChild(el("circle",{class:"halo",r:22}));
-    n.appendChild(el("circle",{class:"ring",r:10}));
-    n.appendChild(el("circle",{class:"dot",r:6}));
-    n.appendChild(el("circle",{class:"chg",r:11,pathLength:1,transform:"rotate(-90)"}));
-    n.appendChild(el("circle",{class:"hit",r:9}));
-    const t = el("text",{y:24,"text-anchor":"middle"}); t.textContent = w; n.appendChild(t);
-    const tc = el("text",{y:38,"text-anchor":"middle",class:"cnl"}); tc.textContent = cn1(w); n.appendChild(tc);
-    n.appendChild(el("text",{y:-15,"text-anchor":"middle",class:"gain"}));
-    const lk = el("text",{x:12,y:-7,class:"luck"}); lk.textContent = "✦"; n.appendChild(lk);
-    n.dataset.w = w;
-    n.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(w); } });
-    gN.appendChild(n); nodeEls[w] = n; });
-  glowEls = {}; superEls = {};
-  VC().forEach(i => { const c = CONS[i], set = new Set(c.words);
+// 星星的各个部件按需创建：大部分星平时只有一个小圆点，DOM 少了，拖动和缩放才流畅
+const PART = {
+  halo: n => el("circle", {class:"halo", r:22}),
+  ring: n => el("circle", {class:"ring", r:10}),
+  chg:  n => el("circle", {class:"chg", r:11, pathLength:1, transform:"rotate(-90)"}),
+  text: n => { const t = el("text", {y:24, "text-anchor":"middle", class:"lbl"}); t.textContent = n.dataset.w; return t; },
+  cnl:  n => { const t = el("text", {y:38, "text-anchor":"middle", class:"cnl"}); t.textContent = cn1(n.dataset.w); return t; },
+  gain: n => el("text", {y:-15, "text-anchor":"middle", class:"gain"}),
+  luck: n => { const t = el("text", {x:12, y:-7, class:"luck"}); t.textContent = "✦"; return t; } };
+const BELOW = {halo:1, ring:1};
+function part(n, k){ const sel = k === "text" ? ".lbl" : "." + k; let e = n.querySelector(sel); if (e) return e;
+  e = PART[k](n); if (BELOW[k]) n.insertBefore(e, n.querySelector(".dot")); else n.appendChild(e); return e; }
+// 星座的光和收起后的大星也按需创建
+function mkGlow(i){ const c = CONS[i], set = new Set(c.words);
     const gl = el("g", {});
     GE[c.g].forEach(k => { const [a,b] = D.edges[k]; if (set.has(a) && set.has(b)) gl.appendChild(el("line", {x1:P[a].x,y1:P[a].y,x2:P[b].x,y2:P[b].y,class:"cglow"})); });
     const t = el("text", {x:CP[i].x, y:CP[i].top - 18, "text-anchor":"middle", class:"clabel"}); t.textContent = c.name; gl.appendChild(t);
-    gG.appendChild(gl); glowEls[i] = gl;
+    gG.appendChild(gl); return glowEls[i] = gl; }
+function mkSuper(i){ const c = CONS[i];
     const s = el("g", {class:"super", transform:`translate(${CP[i].x},${CP[i].y})`, tabindex:"0", role:"button", "aria-label":c.name});
     s.appendChild(el("circle", {class:"halo", r:38}));
     const rays = el("g", {class:"rays"});
@@ -795,7 +796,21 @@ function build(g){
     const tt = el("text", {y:48, "text-anchor":"middle"}); tt.textContent = c.name; s.appendChild(tt);
     s.dataset.c = i;
     s.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCons(i); } });
-    gS.appendChild(s); superEls[i] = s; });
+    gS.appendChild(s); return superEls[i] = s; }
+function build(g){
+  ALLV = g === "all"; if (!ALLV) cur = g; S.gal = g; BB = ALLV ? BBall : BBg[g];
+  svg.classList.toggle("allv", ALLV);
+  [gE, gN, gB, gG, gS].forEach(x => x.textContent = "");
+  edgeEls = []; edgeKey = "";
+  nodeEls = {};
+  VW().forEach(w => {
+    const n = el("g", {class:"node", transform:`translate(${P[w].x},${P[w].y})`, tabindex:"0", role:"button", "aria-label":w});
+    n.appendChild(el("circle",{class:"dot",r:6}));
+    n.dataset.w = w; n._c = "node";
+    n.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(w); } });
+    n.addEventListener("focus", () => { part(n, "text"); part(n, "ring"); });
+    gN.appendChild(n); nodeEls[w] = n; });
+  glowEls = {}; superEls = {};
   fitActive();
 }
 // 收起后的连线：两端换成显示位置，同一对位置之间的多条原始连线合成一束
@@ -830,22 +845,26 @@ function paint(){
   const nbS = selected ? nbSet(selected) : null;
   // 相关词太多时只给最重要的 14 个标名字（已点亮的优先），其余悬停才显示
   const nbL = nbS ? new Set([...nbS].filter(inView).sort((a, b) => (isLit(b) - isLit(a)) || (IMP[b] - IMP[a])).slice(0, 14)) : null;
-  VW().forEach(w => { const n = nodeEls[w], s = status(w);
-    n.classList.toggle("lit", s === "lit"); n.classList.toggle("ready", s === "ready"); n.classList.toggle("locked", s === "locked");
-    n.classList.toggle("sel", w === selected); n.classList.toggle("nb", !!nbS && w !== selected && nbS.has(w)); n.classList.toggle("nbl", !!nbL && nbL.has(w)); n.classList.toggle("rec", rec.has(w)); n.classList.toggle("lucky", w === luck);
-    [1,2,3].forEach(k => n.classList.toggle("s"+k, s === "lit" && (S.stars[w]||3) === k));
-    n.classList.toggle("fade", isFading(w)); n.classList.toggle("giant", isGiant(w)); n.classList.toggle("gone", rep(w) !== w);
-    n.querySelector(".gain").textContent = s === "ready" && consLeft(w) === 0 ? "连成星座" : "";
-    n.classList.toggle("imp2", tierOf(w) === 2); n.classList.toggle("imp3", tierOf(w) === 3);
-    n.classList.toggle("near", s !== "lit" && adj[w].some(e => e.t !== "topic" && isLit(e.w))); });
-  const near = selected ? new Set([...nbSet(selected)].map(rep)) : null;
+  const near = selected ? new Set([...nbSet(selected)].map(rep)) : null, vLit = (S.view || "all") === "lit";
+  VW().forEach(w => { const n = nodeEls[w], s = status(w), T = tierOf(w), lit = s === "lit";
+    const nb = !!nbS && w !== selected && nbS.has(w), fade = isFading(w), giant = isGiant(w), isSel = w === selected, isRec = rec.has(w), isLuck = w === luck;
+    let c = "node " + s + (T > 1 ? " imp" + T : "");
+    if (isSel) c += " sel"; if (nb) c += " nb"; if (nbL && nbL.has(w)) c += " nbl"; if (isRec) c += " rec"; if (isLuck) c += " lucky";
+    if (lit) c += " s" + (S.stars[w] || 3); if (fade) c += " fade"; if (giant) c += " giant"; if (rep(w) !== w) c += " gone";
+    if (!lit && adj[w].some(e => e.t !== "topic" && isLit(e.w))) c += " near";
+    if ((!!selected && !isSel && !near.has(w)) || (selCons !== null && consOf[w] !== selCons)) c += " dim";
+    for (const k of ["hov", "ping", "ignite", "charging"]) if (n.classList.contains(k)) c += " " + k;
+    if (c !== n._c) { n.setAttribute("class", c); n._c = c; }
+    if (lit || n.classList.contains("ping")) part(n, "halo");
+    if (isSel || isRec || isLuck || fade || giant) part(n, "ring");
+    if (isSel || (nbL && nbL.has(w)) || !ALLV || (vLit && lit)) part(n, "text");
+    if (vLit && lit) part(n, "cnl");
+    if (isLuck) part(n, "luck");
+    if (isSel || isRec) part(n, "gain").textContent = s === "ready" && consLeft(w) === 0 ? "连成星座" : "";
+    else { const g = n.querySelector(".gain"); if (g) g.textContent = ""; } });
   const selId = selected || (selCons !== null ? "c" + selCons : null);
-  edgeEls.forEach(({i, l}) => { const [a,b] = D.edges[i]; const la = isLit(a), lb = isLit(b);
-    l.classList.toggle("lit", la && lb); l.classList.toggle("half", la !== lb);
-    l.classList.toggle("hl", !!selected && (a === selected || b === selected));
-    l.classList.toggle("off", rep(a) !== a || rep(b) !== b);
-    l.classList.toggle("wait", !!igniting && la && lb && (a === igniting || b === igniting)); });
-  paintHalf(); svg.classList.toggle("sel-on", !!selected);
+  paintEdges();
+  svg.classList.toggle("sel-on", !!selected);
   gB.textContent = "";
   bundles().forEach(bd => { const pa = posOf(bd.ra), pb = posOf(bd.rb);
     const ts = new Set(bd.list.map(i => D.edges[i][2]));
@@ -855,11 +874,11 @@ function paint(){
     if (bd.list.length > 1){ const g = el("g", {class:"bcount", transform:`translate(${(pa.x+pb.x)/2},${(pa.y+pb.y)/2})`});
       g.appendChild(el("circle", {r:8})); const t = el("text", {}); t.textContent = bd.list.length; g.appendChild(t); gB.appendChild(g); } });
   VC().forEach(i => { const c = CONS[i], done = consDone(i), f = isFolded(i);
-    glowEls[i].style.display = done && !f ? "" : "none";
-    const g = superEls[i]; g.style.display = f ? "" : "none";
+    if (done && !f) (glowEls[i] || mkGlow(i)).style.display = ""; else if (glowEls[i]) glowEls[i].style.display = "none";
+    if (!f) { if (superEls[i]) superEls[i].style.display = "none"; return; }
+    const g = superEls[i] || mkSuper(i); g.style.display = "";
     g.classList.toggle("fade", c.words.some(isFading)); g.classList.toggle("sel", selCons === i);
     g.classList.toggle("dim", !!selected && !near.has("c" + i)); });
-  VW().forEach(w => nodeEls[w].classList.toggle("dim", (!!selected && w !== selected && !near.has(w)) || (selCons !== null && consOf[w] !== selCons)));
   // 顶栏：等级 + 到下一级的进度（满级后显示当前词库总进度）
   const nL = S.lit.length, lv = lvOf(nL), top = lv >= LV_AT.length;
   document.getElementById("lvN").textContent = "Lv." + lv;
@@ -935,9 +954,10 @@ function switchGal(g){ if (busy()) { toast("先完成这一轮答题"); return; 
 
 // ---------- 平移缩放 ----------
 let vb = {...BB};
+let svgR = null; new ResizeObserver(() => { svgR = null; }).observe(svg);
 function setVB(){ svg.setAttribute("viewBox", `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
-  const r = svg.getBoundingClientRect(); const scale = Math.max(vb.w / (r.width || 1), vb.h / (r.height || 1));
-  svg.classList.toggle("far", scale > .8); }      // 缩得很小时，未解锁的词不显示名字
+  const r = svgR || (svgR = svg.getBoundingClientRect()); const scale = Math.max(vb.w / (r.width || 1), vb.h / (r.height || 1));
+  const far = scale > .8; if (far !== svg.classList.contains("far")) { svg.classList.toggle("far", far); paintEdges(); } }      // 缩得很小时，未解锁的词不显示名字
 const go = (to, anim) => { if (anim) glide(to); else { glideT++; vb = to; setVB(); } };
 function fit(anim){ go({...BB}, anim); }
 // 只看已点亮和能挑战的区域（开局时整张星系太大，起点会显得很小）
@@ -979,7 +999,7 @@ function nodeAt(cx, cy){
   return best; }
 let hoverW = null;
 svg.addEventListener("pointermove", e => { if (e.pointerType === "mouse" && !ptrs.size) { const w = nodeAt(e.clientX, e.clientY);
-    if (w !== hoverW) { if (hoverW && nodeEls[hoverW]) nodeEls[hoverW].classList.remove("hov"); hoverW = w; if (w) nodeEls[w].classList.add("hov"); svg.style.cursor = w ? "pointer" : ""; } } });
+    if (w !== hoverW) { if (hoverW && nodeEls[hoverW]) nodeEls[hoverW].classList.remove("hov"); hoverW = w; if (w) { part(nodeEls[w], "text"); nodeEls[w].classList.add("hov"); } svg.style.cursor = w ? "pointer" : ""; } } });
 svg.addEventListener("pointerleave", () => { if (hoverW && nodeEls[hoverW]) nodeEls[hoverW].classList.remove("hov"); hoverW = null; });
 svg.addEventListener("pointermove", e => { if (!ptrs.has(e.pointerId)) return; const prev = ptrs.get(e.pointerId); const p = {x:e.clientX, y:e.clientY};
   if (ptrs.size === 1){ glideT++; const r = svg.getBoundingClientRect(); const scale = Math.max(vb.w / r.width, vb.h / r.height);
@@ -1331,8 +1351,8 @@ function renderQuiz(){
   else panel.onclick = null;
 }
 // 答题时地图上这颗星外圈按进度一点点亮起来
-function setProg(w, f){ document.querySelectorAll(".node.charging").forEach(n => { if (n.dataset.w !== w || !f) { n.classList.remove("charging"); n.querySelector(".chg").style.strokeDasharray = ""; } });
-  const n = nodeEls[w]; if (!n || !f) return; n.classList.add("charging"); n.querySelector(".chg").style.strokeDasharray = `${f.toFixed(3)} 1`; }
+function setProg(w, f){ document.querySelectorAll(".node.charging").forEach(n => { if (n.dataset.w !== w || !f) { n.classList.remove("charging"); const c = n.querySelector(".chg"); if (c) c.style.strokeDasharray = ""; } });
+  const n = nodeEls[w]; if (!n || !f) return; n.classList.add("charging"); part(n, "chg").style.strokeDasharray = `${f.toFixed(3)} 1`; }
 function answer(k){ const z = quiz, q = z.qs[z.i]; if (z.picked !== null) return; z.picked = k; const ok = q.opts[k].key === q.answer;
   S.answered++;
   if (ok){ S.correct++; S.combo++; if (S.combo > S.best) S.best = S.combo; sfx("ok");
@@ -1351,18 +1371,38 @@ function nextQ(){ clearTimeout(autoT); panel.onclick = null; const z = quiz; if 
 // 部分点亮：一端点亮的边，从亮的那一端往外透出一段渐暗的光
 const gFx = document.getElementById("fx"), gH = document.getElementById("halfs"), RM = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 let igniting = null;
-function paintHalf(){ gH.textContent = "";
-  edgeEls.forEach(({i, l}) => { if (!l.classList.contains("half") || l.classList.contains("off")) return;
-    let [a, b, t] = D.edges[i]; if (t === "topic") return; if (!isLit(a)) [a, b] = [b, a];
-    const dx = P[b].x - P[a].x, dy = P[b].y - P[a].y, d = Math.hypot(dx, dy) || 1;
-    [[Math.min(.45, 46 / d), "h1"], [Math.min(.22, 22 / d), "h2"]].forEach(([f, c]) => gH.appendChild(el("line", {x1:P[a].x, y1:P[a].y, x2:P[a].x + dx * f, y2:P[a].y + dy * f, class:"hglow " + c}))); }); }
+// 连线不再一条一个元素：同类型的亮线合成一条 path，选中词的连线单独画；一端点亮的光也合成一条 path
+function paintEdges(){
+  const far = svg.classList.contains("far");
+  const key = [S.lit.length, S.folded.join("."), selected, igniting, far, S.view].join("|");
+  if (key === edgeKey) return; edgeKey = key;
+  const lit = {}, half = [], hl = []; edgeEls = [];
+  VE().forEach(i => { const [a, b, t] = D.edges[i]; const la = isLit(a), lb = isLit(b);
+    if (!la && !lb) { if (selected && (a === selected || b === selected) && rep(a) === a && rep(b) === b) hl.push([i, false]); return; }
+    if (rep(a) !== a || rep(b) !== b) return;
+    const isHl = !!selected && (a === selected || b === selected);
+    if (la && lb) { if (igniting && (a === igniting || b === igniting)) { hl.push([i, true, true]); return; }
+      if (isHl) { hl.push([i, true]); return; }
+      if (t === "topic" && far) return;
+      (lit[t] = lit[t] || []).push(`M${P[a].x} ${P[a].y}L${P[b].x} ${P[b].y}`); return; }
+    if (isHl) hl.push([i, false]);
+    if (t === "topic" || far) return;          // 缩远时一端点亮的光由热力场代替，不再逐条画
+    let [x, y] = la ? [a, b] : [b, a]; const dx = P[y].x - P[x].x, dy = P[y].y - P[x].y, d = Math.hypot(dx, dy) || 1, f = Math.min(.4, 40 / d);
+    half.push(`M${P[x].x} ${P[x].y}l${(dx * f).toFixed(1)} ${(dy * f).toFixed(1)}`); });
+  gE.textContent = ""; gH.textContent = "";
+  Object.entries(lit).forEach(([t, ds]) => gE.appendChild(el("path", {d: ds.join(""), class: "edge lit" + (t === "topic" ? " weak" : ""), stroke: `var(--t-${t})`})));
+  hl.forEach(([i, isLit2, wait]) => { const [a, b, t] = D.edges[i];
+    const l = el("line", {x1:P[a].x, y1:P[a].y, x2:P[b].x, y2:P[b].y, class: "edge hl" + (isLit2 ? " lit" : "") + (wait ? " wait" : "") + (t === "topic" ? " weak" : ""), stroke:`var(--t-${t})`});
+    gE.appendChild(l); edgeEls.push({i, l}); });
+  if (half.length) gH.appendChild(el("path", {d: half.join(""), class: "hglow"})); }
 // 点亮动画：镜头对准 → 星星由暗到亮“燃起”，冲击波扩散、星点四散 → 光沿着连线一条条流向已点亮的邻居，邻居闪一下回应
-function pop(w){ const g = nodeEls[w]; if (!g) return; g.classList.remove("ping"); void g.getBBox(); g.classList.add("ping"); setTimeout(() => g.classList.remove("ping"), 900); }
+function pop(w){ const g = nodeEls[w]; if (!g) return; part(g, "halo"); g.classList.remove("ping"); void g.getBBox(); g.classList.add("ping"); setTimeout(() => g.classList.remove("ping"), 900); }
 function ignite(w, done){
   const n = nodeEls[w]; if (!n) return done && done();
   const T = tierOf(w), nbs = [...new Set(adj[w].filter(e => isLit(e.w) && inView(e.w) && rep(e.w) === e.w).map(e => e.w))]
     .sort((x, y) => Math.hypot(P[x].x - P[w].x, P[x].y - P[w].y) - Math.hypot(P[y].x - P[w].x, P[y].y - P[w].y)).slice(0, 12);
   if (RM()) { igniting = null; paint(); return done && done(); }
+  part(n, "halo"); nbs.forEach(x => nodeEls[x] && part(nodeEls[x], "halo"));
   const D0 = 380, STEP = 130, BEAM = 520;
   n.classList.remove("ignite"); void n.getBBox(); n.classList.add("ignite");
   setTimeout(() => {
@@ -1384,7 +1424,7 @@ function ignite(w, done){
         g.classList.add("out"); setTimeout(() => g.remove(), 500); }, BEAM); }, t0); });
   const end = D0 + 520 + Math.max(0, nbs.length - 1) * STEP + BEAM + 200;
   if (nbs.length > 1) setTimeout(() => { const t = el("text", {x:P[w].x, y:P[w].y - 26 - T * 3, class:"fxtxt", "text-anchor":"middle"}); t.textContent = `+${nbs.length} 条星光`; gFx.appendChild(t); setTimeout(() => t.remove(), 1800); }, end - 300);
-  setTimeout(() => { igniting = null; edgeEls.forEach(({l}) => l.classList.remove("wait")); n.classList.remove("ignite"); done && done(); }, end);
+  setTimeout(() => { igniting = null; n.classList.remove("ignite"); paint(); done && done(); }, end);
   return end; }
 function lightUp(w){
   const z = quiz;
@@ -1607,7 +1647,7 @@ if (!guarded && S.dust >= GUARD_COST && streakNow() >= 2 && !S.guard) tip("guard
 if (!S.lit.length) tip("first");
 if (fadingWords().length) tip("fade");
 let rz; addEventListener("resize", () => { setVB(); clearTimeout(rz); rz = setTimeout(sky, 200); });
-window.__wn = { nodeAt, heatNow(){ heatKey = ""; const t = performance.now(); drawHeat(); return performance.now() - t; }, get S(){ return S; }, set S(v){ S = v; recalc(); }, D, GENS, qMeaning, qRelation, qBlank, qLink, status, candidates, get quiz(){ return quiz; },
+window.__wn = { nodeAt, paint, setVB, get vb(){ return vb; }, heatNow(){ heatKey = ""; const t = performance.now(); drawHeat(); return performance.now() - t; }, get S(){ return S; }, set S(v){ S = v; recalc(); }, D, GENS, qMeaning, qRelation, qBlank, qLink, status, candidates, get quiz(){ return quiz; },
   refresh(){ recalc(); build(cur); paint(); renderPanel(); }, save, CONS, recalc, nextQ, lvOf, examPassed, showLevel, startQuiz, weekly, isGiant, giantCount, streakNow, guardCheck, openBook, qLetters, drawGens, select, switchGal, qnOf, tierOf, IMP };
 })();
 </script>

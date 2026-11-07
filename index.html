@@ -271,6 +271,14 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .goal .bg{stroke:var(--rule)}
 .goal .fg{stroke:var(--lamp);stroke-linecap:round;transition:stroke-dashoffset .6s}
 .goal.done{color:var(--lamp)}
+.stk i{font-style:normal}
+.stk{font-family:var(--f-mono);font-size:11px;color:#2b1d00;background:var(--lamp);border-radius:99px;padding:1px 7px;font-weight:700}
+.streak{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0 4px;padding:10px 12px;background:var(--sky-2);border:1px solid var(--rule);border-radius:10px;font-size:13px}
+.streak b{font-size:20px;color:var(--lamp);font-variant-numeric:tabular-nums}
+.streak .ms{font-size:12px;color:var(--muted);margin-top:4px;display:flex;flex-wrap:wrap;gap:4px 8px}
+.streak .ms .on{color:var(--lamp)}
+.guardb{font-size:12px;padding:6px 10px;border-radius:8px;border:1px solid var(--lamp);background:transparent;color:var(--lamp);cursor:pointer;white-space:nowrap}
+.guardb:disabled{opacity:.45;cursor:default}
 .luckline{display:flex;align-items:center;gap:8px;margin-top:14px;padding:9px 12px;border-radius:10px;border:1px dashed rgba(255,201,92,.55);background:none;color:var(--lamp);font-size:14px;width:100%;text-align:left}
 .luckline b{font-family:var(--f-word);font-size:16px}
 .luckline span{margin-left:auto;font-size:12px;color:var(--muted)}
@@ -323,7 +331,9 @@ details.fold[open] summary{margin-bottom:10px}
 .links i{font-style:normal;color:var(--c)}
 
 @media (max-width:820px){
-  .goal span{display:none}
+  .goal #goalTxt{display:none}
+  .stk i{display:none}
+  .stk{padding:1px 5px}
   .brand h1{display:none}
   .ghost{white-space:nowrap}
   .combo{display:none!important}
@@ -364,7 +374,7 @@ details.fold[open] summary{margin-bottom:10px}
       <div class="count"><b id="litN">0</b> / <span id="totN">0</span></div>
       <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
     </button>
-    <div class="goal" id="goal" title="今日目标：点亮或擦亮 10 颗星"><svg viewBox="0 0 20 20" aria-hidden="true"><circle class="bg" cx="10" cy="10" r="8"/><circle class="fg" id="goalRing" cx="10" cy="10" r="8" stroke-dasharray="50.27" stroke-dashoffset="50.27"/></svg><span id="goalTxt">今日 0/10</span></div>
+    <div class="goal" id="goal" title="今日目标：点亮或擦亮 10 颗星"><svg viewBox="0 0 20 20" aria-hidden="true"><circle class="bg" cx="10" cy="10" r="8"/><circle class="fg" id="goalRing" cx="10" cy="10" r="8" stroke-dasharray="50.27" stroke-dashoffset="50.27"/></svg><span id="goalTxt">今日 0/10</span><span class="stk" id="stkN" hidden></span></div>
     <div class="dust" id="dustStat" title="星尘：点亮单词获得，答题时可以换提示卡">星尘 0</div>
     <div class="combo" id="comboStat" hidden></div>
     <button class="ghost polish" id="polishBtn" type="button" hidden></button>
@@ -418,6 +428,8 @@ const titleOf = lv => LV_TITLE[Math.min(LV_TITLE.length - 1, Math.floor((lv - 1)
 const EXAMS = [{lv:"A2", name:"KET", note:"A2 Key"}, {lv:"B1", name:"PET", note:"B1 Preliminary"}, {lv:"B2", name:"FCE", note:"B2 First"}];
 const EXAM_N = {}; Object.values(RAW.words).forEach(d => EXAM_N[d.lv] = (EXAM_N[d.lv] || 0) + 1);
 const QUARTERS = [25, 50, 75, 100];
+const STREAK_MS = [3, 7, 14, 30, 50, 100, 200, 365];  // 连续天数里程碑
+const GUARD_COST = 100, GUARD_MAX = 2;          // 守护星：漏一天自动保住连续天数
 const GOAL = 10, GOAL_BONUS = 50;               // 今日目标：点亮或擦亮 10 颗星                           // 答对后自动进入下一题
 
 // ---------- 图结构 ----------
@@ -454,6 +466,8 @@ function load(){ try { const v = JSON.parse(localStorage.getItem(KEY)); if (v &&
   // 老存档：已经达到的等级和里程碑直接记上，不补弹庆祝
   if (!S.ms) { S.ms = {}; examPassed().forEach(k => S.ms[k] = ""); }
   if (!S.lvl) S.lvl = lvOf(S.lit.length);
+  if (!S.sms) { S.sms = {}; const c = streakNow(); STREAK_MS.forEach(m => { if (m <= c) S.sms[m] = ""; }); }
+  if (S.guard === undefined) S.guard = 0;
   recalc(); S.folded = S.folded.filter(i => CONS[i] && consDone(i)); }
 // 本地日期，作为“今天”的键
 const dayKey = t => { const d = new Date(t); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); };
@@ -462,8 +476,20 @@ function daily(){ if (!S.daily || S.daily.d !== today()) S.daily = {d: today(), 
 // 记一颗星（点亮或擦亮）；完成今日目标时返回 true
 function bumpDaily(){ const g = daily(); g.n++;
   if (!S.streak) S.streak = {d:"", c:0};
-  if (S.streak.d !== g.d){ S.streak.c = S.streak.d === dayKey(now() - DAY) ? S.streak.c + 1 : 1; S.streak.d = g.d; }
+  if (S.streak.d !== g.d){ S.streak.c = S.streak.d === dayKey(now() - DAY) ? S.streak.c + 1 : 1; S.streak.d = g.d;
+    if (S.streak.c > (S.streak.best || 0)) S.streak.best = S.streak.c;
+    if (!S.sms) S.sms = {};
+    if (STREAK_MS.includes(S.streak.c) && !(S.streak.c in S.sms)) { S.sms[S.streak.c] = today(); streakHit = S.streak.c; } }
   if (g.n >= GOAL && !g.done){ g.done = true; S.dust += GOAL_BONUS; return true; } return false; }
+let streakHit = null;                           // 这一次刚达到的连续天数里程碑
+const dayDiff = (a, b) => { const [y1, m1, d1] = a.split("-"), [y2, m2, d2] = b.split("-"); return Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / DAY); };
+// 现在还算数的连续天数：最后一次是今天或昨天才算
+function streakNow(){ const k = S.streak; if (!k || !k.d || !k.c) return 0; const g = dayDiff(k.d, today()); return g <= 1 ? k.c : 0; }
+// 打开时检查：漏了几天，守护星够就自动用掉，连续天数接着算
+function guardCheck(){ const k = S.streak; if (!k || !k.d || !k.c) return null;
+  const miss = dayDiff(k.d, today()) - 1; if (miss < 1) return null;
+  const have = S.guard || 0; if (have < miss) return null;
+  S.guard = have - miss; k.d = dayKey(now() - DAY); save(); return miss; }
 // 幸运星：每天一颗，点亮它星尘翻倍
 const hash = str => { let h = 2166136261; for (const c of str) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
 function lucky(){ if (!S.luck) S.luck = {d:"", w:null, got:false};
@@ -617,7 +643,10 @@ function paint(){
   const pb = document.getElementById("polishBtn"), nf = fadingWords().length; pb.hidden = !nf; pb.textContent = `待擦亮 ${nf}`;
   const dg = daily(), gp = Math.min(1, dg.n / GOAL);
   document.getElementById("goalRing").setAttribute("stroke-dashoffset", (50.27 * (1 - gp)).toFixed(2));
-  document.getElementById("goalTxt").textContent = dg.done ? `今日完成${S.streak && S.streak.c > 1 ? ` · 连续 ${S.streak.c} 天` : ""}` : `今日 ${dg.n}/${GOAL}`;
+  document.getElementById("goalTxt").textContent = dg.done ? "今日完成" : `今日 ${dg.n}/${GOAL}`;
+  const sn = streakNow(), sk = document.getElementById("stkN"); sk.hidden = sn < 2;
+  sk.innerHTML = `${sn}天${S.guard ? `<i> ${"◆".repeat(S.guard)}</i>` : ""}`;
+  sk.title = `连续 ${sn} 天${S.guard ? ` · 守护星 ${S.guard} 颗` : ""}（每天点亮或擦亮 1 颗就算）`;
   document.getElementById("goal").classList.toggle("done", dg.done);
   const mb = document.getElementById("muteBtn"); mb.textContent = S.mute ? "静音" : "音效"; mb.setAttribute("aria-pressed", String(!S.mute));
   renderBar();
@@ -796,7 +825,7 @@ function renderHome(){
     <div class="note" style="margin-top:0">拖动、滚轮或双指移动缩放地图，上方切换星系。每点亮 ${OPEN_STEP} 个词开放一个新星系。点亮的词过几天会变暗，答 1 题就能擦亮。</div>
     <div class="keys">${TYPE_ORDER.map(t => `<span style="--c:var(--t-${t})"><i></i>${TYPES[t].name}</span>`).join("")}</div>
     <div class="note">正确率 ${S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "—"} · 最高连击 ${S.best} · 星座 ${GC.flat().filter(consDone).length} / ${NCONS}</div>
-    <div class="note">单词星系 v1.7 · 当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。</div>
+    <div class="note">单词星系 v1.8 · 当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。</div>
     <div class="foot"><span></span><button class="ghost" id="resetBtn" type="button">重新开始</button></div></details>`;
   panel.innerHTML = html; bind(panel);
   document.getElementById("resetBtn").onclick = askReset;
@@ -997,12 +1026,12 @@ function lightUp(w){
   z.lucky = S.luck && S.luck.d === today() && S.luck.w === w && !S.luck.got;
   if (z.lucky) S.luck.got = true;
   z.dust = dustFor(w, stars) * (z.lucky ? 2 : 1) + (z.newCons !== null ? CONS_BONUS : 0); S.dust += z.dust;
-  z.goal = bumpDaily();
+  streakHit = null; z.goal = bumpDaily(); z.streak = streakHit;
   z.galDone = GW[gOf(w)].every(isLit);
   save(); paint(); pop(w); burst(w, z.unlocked);
   setTimeout(() => { if (quiz === z) fitWords([w, ...z.unlocked.filter(x => gOf(x) === cur)], small() ? 420 : 620, true); }, 450);   // 稍稍拉远，看到新解锁的星
-  if (z.goal || z.galDone || z.lvUp || z.ms.length) meteor(8);
-  sfx(z.newCons !== null || z.lvUp || z.ms.length ? "cons" : "light");
+  if (z.goal || z.galDone || z.lvUp || z.ms.length || z.streak) meteor(8);
+  sfx(z.newCons !== null || z.lvUp || z.ms.length || z.streak ? "cons" : "light");
   if (z.newCons !== null) meteor(5); else if (stars === 3) meteor(1);
   tip("stars"); if (z.unlocked.length) tip("choose"); if (z.newCons !== null) tip("cons"); if (z.newGal.length) tip("galaxy");
   renderResult();
@@ -1010,8 +1039,11 @@ function lightUp(w){
 // 阶段完成卡：考纲里程碑优先，其次升级；回顾这一阶段学了什么
 const examOf = lv => EXAMS.find(e => e.lv === lv);
 function msText(k){ const [l, q] = k.split(":"), e = examOf(l); return q === "100" ? `${e.name} 词汇全部点亮！` : q === "50" ? `${e.name} 词汇点亮一半了！` : `${e.name} 词汇点亮 ${q}%！`; }
+function streakHtml(n){ const nx = STREAK_MS.find(m => m > n);
+  return `<div class="badge stage"><b>${n >= 365 ? "连续一整年！" : `连续 ${n} 天！`}</b><p>你已经连续 ${n} 天来点亮星星了。每天哪怕只点亮或擦亮 1 颗，连续天数就不会断。</p>
+    <p class="note" style="margin:6px 0 0">${nx ? `下一个里程碑：${nx} 天。` : ""}${(S.guard || 0) < GUARD_MAX ? `可以在“我的星图”里用 ${GUARD_COST} 星尘换守护星，哪天忘了来，它会帮你保住连续天数。` : ""}</p></div>`; }
 function stageHtml(z){
-  let html = "";
+  let html = z.streak ? streakHtml(z.streak) : "";
   if (z.ms.length){ const k = z.ms[z.ms.length - 1], l = k.split(":")[0], n = examLit()[l] || 0;
     html += `<div class="badge stage"><b>${esc(msText(k))}</b><p>${examOf(l).note} 的 ${EXAM_N[l]} 个词里，你已经点亮了 ${n} 个。</p><p class="note" style="margin:6px 0 0">${mdText(today())}达成 · 在顶栏的等级里可以看到所有里程碑。</p></div>`; }
   if (z.lvUp){ const a = LV_AT[z.lvUp - 2], b = LV_AT[z.lvUp - 1], ws = S.lit.slice(a, b);
@@ -1039,6 +1071,7 @@ function renderResult(){
   const hb = document.getElementById("home"); if (hb) hb.onclick = () => { quiz = null; select(null); };
   if (litArr.length === WORDS.length) toast("整片单词星系都点亮了！");
   else if (z.ms.length) toast(msText(z.ms[z.ms.length - 1]));
+  else if (z.streak) toast(`连续 ${z.streak} 天！`);
   else if (z.lvUp) toast(`升到 Lv.${z.lvUp} · ${titleOf(z.lvUp)}！`);
   else if (z.goal) toast(`今日目标完成！星尘 +${GOAL_BONUS}`);
   else if (c) toast(`连成了${c.name}！`);
@@ -1052,14 +1085,16 @@ function finishReview(){
   z.giant = was < GIANT_LV && m.lv >= GIANT_LV; z.near = !z.giant && m.lv === GIANT_LV - 1;
   z.gain = z.miss === 0 && (S.stars[w] || 3) < 3; if (z.gain) S.stars[w] = (S.stars[w] || 3) + 1;
   z.dust = z.wasDue && z.miss === 0 ? 5 : 0; S.dust += z.dust;
-  if (bumpDaily()) { toast(`今日目标完成！星尘 +${GOAL_BONUS}`); meteor(8); }
-  save(); z.done = true; paint(); pop(w); sfx(z.giant ? "cons" : "light"); if (z.giant) meteor(5); else if (z.miss === 0) meteor(1); renderReviewDone();
+  streakHit = null; if (bumpDaily()) { toast(`今日目标完成！星尘 +${GOAL_BONUS}`); meteor(8); }
+  z.streak = streakHit; if (z.streak) { toast(`连续 ${z.streak} 天！`); meteor(8); }
+  save(); z.done = true; paint(); pop(w); sfx(z.giant || z.streak ? "cons" : "light"); if (z.giant) meteor(5); else if (z.miss === 0) meteor(1); renderReviewDone();
 }
 function renderReviewDone(){
   const z = quiz, w = z.w; const d = Math.round((S.mem[w].due - now()) / DAY); const f = fadingWords();
   let html = `<div class="eyebrow">擦亮成功</div><div class="big">${esc(w)}</div><div class="meta" style="margin-top:0">${starHtml(S.stars[w]||3)}${z.dust ? `<span class="dust">星尘 +${z.dust}</span>` : ""}</div>
     <div class="cn">${esc(D.words[w].cn)}</div>
     <div class="note">${z.gain ? "一次答对，多了一颗星！" : ""}${z.wasDue ? `下次 ${d} 天后再来看看它。` : ""}${z.near ? "再擦亮一次就成为恒星。" : ""}</div>`;
+  if (z.streak) html += streakHtml(z.streak);
   if (z.giant) html += `<div class="badge stage"><b>新恒星：${esc(w)}</b><p>它已经通过 ${GIANT_LV} 轮复习，算是真正记住了。现在一共有 ${giantCount()} 颗恒星。</p><p class="note" style="margin:6px 0 0">恒星 ${INTERVALS[GIANT_LV]} 天才需要擦亮一次；答错会退回普通星。</p></div>`;
   if (f.length) html += `<div class="ctabar"><button class="cta" data-review="${f[0]}" type="button">擦亮下一颗 · 还有 ${f.length} 颗</button></div>`;
   else { const c = candidates(); html += c.length ? `<div class="ctabar"><button class="cta" data-start="${c[0].w}" type="button">继续：${esc(c[0].w)} · ${QN} 题</button></div>` : ""; }
@@ -1138,10 +1173,17 @@ function showLevel(){ if (busy()) { toast("先完成这一轮答题"); return; }
     <div class="mbar"><i style="width:${lvBar}%"></i></div>
     <p>${top ? "已经满级了！" : `再点亮 <b style="color:var(--lamp)">${LV_AT[lv] - n}</b> 颗升到 Lv.${lv + 1}${titleOf(lv + 1) !== titleOf(lv) ? " · " + titleOf(lv + 1) : ""}。`}一共点亮了 ${n} 个词，其中 <b style="color:var(--lamp)">${giantCount()}</b> 颗恒星。</p>
     ${exams}
-    <div class="statline">连续 ${S.streak && S.streak.c ? S.streak.c : 0} 天 · 星座 ${GC.flat().filter(consDone).length} / ${NCONS} · 正确率 ${S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "—"} · 最高连击 ${S.best}</div>
+    <div class="streak"><div><div>连续 <b>${streakNow()}</b> 天 <small style="color:var(--muted)">· 最长 ${Math.max(S.streak && S.streak.best || 0, streakNow())} 天</small></div>
+      <div class="ms">${STREAK_MS.slice(0, 6).map(m => `<span class="${m in (S.sms || {}) ? "on" : ""}">${m in (S.sms || {}) ? "★" : "☆"} ${m}天</span>`).join("")}</div></div>
+      <div style="text-align:right"><div style="margin-bottom:4px">守护星 ${"◆".repeat(S.guard || 0)}${"◇".repeat(GUARD_MAX - (S.guard || 0))}</div>
+      <button type="button" class="guardb" id="buyGuard"${(S.guard || 0) >= GUARD_MAX || S.dust < GUARD_COST ? " disabled" : ""}>${(S.guard || 0) >= GUARD_MAX ? "已经存满" : `${GUARD_COST} 星尘换 1 颗`}</button></div></div>
+    <p class="note" style="margin:4px 0 0">每天点亮或擦亮 1 颗星就算连续。守护星最多存 ${GUARD_MAX} 颗，哪天没来会自动用掉 1 颗，连续天数不会断。</p>
+    <div class="statline">星座 ${GC.flat().filter(consDone).length} / ${NCONS} · 正确率 ${S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "—"} · 最高连击 ${S.best}</div>
     <div class="row"><button class="cta alt" id="no" type="button">关闭</button></div></div>`;
   modal.hidden = false;
-  document.getElementById("no").onclick = () => modal.hidden = true; }
+  document.getElementById("no").onclick = () => modal.hidden = true;
+  document.getElementById("buyGuard").onclick = () => { if ((S.guard || 0) >= GUARD_MAX || S.dust < GUARD_COST) return;
+    S.dust -= GUARD_COST; S.guard = (S.guard || 0) + 1; save(); paint(); sfx("ok"); toast("得到 1 颗守护星"); showLevel(); }; }
 document.getElementById("lvBtn").onclick = showLevel;
 document.getElementById("bankBtn").textContent = BANKS[BANK].name;
 document.getElementById("bankBtn").onclick = askBank;
@@ -1163,6 +1205,7 @@ const TIPS = {
   hint:   "星尘够了！答题时可以用<b>提示卡</b>去掉两个错误选项。",
   cons:   "连成<b>星座</b>了！它已经收起成一颗大星，点它可以展开。",
   galaxy: "开放了新的<b>星系</b>！在地图上方切换。",
+  guard:  "星尘够了！点顶栏的<b>等级</b>，可以用 100 星尘换一颗<b>守护星</b>：哪天忘了来，它会帮你保住连续天数。",
   fade:   "有的星<b>变暗</b>了，说明该复习了。答对 1 题就能把它擦亮。"
 };
 const tipQ = [];
@@ -1178,12 +1221,14 @@ function sky(){ const c = document.getElementById("sky"), r = c.getBoundingClien
   let sd = 11; const rn = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
   for (let k = 0; k < r.width * r.height / 2600; k++){ x.globalAlpha = .15 + rn() * .45; x.fillStyle = rn() < .15 ? "#ffe6b0" : "#cfd8ff";
     x.beginPath(); x.arc(rn() * r.width, rn() * r.height, rn() < .92 ? .7 : 1.3, 0, 7); x.fill(); } }
-load(); sky(); build(S.gal); paint(); renderPanel(); weekly();
+load(); const guarded = guardCheck(); sky(); build(S.gal); paint(); renderPanel(); weekly();
+if (guarded) setTimeout(() => toast(`守护星帮你保住了连续 ${S.streak.c} 天（用掉 ${guarded} 颗）`), 600);
+if (!guarded && S.dust >= GUARD_COST && streakNow() >= 2 && !S.guard) tip("guard");
 if (!S.lit.length) tip("first");
 if (fadingWords().length) tip("fade");
 let rz; addEventListener("resize", () => { setVB(); clearTimeout(rz); rz = setTimeout(sky, 200); });
 window.__wn = { get S(){ return S; }, set S(v){ S = v; recalc(); }, D, GENS, qMeaning, qRelation, qBlank, qLink, status, candidates, get quiz(){ return quiz; },
-  refresh(){ recalc(); build(cur); paint(); renderPanel(); }, save, CONS, recalc, nextQ, lvOf, examPassed, showLevel, startQuiz, weekly, isGiant, giantCount };
+  refresh(){ recalc(); build(cur); paint(); renderPanel(); }, save, CONS, recalc, nextQ, lvOf, examPassed, showLevel, startQuiz, weekly, isGiant, giantCount, streakNow, guardCheck };
 })();
 </script>
 </body>

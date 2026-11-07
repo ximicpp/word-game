@@ -485,9 +485,6 @@ details.fold[open] summary{margin-bottom:10px}
 #net.allv .edge.weak.lit:not(.hl){opacity:.16;stroke-width:1.1}
 #net.sel-on .edge.lit:not(.hl){opacity:.22}
 #net.v-ready #halfs,#net.v-lit #halfs{display:none}
-.node.ready.near .dot{stroke:#b9a26a}
-.node.ready.near.imp2 .dot{stroke:#cdb373}
-.node.ready.near.imp3 .dot{stroke:#e2c47e}
 /* 答题进度：外圈一段段亮起 */
 .node .prog{fill:none;stroke:none}
 .node.charging .prog{stroke:var(--lamp);stroke-width:2.6;stroke-linecap:round;transition:stroke-dasharray .5s ease-out;filter:drop-shadow(0 0 3px rgba(255,201,92,.8))}
@@ -513,6 +510,19 @@ details.fold[open] summary{margin-bottom:10px}
 @keyframes pingDot{40%{transform:scale(1.5);fill:#fff}}
 .fxtxt{font-family:var(--f-cn);font-size:14px;font-weight:700;fill:var(--lamp);paint-order:stroke;stroke:var(--sky);stroke-width:4px;animation:fxtxt 1.8s ease-out forwards;pointer-events:none}
 @keyframes fxtxt{0%{opacity:0;transform:translateY(6px)}20%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0;transform:translateY(-8px)}}
+
+/* v1.10b 清晰星空：平时没点亮的星是实心小暗点、没点亮的边不画；只有选中词的连线和相关词才用虚线 */
+#net.allv .edge:not(.lit):not(.hl){display:none}
+#net.allv .edge.hl:not(.lit){stroke-dasharray:4 5}
+.node.ready .dot{stroke:none;stroke-dasharray:none;fill:#3e4a6a}
+.node.ready .dot{r:1.8}
+.node.ready.imp2 .dot{r:2.5;fill:#4f5c84;stroke:none}
+.node.ready.imp3 .dot{r:3.3;fill:#5d6a94;stroke:none}
+.node.ready.near .dot{fill:#5a5446}
+.node.ready.near.imp2 .dot{fill:#6b6250}
+.node.ready.near.imp3 .dot{fill:#847455}
+.node.ready.sel .dot,.node.ready.nb .dot,.node.ready.rec .dot,.node.ready.nb.imp2 .dot,.node.ready.nb.imp3 .dot,.node.ready.sel.imp2 .dot,.node.ready.sel.imp3 .dot,.node.ready.rec.imp2 .dot,.node.ready.rec.imp3 .dot{r:4.5;fill:var(--sky);stroke:var(--ink);stroke-width:1.4;stroke-dasharray:2 2}
+#net.sel-on .node.ready:not(.sel):not(.nb) .dot{opacity:.5}
 </style>
 </head>
 <body>

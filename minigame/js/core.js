@@ -1,4 +1,4 @@
-// 游戏规则（和网页版 index.html 里的逻辑一致）：词库筛选、点亮与解锁、推荐、星级与复习、出题。
+// 游戏规则（和网页版 index.html 里的逻辑一致）：词库筛选、自由点亮、星等、推荐、星级与复习、等级与里程碑、连续天数、出题。
 // 这里不碰界面，只返回数据；文字用“片段”数组表示：{s:文字, f:"w"英文|"cn"中文|"ipa"音标, b:粗体, c:颜色名}
 const RAW = require("./data.js");
 
@@ -9,6 +9,19 @@ const TYPE_ORDER = ["sound","form","syn","ant","root","coll","topic","hyper"];
 const DAY = 864e5;
 const INTERVALS = [1, 3, 7, 14, 30];
 const HINT_COST = 30, CONS_BONUS = 30, OPEN_STEP = 12, GOAL = 10, GOAL_BONUS = 50, QN = 3;
+// 观星者等级：按累计点亮数（所有词库合计）升级
+const LV_AT = [0,10,25,45,70,100,140,190,250,320,400,500,620,760,920,1100,1300,1550,1800,2100,2400,2750,3100,3400,3716];
+const LV_TITLE = ["见习观星者","寻星人","引星人","星图师","星河旅人","星系领航员","星海守望者"];
+const lvOf = n => { let i = 0; while (i + 1 < LV_AT.length && n >= LV_AT[i + 1]) i++; return i + 1; };
+const titleOf = lv => LV_TITLE[Math.min(LV_TITLE.length - 1, Math.floor((lv - 1) / 4))];
+// 考纲里程碑：KET / PET / FCE 各自点亮 25% / 50% / 75% / 100%
+const EXAMS = [{lv:"A2", name:"KET", note:"A2 Key"}, {lv:"B1", name:"PET", note:"B1 Preliminary"}, {lv:"B2", name:"FCE", note:"B2 First"}];
+const QUARTERS = [25, 50, 75, 100];
+const STREAK_MS = [3, 7, 14, 30, 50, 100, 200, 365];
+const GUARD_COST = 100, GUARD_MAX = 2;
+const GIANT_LV = INTERVALS.length - 1;
+const MAG = {3:"一等星", 2:"二等星", 1:"三等星"};
+const SPELL_G = ["spell", "letters"];
 const LV_RANK = {A2:0, B1:1, B2:2};
 
 const T = (s, o) => Object.assign({s: String(s)}, o || {});
@@ -42,7 +55,13 @@ function createCore(store, shiftDays){
   const STARTS = GAL.map((_, g) => WORDS.filter(w => gOf(w) === g).sort((a, b) => (LV_RANK[D.words[a].lv] - LV_RANK[D.words[b].lv]) || (adj[b].length - adj[a].length) || (a < b ? -1 : 1))[0]);
   const DIFF = {}; WORDS.forEach(w => { const n = adj[w].filter(e => e.t === "sound" || e.t === "form").length;
     DIFF[w] = Math.min(3, LV_RANK[D.words[w].lv] + 1 + (n >= 2 ? 1 : 0)); });
-  const dustFor = (w, stars) => DIFF[w] * 10 + stars * 5;
+  // 星等：强关系（不算“同主题”）越多越重要。一等星 5 题、二等星 4 题、三等星 3 题，点亮后也更亮
+  const IMP = {}; WORDS.forEach(w => IMP[w] = new Set(adj[w].filter(e => e.t !== "topic").map(e => e.w)).size);
+  const IMP_AT = (() => { const v = WORDS.map(w => IMP[w]).sort((a, b) => a - b); return [v[Math.floor(v.length * .6)], v[Math.floor(v.length * .88)]]; })();
+  const tierOf = w => IMP[w] >= Math.max(IMP_AT[1], 6) ? 3 : IMP[w] >= Math.max(IMP_AT[0], 3) ? 2 : 1;
+  const qnOf = w => 2 + tierOf(w);
+  const dustFor = (w, stars) => tierOf(w) * 15 + stars * 5;
+  const EXAM_N = {}; Object.keys(RAW.words).forEach(w => { const l = RAW.words[w].lv; EXAM_N[l] = (EXAM_N[l] || 0) + 1; });
 
   // ---------- 状态 ----------
   const fresh = () => ({ v:2, tips:{}, lit:[], answered:0, correct:0, stars:{}, mem:{}, combo:0, best:0, folded:[], dust:30, gal:0, mute:false, daily:{d:"", n:0, done:false}, streak:{d:"", c:0}, luck:{d:"", w:null, got:false}, bank:"kp" });
@@ -54,33 +73,67 @@ function createCore(store, shiftDays){
     S.lit = [...new Set(S.lit.filter(w => RAW.words[w]))]; S.bank = BANK;
     if (S.v !== 2){ S.folded = []; S.v = 2; }
     S.lit.forEach(w => { if (!S.stars[w]) S.stars[w] = 3; if (!S.mem[w]) S.mem[w] = {lv:0, due: now() + DAY}; });
-    if (!GAL[S.gal] || !GW[S.gal].length) S.gal = 0;
-    recalc(); S.folded = S.folded.filter(i => CONS[i] && consDone(i)); cur = S.gal; }
+    S.gal = 0;
+    if (!S.ms) { S.ms = {}; examPassed().forEach(k => S.ms[k] = ""); }
+    if (!S.lvl) S.lvl = lvOf(S.lit.length);
+    if (!S.sms) { S.sms = {}; const c = streakNow(); STREAK_MS.forEach(m => { if (m <= c) S.sms[m] = ""; }); }
+    if (S.guard === undefined) S.guard = 0;
+    recalc(); S.folded = S.folded.filter(i => CONS[i] && consDone(i)); cur = 0; }
   const dayKey = t => { const d = new Date(t); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); };
   const today = () => dayKey(now());
   function daily(){ if (!S.daily || S.daily.d !== today()) S.daily = {d: today(), n: 0, done: false}; return S.daily; }
-  function bumpDaily(){ const g = daily(); g.n++;
+  let streakHit = null;                           // 这一次刚达到的连续天数里程碑
+  function bumpDaily(){ const g = daily(); g.n++; streakHit = null;
     if (!S.streak) S.streak = {d:"", c:0};
-    if (S.streak.d !== g.d){ S.streak.c = S.streak.d === dayKey(now() - DAY) ? S.streak.c + 1 : 1; S.streak.d = g.d; }
+    if (S.streak.d !== g.d){ S.streak.c = S.streak.d === dayKey(now() - DAY) ? S.streak.c + 1 : 1; S.streak.d = g.d;
+      if (S.streak.c > (S.streak.best || 0)) S.streak.best = S.streak.c;
+      if (!S.sms) S.sms = {};
+      if (STREAK_MS.includes(S.streak.c) && !(S.streak.c in S.sms)) { S.sms[S.streak.c] = today(); streakHit = S.streak.c; } }
     if (g.n >= GOAL && !g.done){ g.done = true; S.dust += GOAL_BONUS; return true; } return false; }
+  const dayDiff = (a, b) => { const [y1, m1, d1] = a.split("-"), [y2, m2, d2] = b.split("-"); return Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / DAY); };
+  // 现在还算数的连续天数：最后一次是今天或昨天才算
+  function streakNow(){ const k = S.streak; if (!k || !k.d || !k.c) return 0; return dayDiff(k.d, today()) <= 1 ? k.c : 0; }
+  // 打开时检查：漏了几天，守护星够就自动用掉，连续天数接着算
+  function guardCheck(){ const k = S.streak; if (!k || !k.d || !k.c) return null;
+    const miss = dayDiff(k.d, today()) - 1; if (miss < 1) return null;
+    const have = S.guard || 0; if (have < miss) return null;
+    S.guard = have - miss; k.d = dayKey(now() - DAY); save(); return miss; }
+  function buyGuard(){ if ((S.guard || 0) >= GUARD_MAX || S.dust < GUARD_COST) return false; S.dust -= GUARD_COST; S.guard = (S.guard || 0) + 1; save(); return true; }
+  function examLit(){ const c = {}; S.lit.forEach(w => { const l = RAW.words[w] && RAW.words[w].lv; if (l) c[l] = (c[l] || 0) + 1; }); return c; }
+  function examPassed(){ const c = examLit(), out = [];
+    EXAMS.forEach(e => QUARTERS.forEach(q => { if ((c[e.lv] || 0) >= Math.ceil(EXAM_N[e.lv] * q / 100)) out.push(e.lv + ":" + q); })); return out; }
+  const examOf = lv => EXAMS.find(e => e.lv === lv);
+  function msText(k){ const [l, q] = k.split(":"), e = examOf(l); return q === "100" ? `${e.name} 词汇全部点亮！` : q === "50" ? `${e.name} 词汇点亮一半了！` : `${e.name} 词汇点亮 ${q}%！`; }
+  const mdText = d => { const [, m, dd] = d.split("-"); return `${+m}月${+dd}日`; };
+  // 每周回顾：每周第一次打开时，对比上次的快照；返回要展示的数据，或 null
+  const weekKey = t => { const d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return dayKey(d.getTime()); };
+  const snap = () => ({k: weekKey(now()), lit: S.lit.length, giant: giantCount(), pol: S.polished || 0, lvl: lvOf(S.lit.length)});
+  function weekly(){ const w = S.week, cur = snap();
+    if (!w || !S.lit.length) { S.week = cur; save(); return null; }
+    if (w.k === cur.k) return null;
+    S.week = cur; save();
+    const items = [[cur.lit - w.lit, "颗新点亮"], [cur.pol - w.pol, "次擦亮"], [cur.giant - w.giant, "颗新恒星"], [cur.lvl - w.lvl, "级升级"]].filter(([v]) => v > 0);
+    return {items, lastWeek: w.k === weekKey(now() - 7 * DAY)}; }
   const hash = str => { let h = 2166136261; for (const c of str) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
   function lucky(){ if (!S.luck) S.luck = {d:"", w:null, got:false};
     const L = S.luck, t = today();
     if (L.d === t) return L.got || !readySet.has(L.w) ? null : L.w;
-    const st = new Set(STARTS), pool = [...readySet].filter(w => gOf(w) === cur && !st.has(w)); const all = pool.length ? pool : [...readySet].filter(w => !st.has(w));
+    const all = [...readySet].filter(w => tierOf(w) >= 2); if (!all.length) all.push(...readySet);
     if (!all.length) return null;
     all.sort(); S.luck = {d: t, w: all[hash(t) % all.length], got: false}; save(); return S.luck.w; }
   function save(){ try { store.set(KEY, JSON.stringify(S)); } catch(e){} }
   function recalc(){
     litArr = S.lit.filter(w => D.words[w]); litSet = new Set(litArr); const ra = new Set();
-    litArr.forEach(w => adj[w].forEach(e => { if (!litSet.has(e.w)) ra.add(e.w); }));
-    openG = GAL.map((_, g) => g === 0 || litArr.length >= g * OPEN_STEP || GW[g].some(w => litSet.has(w) || ra.has(w)));
-    GAL.forEach((_, g) => { const s = STARTS[g]; if (openG[g] && !litSet.has(s)) ra.add(s); });
-    readySet = ra;
+    // 自由浏览：任何没点亮的词都可以做题点亮
+    WORDS.forEach(w => { if (!litSet.has(w)) ra.add(w); });
+    openG = GAL.map(() => true);
+    readySet = ra; candKey = "";
   }
   const isLit = w => litSet.has(w);
   const status = w => litSet.has(w) ? "lit" : readySet.has(w) ? "ready" : "locked";
   const isFading = w => isLit(w) && S.mem[w] && now() >= S.mem[w].due;
+  const isGiant = w => isLit(w) && S.mem[w] && S.mem[w].lv >= GIANT_LV;
+  const giantCount = () => S.lit.filter(w => S.mem[w] && S.mem[w].lv >= GIANT_LV).length;
   const fadingWords = () => litArr.filter(isFading);
   const consDone = i => CONS[i].words.every(isLit);
   const isFolded = i => S.folded.includes(i);
@@ -88,11 +141,16 @@ function createCore(store, shiftDays){
   const consLeft = w => consOf[w] === undefined ? null : CONS[consOf[w]].words.filter(x => x !== w && !isLit(x)).length;
   function dueText(w){ const m = S.mem[w]; if (!m) return ""; const d = Math.ceil((m.due - now()) / DAY);
     return d <= 0 ? "星光变暗了，答 1 题就能擦亮" : d === 1 ? "明天需要擦亮一次" : `${d} 天后需要擦亮`; }
+  // 推荐顺序：能连成星座 → 挨着已点亮的词 → 重要的词 → 难度低
+  let candKey = "", candVal = null;
   function candidates(prefer){
+    const k = prefer ? null : S.lit.length + "|" + S.lit[S.lit.length - 1];
+    if (k && k === candKey) return candVal.slice();
     const pf = prefer || new Set();
-    return [...readySet].map(w => ({w, g: gainOf(w).length, cl: consLeft(w)}))
-      .sort((a, b) => ((gOf(b.w) === cur) - (gOf(a.w) === cur)) || (pf.has(b.w) - pf.has(a.w)) || ((b.cl === 0) - (a.cl === 0))
-        || (b.g - a.g) || (DIFF[a.w] - DIFF[b.w]) || (a.w < b.w ? -1 : 1));
+    const r = [...readySet].map(w => ({w, g: IMP[w], cl: consLeft(w), nl: adj[w].some(e => litSet.has(e.w))}))
+      .sort((a, b) => (pf.has(b.w) - pf.has(a.w)) || ((b.cl === 0) - (a.cl === 0))
+        || (b.nl - a.nl) || (b.g - a.g) || (DIFF[a.w] - DIFF[b.w]) || (a.w < b.w ? -1 : 1));
+    if (k) { candKey = k; candVal = r; return r.slice(); } return r;
   }
   const rep = w => (consOf[w] !== undefined && isFolded(consOf[w])) ? "c" + consOf[w] : w;
   function fold(i, on){ S.folded = S.folded.filter(x => x !== i); if (on && consDone(i)) S.folded.push(i); save(); }
@@ -183,6 +241,25 @@ function createCore(store, shiftDays){
     return { gen:"spell", q:[T("哪个拼写是对的？")], sent:[T(D.words[w].cn)], opts, answer:w,
       explain:[T("正确拼写："), W(w, {b:1, c:"good"}), T(" "), ipaRun(w)] };
   }
+  // 补字母：挖掉两个最容易拼错的字母，从几种写法里挑出对的
+  function qLetters(w){
+    const V = "aeiou", wins = [];
+    for (let i = 1; i + 2 <= w.length; i++){ const seg = w.slice(i, i + 2), alts = new Set();
+      if (!V.includes(seg[0]) && !V.includes(seg[1]) && seg[0] !== seg[1]) continue;
+      alts.add(seg[1] + seg[0]);
+      for (let k = 0; k < 2; k++) if (V.includes(seg[k])) for (const v of V) alts.add(seg.slice(0, k) + v + seg.slice(k + 1));
+      if (seg[0] === seg[1]) alts.add(seg[0]); else if (!V.includes(seg[1])) alts.add(seg[0] + seg[1] + seg[1]);
+      if (V.includes(seg[0]) && V.includes(seg[1])) for (const a of V) for (const b of V) alts.add(a + b);
+      const ok = [...alts].filter(a => a !== seg && !/^([aiu])\1$/.test(a) && !RAW.words[w.slice(0, i) + a + w.slice(i + 2)]);
+      if (ok.length >= 3) wins.push({i, seg, ok, score: (V.includes(seg[0]) && V.includes(seg[1]) ? 2 : 0) + (seg[0] === seg[1] ? 2 : 0) + (i > 1 ? 1 : 0)}); }
+    if (!wins.length) return qSpell(w);
+    const best = Math.max(...wins.map(x => x.score)), c = pick(wins.filter(x => x.score === best));
+    const near = c.ok.filter(a => a.length === 2 && [...a].filter((ch, k) => ch !== c.seg[k]).length === 1 || a === c.seg[1] + c.seg[0] || a.length !== 2);
+    const ds = [...shuffle(near), ...shuffle(c.ok)].filter((a, k, arr) => arr.indexOf(a) === k).slice(0, 3);
+    const opts = shuffle([c.seg, ...ds]).map(x => ({key:x, label:x, en:true}));
+    return { gen:"letters", q:[T("补上缺的字母")], sent:[W(w.slice(0, c.i), {b:1}), W("__", {b:1, c:"lamp"}), W(w.slice(c.i + 2), {b:1}), T("\n"), T(D.words[w].cn, {f:"cn", size:15, c:"muted"})], opts, answer:c.seg,
+      explain:[T("正确拼写："), W(w.slice(0, c.i), {b:1, c:"good"}), W(c.seg, {b:1, c:"lamp"}), W(w.slice(c.i + 2), {b:1, c:"good"}), T(" "), ipaRun(w)] };
+  }
   function qIpa(w){
     const ipa = D.words[w].ipa; const seen = new Set([ipa]);
     const ok = x => !seen.has(D.words[x].ipa) && (seen.add(D.words[x].ipa), true);
@@ -192,14 +269,17 @@ function createCore(store, shiftDays){
     return { gen:"ipa", q:[T("/" + ipa + "/", {f:"ipa", c:"ready"}), T(" 是哪个词？")], opts, answer:w,
       explain:[T("/" + ipa + "/", {f:"ipa"}), T(" 是 "), W(w, {b:1, c:"good"}), T("：" + D.words[w].cn)], showCn:true };
   }
-  const GENS = {meaning:qMeaning, reverse:qReverse, relation:qRelation, blank:qBlank, spell:qSpell, ipa:qIpa, link:qLink};
+  const GENS = {meaning:qMeaning, reverse:qReverse, relation:qRelation, blank:qBlank, spell:qSpell, letters:qLetters, ipa:qIpa, link:qLink};
   function gensFor(w, mode){ const g = ["meaning","reverse","blank","ipa"];
-    if (canSpell(w)) g.push("spell");
+    if (canSpell(w)) g.push("spell", "letters");
     if (mode === "review") { if (adj[w].some(e => isLit(e.w))) g.push("link"); }
     else if (adj[w].length) g.push("relation");
     return g; }
+  // 点亮：一道考意思、一道考拼写（能拼的词），其余随机；题数按星等 3–5 道
   function drawGens(w){ const all = gensFor(w, "light"), first = pick(["meaning","reverse"]);
-    return shuffle([first, ...shuffle(all.filter(g => g !== "meaning" && g !== "reverse").concat(first === "meaning" ? ["reverse"] : ["meaning"])).slice(0, QN - 1)]); }
+    const sp = all.some(g => SPELL_G.includes(g)) ? [pick(SPELL_G)] : [];
+    const rest = shuffle(all.filter(g => g !== "meaning" && g !== "reverse" && !SPELL_G.includes(g)).concat(first === "meaning" ? ["reverse"] : ["meaning"]));
+    return shuffle([first, ...sp, ...rest].slice(0, qnOf(w))); }
 
   // ---------- 一轮答题 ----------
   function newQuiz(w, mode){
@@ -223,25 +303,27 @@ function createCore(store, shiftDays){
     const stars = z.miss === 0 ? 3 : z.miss === 1 ? 2 : 1;
     if (!isLit(w)) S.lit.push(w);
     S.stars[w] = Math.max(stars, S.stars[w] || 0);
+    const nl = lvOf(S.lit.length); z.lvUp = nl > (S.lvl || 1) ? nl : null; if (z.lvUp) S.lvl = nl;
+    if (!S.ms) S.ms = {}; z.ms = examPassed().filter(k => !(k in S.ms)); z.ms.forEach(k => S.ms[k] = today());
     S.mem[w] = {lv:0, due: now() + INTERVALS[0] * DAY};
     recalc();
     z.done = true; z.stars = stars; z.unlocked = [...readySet].filter(x => !before.has(x));
     z.newGal = GAL.map((_, g) => g).filter(g => openG[g] && !openBefore[g]);
     const ci = consOf[w]; z.newCons = ci !== undefined && consDone(ci) ? ci : null;
-    if (z.newCons !== null) fold(z.newCons, true);
     z.lucky = S.luck && S.luck.d === today() && S.luck.w === w && !S.luck.got;
     if (z.lucky) S.luck.got = true;
     z.dust = dustFor(w, stars) * (z.lucky ? 2 : 1) + (z.newCons !== null ? CONS_BONUS : 0); S.dust += z.dust;
-    z.goal = bumpDaily();
-    z.galDone = GW[gOf(w)].every(isLit);
+    z.goal = bumpDaily(); z.streak = streakHit;
+    z.galDone = false;
     save();
   }
   function finishReview(z){
-    const w = z.w, m = S.mem[w] || (S.mem[w] = {lv:0, due:now()});
-    if (z.wasDue){ if (z.miss === 0) m.lv = Math.min(m.lv + 1, INTERVALS.length - 1); m.due = now() + INTERVALS[m.lv] * DAY; }
+    const w = z.w, m = S.mem[w] || (S.mem[w] = {lv:0, due:now()}), was = m.lv;
+    if (z.wasDue){ if (z.miss === 0) m.lv = Math.min(m.lv + 1, INTERVALS.length - 1); m.due = now() + INTERVALS[m.lv] * DAY; S.polished = (S.polished || 0) + 1; }
+    z.giant = was < GIANT_LV && m.lv >= GIANT_LV; z.near = !z.giant && m.lv === GIANT_LV - 1;
     z.gain = z.miss === 0 && (S.stars[w] || 3) < 3; if (z.gain) S.stars[w] = (S.stars[w] || 3) + 1;
     z.dust = z.wasDue && z.miss === 0 ? 5 : 0; S.dust += z.dust;
-    z.goal = bumpDaily();
+    z.goal = bumpDaily(); z.streak = streakHit;
     save(); z.done = true;
   }
   function reset(){ S = Object.assign(fresh(), {tips: S.tips || {}, mute: S.mute}); recalc(); cur = 0; S.gal = 0; save(); }
@@ -252,10 +334,11 @@ function createCore(store, shiftDays){
   // 用属性描述符合并，保证 S、cur 等 getter 始终读到最新值
   return Object.defineProperties(C, Object.getOwnPropertyDescriptors({
     BANKS, BANK, ALLC, TYPE_ORDER, TYPES, GAL, CONS, D, WORDS, adj, nbSet, gOf, GW, GE, GC, consOf, NCONS, STARTS, DIFF,
-    HINT_COST, OPEN_STEP, GOAL, GOAL_BONUS, QN, RAW,
+    HINT_COST, OPEN_STEP, GOAL, GOAL_BONUS, QN, RAW, IMP, tierOf, qnOf, MAG, LV_AT, lvOf, titleOf, EXAMS, EXAM_N, QUARTERS, STREAK_MS, GUARD_COST, GUARD_MAX, GIANT_LV, INTERVALS, LVS,
     get S(){ return S; }, get cur(){ return cur; }, get litArr(){ return litArr; }, get readySet(){ return readySet; }, get openG(){ return openG; },
     now, save, recalc, daily, lucky, isLit, status, isFading, fadingWords, consDone, isFolded, gainOf, consLeft, dueText, candidates, rep, fold, dustFor,
-    GENS, gensFor, newQuiz, answer, retry, useHint, lightUp, finishReview, reset, setBank, setCur, today
+    GENS, gensFor, newQuiz, answer, retry, useHint, lightUp, finishReview, reset, setBank, setCur, today,
+    isGiant, giantCount, streakNow, guardCheck, buyGuard, examLit, examPassed, msText, mdText, weekly, cn1
   }));
 }
 

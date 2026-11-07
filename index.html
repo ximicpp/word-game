@@ -456,7 +456,7 @@ const SHIFT = (parseFloat(new URLSearchParams(location.search).get("days")) || 0
 const now = () => Date.now() + SHIFT;
 const HINT_COST = 30, CONS_BONUS = 30;
 const OPEN_STEP = 12;                           // 每点亮 12 个词开放一个新星系
-const AUTO_MS = 1300;
+const AUTO_MS = 3500;                          // 答对后停留 3.5 秒看解答，点任意处可以马上继续
 // 观星者等级：按累计点亮数（所有词库合计）升级；前几级 1–2 天一级，之后约一周一级
 const LV_AT = [0,10,25,45,70,100,140,190,250,320,400,500,620,760,920,1100,1300,1550,1800,2100,2400,2750,3100,3400,3716];
 const LV_TITLE = ["见习观星者","寻星人","引星人","星图师","星河旅人","星系领航员","星海守望者"];
@@ -1064,7 +1064,7 @@ function renderQuiz(){
   html += `</div>`;
   if (z.picked !== null){
     html += `<div class="explain ${right ? "" : "bad"}">${right ? "<b>答对了。</b> " : "<b>答错了。</b> "}${q.explain}</div>`;
-    html += right ? `<div class="auto" style="--d:${AUTO_MS}ms"><i></i></div>` : `<div class="ctabar"><button class="cta" id="retry" type="button">再答一次</button></div>`;
+    html += right ? `<div class="auto" style="--d:${AUTO_MS}ms"><i></i></div><div class="note" style="margin-top:6px;text-align:center">看完解答，点任意处继续</div>` : `<div class="ctabar"><button class="cta" id="retry" type="button">再答一次</button></div>`;
   } else {
     if (!q.cut && S.dust >= HINT_COST) html += `<div class="tools"><button type="button" class="tool" id="hint">提示卡：去掉两个错误选项 · 星尘 ${HINT_COST}</button></div>`;
     if (z.miss) html += `<div class="note">答错 ${z.miss} 次，这颗星会暗一些。</div>`;

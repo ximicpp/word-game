@@ -5,7 +5,7 @@ const U = require("./ui.js");
 const { createCore } = require("./core.js");
 const { COL } = U;
 
-const VERSION = "1.11";
+const VERSION = "1.12";
 const ctx = P.ctx, W = P.W, H = P.H, dpr = P.dpr;
 const PAD = 16, AUTO_MS = 3500;
 U.setFamilies(P.families || {});
@@ -555,9 +555,10 @@ function drawStatic(c, G){ statN++;
 }
 function drawLit(c, w, p, Z, boost){
   const T0 = core.tierOf(w), fade = core.isFading(w), giant = core.isGiant(w), r = litR(w, Z) * (boost || 1);
-  if ((T0 >= 2 || giant) && !fade){ c.globalAlpha = giant ? .3 : T0 === 3 ? .26 : .18; c.beginPath(); c.arc(p.x, p.y, r * (giant ? 4.2 : 3.4), 0, 6.2832); c.fillStyle = COL.lamp; c.fill(); c.globalAlpha = 1; }
+  // 不画光晕外环（重要程度看热力场和星星大小）；只在点亮动画时闪一下
+  if (boost && boost > 1.05){ c.globalAlpha = .35 * (boost - 1); c.beginPath(); c.arc(p.x, p.y, r * 3.4, 0, 6.2832); c.fillStyle = COL.lamp; c.fill(); c.globalAlpha = 1; }
   c.beginPath(); c.arc(p.x, p.y, r, 0, 6.2832); c.fillStyle = fade ? "#8a7440" : giant ? COL.cream : COL.lamp; c.fill();
-  if (giant){ c.beginPath(); c.arc(p.x, p.y, r * 1.8, 0, 6.2832); c.strokeStyle = "rgba(255,243,214,.6)"; c.lineWidth = Z(.8); c.stroke(); } }
+ }
 function drawMap(t){
   const m = L.map, c = ctx, G = geo(), {v, s, k, far, Z, PX} = G;
   c.save(); c.beginPath(); c.rect(m.x, m.y, m.w, m.h); c.clip();

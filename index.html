@@ -546,6 +546,7 @@ details.fold[open] summary{margin-bottom:10px}
 #net.allv .node.lit.imp2 .halo{opacity:.18}
 #net.allv .node.lit.imp3 .halo{opacity:.26}
 #net.allv.far .edge.lit:not(.hl){opacity:.3}
+#net .edge.lit.faint:not(.hl){opacity:.14!important;stroke-width:1}
 #net.allv.far .edge.weak.lit:not(.hl){opacity:.08}
 
 /* 性能：连线合成 path，去掉大量元素上的过渡动画 */
@@ -760,7 +761,7 @@ const NS = "http://www.w3.org/2000/svg";
 const svg = document.getElementById("net"), gE = document.getElementById("edges"), gN = document.getElementById("nodes");
 const gB = document.getElementById("bundles"), gG = document.getElementById("cglow"), gS = document.getElementById("supers");
 const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
-let cur = 0, BB = BBg[0], edgeEls = [], edgeKey = "", nodeEls = {}, glowEls = {}, superEls = {};
+let EDGE_MODE = "tree", cur = 0, BB = BBg[0], edgeEls = [], edgeKey = "", nodeEls = {}, glowEls = {}, superEls = {};
 // 全图模式：一次画出所有星系和所有连线（包括跨星系的）
 let ALLV = false;
 const ALL_E = D.edges.map((_, i) => i), ALL_C = GC.flat();
@@ -1164,7 +1165,7 @@ function renderHome(){
     <div class="note" style="margin-top:0">拖动、滚轮或双指移动缩放地图，所有单词都在这一整张星空里。越亮越大的星越重要，题目也越多。点亮的词过几天会变暗，答 1 题就能擦亮。</div>
     <div class="keys">${TYPE_ORDER.map(t => `<span style="--c:var(--t-${t})"><i></i>${TYPES[t].name}</span>`).join("")}</div>
     <div class="note">正确率 ${S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "—"} · 最高连击 ${S.best} · 星座 ${GC.flat().filter(consDone).length} / ${NCONS}</div>
-    <div class="note">单词星系 v1.10 · 当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。</div>
+    <div class="note">单词星系 v1.11 · 当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。</div>
     <div class="foot"><span></span><button class="ghost" id="resetBtn" type="button">重新开始</button></div></details>`;
   panel.innerHTML = html; bind(panel);
   document.getElementById("resetBtn").onclick = askReset;
@@ -1374,9 +1375,10 @@ let igniting = null;
 // 连线不再一条一个元素：同类型的亮线合成一条 path，选中词的连线单独画；一端点亮的光也合成一条 path
 function paintEdges(){
   const far = svg.classList.contains("far");
-  const key = [S.lit.length, S.folded.join("."), selected, igniting, far, S.view].join("|");
+  const key = [S.lit.length, S.folded.join("."), selected, igniting, far, S.view, EDGE_MODE].join("|");
   if (key === edgeKey) return; edgeKey = key;
   const lit = {}, half = [], hl = []; edgeEls = [];
+  const M = EDGE_MODE, keep = M === "tree" ? treeEdges() : null;
   VE().forEach(i => { const [a, b, t] = D.edges[i]; const la = isLit(a), lb = isLit(b);
     if (!la && !lb) { if (selected && (a === selected || b === selected) && rep(a) === a && rep(b) === b) hl.push([i, false]); return; }
     if (rep(a) !== a || rep(b) !== b) return;
@@ -1384,17 +1386,23 @@ function paintEdges(){
     if (la && lb) { if (igniting && (a === igniting || b === igniting)) { hl.push([i, true, true]); return; }
       if (isHl) { hl.push([i, true]); return; }
       if (t === "topic" && far) return;
+      if (M === "none" || (M === "strong" && t === "topic") || (keep && !keep.has(i))) return;
       (lit[t] = lit[t] || []).push(`M${P[a].x} ${P[a].y}L${P[b].x} ${P[b].y}`); return; }
     if (isHl) hl.push([i, false]);
-    if (t === "topic" || far) return;          // 缩远时一端点亮的光由热力场代替，不再逐条画
+    if (t === "topic" || far || M !== "all") return;          // 缩远时一端点亮的光由热力场代替，不再逐条画
     let [x, y] = la ? [a, b] : [b, a]; const dx = P[y].x - P[x].x, dy = P[y].y - P[x].y, d = Math.hypot(dx, dy) || 1, f = Math.min(.4, 40 / d);
     half.push(`M${P[x].x} ${P[x].y}l${(dx * f).toFixed(1)} ${(dy * f).toFixed(1)}`); });
   gE.textContent = ""; gH.textContent = "";
-  Object.entries(lit).forEach(([t, ds]) => gE.appendChild(el("path", {d: ds.join(""), class: "edge lit" + (t === "topic" ? " weak" : ""), stroke: `var(--t-${t})`})));
+  Object.entries(lit).forEach(([t, ds]) => gE.appendChild(el("path", {d: ds.join(""), class: "edge lit" + (t === "topic" ? " weak" : "") + (M === "faint" ? " faint" : ""), stroke: `var(--t-${t})`})));
   hl.forEach(([i, isLit2, wait]) => { const [a, b, t] = D.edges[i];
     const l = el("line", {x1:P[a].x, y1:P[a].y, x2:P[b].x, y2:P[b].y, class: "edge hl" + (isLit2 ? " lit" : "") + (wait ? " wait" : "") + (t === "topic" ? " weak" : ""), stroke:`var(--t-${t})`});
     gE.appendChild(l); edgeEls.push({i, l}); });
   if (half.length) gH.appendChild(el("path", {d: half.join(""), class: "hglow"})); }
+// 骨架（默认）：每颗点亮的星只连到离它最近的一个已点亮的相关词（强关系优先），平时画面干净；选中的词仍显示全部连线
+function treeEdges(){ const best = {};
+  D.edges.forEach(([a, b, t], i) => { if (!isLit(a) || !isLit(b)) return; const d = Math.hypot(P[a].x - P[b].x, P[a].y - P[b].y) * (t === "topic" ? 1.6 : 1);
+    [a, b].forEach(w => { if (!best[w] || d < best[w][0]) best[w] = [d, i]; }); });
+  return new Set(Object.values(best).map(x => x[1])); }
 // 点亮动画：镜头对准 → 星星由暗到亮“燃起”，冲击波扩散、星点四散 → 光沿着连线一条条流向已点亮的邻居，邻居闪一下回应
 function pop(w){ const g = nodeEls[w]; if (!g) return; part(g, "halo"); g.classList.remove("ping"); void g.getBBox(); g.classList.add("ping"); setTimeout(() => g.classList.remove("ping"), 900); }
 function ignite(w, done){
@@ -1647,7 +1655,7 @@ if (!guarded && S.dust >= GUARD_COST && streakNow() >= 2 && !S.guard) tip("guard
 if (!S.lit.length) tip("first");
 if (fadingWords().length) tip("fade");
 let rz; addEventListener("resize", () => { setVB(); clearTimeout(rz); rz = setTimeout(sky, 200); });
-window.__wn = { nodeAt, paint, setVB, get vb(){ return vb; }, heatNow(){ heatKey = ""; const t = performance.now(); drawHeat(); return performance.now() - t; }, get S(){ return S; }, set S(v){ S = v; recalc(); }, D, GENS, qMeaning, qRelation, qBlank, qLink, status, candidates, get quiz(){ return quiz; },
+window.__wn = { set edgeMode(m){ EDGE_MODE = m; paintEdges(); }, set vbox(v){ vb = v; setVB(); }, nodeAt, paint, setVB, get vb(){ return vb; }, heatNow(){ heatKey = ""; const t = performance.now(); drawHeat(); return performance.now() - t; }, get S(){ return S; }, set S(v){ S = v; recalc(); }, D, GENS, qMeaning, qRelation, qBlank, qLink, status, candidates, get quiz(){ return quiz; },
   refresh(){ recalc(); build(cur); paint(); renderPanel(); }, save, CONS, recalc, nextQ, lvOf, examPassed, showLevel, startQuiz, weekly, isGiant, giantCount, streakNow, guardCheck, openBook, qLetters, drawGens, select, switchGal, qnOf, tierOf, IMP };
 })();
 </script>

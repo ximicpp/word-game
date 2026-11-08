@@ -5,7 +5,7 @@ const U = require("./ui.js");
 const { createCore } = require("./core.js");
 const { COL } = U;
 
-const VERSION = "1.10";
+const VERSION = "1.11";
 const ctx = P.ctx, W = P.W, H = P.H, dpr = P.dpr;
 const PAD = 16, AUTO_MS = 3500;
 U.setFamilies(P.families || {});
@@ -100,11 +100,13 @@ function refresh(){
   // 挨着已点亮的词（强关系）：没点亮的星带一点暖色
   V.warm = new Set(); core.litArr.forEach(w => adj[w].forEach(e => { if (e.t !== "topic" && !core.isLit(e.w)) V.warm.add(e.w); }));
   // 连线分组：亮线按类型，选中词的连线单独画，一端点亮的光
-  V.litE = {}; V.half = []; V.hl = [];
+  // 平时只画骨架：每颗点亮的星只连到离它最近的一个已点亮的相关词（强关系优先）；选中的词显示全部连线
+  V.litE = {}; V.half = []; V.hl = []; const best = {};
   D.edges.forEach(([a, b, t], i) => { if (core.rep(a) !== a || core.rep(b) !== b) return; const la = core.isLit(a), lb = core.isLit(b), isHl = !!selected && (a === selected || b === selected);
     if (isHl) { V.hl.push([i, la && lb]); if (!(la && lb)) return; }
-    if (la && lb) { if (!isHl) (V.litE[t] = V.litE[t] || []).push(i); return; }
-    if (la !== lb && t !== "topic") V.half.push(la ? [a, b] : [b, a]); });
+    if (la && lb){ const d = Math.hypot(POS[a].x - POS[b].x, POS[a].y - POS[b].y) * (t === "topic" ? 1.6 : 1);
+      [a, b].forEach(w => { if (!best[w] || d < best[w][0]) best[w] = [d, i]; }); } });
+  new Set(Object.values(best).map(x => x[1])).forEach(i => { const [a, b, t] = D.edges[i]; if (selected && (a === selected || b === selected)) return; (V.litE[t] = V.litE[t] || []).push(i); });
   V.consE = []; ALLC.forEach(ci => { if (!core.consDone(ci) || core.isFolded(ci)) return; const set = new Set(CONS[ci].words);
     CONS[ci].words.forEach(a => adj[a].forEach(e => { if (set.has(e.w) && a < e.w) V.consE.push([a, e.w]); })); });
   mapVer++; heatSoon();

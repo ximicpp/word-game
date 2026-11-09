@@ -1,0 +1,28 @@
+# 单词小工厂（原型）
+
+独立的构词小游戏，和单词星系分开。把词根原料放上传送带，在格子里装前缀机、后缀机和修正台（y→i、去 e），加工成订单句子要的单词（FCE 构词填空的题式）。
+
+- 在线游玩（合并后）：https://ximicpp.github.io/word-game/factory/
+- 单文件 `index.html`，无依赖；进度存在本机浏览器（key `word-factory-v1`）。
+
+## 原型内容（6 关 37 张订单）
+
+| 关卡 | 机器 | 订单 |
+|---|---|---|
+| 1 后缀车间 | -ful -less -ness -er | helpful, useless, teacher, kindness, careful |
+| 2 前缀车间 + 修正台 | un- dis- re- -ful -ness -ly y→i | unhappy, unpack, retell, disagree, happiness, beautifully |
+| 3 词族大订单 | in- -ion -ive -ity -er -or 去 e | active, action, actor, activity, inactive, creative, construction |
+| 4 舒适车间 | un- -able -ment -ly y→i 去 e | comfortable, enjoyable, movement, reliable, unbelievable, agreement |
+| 5 双写车间 | -er -ing 双写 去 e | runner, swimming, beginner, shopping, reader（不双写）, riding |
+| 6 词族总决赛 | un- re- -ful -less -ness -ly -er | careless, carefully, carelessness, hopefully, hopeless, reuse, unhelpful |
+
+- 机器装好后一直留着，下一张订单要改线。
+- 送错了，质检小机器人用一句中文说明原因（漏了 y→i、没去 e、该双写没双写、不该双写却双写、半成品、真单词但放进句子不通、actor 不是 acter 等），再错一次给提示。只重做这张订单。
+- 送对后装车前选一次中文意思（答对 2 个⚙️，答错 1 个，不扣分）。
+- 做对的词进“单词仓库”，按词根分家展示，没做出来的显示 ？？？。
+- 第一张订单有新手引导（机器和空位轮流闪）。同一台机器再点一下空位就拆下。
+- 星级：整关退回 0–1 次 3 星，2–3 次 2 星，更多 1 星。
+
+## 试玩时看两件事
+
+孩子会不会主动要求再玩一关；玩完能不能说出 3 条构词规则。

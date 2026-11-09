@@ -351,11 +351,15 @@ lonely.forEach(w => errors.push(`${words[w].where} 孤立的词（没有任何�
 const lvCnt = {A2:0, B1:0, B2:0}; order.forEach(w => lvCnt[words[w].lv]++);
 
 // ---------- 输出 ----------
-const outWords = {}; order.forEach(w => { const d = words[w]; outWords[w] = { ipa:d.ipa, cn:d.cn, ex:d.ex, lv:d.lv, g:d.gal, p:pos[w] }; });
+// 小话题（片区）：推荐“一片一片学”、学完一片变金、选中时亮出所在区域
+const subList = []; galaxies.forEach((g, gi) => g.subs.forEach(s => { s.id = subList.length; subList.push({ name: s.name, g: gi }); }));
+const subOf = {}; galaxies.forEach(g => g.subs.forEach(s => s.words.forEach(w => subOf[w] = s.id)));
+const outWords = {}; order.forEach(w => { const d = words[w]; outWords[w] = { ipa:d.ipa, cn:d.cn, ex:d.ex, lv:d.lv, g:d.gal, s:subOf[w], p:pos[w] }; });
 const data = {
   starts: galaxies.map(g => { const ws = g.words.filter(w => words[w].lv === "A2"); return (ws.length ? ws : g.words).slice().sort((a,b) => adj[b].length - adj[a].length)[0]; }),
   types: TYPES,
   galaxies: galaxies.map(g => ({ name: g.name, id: g.id, n: g.words.length })),
+  subs: subList,
   words: outWords,
   constellations: constellations.map(c => ({ name:c.name, g:c.gal, words:c.words, note:c.note })),
   edges

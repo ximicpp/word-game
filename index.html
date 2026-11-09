@@ -221,6 +221,12 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .consrow.done{border-color:rgba(255,201,92,.5);color:var(--lamp)}
 .consrow span{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
 .consrow.done span{color:var(--lamp)}
+.subl{margin-top:10px;font-size:13px;color:var(--muted)}.subl b{color:var(--ink);font-family:var(--mono,monospace)}.subl b.full{color:var(--lamp)}
+.subl i{display:block;height:4px;border-radius:2px;margin-top:6px;background:linear-gradient(90deg,var(--lamp) var(--f),var(--rule,#26324d) var(--f))}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.tags span{font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid var(--rule,#2f3c5c);color:var(--muted)}
+.tags span.gold{border-color:rgba(255,201,92,.6);color:var(--lamp)}
+.confw{margin:8px 0 2px;padding:7px 10px;border-radius:10px;font-size:13px;color:#ffb38a;background:rgba(255,140,90,.12);border:1px solid rgba(255,140,90,.5)}.confw b{color:#ffd2b8}
+#subg circle{fill:url(#sgG);pointer-events:none;mix-blend-mode:screen}
 .badge{margin-top:16px;padding:14px;border-radius:10px;border:1px solid rgba(255,201,92,.5);background:var(--lamp-soft)}
 .badge b{color:var(--lamp);font-size:18px}
 .badge p{margin:6px 0 0;font-size:14px;color:var(--ink)}
@@ -597,7 +603,7 @@ details.fold[open] summary{margin-bottom:10px}
   <main>
     <div class="stage">
       <canvas class="sky" id="sky" aria-hidden="true"></canvas>
-      <svg id="net" role="img" aria-label="单词关系网"><g id="vp"><g id="heat"><image class="hm"/><image class="hm"/></g><g id="cglow"></g><g id="edges"></g><g id="halfs"></g><g id="bundles"></g><g id="nodes"></g><g id="xnb"></g><g id="supers"></g><g id="fx"></g></g></svg>
+      <svg id="net" role="img" aria-label="单词关系网"><defs><radialGradient id="sgG"><stop offset="0" stop-color="rgb(120,190,255)" stop-opacity=".16"/><stop offset="1" stop-color="rgb(120,190,255)" stop-opacity="0"/></radialGradient></defs><g id="vp"><g id="heat"><image class="hm"/><image class="hm"/></g><g id="subg"></g><g id="cglow"></g><g id="edges"></g><g id="halfs"></g><g id="bundles"></g><g id="nodes"></g><g id="xnb"></g><g id="supers"></g><g id="fx"></g></g></svg>
       <nav class="gbar" id="gbar" aria-label="星系"></nav>
       <div class="tip" id="tip" role="status" hidden><p></p><button type="button">知道了</button></div>
       <div class="mapkey" id="mapkey"></div>
@@ -674,6 +680,18 @@ const IMP = {}; WORDS.forEach(w => IMP[w] = new Set(adj[w].filter(e => e.t !== "
 const IMP_AT = (() => { const v = WORDS.map(w => IMP[w]).sort((a, b) => a - b); return [v[Math.floor(v.length * .6)], v[Math.floor(v.length * .88)]]; })();
 const tierOf = w => IMP[w] >= Math.max(IMP_AT[1], 6) ? 3 : IMP[w] >= Math.max(IMP_AT[0], 3) ? 2 : 1;
 const qnOf = w => 2 + tierOf(w);
+// ---------- 片区（小话题）：一片一片学 ----------
+const SUBS = RAW.subs || [], subOf = w => D.words[w].s;
+const SW = SUBS.map(() => []); WORDS.forEach(w => { if (subOf(w) !== undefined) SW[subOf(w)].push(w); });
+// 核心词：别的词从它派生（同词根里它更短）或是别的词的上位词，学会它再学那些词更容易
+const KIDS = {}, BASE = {}; WORDS.forEach(w => { KIDS[w] = 0; BASE[w] = []; });
+const hyperN = w => adj[w].filter(e => e.t === "hyper").length;
+D.edges.forEach(([a, b, t]) => { if (!D.words[a] || !D.words[b]) return;
+  if (t === "root"){ const [s0, l0] = a.length <= b.length ? [a, b] : [b, a]; if (s0.length < l0.length){ KIDS[s0]++; BASE[l0].push(s0); } }
+  else if (t === "hyper"){ const [p0, c0] = hyperN(a) >= hyperN(b) ? [a, b] : [b, a]; if (hyperN(p0) > hyperN(c0)) KIDS[p0]++; } });
+const isCore = w => D.words[w].lv === "A2" && (KIDS[w] > 0 || tierOf(w) >= 2);
+const subLit = i => SW[i].filter(w => litSet.has(w)).length;
+const subDone = i => SW[i].length >= 3 && SW[i].every(x => litSet.has(x));
 // 星等：一等星最亮、最重要、题目最多（5 题）；二等星 4 题；三等星 3 题
 const MAG = {3:"一等星", 2:"二等星", 1:"三等星"};
 const impHtml = w => { const t = tierOf(w); return `<span class="imp" title="和 ${IMP[w]} 个词有关系；越重要越亮，题目也越多">${MAG[t]} ${"★".repeat(t)}${"☆".repeat(3 - t)} · ${qnOf(w)} 题</span>`; };
@@ -702,7 +720,12 @@ const goalOf = () => GOALS.includes(S.goal) ? S.goal : GOAL;
 function setGoal(n){ if (!GOALS.includes(n)) return; S.goal = n; const g = daily(); if (g.n >= n && !g.done){ g.done = true; S.dust += GOAL_BONUS; } save(); }
 // 今天还要擦亮的星：最早变暗的排在前面，每天最多 REVIEW_CAP 颗
 const reviewLeft = () => Math.max(0, REVIEW_CAP - (daily().p || 0));
-const dueToday = () => fadingWords().sort((a, b) => S.mem[a].due - S.mem[b].due).slice(0, reviewLeft());
+// 今天要擦亮的：最该擦亮的先来；同一片的放在一起，易混的一对排在一起
+const dueToday = () => { const f = fadingWords().sort((a, b) => S.mem[a].due - S.mem[b].due).slice(0, reviewLeft());
+  const first = {}; f.forEach((w, k) => { const s0 = D.words[w].s; if (!(s0 in first)) first[s0] = k; });
+  const g = f.sort((a, b) => (first[D.words[a].s] - first[D.words[b].s]) || (S.mem[a].due - S.mem[b].due)), out = [];
+  g.forEach(w => { if (out.includes(w)) return; out.push(w); const p = confOf(w).find(x => g.includes(x) && !out.includes(x)); if (p) out.push(p); });
+  return out; };
 const dayDone = () => daily().done && !dueToday().length;
 // 记一颗星（点亮算进今日目标，擦亮另计）；完成今日目标时返回 true
 function bumpDaily(kind){ const g = daily(); if (kind === "review") g.p = (g.p || 0) + 1; else g.n++;
@@ -761,17 +784,48 @@ const consLeft = w => consOf[w] === undefined ? null : CONS[consOf[w]].words.fil
 const starHtml = n => `<span class="stars" aria-label="${n} 颗星">${"★".repeat(n)}<i>${"★".repeat(3-n)}</i></span>`;
 function dueText(w){ const m = S.mem[w]; if (!m) return ""; const d = Math.ceil((m.due - now()) / DAY);
   return d <= 0 ? "星光变暗了，答 1 题就能擦亮" : d === 1 ? "明天需要擦亮一次" : `${d} 天后需要擦亮`; }
-// 推荐顺序：当前星系优先 → 能连成星座 → 挨着已点亮的词 → 重要的词 → 难度低
+// 难度范围：刚开始只推简单的，点亮越多允许越难；上一颗只拿 1 星就降一档
+function band(){ const n = S.lit.length, last = S.lit[S.lit.length - 1];
+  let b = 1 + (n >= 40) + (n >= 150); if (last && S.stars[last] === 1) b--; return Math.max(1, Math.min(3, b)); }
+// 推荐顺序（一片一片学）：能连成星座 → 难度在范围内 → 留在正在学的这一片（学完了就去同一大话题的旁边一片）
+//   → 先学词根（派生词等词根点亮再推）→ 这一片学到一半前先推核心词 → 挨着已点亮的词 → 重要的词 → 难度低
 let candKey = "", candVal = null;
 function candidates(prefer){
-  const k = prefer ? null : S.lit.length + "|" + readySet.size + "|" + cur + "|" + S.lit[S.lit.length - 1];
+  const last = S.lit[S.lit.length - 1], k = prefer ? null : S.lit.length + "|" + readySet.size + "|" + last + "|" + band();
   if (k && k === candKey) return candVal.slice();
-  const pf = prefer || new Set();
-  const r = [...readySet].map(w => ({w, g: IMP[w], cl: consLeft(w), nl: adj[w].some(e => litSet.has(e.w))}))
-    .sort((a, b) => ((gOf(b.w) === cur) - (gOf(a.w) === cur)) || (pf.has(b.w) - pf.has(a.w)) || ((b.cl === 0) - (a.cl === 0))
-      || (b.nl - a.nl) || (b.g - a.g) || (DIFF[a.w] - DIFF[b.w]) || (a.w < b.w ? -1 : 1));
+  const pf = prefer || new Set(), cs = last && D.words[last] ? subOf(last) : undefined, cg = last && D.words[last] ? gOf(last) : undefined, bd = band();
+  const prog = {}; const pg = i => prog[i] !== undefined ? prog[i] : (prog[i] = SW[i] && SW[i].length ? subLit(i) / SW[i].length : 0);
+  const r = [...readySet].map(w => { const si = subOf(w);
+    return {w, g: IMP[w], cl: consLeft(w), nl: adj[w].some(e => litSet.has(e.w)),
+      patch: si !== undefined && si === cs ? 2 : cg !== undefined && gOf(w) === cg ? 1 : 0,
+      easy: DIFF[w] <= bd, base: !BASE[w].some(x => !litSet.has(x)), core: si !== undefined && pg(si) < .5 && isCore(w)}; })
+    .sort((a, b) => (pf.has(b.w) - pf.has(a.w)) || ((b.cl === 0) - (a.cl === 0)) || (b.easy - a.easy) || (b.patch - a.patch)
+      || (b.base - a.base) || (b.core - a.core) || (b.nl - a.nl) || (b.g - a.g) || (DIFF[a.w] - DIFF[b.w]) || (a.w < b.w ? -1 : 1));
   if (k) { candKey = k; candVal = r; return r.slice(); } return r;
 }
+// 为什么推它：所在片区和进度、核心词、和已点亮词的关系、学完它再推哪个派生词
+function whyOf(w){ const si = subOf(w), out = {sub: null, chips: []};
+  if (si !== undefined) out.sub = {name: SUBS[si].name, n: subLit(si), N: SW[si].length};
+  if (isCore(w)) out.chips.push("核心词 · " + ({A2:"KET", B1:"PET", B2:"FCE"})[D.words[w].lv]);
+  const e = adj[w].find(e => e.t !== "topic" && litSet.has(e.w)); if (e) out.chips.push(`和 ${e.w} 是${TYPES[e.t].name}`);
+  const kid = adj[w].find(e => e.t === "root" && BASE[e.w] && BASE[e.w].includes(w) && !litSet.has(e.w)); if (kid) out.chips.push(`学完它再推 ${kid.w}`);
+  return out; }
+function subHtml(w, lead){ const si = subOf(w); if (si === undefined) return ""; const n = subLit(si), N = SW[si].length;
+  return `<div class="subl"><span>${lead || ""}「${esc(SUBS[si].name)}」这一片 <b class="${n === N ? "full" : ""}">${n} / ${N}</b></span><i style="--f:${(n / N * 100).toFixed(1)}%"></i></div>`; }
+function whyHtml(w){ const y = whyOf(w), last = S.lit[S.lit.length - 1];
+  return subHtml(w, last && D.words[last] && subOf(last) === subOf(w) ? "还在" : "") + (y.chips.length ? `<div class="tags">${y.chips.map((c, k) => `<span class="${k === 0 && c.startsWith("核心词") ? "gold" : ""}">${esc(c)}</span>`).join("")}</div>` : ""); }
+// ---------- 混淆对：答错时记下“把 A 选成了 B”，之后把它们放在一起考 ----------
+const CONF_G = new Set(["meaning", "reverse", "blank", "ipa"]);
+function noteConf(a, b){ if (!D.words[a] || !D.words[b] || a === b) return; if (!S.conf) S.conf = {}; const m = S.conf[a] || (S.conf[a] = {}); m[b] = (m[b] || 0) + 1; }
+function confOf(w){ const c = S.conf || {}, m = {}; Object.entries(c[w] || {}).forEach(([x, n]) => m[x] = (m[x] || 0) + n);
+  Object.keys(c).forEach(x => { if (c[x][w]) m[x] = (m[x] || 0) + c[x][w]; });
+  return Object.keys(m).filter(x => D.words[x]).sort((a, b) => m[b] - m[a]); }
+const confMiss = w => { const m = (S.conf || {})[w]; if (!m) return null; return Object.keys(m).filter(y => D.words[y]).sort((a, b) => m[b] - m[a])[0] || null; };
+function withConf(q, w){ if (!CONF_G.has(q.gen) || q.answer !== w) return q; const ps = confOf(w).filter(x => x !== w); if (!ps.length) return q;
+  const p = ps.find(x => !q.opts.some(o => o.key === x)); if (!p) { q.conf = ps[0]; return q; }
+  if (q.gen === "meaning" && q.opts.some(o => o.label === D.words[p].cn)) return q;
+  const k = q.opts.findIndex(o => o.key !== q.answer); if (k < 0) return q;
+  q.opts[k] = {key: p, label: q.gen === "meaning" ? D.words[p].cn : p, en: q.gen !== "meaning"}; q.conf = p; return q; }
 
 // ---------- 位置 ----------
 const P = {}; WORDS.forEach(w => P[w] = {x: D.words[w].p[0], y: D.words[w].p[1]});
@@ -1069,6 +1123,15 @@ function drawHeat(){
     const band = h * 7 % 1, line = h > .1 && band < .07 ? .07 : 0;
     const col = HEAT_LUT[Math.min(255, Math.round(h * 255))];
     d[i*4] = col[0]; d[i*4+1] = col[1]; d[i*4+2] = col[2]; d[i*4+3] = Math.round(Math.min(1, col[3] + line) * 255); }
+  // 学完的一片（小话题全部点亮）：背后亮起一层金色光晕
+  const gw = [].concat(...SW.filter((_, i) => subDone(i)));
+  if (gw.length){ const g = new Float32Array(W * H), sg = 34 / HEAT_CELL, R = Math.ceil(sg * 2.6), inv = 1 / (2 * sg * sg);
+    gw.forEach(w => { const cx = (P[w].x - B.x) / HEAT_CELL, cy = (P[w].y - B.y) / HEAT_CELL;
+      for (let y = Math.max(0, Math.floor(cy - R)); y <= Math.min(H - 1, Math.ceil(cy + R)); y++){ const dy = y - cy, o = y * W;
+        for (let x = Math.max(0, Math.floor(cx - R)); x <= Math.min(W - 1, Math.ceil(cx + R)); x++){ const dx = x - cx; g[o + x] += Math.exp(-(dx*dx + dy*dy) * inv); } } });
+    for (let i = 0; i < g.length; i++){ if (g[i] < .03) continue; const h = 1 - Math.exp(-g[i] * .9), ga = Math.min(.5, h * .55), a0 = d[i*4+3] / 255, a = ga + a0 * (1 - ga);
+      const mix = (gc, k) => Math.round((gc * ga + d[i*4+k] * a0 * (1 - ga)) / (a || 1));
+      d[i*4] = mix(255, 0); d[i*4+1] = mix(205 + 30 * h, 1); d[i*4+2] = mix(110 + 60 * h, 2); d[i*4+3] = Math.round(a * 255); } }
   ctx.putImageData(im, 0, 0);
   const next = heatImgs[1 - heatCur], prev = heatImgs[heatCur];
   Object.entries({href:c.toDataURL(), x:B.x, y:B.y, width:W * HEAT_CELL, height:H * HEAT_CELL, preserveAspectRatio:"none"}).forEach(([k, v]) => next.setAttribute(k, v));
@@ -1135,15 +1198,16 @@ function candHtml(list){ return `<div class="cands">${list.map(({w, g, cl}) =>
 
 function renderPanel(){
   clearTimeout(autoT); setFocus(!!quiz);
+  subGlow(selected);
   if (quiz) return renderQuiz();
   if (selCons !== null) return renderCons();
   if (!selected) return renderHome();
   const w = selected, d = D.words[w], s = status(w);
   let html = `<div class="word">${esc(w)}</div><div class="ipa">/${esc(d.ipa)}/</div>`;
   if (s === "ready"){
-    html += `<div class="cn">${esc(d.cn)}</div><div class="ex">${esc(d.ex)}</div>` + metaHtml(w) + `<div class="ctabar"><button class="cta" data-start="${w}" type="button">做题点亮 · ${qnOf(w)} 题</button></div>`;
+    html += `<div class="cn">${esc(d.cn)}</div>${subHtml(w)}<div class="ex">${esc(d.ex)}</div>` + metaHtml(w) + `<div class="ctabar"><button class="cta" data-start="${w}" type="button">做题点亮 · ${qnOf(w)} 题</button></div>`;
   } else {
-    html += `<div class="cn">${esc(d.cn)}</div><div class="ex">${esc(d.ex)}</div>
+    html += `<div class="cn">${esc(d.cn)}</div>${subHtml(w)}<div class="ex">${esc(d.ex)}</div>
       <div class="meta">${starHtml(S.stars[w]||3)}${isGiant(w) ? `<span class="giantb">恒星</span>` : ""}<span>${dueText(w)}</span></div>`;
     if (isFading(w)) html += `<div class="ctabar"><button class="cta" data-review="${w}" type="button">擦亮它 · 1 题</button></div>`;
     else if ((S.stars[w]||3) < 3) html += `<button class="cta alt" data-review="${w}" type="button">再答 1 题，多拿一颗星</button>`;
@@ -1184,6 +1248,10 @@ function renderCons(){
   document.getElementById("home").onclick = () => select(null);
 }
 
+// 选中的词：它所在的那一片泛起淡蓝光
+let subGlowW = null;
+function subGlow(w){ const si = w && D.words[w] ? subOf(w) : undefined, g = document.getElementById("subg"), k = si === undefined ? null : si;
+  if (k === subGlowW) return; subGlowW = k; g.innerHTML = k === null ? "" : SW[k].map(x => `<circle cx="${P[x].x}" cy="${P[x].y}" r="46"/>`).join(""); }
 function renderHome(){
   const fades = dueToday(), cands = candidates(), RN = n => Math.min(REVIEW_RUN, n);
   let html = "";
@@ -1195,7 +1263,7 @@ function renderHome(){
   if (cands.length){ const t = cands[0], w = t.w;
     html += `<div class="sec" style="${fades.length ? "" : "margin-top:0"}"><div class="eyebrow">下一颗</div>
       <div class="word">${esc(w)}</div><div class="ipa">/${esc(D.words[w].ipa)}/</div>${metaHtml(w)}
-      <div class="ctabar"><button class="cta ${fades.length ? "alt" : ""}" data-start="${w}" type="button">做题点亮 · ${qnOf(w)} 题</button></div></div>`;
+      <div class="ctabar"><button class="cta ${fades.length ? "alt" : ""}" data-start="${w}" type="button">做题点亮 · ${qnOf(w)} 题</button></div>${whyHtml(w)}</div>`;
     if (lw && lw !== w) html += `<button type="button" class="luckline" data-start="${lw}">✦ 今天的幸运星 <b>${esc(lw)}</b><span>星尘翻倍</span></button>`;
     if (cands.length > 1) html += `<div class="sec"><div class="eyebrow">也可以选 · ${cands.length - 1}</div>${candHtml(cands.slice(1, 7))}</div>`; }
   const cs = ALL_C.filter(i => CONS[i].words.some(isLit)).sort((a, b) => CONS[b].words.filter(isLit).length / CONS[b].words.length - CONS[a].words.filter(isLit).length / CONS[a].words.length).slice(0, 30), done = ALL_C.filter(consDone).length;
@@ -1205,7 +1273,7 @@ function renderHome(){
     <div class="note" style="margin-top:0">拖动、滚轮或双指移动缩放地图，所有单词都在这一整张星空里。越亮越大的星越重要，题目也越多。点亮的词过几天会变暗，答 1 题就能擦亮。</div>
     <div class="keys">${TYPE_ORDER.map(t => `<span style="--c:var(--t-${t})"><i></i>${TYPES[t].name}</span>`).join("")}</div>
     <div class="note">正确率 ${S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "—"} · 最高连击 ${S.best} · 星座 ${GC.flat().filter(consDone).length} / ${NCONS}</div>
-    <div class="note">单词星系 v1.15 · 当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。</div>
+    <div class="note">单词星系 v1.17 · 当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。</div>
     <div class="foot"><span></span><button class="ghost" id="resetBtn" type="button">重新开始</button></div></details>`;
   panel.innerHTML = html; bind(panel);
   document.getElementById("resetBtn").onclick = askReset;
@@ -1275,7 +1343,7 @@ function qLink(w){
   for (const tier of tiers){ for (const x of shuffle(tier)){ const d = optsFor(x); if (d){ e = x; ds = d; break; } } if (e) break; }
   if (!e){ e = pick(adj[w]); ds = shuffle(TYPE_ORDER.filter(t => t !== e.t)).slice(0, 3); }
   const opts = shuffle([e.t, ...ds]).map(t => ({key:t, label:TYPES[t].name, en:false}));
-  return { gen:"link", html:`<span class="w">${esc(w)}</span> 和 <span class="w">${esc(e.w)}</span> 是什么关系？`, opts, answer:e.t,
+  return { gen:"link", pair:e.w, html:`<span class="w">${esc(w)}</span> 和 <span class="w">${esc(e.w)}</span> 是什么关系？`, opts, answer:e.t,
     explain:`${TYPES[e.t].name}：${esc(e.note)}` };
 }
 // 看中文选英文
@@ -1349,11 +1417,16 @@ function drawGens(w){ const all = gensFor(w, "light"), first = pick(["meaning","
   const rest = shuffle(all.filter(g => g !== "meaning" && g !== "reverse" && !SPELL_G.includes(g)).concat(first === "meaning" ? ["reverse"] : ["meaning"]));
   return shuffle([first, ...sp, ...rest].slice(0, qnOf(w))); }
 
+// 擦亮：有已点亮的强关系邻居时，一半考“它和邻居的关系”，答对两颗一起续亮；有易混词时优先考能放进易混词的题
+function reviewGen(w){ const all = gensFor(w, "review");
+  if (all.includes("link") && adj[w].some(e => e.t !== "topic" && isLit(e.w)) && Math.random() < .5) return "link";
+  if (confOf(w).length && Math.random() < .7) return pick(["meaning", "reverse", "blank"]);
+  return pick(all); }
 function startQuiz(w, mode){ clearChain();
   if (!inView(w)) build(gOf(w));
   selected = w; selCons = null;
-  const gens = mode === "review" ? [pick(gensFor(w, "review"))] : drawGens(w);
-  quiz = { w, mode, used: new Set(gens), qs: gens.map(g => GENS[g](w)), i:0, miss:0, picked:null, done:false, wasDue: isFading(w) };
+  const gens = mode === "review" ? [reviewGen(w)] : drawGens(w);
+  quiz = { w, mode, used: new Set(gens), qs: gens.map(g => withConf(GENS[g](w), w)), i:0, miss:0, picked:null, done:false, wasDue: isFading(w), conf: confMiss(w) };
   if (S.lit.length && S.dust >= HINT_COST) tip("hint");
   setFocus(true); paint(); renderQuiz(); panel.scrollTop = 0;
   if (small()) focusOn(P[w]); else zoomTo(P[w], 620); }
@@ -1366,6 +1439,7 @@ function renderQuiz(){
   setProg(w, z.mode === "review" ? 0 : (z.i + (right ? 1 : 0)) / N);
   const pips = z.qs.map((_,k) => `<i class="${k < z.i ? "ok" : k === z.i ? (z.picked === null ? "now" : right ? "ok" : "no") : ""}"></i>`).join("");
   let html = `<div class="qhead"><div class="eyebrow">${z.mode === "review" ? (run ? `擦亮 ${run.i + 1} / ${run.ws.length}` : `擦亮 ${esc(w)}`) : `挑战 ${esc(w)}`}</div><div class="pips">${pips}</div><button class="qx" id="quit" type="button" aria-label="退出答题">✕</button></div>
+    ${q.conf && z.conf && z.picked === null ? `<div class="confw">容易混：上次你把 <b>${esc(w)}</b> 选成了 <b>${esc(z.conf)}</b></div>` : ""}
     <div class="q">${q.html}</div><div class="opts">`;
   html += q.opts.map((o,k) => { let cls = "opt" + (o.en ? " en" : "") + (q.cut && q.cut.includes(k) && z.picked === null ? " cut" : "");
     if (z.picked !== null){ if (o.key === q.answer) cls += " right"; else if (k === z.picked) cls += " wrong"; }
@@ -1403,14 +1477,14 @@ function answer(k){ const z = quiz, q = z.qs[z.i]; if (z.picked !== null) return
   S.answered++;
   if (ok){ S.correct++; S.combo++; if (S.combo > S.best) S.best = S.combo; sfx("ok");
     if (S.combo % 5 === 0){ const big = S.combo % 10 === 0; meteor(big ? 8 : 3); toast(`连击 ×${S.combo}！`); if (big) sfx("cons"); } }
-  else { S.combo = 0; z.miss++; sfx("bad");
+  else { S.combo = 0; z.miss++; sfx("bad"); if (CONF_G.has(q.gen) && q.answer === z.w) noteConf(z.w, q.opts[k].key);
     if (z.mode === "review" && z.miss === 1 && S.mem[z.w]) S.mem[z.w].lv = Math.max(0, S.mem[z.w].lv - 1); }
   save(); paint(); renderQuiz(); }
 // 重做时换一种题型，避免只记住选项
 // 重做时换一种没出过的题型，避免只记住选项
 function retryQ(){ const z = quiz, all = gensFor(z.w, z.mode);
   let pool = all.filter(g => !z.used.has(g)); if (!pool.length) pool = all.filter(g => g !== z.qs[z.i].gen);
-  const g = pick(pool); z.used.add(g); z.qs[z.i] = GENS[g](z.w); z.picked = null; renderQuiz(); }
+  const g = pick(pool); z.used.add(g); z.qs[z.i] = withConf(GENS[g](z.w), z.w); z.picked = null; renderQuiz(); }
 function nextQ(){ clearTimeout(autoT); panel.onclick = null; const z = quiz; if (!z || z.done || z.picked === null) return;
   if (z.i < z.qs.length - 1){ z.i++; z.picked = null; renderQuiz(); } else if (z.mode === "review") finishReview(); else lightUp(z.w); }
 
@@ -1492,7 +1566,7 @@ function lightUp(w){
   z.done = true; z.stars = stars; z.unlocked = [...readySet].filter(x => !before.has(x));
   z.newGal = GAL.map((_, g) => g).filter(g => openG[g] && !openBefore[g]);
   const ci = consOf[w]; z.newCons = ci !== undefined && consDone(ci) ? ci : null;
-
+  { const si = subOf(w); z.subDone = si !== undefined && subDone(si) ? si : null; }
   z.lucky = S.luck && S.luck.d === today() && S.luck.w === w && !S.luck.got;
   if (z.lucky) S.luck.got = true;
   z.dust = dustFor(w, stars) * (z.lucky ? 2 : 1) + (z.newCons !== null ? CONS_BONUS : 0); S.dust += z.dust;
@@ -1510,7 +1584,8 @@ function lightUp(w){
   if (z.newCons !== null) meteor(5); else if (stars === 3) meteor(1);
   tip("stars"); if (z.unlocked.length) tip("choose"); if (z.newCons !== null) tip("cons"); if (z.newGal.length) tip("galaxy");
   // 没有大事（星座、升级、里程碑、今日目标）就直接接下一个词
-  const big = z.newCons !== null || z.lvUp || z.ms.length || z.streak || z.goal || litArr.length === WORDS.length, nx = !big && candidates()[0];
+  if (z.subDone !== null){ meteor(5); }
+  const big = z.newCons !== null || z.subDone !== null || z.lvUp || z.ms.length || z.streak || z.goal || litArr.length === WORDS.length, nx = !big && candidates()[0];
   if (nx){ z.chain = nx.w; chainT = setTimeout(goChain, CHAIN_MS); }
   renderResult();
 }
@@ -1553,7 +1628,7 @@ function stageHtml(z){
 function renderChain(){ const z = quiz, w = z.w;
   panel.innerHTML = `<div class="eyebrow">${z.lucky ? "点亮成功 · ✦ 幸运星翻倍" : "点亮成功"}</div><div class="big">${esc(w)}</div>
     <div class="meta" style="margin-top:0">${starHtml(z.stars)}<span>${esc(cn1(w))}</span><span class="dust">星尘 +${z.dust}</span></div>
-    <button type="button" class="cta alt" id="gonext" style="text-align:left">下一颗 <b>${esc(z.chain)}</b> ›</button><div class="auto" style="--d:${CHAIN_MS}ms"><i></i></div>
+    <button type="button" class="cta alt" id="gonext" style="text-align:left">下一颗 <b>${esc(z.chain)}</b> ›</button><div class="auto" style="--d:${CHAIN_MS}ms"><i></i></div>${subHtml(z.chain, subOf(z.chain) === subOf(w) ? "还在" : "下一片：")}
     <div class="foot"><button class="ghost" id="stopc" type="button">停一下</button><span></span></div>`;
   document.getElementById("gonext").onclick = goChain;
   document.getElementById("stopc").onclick = e => { e.stopPropagation(); clearChain(); panel.onclick = null; renderResult(); };
@@ -1569,11 +1644,12 @@ function renderResult(){
   html += stageHtml(z);
   if (z.galDone) html += `<div class="badge"><b>${esc(GAL[gOf(w)].name)}全部点亮！</b><p>这个星系的 ${GW[gOf(w)].length} 颗星都亮了。</p></div>`;
   if (z.lucky) html += `<div class="badge"><b>✦ 幸运星</b><p>今天的幸运星，星尘翻倍。</p></div>`;
+  if (z.subDone !== null) html += `<div class="badge"><b>「${esc(SUBS[z.subDone].name)}」这一片学完了</b><p>${SW[z.subDone].length} 个词全部点亮，这片星空亮起了金色光晕。</p></div>`;
   if (c) html += `<div class="badge"><b>新星座：${esc(c.name)}</b><p>${esc(c.note)}</p><p class="note" style="margin:6px 0 0">已收起成一颗大星，点它可以展开。</p></div>`;
   if (z.goal) html += goalHtml();
   if (z.goal && dueToday().length) html += `<div class="ctabar"><button class="cta" data-polish="1" type="button">擦亮 ${Math.min(REVIEW_RUN, dueToday().length)} 颗 · 今天还剩 ${dueToday().length} 颗</button></div>`;
   else if (cands.length){ const t = cands[0];
-    html += `<div class="ctabar"><button class="cta ${z.goal ? "alt" : ""}" data-start="${t.w}" type="button">继续：${esc(t.w)} · ${qnOf(t.w)} 题</button></div>`;
+    html += `<div class="ctabar"><button class="cta ${z.goal ? "alt" : ""}" data-start="${t.w}" type="button">继续：${esc(t.w)} · ${qnOf(t.w)} 题</button></div>` + whyHtml(t.w);
     if (cands.length > 1) html += `<div class="sec"><div class="eyebrow">${z.unlocked.length ? `新解锁 ${z.unlocked.length} 个` : "也可以选"}</div>${candHtml(cands.slice(1, 5))}</div>`; }
   else html += `<button class="cta alt" id="home" type="button">回到星图</button>`;
   panel.innerHTML = html; bind(panel);
@@ -1584,6 +1660,7 @@ function renderResult(){
   else if (z.lvUp) toast(`升到 Lv.${z.lvUp} · ${titleOf(z.lvUp)}！`);
   else if (z.goal) toast(`今日目标完成！星尘 +${GOAL_BONUS}`);
   else if (c) toast(`连成了${c.name}！`);
+  else if (z.subDone !== null) toast(`「${SUBS[z.subDone].name}」这一片全部点亮！`);
   else if (z.newGal.length) toast(z.newGal.length === 1 ? `新星系开放：${GAL[z.newGal[0]].name}` : `开放了 ${z.newGal.length} 个新星系`);
   document.querySelector("[data-start]")?.focus({preventScroll:true});
 }
@@ -1591,14 +1668,21 @@ function finishReview(){
   const z = quiz, w = z.w, m = S.mem[w] || (S.mem[w] = {lv:0, due:now()});
   const was = m.lv;
   if (z.wasDue){ if (z.miss === 0) m.lv = Math.min(m.lv + 1, INTERVALS.length - 1); m.due = now() + INTERVALS[m.lv] * DAY; S.polished = (S.polished || 0) + 1; }
+  // 关系题答对：邻居也一起擦亮（已经变暗就算擦亮一次，没变暗就把下次擦亮往后推一点）
+  const q0 = z.qs[0]; z.pair = null;
+  if (z.miss === 0 && q0 && q0.gen === "link" && q0.pair && isLit(q0.pair) && S.mem[q0.pair]){ const pm = S.mem[q0.pair];
+    if (now() >= pm.due){ pm.lv = Math.min(pm.lv + 1, INTERVALS.length - 1); pm.due = now() + INTERVALS[pm.lv] * DAY; }
+    else pm.due += Math.round((pm.due - now()) * .2);
+    z.pair = q0.pair; }
   z.giant = was < GIANT_LV && m.lv >= GIANT_LV; z.near = !z.giant && m.lv === GIANT_LV - 1;
   z.gain = z.miss === 0 && (S.stars[w] || 3) < 3; if (z.gain) S.stars[w] = (S.stars[w] || 3) + 1;
   z.dust = z.wasDue && z.miss === 0 ? 5 : 0; S.dust += z.dust;
-  streakHit = null; bumpDaily("review");
+  streakHit = null; bumpDaily("review"); if (z.pair) pop(z.pair);
   z.streak = streakHit; if (z.streak) { toast(`连续 ${z.streak} 天！`); meteor(8); }
   save(); z.done = true;
-  if (run && run.ws[run.i] === w){ run.res.push({w, miss: z.miss, giant: z.giant, dust: z.dust});
-    if (++run.i < run.ws.length && isFading(run.ws[run.i])){ paint(); pop(w); sfx("tick", 4); startQuiz(run.ws[run.i], "review"); return; }
+  if (run && run.ws[run.i] === w){ run.res.push({w, miss: z.miss, giant: z.giant, dust: z.dust, pair: z.pair});
+    run.i++; while (run.i < run.ws.length && !isFading(run.ws[run.i])) run.i++;   // 被关系题顺带擦亮的就跳过
+    if (run.i < run.ws.length){ paint(); pop(w); sfx("tick", 4); startQuiz(run.ws[run.i], "review"); return; }
     z.runDone = run; run = null; paint(); pop(w); sfx("cons"); meteor(3); toast(praise()); renderReviewDone(); return; }
   paint(); pop(w); sfx(z.giant || z.streak ? "cons" : "light"); if (z.giant) meteor(5); else if (z.miss === 0) meteor(1); renderReviewDone();
 }
@@ -1607,6 +1691,8 @@ function renderRunDone(){ const z = quiz, R = z.runDone, okN = R.res.filter(r =>
   let html = `<div class="eyebrow">擦亮完成</div><div class="big">${R.res.length} 颗都亮了</div>
     <div class="meta" style="margin-top:0"><span>${okN} 颗一次答对</span>${gi ? `<span class="go">新恒星 ${gi} 颗</span>` : ""}${dust ? `<span class="dust">星尘 +${dust}</span>` : ""}</div>
     <div class="conslist" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">${R.res.map(r => `<button type="button" class="consrow done" data-go="${r.w}" style="width:auto">${esc(r.w)}${r.miss ? "" : " ✓"}</button>`).join("")}</div>`;
+  { const own = new Set(R.res.map(r => r.w)), ps = [...new Set(R.res.filter(r => r.pair && !own.has(r.pair)).map(r => r.pair))];
+    if (ps.length) html += `<p class="note">答对关系题，顺带擦亮了 ${ps.map(x => `<b style="color:var(--lamp)">${esc(x)}</b>`).join("、")}</p>`; }
   if (z.streak) html += streakHtml(z.streak);
   if (left) html += `<div class="ctabar"><button class="cta" data-polish="1" type="button">再擦亮 ${Math.min(REVIEW_RUN, left)} 颗 · 今天还剩 ${left} 颗</button></div>`;
   else if (dayDone()) html += goalHtml() + `<button class="cta alt" id="home" type="button">回到星图</button>`;

@@ -38,5 +38,23 @@ for (const bank of ["ket", "pet", "kp", "kpf"]){
   const later = createCore(store, 30); const f = later.fadingWords(); assert.ok(f.length > 0);
   const z = later.newQuiz(f[0], "review"); const q = z.qs[0]; later.answer(z, q.opts.findIndex(o => o.key === q.answer)); later.finishReview(z);
   assert.ok(!later.isFading(f[0]));
+  // 擦亮带邻居：关系题答对，已点亮的邻居也一起擦亮
+  { const L2 = createCore(store, 30), w = L2.fadingWords().find(x => L2.adj[x].some(e => e.t !== "topic" && L2.isFading(e.w)));
+    if (w){ let z2; for (let k = 0; k < 40; k++){ z2 = L2.newQuiz(w, "review"); if (z2.qs[0].gen === "link" && L2.isLit(z2.qs[0].pair)) break; }
+      if (z2.qs[0].gen === "link"){ const p0 = z2.qs[0].pair, d0 = L2.S.mem[p0].due; L2.answer(z2, z2.qs[0].opts.findIndex(o => o.key === z2.qs[0].answer)); L2.finishReview(z2);
+        assert.strictEqual(z2.pair, p0); assert.ok(L2.S.mem[p0].due > d0, `${bank} 邻居没有一起擦亮`); } } }
 }
+// 推荐：新玩家前 20 颗都是 KET 词，并且有所在片区
+{ for (const k in mem) delete mem[k]; mem[KEY] = JSON.stringify({ lit: [], bank: "kp" }); const C = createCore(store);
+  for (let k = 0; k < 20; k++){ const w = C.candidates()[0].w; assert.strictEqual(C.D.words[w].lv, "A2", `第 ${k + 1} 颗推荐了 ${w}`); assert.ok(C.whyOf(w).sub, `${w} 没有片区`);
+    const z = C.newQuiz(w, "light"); z.qs.forEach((q, i) => { z.i = i; z.picked = null; C.answer(z, q.opts.findIndex(o => o.key === q.answer)); }); C.lightUp(z); }
+  // 混淆对：答错记下来，下次出题把易混词放进选项
+  const z = C.newQuiz("quiet", "light"), i = z.qs.findIndex(q => ["meaning", "reverse", "blank", "ipa"].includes(q.gen)); z.i = i;
+  const bad = z.qs[i].opts.findIndex(o => o.key !== z.qs[i].answer); const bw = z.qs[i].opts[bad].key; C.answer(z, bad);
+  assert.strictEqual(C.confMiss("quiet"), bw);
+  const z2 = C.newQuiz("quiet", "light"); assert.strictEqual(z2.conf, bw);
+  z2.qs.filter(q => ["meaning", "reverse", "blank", "ipa"].includes(q.gen)).forEach(q => assert.ok(q.opts.some(o => o.key === bw), `易混词 ${bw} 没放进 ${q.gen}`));
+  // 学完一片
+  const si = C.D.words.apple.s; C.SW[si].forEach(w => { if (C.isLit(w)) return; const z3 = C.newQuiz(w, "light"); z3.qs.forEach((q, j) => { z3.i = j; z3.picked = null; C.answer(z3, q.opts.findIndex(o => o.key === q.answer)); }); C.lightUp(z3); if (C.SW[si].every(C.isLit)) assert.strictEqual(z3.subDone, si); });
+  assert.ok(C.subDone(si)); }
 console.log(`核心自测通过：${n} 道题`);

@@ -5,7 +5,7 @@ const U = require("./ui.js");
 const { createCore } = require("./core.js");
 const { COL } = U;
 
-const VERSION = "1.15";
+const VERSION = "1.17";
 const ctx = P.ctx, W = P.W, H = P.H, dpr = P.dpr;
 const PAD = 16, AUTO_MS = 800, CHAIN_MS = 1300, LD = Math.min(dpr, 2);   // LD：星图离屏层的清晰度，最高 2 倍，省内存
 U.setFamilies(P.families || {});
@@ -13,7 +13,7 @@ U.setFamilies(P.families || {});
 // ---------- 规则核心（换词库时重建） ----------
 let core, D, GAL, CONS, GW, GE, GC, consOf, adj, TYPES, POS, BBall, CP, ALLC;
 function boot(){
-  core = createCore(P.store, P.shiftDays);
+  core = createCore(P.store, P.shiftDays); reveal = null;
   ({ D, GAL, CONS, GW, GE, GC, consOf, adj, TYPES } = core);
   POS = {}; core.WORDS.forEach(w => POS[w] = {x: D.words[w].p[0], y: D.words[w].p[1]});
   { const xs = core.WORDS.map(w => POS[w].x), ys = core.WORDS.map(w => POS[w].y), x0 = Math.min(...xs), y0 = Math.min(...ys);
@@ -156,10 +156,21 @@ function drawHeat(){
     const band = h * 7 % 1, line = h > .1 && band < .07 ? .07 : 0, col = HEAT_LUT[Math.min(255, Math.round(h * 255))];
     d[i*4] = col[0]; d[i*4+1] = col[1]; d[i*4+2] = col[2]; d[i*4+3] = Math.round(Math.min(1, col[3] + line) * 255); }
   x2.putImageData(im, 0, 0);
+  // 学完的一片（小话题全部点亮）：背后亮起一层金色光晕
+  const gw = [].concat(...core.SW.filter((_, i) => core.subDone(i)));
+  if (gw.length){ const g = new Float32Array(Wd2 * Hd), sg = 34 / HEAT_CELL, R = Math.ceil(sg * 2.6), inv = 1 / (2 * sg * sg);
+    gw.forEach(w => { const cx = (POS[w].x - B.x) / HEAT_CELL, cy = (POS[w].y - B.y) / HEAT_CELL;
+      for (let y = Math.max(0, Math.floor(cy - R)); y <= Math.min(Hd - 1, Math.ceil(cy + R)); y++){ const dy = y - cy, o = y * Wd2;
+        for (let x = Math.max(0, Math.floor(cx - R)); x <= Math.min(Wd2 - 1, Math.ceil(cx + R)); x++){ const dx = x - cx; g[o + x] += Math.exp(-(dx * dx + dy * dy) * inv); } } });
+    const gi = x2.createImageData(Wd2, Hd), gd = gi.data;
+    for (let i = 0; i < g.length; i++){ if (g[i] < .03) continue; const h = 1 - Math.exp(-g[i] * .9); gd[i*4] = 255; gd[i*4+1] = 205 + 30 * h; gd[i*4+2] = 110 + 60 * h; gd[i*4+3] = Math.round(Math.min(.42, h * .45) * 255); }
+    const c2 = P.offscreen(Wd2, Hd); c2.getContext("2d").putImageData(gi, 0, 0); goldF = {c: c2, x: B.x, y: B.y, w: Wd2 * HEAT_CELL, h: Hd * HEAT_CELL}; }
+  else goldF = null;
   heatPrev = heat; heat = {c, x: B.x, y: B.y, w: Wd2 * HEAT_CELL, h: Hd * HEAT_CELL}; heatT0 = Date.now(); }
+let goldF = null;
 
 // ---------- 选择与导航 ----------
-function select(w){ pick = null; if (!busy()){ clearChain(); run = null; } if (busy()) { if (w) toast("先完成这一轮答题"); return; }
+function select(w){ pick = null; if (reveal) endReveal(); if (!busy()){ clearChain(); run = null; } if (busy()) { if (w) toast("先完成这一轮答题"); return; }
   const back = !w && (quiz || selected || selCons !== null);
   if (w && core.rep(w) !== w) { S().folded = S().folded.filter(i => i !== consOf[w]); }
   quiz = null; page = null; selected = w; selCons = null; core.save(); refresh(); renderPanel(true);
@@ -168,7 +179,7 @@ function selectCons(i){ pick = null; if (!busy()){ clearChain(); run = null; } i
   quiz = null; page = null; selected = null; selCons = i; refresh(); renderPanel(true); focusOn(CP[i]); }
 function showLevel(){ if (busy()) { toast("先完成这一轮答题"); return; } clearChain(); run = null; quiz = null; page = "level"; selected = null; selCons = null; refresh(); renderPanel(true); }
 
-function startQuiz(w, mode){ pick = null; clearChain();
+function startQuiz(w, mode){ pick = null; reveal = null; clearChain();
   selected = w; selCons = null; page = null;
   quiz = core.newQuiz(w, mode);
   if (S().lit.length && S().dust >= core.HINT_COST) tip("hint");
@@ -199,10 +210,12 @@ function lightUp(){
   else if (z.lvUp) toast(`升到 Lv.${z.lvUp} · ${core.titleOf(z.lvUp)}！`);
   else if (z.goal) toast(`今日目标完成！星尘 +${core.GOAL_BONUS}`);
   else if (z.newCons !== null) toast(`连成了${CONS[z.newCons].name}！`);
+  else if (z.subDone !== null) toast(`「${core.SUBS[z.subDone].name}」这一片全部点亮！`);
+  if (z.subDone !== null){ meteor(5); sfx("cons"); }
   // 没有大事（星座、升级、里程碑、今日目标）就直接接下一个词
   // 今日目标、升级、考纲里程碑：点亮动画放完后拉远看整片星空
   z.reveal = !!(z.goal || z.lvUp || z.ms.length);
-  const big = z.newCons !== null || z.lvUp || z.ms.length || z.streak || z.goal || core.litArr.length === core.WORDS.length, nx = !big && core.candidates()[0];
+  const big = z.newCons !== null || z.subDone !== null || z.lvUp || z.ms.length || z.streak || z.goal || core.litArr.length === core.WORDS.length, nx = !big && core.candidates()[0];
   if (nx){ z.chain = nx.w; z.chainT0 = Date.now(); chainT = setTimeout(goChain, CHAIN_MS); }
   renderPanel(true);
 }
@@ -244,9 +257,11 @@ const ignTextFor = z => { const n = new Set(adj[z.w].filter(e => core.isLit(e.w)
 let fxText = null;
 function finishReview(){
   const z = quiz; core.finishReview(z);
-  if (run && run.ws[run.i] === z.w){ run.res.push({w: z.w, miss: z.miss, giant: z.giant, gain: z.gain, dust: z.dust});
+  if (z.pair) pop(z.pair);
+  if (run && run.ws[run.i] === z.w){ run.res.push({w: z.w, miss: z.miss, giant: z.giant, gain: z.gain, dust: z.dust, pair: z.pair});
     if (z.streak){ toast(`连续 ${z.streak} 天！`); meteor(8); }
-    if (++run.i < run.ws.length && core.isFading(run.ws[run.i])){ pop(z.w); sfx("tick", 4); refresh(); startQuiz(run.ws[run.i], "review"); return; }
+    run.i++; while (run.i < run.ws.length && !core.isFading(run.ws[run.i])) run.i++;   // 被关系题顺带擦亮的就跳过
+    if (run.i < run.ws.length){ pop(z.w); sfx("tick", 4); refresh(); startQuiz(run.ws[run.i], "review"); return; }
     z.runDone = run; run = null; refresh(); pop(z.w); sfx("cons"); meteor(3); P.vibrate(); toast(praise()); renderPanel(true); return; }
   if (z.goal){ toast(`今日目标完成！星尘 +${core.GOAL_BONUS}`); meteor(8); }
   if (z.streak){ toast(`连续 ${z.streak} 天！`); meteor(8); }
@@ -308,6 +323,18 @@ function metaRuns(w){ const cl = core.consLeft(w), r = [];
   r.push(T(`星尘 +${core.dustFor(w, 1)}~${core.dustFor(w, 3)}`, {c: "muted"}));
   return r; }
 function meta(w){ gap(8); txt(metaRuns(w), {size: 13, lh: 20}); }
+// 所在片区和进度：「甜点零食」这一片 9 / 15 + 进度条
+function subLine(w, lead){ const si = D.words[w].s; if (si === undefined) return; const n = core.subLit(si), N = core.SW[si].length, nm = core.SUBS[si].name;
+  add(30, (c, x, y) => { const s0 = (lead || "") + `「${nm}」这一片`; U.text(c, s0, x, y + 10, "cn", 13, "muted");
+    U.text(c, `${n} / ${N}`, x + U.measure(c, s0 + "  ", "cn", 13), y + 10, "mono", 13, n === N ? "lamp" : "ink", {b: 1});
+    U.box(c, x, y + 22, cw(), 4, 2, "rule"); if (n) U.box(c, x, y + 22, Math.max(4, cw() * n / N), 4, 2, "lamp"); }); }
+// 小标签（不能点）：推荐理由
+function tags(list){ if (!list.length) return; const rows = []; let x = 0, row = [];
+  list.forEach(it => { const w = U.measure(ctx, it.s, "cn", 12) + 16; if (x + w > cw() && row.length){ rows.push(row); row = []; x = 0; } row.push({...it, x, w}); x += w + 6; });
+  if (row.length) rows.push(row);
+  rows.forEach(r => add(28, (c, x0, y) => r.forEach(it => { U.box(c, x0 + it.x, y, it.w, 22, 11, null, it.gold ? "rgba(255,201,92,.6)" : "rule");
+    U.text(c, it.s, x0 + it.x + it.w / 2, y + 11, "cn", 12, it.gold ? "lamp" : "muted", {align: "center"}); }))); }
+function whyBlock(w){ const y = core.whyOf(w), last = S().lit[S().lit.length - 1]; gap(10); subLine(w, last && D.words[last].s === D.words[w].s ? "还在" : ""); tags(y.chips.map((s0, k) => ({s: s0, gold: k === 0 && s0.startsWith("核心词")}))); }
 function cands(list){
   list.forEach(({w, cl}) => { add(44, (c, x, y) => { const ww = cw(), h = 38;
     U.box(c, x, y, ww, h, 8, "sky2", "rgba(159,216,255,.4)"); pressFx(c, x, y, ww, h, 8);
@@ -369,6 +396,7 @@ function pHome(){
     txt([T(core.cn1(w) + "   ", {c: "ink"}), ...magRuns(w)], {size: 14, lh: 22}); gap(10);
     if (fades.length) btns2([[`擦亮 ${RN(fades.length)} 颗`, "cta", polish], [`点亮 · ${core.qnOf(w)} 题`, "alt", () => startQuiz(w, "light")]]);
     else btn(`做题点亮 · ${core.qnOf(w)} 题`, "cta", () => startQuiz(w, "light"));
+    whyBlock(w);
     gap(10); txt([...(fades.length ? [T(`今天还剩 ${fades.length} 颗要擦亮   `, {c: "lamp"})] : []), ...metaRuns(w).slice(magRuns(w).length + (w === V.luck ? 2 : 1))], {size: 13, lh: 20});
     if (lit < 3){ gap(10); txt([T("在星系里随便逛：点任何一颗星都能看到意思、例句和相关的词。想学会哪个，就做题把它点亮。往上拉这块面板可以看到更多。", {c: "muted"})], {size: 14, lh: 21}); }
     if (lw && lw !== w){ gap(12); btn("", "dash", () => startQuiz(lw, "light"), {h: 40}); const it = PB.items[PB.items.length - 1], d0 = it.draw;
@@ -400,7 +428,7 @@ function relList(w){
 function pWord(){
   const w = selected, d = D.words[w], s = core.status(w);
   bigWord(w); txt(ipaRuns(w), {size: 17});
-  gap(8); txt([T(d.cn)], {size: 18, lh: 26}); exBlock(d.ex);
+  gap(8); txt([T(d.cn)], {size: 18, lh: 26}); gap(6); subLine(w); exBlock(d.ex);
   if (s !== "lit"){ meta(w); gap(16); btn(`做题点亮 · ${core.qnOf(w)} 题`, "cta", () => startQuiz(w, "light")); }
   else {
     gap(10); txt([...starRuns(S().stars[w] || 3), ...(core.isGiant(w) ? [T("  恒星", {c: "cream", b: 1, size: 13})] : []), T("   " + core.dueText(w), {c: "muted", size: 13})], {size: 13, lh: 24});
@@ -465,6 +493,8 @@ function pQuiz(){
       U.box(c, px + k * (pw + 6), y + 11, pw, 6, 3, cl); }
     U.text(c, "✕", x + cw() - 8, y + 14, "cn", 16, "muted", {align: "right"});
     hit(x + cw() - 40, y - 6, 48, 42, quitQuiz, true); });
+  if (q.conf && z.conf && z.picked === null){ gap(8); const Lw = U.layout(ctx, [T("容易混：上次你把 ", {c: "#ffb38a"}), Wd(w, {b: 1, c: "#ffd2b8"}), T(" 选成了 ", {c: "#ffb38a"}), Wd(z.conf, {b: 1, c: "#ffd2b8"})], cw() - 24, {size: 13, lh: 20});
+    add(Lw.h + 14, (c, x, y) => { U.box(c, x, y, cw(), Lw.h + 12, 10, "rgba(255,140,90,.12)", "rgba(255,140,90,.5)"); U.drawLayout(c, Lw, x + 12, y + 6); }); }
   gap(10); txt(q.q, {size: 18, lh: 27});
   if (q.sent){ gap(4); txt(q.sent, {size: 19, lh: 28, f: q.gen === "spell" ? "cn" : "w"}); }
   gap(12);
@@ -523,7 +553,8 @@ function pChain(){ const z = quiz, w = z.w;
     U.box(c, x, y, cw(), 48, 10, "sky2", "rgba(255,201,92,.45)"); U.box(c, x, y + 45, cw() * k, 3, 2, "lamp");
     U.text(c, "下一颗", x + 14, y + 24, "cn", 13, "muted"); U.text(c, z.chain, x + 14 + U.measure(c, "下一颗 ", "cn", 13), y + 24, "w", 17, "ink", {b: 1});
     U.text(c, "›", x + cw() - 16, y + 24, "cn", 20, "lamp", {align: "right"}); });
-  gap(10); btn("停一下", "ghost", () => { clearChain(); renderPanel(false); }, {w: 90, h: 32, size: 13, prio: true});
+  gap(8); subLine(z.chain, D.words[z.chain].s === D.words[w].s ? "还在" : "下一片：");
+  gap(6); btn("停一下", "ghost", () => { clearChain(); renderPanel(false); }, {w: 90, h: 32, size: 13, prio: true});
   tapAny = goChain; }
 function pResult(){
   const z = quiz, w = z.w, c0 = z.newCons !== null ? CONS[z.newCons] : null, cs0 = core.candidates(new Set(z.unlocked));
@@ -534,10 +565,11 @@ function pResult(){
   stageBadges(z);
   if (z.lucky) badge("✦ 幸运星", [T("今天的幸运星，星尘翻倍。")]);
   if (c0) badge("新星座：" + c0.name, [T(c0.note), T("\n"), T("已收起成一颗大星，点它可以展开。", {c: "muted"})]);
+  if (z.subDone !== null){ const nm = core.SUBS[z.subDone].name, N = core.SW[z.subDone].length; badge(`「${nm}」这一片学完了`, [T(`${N} 个词全部点亮，这片星空亮起了金色光晕。`)]); }
   if (z.goal) goalBadge();
   if (z.goal && core.dueToday().length){ gap(16); btn(`擦亮 ${Math.min(core.REVIEW_RUN, core.dueToday().length)} 颗 · 今天还剩 ${core.dueToday().length} 颗`, "cta", polish); }
   else if (cs0.length){ const t = cs0[0]; gap(16);
-    btn(`继续：${t.w} · ${core.qnOf(t.w)} 题`, z.goal ? "alt" : "cta", () => startQuiz(t.w, "light"));
+    btn(`继续：${t.w} · ${core.qnOf(t.w)} 题`, z.goal ? "alt" : "cta", () => startQuiz(t.w, "light")); whyBlock(t.w);
     if (cs0.length > 1){ gap(20); eyebrow("也可以选"); gap(8); cands(cs0.slice(1, 5)); } }
   else { gap(16); btn("回到星图", "alt", () => { quiz = null; select(null); }); }
 }
@@ -550,6 +582,7 @@ function pRunDone(){ const z = quiz, R = z.runDone, okN = R.res.filter(r => !r.m
   eyebrow("擦亮完成"); txt([T(`${R.res.length} 颗都亮了`, {b: 1, c: "lamp"})], {size: 30, lh: 40});
   txt([T(`${okN} 颗一次答对`), ...(gi ? [T(` · 新恒星 ${gi} 颗`, {c: "cream", b: 1})] : []), ...(dust ? [T(`   星尘 +${dust}`, {c: "lamp", f: "mono", size: 12})] : [])], {size: 14, lh: 24});
   gap(10); chips(R.res.map(r => ({runs: [Wd(r.w, {c: r.giant ? "cream" : "lamp"}), T(r.miss ? "" : " ✓", {c: "good", size: 12})], border: r.giant ? "rgba(214,232,255,.6)" : "rgba(255,201,92,.45)", fn: () => select(r.w)})));
+  { const own = new Set(R.res.map(r => r.w)), ps = [...new Set(R.res.filter(r => r.pair && !own.has(r.pair)).map(r => r.pair))]; if (ps.length){ gap(4); txt([T("答对关系题，顺带擦亮了 ", {c: "muted"}), ...ps.map((x, k) => [T(k ? "、" : ""), Wd(x, {c: "lamp", b: 1})]).flat()], {size: 13, lh: 20}); } }
   if (z.streak) streakBadge(z.streak);
   gap(14);
   if (left) btn(`再擦亮 ${Math.min(core.REVIEW_RUN, left)} 颗 · 今天还剩 ${left} 颗`, "cta", polish);
@@ -632,7 +665,8 @@ function drawStatic(c, G){ statN++;
   // 热力场（手机屏幕小，调淡一半，让星星的颜色更显眼）
   if (heat){ const a = Math.min(1, (Date.now() - heatT0) / 600); c.imageSmoothingEnabled = true;
     if (heatPrev && a < 1){ c.globalAlpha = (1 - a) * HEAT_A; c.drawImage(heatPrev.c, heatPrev.x, heatPrev.y, heatPrev.w, heatPrev.h); }
-    c.globalAlpha = a * HEAT_A; c.drawImage(heat.c, heat.x, heat.y, heat.w, heat.h); c.globalAlpha = 1; }
+    c.globalAlpha = a * HEAT_A; c.drawImage(heat.c, heat.x, heat.y, heat.w, heat.h); c.globalAlpha = 1;
+    if (goldF){ c.globalAlpha = a; c.drawImage(goldF.c, goldF.x, goldF.y, goldF.w, goldF.h); c.globalAlpha = 1; } }
   // 完成的星座：一层暖光
   if (V.consE.length){ c.beginPath(); V.consE.forEach(([a, b]) => { c.moveTo(POS[a].x, POS[a].y); c.lineTo(POS[b].x, POS[b].y); });
     c.globalAlpha = .12; c.strokeStyle = COL.lamp; c.lineWidth = PX(6); c.stroke(); c.globalAlpha = 1; }
@@ -688,6 +722,12 @@ function drawMap(t){
   c.drawImage(mapLayer, 0, 0, LW, LH, m.x - MX + dx, m.y - MY + dy, m.w + 2 * MX, m.h + 2 * MY);
   c.globalAlpha = 1;
   worldTf(c, v); c.lineCap = "round";
+  // 选中的词：它所在的那一片泛起淡蓝光
+  if (selected && D.words[selected] && D.words[selected].s !== undefined){ const ws = core.SW[D.words[selected].s], R = 46;
+    c.save(); c.globalCompositeOperation = "lighter";
+    ws.forEach(w => { const p = POS[w], g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, R); g.addColorStop(0, "rgba(120,190,255,.10)"); g.addColorStop(1, "rgba(120,190,255,0)");
+      c.fillStyle = g; c.beginPath(); c.arc(p.x, p.y, R, 0, 6.2832); c.fill(); });
+    c.restore(); }
   // 选中的词：它的连线（细实线）和相关的词恢复亮度
   if (selected){ V.hl.forEach(([i, both]) => { const [a, b, tp] = D.edges[i]; c.beginPath(); c.moveTo(POS[a].x, POS[a].y); c.lineTo(POS[b].x, POS[b].y);
       c.globalAlpha = both ? .95 : .55; c.strokeStyle = COL[tp]; c.lineWidth = PX(both ? 1.6 : 1.2); c.stroke(); });

@@ -8,12 +8,14 @@ const BANKS = { ket:{name:"KET", lv:["A2"], note:"A2 Key"}, pet:{name:"PET", lv:
 const TYPE_ORDER = ["sound","form","syn","ant","root","coll","topic","hyper"];
 const DAY = 864e5;
 const INTERVALS = [1, 3, 7, 14, 30];
-const HINT_COST = 30, CONS_BONUS = 30, OPEN_STEP = 12, GOAL = 10, GOAL_BONUS = 50, QN = 3;
-// 观星者等级：按累计点亮数（所有词库合计）升级
-const LV_AT = [0,10,25,45,70,100,140,190,250,320,400,500,620,760,920,1100,1300,1550,1800,2100,2400,2750,3100,3400,3716];
-const LV_TITLE = ["见习观星者","寻星人","引星人","星图师","星河旅人","星系领航员","星海守望者"];
+const HINT_COST = 30, CONS_BONUS = 30, OPEN_STEP = 12, GOAL = 5, GOAL_BONUS = 50, QN = 3;
+// 每日目标（新点亮的词数）可选 5 / 10 / 15；擦亮每轮 5 颗，每天最多提醒 20 颗，多的往后排
+const GOALS = [5, 10, 15], REVIEW_RUN = 5, REVIEW_CAP = 20;
+// 观星者等级：按累计点亮数（所有词库合计）升级；每级最多 100 个词，后期也能一两周升一级
+const LV_AT = [0,10,25,45,70,100,140,190,250,320,400,500]; for (let n = 600; n < 3716; n += 100) LV_AT.push(n); LV_AT.push(3716);
+const LV_TITLE = ["见习观星者","寻星人","引星人","星图师","星河旅人","星系领航员","星海守望者"], TITLE_AT = [1, 5, 9, 13, 19, 27, 37];
 const lvOf = n => { let i = 0; while (i + 1 < LV_AT.length && n >= LV_AT[i + 1]) i++; return i + 1; };
-const titleOf = lv => LV_TITLE[Math.min(LV_TITLE.length - 1, Math.floor((lv - 1) / 4))];
+const titleOf = lv => { let i = 0; while (i + 1 < TITLE_AT.length && lv >= TITLE_AT[i + 1]) i++; return LV_TITLE[i]; };
 // 考纲里程碑：KET / PET / FCE 各自点亮 25% / 50% / 75% / 100%
 const EXAMS = [{lv:"A2", name:"KET", note:"A2 Key"}, {lv:"B1", name:"PET", note:"B1 Preliminary"}, {lv:"B2", name:"FCE", note:"B2 First"}];
 const QUARTERS = [25, 50, 75, 100];
@@ -81,15 +83,22 @@ function createCore(store, shiftDays){
     recalc(); S.folded = S.folded.filter(i => CONS[i] && consDone(i)); cur = 0; }
   const dayKey = t => { const d = new Date(t); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); };
   const today = () => dayKey(now());
-  function daily(){ if (!S.daily || S.daily.d !== today()) S.daily = {d: today(), n: 0, done: false}; return S.daily; }
+  function daily(){ if (!S.daily || S.daily.d !== today()) S.daily = {d: today(), n: 0, p: 0, done: false}; return S.daily; }
+  const goalOf = () => GOALS.includes(S.goal) ? S.goal : GOAL;
+  function setGoal(n){ if (!GOALS.includes(n)) return; S.goal = n; const g = daily(); if (g.n >= n && !g.done){ g.done = true; S.dust += GOAL_BONUS; } save(); }
+  // 今天还要擦亮的星：最早变暗的排在前面，每天最多 REVIEW_CAP 颗
+  const reviewLeft = () => Math.max(0, REVIEW_CAP - (daily().p || 0));
+  const dueToday = () => fadingWords().sort((a, b) => S.mem[a].due - S.mem[b].due).slice(0, reviewLeft());
+  // 今天收尾：新点亮达到目标，今天该擦亮的也擦完了
+  const dayDone = () => daily().done && !dueToday().length;
   let streakHit = null;                           // 这一次刚达到的连续天数里程碑
-  function bumpDaily(){ const g = daily(); g.n++; streakHit = null;
+  function bumpDaily(kind){ const g = daily(); if (kind === "review") g.p = (g.p || 0) + 1; else g.n++; streakHit = null;
     if (!S.streak) S.streak = {d:"", c:0};
     if (S.streak.d !== g.d){ S.streak.c = S.streak.d === dayKey(now() - DAY) ? S.streak.c + 1 : 1; S.streak.d = g.d;
       if (S.streak.c > (S.streak.best || 0)) S.streak.best = S.streak.c;
       if (!S.sms) S.sms = {};
       if (STREAK_MS.includes(S.streak.c) && !(S.streak.c in S.sms)) { S.sms[S.streak.c] = today(); streakHit = S.streak.c; } }
-    if (g.n >= GOAL && !g.done){ g.done = true; S.dust += GOAL_BONUS; return true; } return false; }
+    if (g.n >= goalOf() && !g.done){ g.done = true; S.dust += GOAL_BONUS; return true; } return false; }
   const dayDiff = (a, b) => { const [y1, m1, d1] = a.split("-"), [y2, m2, d2] = b.split("-"); return Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / DAY); };
   // 现在还算数的连续天数：最后一次是今天或昨天才算
   function streakNow(){ const k = S.streak; if (!k || !k.d || !k.c) return 0; return dayDiff(k.d, today()) <= 1 ? k.c : 0; }
@@ -323,7 +332,7 @@ function createCore(store, shiftDays){
     z.giant = was < GIANT_LV && m.lv >= GIANT_LV; z.near = !z.giant && m.lv === GIANT_LV - 1;
     z.gain = z.miss === 0 && (S.stars[w] || 3) < 3; if (z.gain) S.stars[w] = (S.stars[w] || 3) + 1;
     z.dust = z.wasDue && z.miss === 0 ? 5 : 0; S.dust += z.dust;
-    z.goal = bumpDaily(); z.streak = streakHit;
+    z.goal = bumpDaily("review"); z.streak = streakHit;
     save(); z.done = true;
   }
   function reset(){ S = Object.assign(fresh(), {tips: S.tips || {}, mute: S.mute}); recalc(); cur = 0; S.gal = 0; save(); }
@@ -334,7 +343,7 @@ function createCore(store, shiftDays){
   // 用属性描述符合并，保证 S、cur 等 getter 始终读到最新值
   return Object.defineProperties(C, Object.getOwnPropertyDescriptors({
     BANKS, BANK, ALLC, TYPE_ORDER, TYPES, GAL, CONS, D, WORDS, adj, nbSet, gOf, GW, GE, GC, consOf, NCONS, STARTS, DIFF,
-    HINT_COST, OPEN_STEP, GOAL, GOAL_BONUS, QN, RAW, IMP, tierOf, qnOf, MAG, LV_AT, lvOf, titleOf, EXAMS, EXAM_N, QUARTERS, STREAK_MS, GUARD_COST, GUARD_MAX, GIANT_LV, INTERVALS, LVS,
+    HINT_COST, OPEN_STEP, GOAL, GOALS, REVIEW_RUN, REVIEW_CAP, goalOf, setGoal, reviewLeft, dueToday, dayDone, GOAL_BONUS, QN, RAW, IMP, tierOf, qnOf, MAG, LV_AT, lvOf, titleOf, EXAMS, EXAM_N, QUARTERS, STREAK_MS, GUARD_COST, GUARD_MAX, GIANT_LV, INTERVALS, LVS,
     get S(){ return S; }, get cur(){ return cur; }, get litArr(){ return litArr; }, get readySet(){ return readySet; }, get openG(){ return openG; },
     now, save, recalc, daily, lucky, isLit, status, isFading, fadingWords, consDone, isFolded, gainOf, consLeft, dueText, candidates, rep, fold, dustFor,
     GENS, gensFor, newQuiz, answer, retry, useHint, lightUp, finishReview, reset, setBank, setCur, today,

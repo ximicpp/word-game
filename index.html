@@ -557,6 +557,21 @@ details.fold[open] summary{margin-bottom:10px}
 /* v1.12 去掉点亮星星的光晕外环：重要程度改由热力场和星星大小表现；只在点亮、闪动动画时出现 */
 #net .node.lit:not(.ignite):not(.ping) .halo{display:none}
 #net .node.lit.giant:not(.sel) .ring{stroke:none}
+/* v1.13 星星的颜色 = 记得多牢：刚点亮橙色，复习一次比一次“热”（黄 → 白），恒星淡蓝白；该擦亮时冷却成暗红、变小 */
+#net .node.lit.m0 .dot{fill:#ff9a55}
+#net .node.lit.m1 .dot{fill:#ffb85c}
+#net .node.lit.m2 .dot{fill:#ffd27a}
+#net .node.lit.m3 .dot{fill:#fff1d0}
+#net .node.lit.giant .dot{fill:#d6e8ff}
+#net .node.lit.fade .dot{fill:#8f5d4a;opacity:.75;transform:scale(.8)}
+#net .node.lit.m0 .halo{fill:#ff9a55}#net .node.lit.m1 .halo{fill:#ffb85c}#net .node.lit.giant .halo{fill:#d6e8ff}
+/* 更安静：推荐的词是一团淡淡的暖光（没有圈），幸运星是慢慢明暗的金星（没有圈和 ✦），待擦亮不再加圈 */
+#net .node.rec:not(.sel) .ring,#net .node.lucky:not(.sel) .ring,#net .node.lit.fade:not(.sel) .ring{stroke:none!important;animation:none}
+#net .node.ready.rec:not(.sel):not(.nb) .dot{r:2.4;fill:#ffb08a;stroke:none}
+#net .node.ready.rec .halo{display:block!important;fill:#ff8c5a;opacity:.3;r:11}
+#net .node .luck{display:none!important}
+#net .node.lucky:not(.sel) .dot{fill:#ffd36b!important;stroke:none;r:4;animation:luckyT 3s ease-in-out infinite}
+@keyframes luckyT{50%{opacity:.45}}
 </style>
 </head>
 <body>
@@ -854,12 +869,12 @@ function paint(){
     const nb = !!nbS && w !== selected && nbS.has(w), fade = isFading(w), giant = isGiant(w), isSel = w === selected, isRec = rec.has(w), isLuck = w === luck;
     let c = "node " + s + (T > 1 ? " imp" + T : "");
     if (isSel) c += " sel"; if (nb) c += " nb"; if (nbL && nbL.has(w)) c += " nbl"; if (isRec) c += " rec"; if (isLuck) c += " lucky";
-    if (lit) c += " s" + (S.stars[w] || 3); if (fade) c += " fade"; if (giant) c += " giant"; if (rep(w) !== w) c += " gone";
+    if (lit) c += " s" + (S.stars[w] || 3); if (fade) c += " fade"; if (giant) c += " giant"; else if (lit && !fade) c += " m" + Math.min(3, (S.mem[w] && S.mem[w].lv) || 0); if (rep(w) !== w) c += " gone";
     if (!lit && adj[w].some(e => e.t !== "topic" && isLit(e.w))) c += " near";
     if ((!!selected && !isSel && !near.has(w)) || (selCons !== null && consOf[w] !== selCons)) c += " dim";
     for (const k of ["hov", "ping", "ignite", "charging"]) if (n.classList.contains(k)) c += " " + k;
     if (c !== n._c) { n.setAttribute("class", c); n._c = c; }
-    if (lit || n.classList.contains("ping")) part(n, "halo");
+    if (lit || isRec || n.classList.contains("ping")) part(n, "halo");
     if (isSel || isRec || isLuck || fade || giant) part(n, "ring");
     if (isSel || (nbL && nbL.has(w)) || !ALLV || (vLit && lit)) part(n, "text");
     if (vLit && lit) part(n, "cnl");
@@ -1168,7 +1183,7 @@ function renderHome(){
     <div class="note" style="margin-top:0">拖动、滚轮或双指移动缩放地图，所有单词都在这一整张星空里。越亮越大的星越重要，题目也越多。点亮的词过几天会变暗，答 1 题就能擦亮。</div>
     <div class="keys">${TYPE_ORDER.map(t => `<span style="--c:var(--t-${t})"><i></i>${TYPES[t].name}</span>`).join("")}</div>
     <div class="note">正确率 ${S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "—"} · 最高连击 ${S.best} · 星座 ${GC.flat().filter(consDone).length} / ${NCONS}</div>
-    <div class="note">单词星系 v1.12 · 当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。</div>
+    <div class="note">单词星系 v1.13 · 当前词库 ${BANKS[BANK].name}，共 ${WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。</div>
     <div class="foot"><span></span><button class="ghost" id="resetBtn" type="button">重新开始</button></div></details>`;
   panel.innerHTML = html; bind(panel);
   document.getElementById("resetBtn").onclick = askReset;

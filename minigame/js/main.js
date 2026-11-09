@@ -5,9 +5,9 @@ const U = require("./ui.js");
 const { createCore } = require("./core.js");
 const { COL } = U;
 
-const VERSION = "1.13";
+const VERSION = "1.14";
 const ctx = P.ctx, W = P.W, H = P.H, dpr = P.dpr;
-const PAD = 16, AUTO_MS = 3500;
+const PAD = 16, AUTO_MS = 3500, LD = Math.min(dpr, 2);   // LD：星图离屏层的清晰度，最高 2 倍，省内存
 U.setFamilies(P.families || {});
 
 // ---------- 规则核心（换词库时重建） ----------
@@ -38,13 +38,23 @@ function computeLayout(){
   const top = Math.max(P.safe.top || 0, 6);
   let r1y = top + 6, r1h = 32, r1right = W - PAD;
   if (P.menu){ r1y = P.menu.top; r1h = P.menu.height; r1right = P.menu.left - 10; }
-  const r2y = r1y + r1h + 6, r2h = 28;
-  L.head = {h: r2y + r2h + 8, r1y, r1h, r1right, r2y, r2h};
+  L.head = {h: r1y + r1h + 8, r1y, r1h, r1right};
+  // 星图铺满顶栏以下的整个屏幕；面板是压在上面的抽屉，有三档高度：露一条 / 一半 / 大部分
   const rest = H - L.head.h;
-  const mh = Math.max(190, Math.round(rest * (quiz ? 0.3 : 0.47)));
-  L.map = {x: 0, y: L.head.h, w: W, h: mh};
-  L.panel = {x: 0, y: L.head.h + mh, w: W, h: H - L.head.h - mh, padB: Math.max(16, H - (P.safe.bottom || H) + 12)};
+  L.map = {x: 0, y: L.head.h, w: W, h: rest};
+  SN = [Math.round(Math.max(206, rest * .3)), Math.round(rest * .5), Math.round(rest * .7)];
+  if (!sheetH) sheetH = SN[sheetK];
+  L.panel = {x: 0, y: H - sheetH, w: W, h: sheetH, padB: Math.max(16, H - (P.safe.bottom || H) + 12)};
 }
+let SN = [200, 360, 520], sheetK = 0, sheetH = 0;
+const SHEET_TOP = 22;   // 抽屉顶部的把手区
+// 看得见的星图：顶栏以下、抽屉（目标高度）以上
+const visH = () => Math.max(120, H - sheetTarget() - L.map.y);
+// 答题时抽屉按题目内容的高度拉起，不留大片空白
+function sheetTarget(){ return sheetK === 2 && quiz && !quiz.done ? Math.min(SN[2], Math.max(SN[1], Math.round(PB.h + SHEET_TOP + L.panel.padB + 8))) : SN[sheetK]; }
+function setSheet(k){ sheetK = Math.max(0, Math.min(2, k)); }
+function sheetTick(){ const tg = sheetTarget(); if (touch.sheet) return false; if (Math.abs(tg - sheetH) < .5){ sheetH = tg; L.panel.y = H - sheetH; L.panel.h = sheetH; return false; }
+  sheetH += (tg - sheetH) * .25; L.panel.y = H - sheetH; L.panel.h = sheetH; clampScroll(); return true; }
 
 // ---------- 视野（和网页版 SVG viewBox 一样的算法） ----------
 let vb = {x:0, y:0, w:1000, h:1000}, BB = vb, glideA = null;
@@ -53,25 +63,30 @@ function view(){ const s = sc(); return {s, ox: vb.x + (vb.w - L.map.w * s) / 2,
 const toWorld = (sx, sy) => { const v = view(); return {x: v.ox + (sx - L.map.x) * v.s, y: v.oy + (sy - L.map.y) * v.s}; };
 function glide(to){ glideA = {from: {...vb}, to, t0: Date.now()}; }
 const go = (to, anim) => { if (anim) glide(to); else { glideA = null; vb = to; } };
-function fit(anim){ go({...BB}, anim); }
-// 一整张星空：先看已点亮的词和推荐的下一批
-function fitActive(anim){ const ws = core.litArr.filter(w => core.rep(w) === w).concat(core.candidates().slice(0, 6).map(c => c.w));
-  if (!ws.length) return fit(anim);
-  fitWords(ws, 460, anim); }
+// 把一块世界区域放进“看得见的星图”中间（星图比可见区域高，下面压着抽屉）
+function fitBox(cx, cy, w, h, anim){ const vh = visH(), asp = vh / L.map.w;
+  if (h / w < asp) h = w * asp; else w = h / asp;
+  const s = w / L.map.w; go({x: cx - w / 2, y: cy - vh * s / 2, w, h: L.map.h * s}, anim); }
+function fit(anim){ fitBox(BB.x + BB.w / 2, BB.y + BB.h / 2, BB.w, BB.h, anim); }
+// 打开时：放大到“下一颗”附近，能看清周围十几个词的名字；整片星空用“全览”按钮看
+function fitActive(anim){ const c = core.candidates()[0], w = c ? c.w : core.litArr[core.litArr.length - 1];
+  if (!w) return fit(anim);
+  fitBox(POS[w].x, POS[w].y, HOME_W, HOME_W, anim); }
+const HOME_W = 300;
 function fitWords(ws, mn, anim){
   const xs = ws.map(w => POS[w].x), ys = ws.map(w => POS[w].y);
-  const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2, asp = L.map.h / L.map.w;
-  let w = Math.max(Math.max(...xs) - Math.min(...xs) + 220, mn), h = Math.max(Math.max(...ys) - Math.min(...ys) + 220, mn * asp);
-  if (h / w < asp) h = w * asp; else w = h / asp;
-  go({x: cx - w/2, y: cy - h/2, w, h}, anim); }
+  const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+  fitBox(cx, cy, Math.max(Math.max(...xs) - Math.min(...xs) + 160, mn), Math.max(Math.max(...ys) - Math.min(...ys) + 160, mn * visH() / L.map.w), anim); }
 function zoom(f, sx, sy, anim){ const v = view();
-  const px = sx === undefined ? vb.x + vb.w/2 : v.ox + (sx - L.map.x) * v.s, py = sy === undefined ? vb.y + vb.h/2 : v.oy + (sy - L.map.y) * v.s;
+  const px = sx === undefined ? v.ox + L.map.w / 2 * v.s : v.ox + (sx - L.map.x) * v.s, py = sy === undefined ? v.oy + visH() / 2 * v.s : v.oy + (sy - L.map.y) * v.s;
   const nw = Math.min(BB.w * 2.5, Math.max(BB.w / 8, vb.w * f)), k = nw / vb.w;
   go({x: px - (px - vb.x) * k, y: py - (py - vb.y) * k, w: nw, h: vb.h * k}, anim); }
-function focusOn(p){ const ww = 380, hh = ww * L.map.h / L.map.w; glide({x: p.x - ww/2, y: p.y - hh/2, w: ww, h: hh}); }
-// 选中词：对准它和附近的相关词
-function focusWord(w){ const ns = [w, ...[...core.nbSet(w)].filter(x => core.rep(x) === x && Math.hypot(POS[x].x - POS[w].x, POS[x].y - POS[w].y) < 260)];
-  fitWords(ns, 340, true); }
+function focusOn(p){ fitBox(p.x, p.y, 380, 380, true); }
+// 选中词：对准它和最近的几个相关词
+const near8 = w => [...core.nbSet(w)].filter(x => core.rep(x) === x).sort((a, b) => Math.hypot(POS[a].x - POS[w].x, POS[a].y - POS[w].y) - Math.hypot(POS[b].x - POS[w].x, POS[b].y - POS[w].y)).slice(0, NB_MAX);
+const NB_MAX = 8;
+function focusWord(w){ const ns = [w, ...near8(w).filter(x => Math.hypot(POS[x].x - POS[w].x, POS[x].y - POS[w].y) < 300)];
+  fitWords(ns, 300, true); }
 
 // ---------- 状态 ----------
 let selected = null, selCons = null, quiz = null, autoT = null, autoStart = 0, tapAny = null;
@@ -89,10 +104,10 @@ function bundles(){
 // 状态变化后重新计算星图要用的东西（相当于网页版的 paint）
 function refresh(){
   V.rec = new Set(core.candidates().slice(0, 3).map(c => c.w)); V.luck = core.lucky();
-  const nbS = selected ? core.nbSet(selected) : null;
-  V.nb = nbS; V.near = selected ? new Set([...nbS].map(core.rep)) : null;
-  // 相关词太多时只给最重要的 14 个标名字（已点亮的优先）
-  V.nbl = nbS ? new Set([...nbS].sort((a, b) => (core.isLit(b) - core.isLit(a)) || (core.IMP[b] - core.IMP[a])).slice(0, 14)) : new Set();
+  // 选中词：手机上只连最近的 8 个相关词（全部列在面板里），名字也只标这几个
+  const nbS = selected ? new Set(near8(selected)) : null;
+  V.nb = nbS || new Set(); V.near = nbS;
+  V.nbl = nbS || new Set();
   V.selId = selected || (selCons !== null ? "c" + selCons : null);
   V.bundles = bundles().map(bd => { const ts = new Set(bd.list.map(i => D.edges[i][2]));
     return {pa: posOf(bd.ra), pb: posOf(bd.rb), n: bd.list.length, color: ts.size === 1 ? COL[[...ts][0]] : "#d9dfec",
@@ -102,7 +117,7 @@ function refresh(){
   // 连线分组：亮线按类型，选中词的连线单独画，一端点亮的光
   // 平时只画骨架：每颗点亮的星只连到离它最近的一个已点亮的相关词（强关系优先）；选中的词显示全部连线
   V.litE = {}; V.half = []; V.hl = []; const best = {};
-  D.edges.forEach(([a, b, t], i) => { if (core.rep(a) !== a || core.rep(b) !== b) return; const la = core.isLit(a), lb = core.isLit(b), isHl = !!selected && (a === selected || b === selected);
+  D.edges.forEach(([a, b, t], i) => { if (core.rep(a) !== a || core.rep(b) !== b) return; const la = core.isLit(a), lb = core.isLit(b), isHl = !!selected && (a === selected && nbS.has(b) || b === selected && nbS.has(a));
     if (isHl) { V.hl.push([i, la && lb]); if (!(la && lb)) return; }
     if (la && lb){ const d = Math.hypot(POS[a].x - POS[b].x, POS[a].y - POS[b].y) * (t === "topic" ? 1.6 : 1);
       [a, b].forEach(w => { if (!best[w] || d < best[w][0]) best[w] = [d, i]; }); } });
@@ -139,22 +154,22 @@ function drawHeat(){
   heatPrev = heat; heat = {c, x: B.x, y: B.y, w: Wd2 * HEAT_CELL, h: Hd * HEAT_CELL}; heatT0 = Date.now(); }
 
 // ---------- 选择与导航 ----------
-function select(w){ if (busy()) { if (w) toast("先完成这一轮答题"); return; }
+function select(w){ pick = null; if (busy()) { if (w) toast("先完成这一轮答题"); return; }
   const back = !w && (quiz || selected || selCons !== null);
   if (w && core.rep(w) !== w) { S().folded = S().folded.filter(i => i !== consOf[w]); }
   quiz = null; page = null; selected = w; selCons = null; core.save(); refresh(); renderPanel(true);
   if (w) focusWord(w); else if (back) fitActive(true); }
-function selectCons(i){ if (busy()) { toast("先完成这一轮答题"); return; }
+function selectCons(i){ pick = null; if (busy()) { toast("先完成这一轮答题"); return; }
   quiz = null; page = null; selected = null; selCons = i; refresh(); renderPanel(true); focusOn(CP[i]); }
 function showLevel(){ if (busy()) { toast("先完成这一轮答题"); return; } quiz = null; page = "level"; selected = null; selCons = null; refresh(); renderPanel(true); }
 
-function startQuiz(w, mode){
+function startQuiz(w, mode){ pick = null;
   selected = w; selCons = null; page = null;
   quiz = core.newQuiz(w, mode);
   if (S().lit.length && S().dust >= core.HINT_COST) tip("hint");
   refresh(); renderPanel(true); focusWord(w); }
 function answer(k){ const z = quiz; const r = core.answer(z, k); if (!r) return;
-  sfx(r.ok ? "ok" : "bad");
+  sfx(r.ok ? "ok" : "bad"); if (r.ok) P.vibrate();
   if (r.milestone){ meteor(3); toast(`连击 ×${S().combo}！`); }
   refresh(); renderPanel(false); scrollTo = maxScroll(); }   // 小屏幕上让解析和“再答一次”露出来
 function nextQ(){ clearTimeout(autoT); tapAny = null; const z = quiz; if (!z || z.done || z.picked === null) return;
@@ -165,7 +180,7 @@ function lightUp(){
   const nbs = [...new Set(adj[w].filter(e => core.isLit(e.w) && core.rep(e.w) === e.w).map(e => e.w))]
     .sort((x, y) => Math.hypot(POS[x].x - POS[w].x, POS[x].y - POS[w].y) - Math.hypot(POS[y].x - POS[w].x, POS[y].y - POS[w].y)).slice(0, 12);
   const near = nbs.filter(x => Math.hypot(POS[x].x - POS[w].x, POS[x].y - POS[w].y) < 260);
-  fitWords([w, ...near], 340, true);
+  setSheet(1); fitWords([w, ...near], 300, true);
   ign = {w, t0: Date.now(), nbs, T: core.tierOf(w), done: {}};
   ign.end = IGN_D0 + 520 + Math.max(0, nbs.length - 1) * IGN_STEP + IGN_BEAM + 200;
   refresh(); P.vibrate();
@@ -230,13 +245,16 @@ function bigWord(w, o){ o = o || {}; const size = o.size || 32; const Lr = U.lay
   add(Lr.h, (c, x, y) => { if (o.glow){ c.save(); c.shadowColor = "rgba(255,201,92,.6)"; c.shadowBlur = 24; } U.drawLayout(c, Lr, x, y); if (o.glow) c.restore(); }); }
 const ipaRuns = w => [T("/" + D.words[w].ipa + "/", {f: "ipa", c: "muted"})];
 function btn(label, kind, fn, o){ o = o || {}; const h = o.h || 46;
-  add(h, (c, x, y) => { const w = o.w || cw();
+  add(h, (c, x, y) => drawBtn(c, x, y, o.w || cw(), h, label, kind, fn, o)); }
+// 并排两个按钮
+function btns2(list){ add(46, (c, x, y) => { const w = (cw() - 10) / 2; list.forEach(([label, kind, fn], k) => drawBtn(c, x + k * (w + 10), y, w, 46, label, kind, fn, {})); }); }
+function drawBtn(c, x, y, w, h, label, kind, fn, o){ {
     const st = { cta: ["lamp", null, "dark"], alt: [null, "rule", "ink"], danger: ["bad", null, "dark"], ghost: [null, "rule", "muted"], dash: [null, "rgba(255,201,92,.5)", "lamp"] }[kind];
     if (kind === "cta" && !o.noGlow){ c.save(); c.shadowColor = "rgba(255,201,92,.35)"; c.shadowBlur = 18; U.box(c, x, y, w, h, 10, st[0]); c.restore(); }
     else U.box(c, x, y, w, h, kind === "ghost" || kind === "dash" ? 8 : 10, st[0], st[1], 1, null);
     pressFx(c, x, y, w, h, 10);
     U.text(c, label, x + (o.left ? 14 : w / 2), y + h / 2, "cn", o.size || (kind === "cta" ? 16 : 14), st[2], {b: kind === "cta", align: o.left ? "left" : "center"});
-    hit(x, y, w, h, fn); }); }
+    hit(x, y, w, h, fn); } }
 // 一行若干个小按钮，自动换行
 function chips(list){ // list: [{runs, border, color, fn}]
   const rows = []; let x = 0, row = [];
@@ -289,10 +307,11 @@ function renderPanel(top){
   else if (selCons !== null) pCons();
   else if (!selected) pHome();
   else pWord();
-  if (top){ pScroll = 0; pVel = 0; scrollTo = null; }
+  // 换页时抽屉自动到合适的高度：首页露一条，看词和结果一半，答题和等级页拉高
+  if (top){ pScroll = 0; pVel = 0; scrollTo = null; setSheet(quiz ? (quiz.done ? 1 : 2) : page === "level" ? 2 : (selected || selCons !== null) ? 1 : 0); }
   clampScroll();
 }
-const maxScroll = () => Math.max(0, PB.h + 16 + L.panel.padB - L.panel.h);
+const maxScroll = () => Math.max(0, PB.h + SHEET_TOP + L.panel.padB - L.panel.h);
 function clampScroll(){ pScroll = Math.max(0, Math.min(pScroll, maxScroll())); }
 
 function pHome(){
@@ -302,18 +321,22 @@ function pHome(){
       ...wc.items.map(([v, t]) => [T("\n"), T(String(v), {c: "lamp", b: 1, f: "mono"}), T(" " + t)]).flat(), T("\n"),
       T(top ? "已经满级了，去把更多星变成恒星吧。" : `这周再点亮 ${core.LV_AT[lv] - n} 颗，就能升到 Lv.${lv + 1}。`, {c: "muted"})]);
     gap(8); btn("开始这一周", "alt", () => { weekCard = null; renderPanel(false); }, {h: 36, size: 13}); gap(18); }
-  if (lit < 3){ txt([T("在星系里随便逛：点任何一颗星都能看到意思、例句和相关的词。想学会哪个，就做题把它点亮。越重要的词题目越多，点亮后也越亮。")], {size: 15, lh: 23}); gap(12); }
   if (lit === core.WORDS.length){ bigWord("全部点亮！", {c: "lamp", glow: 1, size: 38}); gap(8); }
-  if (fades.length){ btn(`擦亮变暗的星 · 还有 ${fades.length} 颗`, "cta", () => startQuiz(fades[0], "review")); gap(18); }
   const lw = V.luck;
+  // 抽屉收起时只露这一块：下一颗词 + 按钮
+  if (!cs0.length && fades.length) btn(`擦亮变暗的星 · 还有 ${fades.length} 颗`, "cta", () => startQuiz(fades[0], "review"));
   if (cs0.length){ const w = cs0[0].w;
     eyebrow("下一颗");
-    gap(4); bigWord(w); txt(ipaRuns(w), {size: 17}); meta(w); gap(14);
-    btn(`做题点亮 · ${core.qnOf(w)} 题`, fades.length ? "alt" : "cta", () => startQuiz(w, "light"));
+    gap(2); txt([Wd(w, {b: 1, size: 28}), T("  /" + D.words[w].ipa + "/", {f: "ipa", c: "muted", size: 15})], {size: 28, lh: 36});
+    txt([T(core.cn1(w) + "   ", {c: "ink"}), ...magRuns(w)], {size: 14, lh: 22}); gap(10);
+    if (fades.length) btns2([[`擦亮 ${fades.length} 颗`, "cta", () => startQuiz(fades[0], "review")], [`点亮 · ${core.qnOf(w)} 题`, "alt", () => startQuiz(w, "light")]]);
+    else btn(`做题点亮 · ${core.qnOf(w)} 题`, "cta", () => startQuiz(w, "light"));
+    gap(10); txt(metaRuns(w).slice(magRuns(w).length + (w === V.luck ? 2 : 1)), {size: 13, lh: 20});
+    if (lit < 3){ gap(10); txt([T("在星系里随便逛：点任何一颗星都能看到意思、例句和相关的词。想学会哪个，就做题把它点亮。往上拉这块面板可以看到更多。", {c: "muted"})], {size: 14, lh: 21}); }
     if (lw && lw !== w){ gap(12); btn("", "dash", () => startQuiz(lw, "light"), {h: 40}); const it = PB.items[PB.items.length - 1], d0 = it.draw;
       it.draw = (c, x, y) => { d0(c, x, y); U.text(c, "✦ 今天的幸运星", x + 12, y + 20, "cn", 14, "lamp"); U.text(c, lw, x + 12 + U.measure(c, "✦ 今天的幸运星 ", "cn", 14), y + 20, "w", 16, "lamp", {b: 1});
         U.text(c, "星尘翻倍", x + cw() - 12, y + 20, "cn", 12, "muted", {align: "right"}); }; }
-    if (cs0.length > 1){ gap(22); eyebrow(`也可以选 · ${cs0.length - 1}`); gap(8); cands(cs0.slice(1, 7)); } }
+    if (cs0.length > 1){ gap(22); eyebrow("也可以选"); gap(8); cands(cs0.slice(1, 7)); } }
   const lc = ALLC.filter(i => CONS[i].words.some(core.isLit)), frac = i => CONS[i].words.filter(core.isLit).length / CONS[i].words.length;
   const cs = lc.sort((a, b) => frac(b) - frac(a)).slice(0, 30), done = ALLC.filter(core.consDone).length;
   gap(14); foldHead(`星座 ${done} / ${ALLC.length}`, "cons");
@@ -324,7 +347,7 @@ function pHome(){
     gap(8); txt([].concat(...core.TYPE_ORDER.map(t => [T("▬ ", {c: t}), T(TYPES[t].name + "   ", {c: "muted"})])), {size: 12, lh: 20});
     gap(8); txt([T(`正确率 ${S().answered ? Math.round(S().correct / S().answered * 100) + "%" : "—"} · 最高连击 ${S().best} · 星座 ${done} / ${core.NCONS}`)], {size: 13, lh: 20, c: "muted"});
     gap(8); txt([T(`单词星系 v${VERSION} · 当前词库 ${core.BANKS[core.BANK].name}，共 ${core.WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。`)], {size: 13, lh: 20, c: "muted"});
-    gap(12); btn("重新开始", "ghost", askReset, {w: 90, h: 32, size: 13});
+    gap(12); soundBtn(); gap(10); btn("重新开始", "ghost", askReset, {w: 90, h: 32, size: 13});
   }
 }
 const ST_NAME = {lit: "已学会", ready: "未学会", locked: "未解锁"};
@@ -351,6 +374,7 @@ function pWord(){
   if (ci !== undefined){ gap(18); consRow(ci); }
   back();
 }
+function soundBtn(){ btn(S().mute ? "音效：关" : "音效：开", "ghost", () => { S().mute = !S().mute; core.save(); if (!S().mute) sfx("ok"); renderPanel(false); }, {w: 100, h: 32, size: 13}); }
 function pLevel(){
   const n = S().lit.length, lv = core.lvOf(n), LA = core.LV_AT, top = lv >= LA.length, ex = core.examLit(), ms = S().ms || {}, sms = S().sms || {};
   const bar = (k) => add(10, (c, x, y) => { U.box(c, x, y + 2, cw(), 6, 3, "rule"); U.box(c, x, y + 2, Math.max(6, cw() * Math.min(1, k)), 6, 3, "lamp"); });
@@ -364,6 +388,7 @@ function pLevel(){
       U.text(c, `${k} / ${t} · ${Math.floor(k / t * 100)}%`, x + cw(), y + 10, "mono", 12, "muted", {align: "right"}); });
     bar(k / t);
     gap(4); txt(core.QUARTERS.map(q => { const key = e.lv + ":" + q, on = key in ms; return T(`${on ? "★" : "☆"} ${q}%${ms[key] ? " · " + core.mdText(ms[key]) : ""}    `, {c: on ? "lamp" : "muted"}); }), {size: 12, lh: 18}); });
+  gap(10); txt([T("星尘 "), T(String(S().dust), {c: "lamp", b: 1, f: "mono"}), T("   可以换提示卡和守护星", {c: "muted", size: 12})], {size: 14, lh: 22});
   gap(18); const sn = core.streakNow(), g = S().guard || 0;
   txt([T("连续 "), T(String(sn), {c: "lamp", b: 1, size: 18}), T(" 天", {}), T(`  · 最长 ${Math.max(S().streak && S().streak.best || 0, sn)} 天`, {c: "muted", size: 12})], {size: 14, lh: 24});
   gap(2); txt(core.STREAK_MS.slice(0, 6).map(m => T(`${m in sms ? "★" : "☆"} ${m}天   `, {c: m in sms ? "lamp" : "muted"})), {size: 12, lh: 18});
@@ -372,6 +397,7 @@ function pLevel(){
   else btn(`${core.GUARD_COST} 星尘换 1 颗守护星`, S().dust >= core.GUARD_COST ? "alt" : "ghost", () => { if (S().dust < core.GUARD_COST) toast(`星尘不够，需要 ${core.GUARD_COST}`); else buyGuard(); }, {h: 34, size: 13});
   gap(8); txt([T(`每天点亮或擦亮 1 颗星就算连续。守护星最多存 ${core.GUARD_MAX} 颗，哪天没来会自动用掉 1 颗，连续天数不会断。`, {c: "muted"})], {size: 12, lh: 18});
   gap(12); txt([T(`星座 ${ALLC.filter(core.consDone).length} / ${core.NCONS} · 正确率 ${S().answered ? Math.round(S().correct / S().answered * 100) + "%" : "—"} · 最高连击 ${S().best}`, {c: "muted"})], {size: 12, lh: 18});
+  gap(12); soundBtn();
   gap(14); btn("‹ 返回", "ghost", () => { page = null; renderPanel(true); }, {w: 76, h: 32, size: 13});
 }
 function pCons(){
@@ -390,6 +416,7 @@ function pQuiz(){
   const right = z.picked !== null && q.opts[z.picked].key === q.answer;
   add(30, (c, x, y) => {
     U.text(c, `${z.mode === "review" ? "擦亮" : "挑战"} ${w}`, x, y + 14, "mono", 12, "muted");
+    if (S().combo >= 2) U.text(c, `连击 ×${S().combo}`, x + U.measure(c, `${z.mode === "review" ? "擦亮" : "挑战"} ${w}`, "mono", 12) + 10, y + 14, "mono", 12, "lamp");
     const pw = 22, px = x + cw() - 40 - N * (pw + 6);
     for (let k = 0; k < N; k++){ const cl = k < z.i ? "good" : k === z.i ? (z.picked === null ? "ready" : right ? "good" : "bad") : "rule";
       U.box(c, px + k * (pw + 6), y + 11, pw, 6, 3, cl); }
@@ -513,21 +540,21 @@ function makeSky(){ const m = L.map; skyCanvas = P.offscreen(Math.round(m.w * dp
 
 // 星图分两层：静态层（热力场、亮线、星点）画进离屏画布，视野和状态不变就直接贴图；动态层（选中、动画、名字）每帧画
 let mapLayer = null, mapKey = "", mapVer = 0, statN = 0, mapV = null;
-const NEAR_COL = ["#5a5446", "#6b6250", "#847455"], DIM_COL = ["#3e4a6a", "#4f5c84", "#5d6a94"];
+const NEAR_COL = ["#6a624f", "#7d7259", "#97855f"], DIM_COL = ["#46537a", "#57658f", "#6673a0"];
 function geo(){ const v = view(), s = v.s, k = Math.min(1.5, Math.max(.45, 1 / s));
   return {v, s, k, far: s > 2.2, Z: x => x * k * s, PX: x => x * s}; }
-function worldTf(c, v, sx0, sy0){ const m = L.map; c.setTransform(dpr / v.s, 0, 0, dpr / v.s, dpr * (m.x - (sx0 || 0) - v.ox / v.s), dpr * (m.y - (sy0 || 0) - v.oy / v.s)); }
+function worldTf(c, v, sx0, sy0, d){ const m = L.map; d = d || dpr; c.setTransform(d / v.s, 0, 0, d / v.s, d * (m.x - (sx0 || 0) - v.ox / v.s), d * (m.y - (sy0 || 0) - v.oy / v.s)); }
 const toScr = (p, v) => ({x: L.map.x + (p.x - v.ox) / v.s, y: L.map.y + (p.y - v.oy) / v.s});
-function litR(w, Z){ const T0 = core.tierOf(w), st = S().stars[w] || 3; return Z(2.6 + T0 * .9) * (st === 1 ? .8 : 1); }
+function litR(w, Z){ const T0 = core.tierOf(w), st = S().stars[w] || 3; return Z(3 + T0 * 1.05) * (st === 1 ? .8 : 1); }
 function drawStatic(c, G){ statN++;
   const {v, s, k, far, Z, PX} = G, m = L.map, MX = G.MX, MY = G.MY;
   const wx0 = v.ox - (40 + MX) * s, wy0 = v.oy - (40 + MY) * s, wx1 = v.ox + (m.w + MX + 40) * s, wy1 = v.oy + (m.h + MY + 40) * s;
   const inV = p => p.x > wx0 && p.x < wx1 && p.y > wy0 && p.y < wy1, skip = ign ? ign.w : null;
-  worldTf(c, v, m.x - MX, m.y - MY); c.lineCap = "round";
-  // 热力场
+  worldTf(c, v, m.x - MX, m.y - MY, LD); c.lineCap = "round";
+  // 热力场（手机屏幕小，调淡一半，让星星的颜色更显眼）
   if (heat){ const a = Math.min(1, (Date.now() - heatT0) / 600); c.imageSmoothingEnabled = true;
-    if (heatPrev && a < 1){ c.globalAlpha = 1 - a; c.drawImage(heatPrev.c, heatPrev.x, heatPrev.y, heatPrev.w, heatPrev.h); }
-    c.globalAlpha = a; c.drawImage(heat.c, heat.x, heat.y, heat.w, heat.h); c.globalAlpha = 1; }
+    if (heatPrev && a < 1){ c.globalAlpha = (1 - a) * HEAT_A; c.drawImage(heatPrev.c, heatPrev.x, heatPrev.y, heatPrev.w, heatPrev.h); }
+    c.globalAlpha = a * HEAT_A; c.drawImage(heat.c, heat.x, heat.y, heat.w, heat.h); c.globalAlpha = 1; }
   // 完成的星座：一层暖光
   if (V.consE.length){ c.beginPath(); V.consE.forEach(([a, b]) => { c.moveTo(POS[a].x, POS[a].y); c.lineTo(POS[b].x, POS[b].y); });
     c.globalAlpha = .12; c.strokeStyle = COL.lamp; c.lineWidth = PX(6); c.stroke(); c.globalAlpha = 1; }
@@ -553,6 +580,7 @@ function drawStatic(c, G){ statN++;
   // 点亮的星：星等越高越大越亮，二、一等星带光晕
   core.litArr.forEach(w => { if (w === skip || core.rep(w) !== w) return; const p = POS[w]; if (!inV(p)) return; drawLit(c, w, p, Z); });
 }
+const HEAT_A = .55;
 const MCOL = ["#ff9a55", "#ffb85c", "#ffd27a", "#fff1d0"];
 function drawLit(c, w, p, Z, boost){
   const T0 = core.tierOf(w), fade = core.isFading(w), giant = core.isGiant(w), r = litR(w, Z) * (boost || 1);
@@ -570,7 +598,7 @@ function drawMap(t){
   if (!skyCanvas || skyCanvas.mh !== m.h) makeSky();
   c.drawImage(skyCanvas, 0, 0, skyCanvas.width, skyCanvas.height, m.x, m.y, m.w, m.h);
   // 静态层：比星图四周多画一圈，拖动时直接平移贴图，移出这一圈或停下来再重画
-  const MX = Math.round(m.w * .35), MY = Math.round(m.h * .35), LW = Math.round((m.w + 2 * MX) * dpr), LH = Math.round((m.h + 2 * MY) * dpr);
+  const MX = Math.round(m.w * .35), MY = Math.round(m.h * .25), LW = Math.round((m.w + 2 * MX) * LD), LH = Math.round((m.h + 2 * MY) * LD);
   const heatFading = heat && t - heatT0 < 650, moving = touch.active || glideA;
   const key = [s.toFixed(5), m.y, m.h, mapVer, ign ? ign.w : "", heatFading ? t : heatT0].join("|");
   if (!mapLayer || mapLayer.width !== LW || mapLayer.height !== LH) { mapLayer = P.offscreen(LW, LH); mapKey = ""; }
@@ -633,9 +661,17 @@ function drawMap(t){
   c.globalAlpha = 1;
   c.setTransform(dpr, 0, 0, dpr, 0, 0);
   // 名字：只给选中的词和它最重要的 14 个相关词（以及答题、点亮中的词）
-  const lab = (w, col, b, size) => { const q = toScr(POS[w], v); if (q.x < -60 || q.x > W + 60 || q.y < m.y - 20 || q.y > m.y + m.h + 20) return;
-    U.text(c, w, q.x, q.y + Math.max(9, 12 / Math.max(s, .5)) + 6, "w", size || 12, col, {align: "center", b, stroke: COL.sky}); };
-  if (selected){ V.nbl.forEach(w => { if (core.rep(w) === w) lab(w, core.isLit(w) ? COL.cream : "#aab4cc", 0, 11); }); lab(selected, "#fff", 1, 14); }
+  // 名字放在半透明底色的小牌子上，户外也看得清
+  // 先试星下方，挡住了再试上方，都挡住就不标
+  const placed = [];
+  const lab = (w, col, b, size, must) => { const q = toScr(POS[w], v); if (q.x < -60 || q.x > W + 60 || q.y < m.y - 20 || q.y > L.panel.y + 20) return;
+    const tw = U.measure(c, w, "w", size, b), off = Math.max(10, 13 / Math.max(s, .5)) + 7, hh = Math.round(size * 1.3) + 4;
+    let y = null; for (const yy of [q.y + off, q.y - off]){ const r = {x0: q.x - tw / 2 - 6, x1: q.x + tw / 2 + 6, y0: yy - hh / 2 - 1, y1: yy + hh / 2 + 1};
+      if (!placed.some(o => r.x0 < o.x1 && r.x1 > o.x0 && r.y0 < o.y1 && r.y1 > o.y0)){ y = yy; placed.push(r); break; } }
+    if (y === null){ if (!must) return; y = q.y + off; }
+    U.box(c, q.x - tw / 2 - 5, y - hh / 2, tw + 10, hh, 6, "rgba(9,15,30,.66)"); U.text(c, w, q.x, y, "w", size, col, {align: "center", b}); };
+  if (selected){ lab(selected, "#fff", 1, 16, true); V.nbl.forEach(w => { if (core.rep(w) === w) lab(w, core.isLit(w) ? COL.cream : "#c6cee2", 0, 13); }); }
+  else if (!quiz && !ign) homeLabels(v, s).forEach(([w, col, b]) => lab(w, col, b, 13));
   if (quiz && quiz.w !== selected) lab(quiz.w, COL.cream, 1, 14);
   ALLC.forEach(i => { if (!core.isFolded(i)) return; const q = toScr(CP[i], v); if (q.x < -60 || q.x > W + 60) return;
     U.text(c, CONS[i].name, q.x, q.y + Z(20) / s + 14, "cn", 12, "cream", {align: "center", b: 1, stroke: COL.sky}); });
@@ -649,63 +685,66 @@ function drawMap(t){
   drawZoom(); drawTip();
   c.restore();
 }
-function drawZoom(){ const c = ctx, s = 32, x = W - 12 - s, y = L.map.y + L.map.h - 10 - s * 3 - 12;
-  [["+", () => zoom(.7, undefined, undefined, true)], ["−", () => zoom(1.4, undefined, undefined, true)], ["⤢", () => fit(true)]].forEach(([lab, fn], k) => {
-    const yy = y + k * (s + 6); U.box(c, x, yy, s, s, 8, "rgba(20,30,52,.9)", "rule"); pressFx(c, x, yy, s, s, 8);
-    U.text(c, lab, x + s / 2, yy + s / 2 + 1, "cn", 16, "ink", {align: "center"}); hit(x - 4, yy - 3, s + 8, s + 6, fn); }); }
+// 没选中词时，放大到一定程度就给看得见的星标名字：推荐、幸运星、点亮的、重要的优先，互相不重叠，最多 14 个
+let hlCache = {key: "", list: []};
+function homeLabels(v, s){
+  if (s > 1.15) return [];
+  const key = [Math.round(v.ox), Math.round(v.oy), s.toFixed(3), mapVer, sheetK].join("|"); if (hlCache.key === key) return hlCache.list;
+  const top = L.map.y + 8, bot = L.panel.y - 26, cand = [];
+  core.WORDS.forEach(w => { if (core.rep(w) !== w) return; const q = toScr(POS[w], v); if (q.x < 24 || q.x > W - 24 || q.y < top || q.y > bot || (q.x > W - 90 && q.y > L.panel.y - 170)) return;
+    const lit = core.isLit(w), sc0 = V.rec.has(w) ? 100 : w === V.luck ? 90 : lit ? 50 + core.tierOf(w) * 5 : core.tierOf(w) * 6 + (V.warm.has(w) ? 8 : 0);
+    cand.push({w, q, sc0, lit}); });
+  cand.sort((a, b) => b.sc0 - a.sc0);
+  const placed = [], list = [];
+  for (const it of cand){ if (list.length >= 14) break; const tw = it.w.length * 7.4 + 12, y = it.q.y + Math.max(10, 13 / Math.max(s, .5)) + 7;
+    const r = {x0: it.q.x - tw / 2 - 3, x1: it.q.x + tw / 2 + 3, y0: y - 12, y1: y + 12};
+    if (placed.some(o => r.x0 < o.x1 && r.x1 > o.x0 && r.y0 < o.y1 && r.y1 > o.y0)) continue;
+    placed.push(r); list.push([it.w, V.rec.has(it.w) ? "#ffc59e" : it.w === V.luck ? COL.lamp : it.lit ? COL.cream : "#b4bdd3", V.rec.has(it.w) || it.w === V.luck ? 1 : 0]); }
+  hlCache = {key, list}; return list; }
+function drawZoom(){ const c = ctx, s = 36, x = W - 10 - s, y = L.panel.y - 12 - s * 3 - 12;
+  if (y < L.map.y + 8) return;
+  [["+", () => zoom(.6, undefined, undefined, true)], ["−", () => zoom(1.6, undefined, undefined, true)], ["全览", () => fit(true)]].forEach(([lab, fn], k) => {
+    const yy = y + k * (s + 6); U.box(c, x, yy, s, s, 10, "rgba(20,30,52,.88)", "rule"); pressFx(c, x, yy, s, s, 10);
+    U.text(c, lab, x + s / 2, yy + s / 2 + 1, "cn", lab.length > 1 ? 11 : 18, "ink", {align: "center"}); hit(x - 4, yy - 3, s + 8, s + 6, fn); }); }
 let tipCache = null;
 function drawTip(){ if (!tipQ.length) return; const c = ctx, key = tipQ[0], w = Math.min(440, W - 76), x = 12;
   if (!tipCache || tipCache.key !== key){ const runs = TIPS[key].split(/<\/?b>/).map((s, k) => ({s, b: k % 2 ? 1 : 0, c: k % 2 ? "lamp" : "ink"})).filter(r => r.s);
     tipCache = {key, L: U.layout(c, runs, w - 28 - 70, {size: 14, lh: 21})}; }
-  const Lr = tipCache.L, h = Math.max(48, Lr.h + 24), y = L.map.y + L.map.h - 10 - h;
+  const Lr = tipCache.L, h = Math.max(48, Lr.h + 24), y = L.panel.y - 12 - h;
   c.save(); c.shadowColor = "rgba(0,0,0,.5)"; c.shadowBlur = 30; c.shadowOffsetY = 8; U.box(c, x, y, w, h, 12, "#1b2742"); c.restore();
   U.box(c, x, y, w, h, 12, null, "rgba(255,201,92,.6)");
   U.drawLayout(c, Lr, x + 14, y + h / 2 - Lr.h / 2);
   const bw = 62, bx = x + w - 12 - bw, by = y + h / 2 - 15; U.box(c, bx, by, bw, 30, 8, "lamp"); U.text(c, "知道了", bx + bw / 2, by + 15, "cn", 13, "dark", {align: "center", b: 1});
   hits.push({x, y, w, h, fn: () => {}}); hit(bx - 6, by - 8, bw + 12, 46, closeTip); }
 
-function drawHeader(){ const c = ctx, h = L.head, s = S();
+// 顶栏只留一行：今日目标圈、等级、已点亮数、词库；星尘、连续天数、音效都在“等级”页里
+function drawHeader(){ const c = ctx, h = L.head;
   c.fillStyle = COL.sky2; c.fillRect(0, 0, W, h.h); c.fillStyle = COL.rule; c.fillRect(0, h.h - 1, W, 1);
   const lit = core.litArr.length, tot = core.WORDS.length;
   c.fillStyle = COL.lamp; c.save(); c.shadowColor = COL.lamp; c.shadowBlur = 8; c.fillRect(0, h.h - 2, W * lit / tot, 2); c.restore();
-  const cy1 = h.r1y + h.r1h / 2;
-  U.text(c, "单词星系", PAD, cy1, "cn", 17, "ink", {b: 1});
-  const tw = U.measure(c, "单词星系", "cn", 17, 1), bx = PAD + tw + 10, bl = core.BANKS[core.BANK].name, bw = U.measure(c, bl, "mono", 11) + 18;
-  U.box(c, bx, cy1 - 12, bw, 24, 8, null, "rgba(255,201,92,.4)"); pressFx(c, bx, cy1 - 12, bw, 24, 8); U.text(c, bl, bx + bw / 2, cy1, "mono", 11, "lamp", {align: "center"});
-  hit(bx - 4, cy1 - 18, bw + 8, 36, askBank);
-  // 等级：点开“我的星图”
-  const n = s.lit.length, lv = core.lvOf(n), LA = core.LV_AT, top = lv >= LA.length, kf = top ? 1 : (n - LA[lv - 1]) / (LA[lv] - LA[lv - 1]);
-  const lt = `Lv.${lv}`, lvw = U.measure(c, lt, "mono", 12, 1) + 46, lx = bx + bw + 8;
-  U.box(c, lx, cy1 - 12, lvw, 24, 8, "rgba(255,201,92,.12)", "rgba(255,201,92,.45)"); pressFx(c, lx, cy1 - 12, lvw, 24, 8);
-  U.text(c, lt, lx + 8, cy1, "mono", 12, "lamp", {b: 1}); const bx2 = lx + lvw - 32; U.box(c, bx2, cy1 - 2, 24, 4, 2, "rule"); U.box(c, bx2, cy1 - 2, Math.max(4, 24 * kf), 4, 2, "lamp");
-  hit(lx - 4, cy1 - 18, lvw + 8, 36, showLevel);
-  const totS = " / " + tot, tW = U.measure(c, totS, "mono", 12), lW = U.measure(c, String(lit), "mono", 16, 1), room = h.r1right - (lx + lvw + 8);
-  if (room >= tW + lW){ U.text(c, totS, h.r1right, cy1, "mono", 12, "muted", {align: "right"}); U.text(c, String(lit), h.r1right - tW, cy1, "mono", 16, "lamp", {align: "right", b: 1}); }
-  else if (room >= lW) U.text(c, String(lit), h.r1right, cy1, "mono", 16, "lamp", {align: "right", b: 1});
-  // 第二行：今日目标、连续天数、星尘、连击 | 待擦亮、音效
-  const cy = h.r2y + h.r2h / 2, dg = core.daily(), gp = Math.min(1, dg.n / core.GOAL);
-  let x = PAD; c.lineWidth = 3; c.beginPath(); c.arc(x + 9, cy, 8, 0, 7); c.strokeStyle = COL.rule; c.stroke();
-  if (gp > 0){ c.beginPath(); c.arc(x + 9, cy, 8, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * gp); c.strokeStyle = COL.lamp; c.lineCap = "round"; c.stroke(); c.lineCap = "butt"; }
-  x += 24; const gt = dg.done ? "今日完成" : `今日 ${dg.n}/${core.GOAL}`;
-  U.text(c, gt, x, cy, "cn", 12, dg.done ? "lamp" : "muted"); x += U.measure(c, gt, "cn", 12) + 12;
-  const sn = core.streakNow(), g = s.guard || 0;
-  if (sn > 1 || g){ const st = sn > 1 ? `连续 ${sn} 天` : "", gs = "◆".repeat(g);
-    if (st){ U.text(c, st, x, cy, "cn", 12, "lamp"); x += U.measure(c, st, "cn", 12) + 4; }
-    if (gs){ U.text(c, gs, x, cy, "cn", 10, "ready"); x += U.measure(c, gs, "cn", 10) + 4; }
-    hits.push({x: PAD + 20, y: cy - 16, w: x - PAD - 20, h: 32, fn: showLevel}); x += 8; }
-  U.text(c, `星尘 ${s.dust}`, x, cy, "mono", 12, "lamp"); x += U.measure(c, `星尘 ${s.dust}`, "mono", 12) + 12;
-  let rx = W - PAD; const mt = s.mute ? "静音" : "音效", mw = U.measure(c, mt, "cn", 12) + 18;
-  rx -= mw; U.box(c, rx, cy - 12, mw, 24, 8, null, "rule"); pressFx(c, rx, cy - 12, mw, 24, 8); U.text(c, mt, rx + mw / 2, cy, "cn", 12, "muted", {align: "center"});
-  hit(rx - 4, cy - 16, mw + 8, 32, () => { s.mute = !s.mute; core.save(); if (!s.mute) sfx("ok"); });
-  const nf = core.fadingWords().length;
-  if (nf){ const pt = `待擦亮 ${nf}`, pw = U.measure(c, pt, "cn", 12) + 18; rx -= pw + 8;
-    U.box(c, rx, cy - 12, pw, 24, 8, null, "rgba(255,201,92,.5)"); pressFx(c, rx, cy - 12, pw, 24, 8); U.text(c, pt, rx + pw / 2, cy, "cn", 12, "lamp", {align: "center"}); hit(rx - 4, cy - 16, pw + 8, 32, polish); }
-  if (s.combo >= 2 && x + 50 < rx) U.text(c, `连击 ×${s.combo}`, x, cy, "mono", 12, "lamp");
+  const cy = h.r1y + h.r1h / 2, dg = core.daily(), gp = Math.min(1, dg.n / core.GOAL);
+  let x = PAD; c.lineWidth = 3; c.beginPath(); c.arc(x + 10, cy, 9, 0, 7); c.strokeStyle = COL.rule; c.stroke();
+  if (gp > 0){ c.beginPath(); c.arc(x + 10, cy, 9, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * gp); c.strokeStyle = COL.lamp; c.lineCap = "round"; c.stroke(); c.lineCap = "butt"; }
+  if (dg.done) U.text(c, "✓", x + 10, cy + 1, "cn", 11, "lamp", {align: "center", b: 1});
+  x += 28;
+  const n = S().lit.length, lv = core.lvOf(n), LA = core.LV_AT, top = lv >= LA.length, kf = top ? 1 : (n - LA[lv - 1]) / (LA[lv] - LA[lv - 1]);
+  const lt = `Lv.${lv}`, lvw = U.measure(c, lt, "mono", 13, 1) + 46;
+  U.box(c, x, cy - 13, lvw, 26, 9, "rgba(255,201,92,.12)", "rgba(255,201,92,.45)"); pressFx(c, x, cy - 13, lvw, 26, 9);
+  U.text(c, lt, x + 9, cy, "mono", 13, "lamp", {b: 1}); const bx2 = x + lvw - 32; U.box(c, bx2, cy - 2, 24, 4, 2, "rule"); U.box(c, bx2, cy - 2, Math.max(4, 24 * kf), 4, 2, "lamp");
+  hits.push({x: 0, y: cy - 20, w: x + lvw + 4, h: 40, fn: showLevel});
+  x += lvw + 10;
+  const ls = String(lit), lW = U.measure(c, ls, "mono", 17, 1); U.text(c, ls, x, cy, "mono", 17, "lamp", {b: 1}); x += lW + 8;
+  const bl = core.BANKS[core.BANK].name, bw = U.measure(c, bl, "mono", 11) + 16;
+  if (x + bw <= h.r1right){ U.box(c, x, cy - 12, bw, 24, 8, null, "rgba(255,201,92,.4)"); pressFx(c, x, cy - 12, bw, 24, 8); U.text(c, bl, x + bw / 2, cy, "mono", 11, "lamp", {align: "center"});
+    hit(x - 4, cy - 18, bw + 8, 36, askBank); }
 }
 function drawPanel(){ const c = ctx, p = L.panel;
-  c.fillStyle = COL.panel; c.fillRect(0, p.y, W, p.h); c.fillStyle = COL.rule; c.fillRect(0, p.y, W, 1);
-  c.save(); c.beginPath(); c.rect(0, p.y + 1, W, p.h - 1); c.clip(); drawClip = {x: 0, y: p.y + 1, w: W, h: p.h - 1};
-  const y0 = p.y + 16 - pScroll;
+  c.save(); c.shadowColor = "rgba(0,0,0,.5)"; c.shadowBlur = 24; c.shadowOffsetY = -4; U.box(c, 0, p.y, W, p.h + 24, 16, COL.panel); c.restore();
+  U.box(c, 0, p.y, W, p.h + 24, 16, null, COL.rule);
+  U.box(c, W / 2 - 18, p.y + 8, 36, 4, 2, "#3d4b6c");
+  hit(0, p.y, W, SHEET_TOP, () => setSheet(sheetK < 2 ? 2 : 0));
+  c.save(); c.beginPath(); c.rect(0, p.y + SHEET_TOP - 4, W, p.h - SHEET_TOP + 4); c.clip(); drawClip = {x: 0, y: p.y + SHEET_TOP - 4, w: W, h: p.h - SHEET_TOP + 4};
+  const y0 = p.y + SHEET_TOP - pScroll;
   PB.items.forEach(it => { const y = y0 + it.y; if (y + it.h < p.y - 40 || y > p.y + p.h + 40) return; it.draw(c, PAD, y); });
   drawClip = null; c.restore();
   // 可以继续往下滚时，底部渐隐提示
@@ -724,33 +763,51 @@ function frame(){
   if (pVel && !touch.active){ pScroll += pVel; pVel *= .94; if (Math.abs(pVel) < .3) pVel = 0; const ms = maxScroll(); if (pScroll < 0 || pScroll > ms){ clampScroll(); pVel = 0; } }
   if (scrollTo !== null){ if (touch.active) scrollTo = null; else { pScroll += (scrollTo - pScroll) * .2; if (Math.abs(scrollTo - pScroll) < 1){ pScroll = scrollTo; scrollTo = null; } } }
   // 空闲时降到约 15 帧，省电
-  ignTick(t);
-  const active = glideA || pVel || scrollTo !== null || touch.active || sparks.length || meteors.length || toastMsg || autoT && tapAny || ign || fxText || Object.keys(pops).length || (heat && t - heatT0 < 700) || (quiz && !quiz.done);
+  ignTick(t); const sheetMoving = sheetTick();
+  const active = sheetMoving || pick || glideA || pVel || scrollTo !== null || touch.active || sparks.length || meteors.length || toastMsg || autoT && tapAny || ign || fxText || Object.keys(pops).length || (heat && t - heatT0 < 700) || (quiz && !quiz.done);
   frameN++;
   if (active || frameN % 4 === 0){
     hits = []; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1;
     ctx.fillStyle = COL.sky; ctx.fillRect(0, 0, W, H);
-    drawMap(t); drawPanel(); drawHeader(); drawToast(t);
+    drawMap(t); drawPanel(); drawHeader(); drawToast(t); drawPick();
     lastDraw = t;
   }
   P.raf(frame);
 }
 
 // ---------- 触摸 ----------
-const touch = {active: false, pts: new Map(), zone: null, moved: 0, pinch: 0, last: null, vy: 0, vx: 0};
+const touch = {active: false, pts: new Map(), zone: null, moved: 0, pinch: 0, last: null, vy: 0, vx: 0, sheet: false, mode: null};
+let lastTap = null, pick = null;
 function zoneAt(x, y){ if (y < L.head.h) return "head"; if (y < L.panel.y) return "map"; return "panel"; }
 function findHit(x, y){ for (let k = hits.length - 1; k >= 0; k--){ const h = hits[k]; if (x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h) return h; } return null; }
 // 点哪儿就选离手指最近的那颗星（收起的星座优先）
+// 手指范围（半径 22 像素）里有好几颗星挤在一起时，弹出小列表让你选
 function mapTap(x, y){ const p = toWorld(x, y), s = sc(), R = 22 * s;
   let best = null, bd = Infinity;
   ALLC.forEach(i => { if (!core.isFolded(i)) return; const d = Math.hypot(CP[i].x - p.x, CP[i].y - p.y); if (d < Math.max(R, 28 * s) && d < bd){ bd = d; best = {c: i}; } });
-  if (!best) core.WORDS.forEach(w => { if (core.rep(w) !== w) return; const q = POS[w], d = Math.hypot(q.x - p.x, q.y - p.y); if (d < R && d < bd){ bd = d; best = {w}; } });
-  if (best && best.c !== undefined) selectCons(best.c); else if (best) select(best.w); else select(null); }
+  if (best) return selectCons(best.c);
+  const near = []; core.WORDS.forEach(w => { if (core.rep(w) !== w) return; const q = POS[w], d = Math.hypot(q.x - p.x, q.y - p.y); if (d < R) near.push([d, w]); });
+  near.sort((a, b) => a[0] - b[0]);
+  if (!near.length) return select(null);
+  const crowd = near.filter(([d]) => d < near[0][0] + 12 * s);
+  if (crowd.length > 5) return zoom(.35, x, y, true);   // 拉得太远、挤了一大堆：先放大
+  if (crowd.length >= 2 && !busy()) { pick = {x, y, ws: crowd.map(a => a[1])}; return; }
+  select(near[0][1]); }
+function drawPick(){ if (!pick) return; const c = ctx, n = pick.ws.length, rh = 40, w = 210, h = n * rh + 34;
+  let x = Math.max(10, Math.min(W - w - 10, pick.x - w / 2)), y = pick.y + 18; if (y + h > L.panel.y - 6) y = Math.max(L.map.y + 6, pick.y - 18 - h);
+  hits.push({x: 0, y: 0, w: W, h: H, fn: () => { pick = null; }, prio: true});
+  c.save(); c.shadowColor = "rgba(0,0,0,.55)"; c.shadowBlur = 26; c.shadowOffsetY = 6; U.box(c, x, y, w, h, 12, "#1b2742"); c.restore(); U.box(c, x, y, w, h, 12, null, "rgba(255,201,92,.45)");
+  U.text(c, "这里有几颗星，选一个", x + 14, y + 17, "cn", 12, "muted");
+  pick.ws.forEach((wd, k) => { const yy = y + 30 + k * rh, lit = core.isLit(wd); pressFx(c, x + 4, yy, w - 8, rh - 4, 8);
+    c.beginPath(); c.arc(x + 20, yy + rh / 2 - 2, 4, 0, 7); c.fillStyle = lit ? COL.lamp : "#6673a0"; c.fill();
+    U.text(c, wd, x + 34, yy + rh / 2 - 2, "w", 15, lit ? "cream" : "ink", {b: 1}); const nw = U.measure(c, wd, "w", 15, 1);
+    U.text(c, fitStr(c, core.cn1(wd), w - 54 - nw, 12), x + 42 + nw, yy + rh / 2 - 2, "cn", 12, "muted");
+    hits.push({x: x + 4, y: yy, w: w - 8, h: rh - 4, fn: () => { pick = null; select(wd); }, prio: true}); }); }
 P.onTouch({
   start(e){ const ts = e.changedTouches || e.touches || [];
     for (const tt of ts) touch.pts.set(tt.identifier, {x: tt.clientX, y: tt.clientY});
     if (!touch.active){ const f = ts[0]; touch.active = true; touch.zone = zoneAt(f.clientX, f.clientY); touch.moved = 0; touch.start = {x: f.clientX, y: f.clientY}; touch.t0 = Date.now();
-      press = {x: f.clientX, y: f.clientY, moved: false}; pVel = 0; touch.vx = touch.vy = 0;
+      press = {x: f.clientX, y: f.clientY, moved: false}; pVel = 0; touch.vx = touch.vy = 0; touch.mode = null; touch.sheet = false;
       const h = findHit(f.clientX, f.clientY); if (h && touch.zone === "map") touch.zone = "ui"; }
     if (touch.pts.size === 2 && (touch.zone === "map" || touch.zone === "ui")){ touch.zone = "map"; const [a, b] = [...touch.pts.values()]; touch.pinch = Math.hypot(a.x - b.x, a.y - b.y); touch.moved = 99; press = null; } },
   move(e){ const ts = e.changedTouches || e.touches || [];
@@ -758,7 +815,11 @@ P.onTouch({
       touch.pts.set(tt.identifier, p);
       if (touch.pts.size === 1){ touch.moved += Math.abs(dx) + Math.abs(dy); if (touch.moved > 8 && press) press.moved = true;
         if (touch.zone === "map" || (touch.zone === "ui" && touch.moved > 8)){ touch.zone = "map"; glideA = null; const s = sc(); vb = {...vb, x: vb.x - dx * s, y: vb.y - dy * s}; }
-        else if (touch.zone === "panel" && touch.moved > 6){ pScroll -= dy; touch.vy = -dy; const ms = maxScroll(); if (pScroll < 0) pScroll *= .5; if (pScroll > ms) pScroll = ms + (pScroll - ms) * .5; } } }
+        else if (touch.zone === "panel" && touch.moved > 6){
+          // 拖面板：没拉到最高时往上拖、或者内容在顶部时往下拖 = 拉动抽屉；否则滚动内容
+          if (!touch.mode) touch.mode = (dy < 0 && sheetK < 2) || (dy > 0 && pScroll <= 0) ? "sheet" : "scroll";
+          if (touch.mode === "sheet"){ touch.sheet = true; sheetH = Math.max(SN[0] * .8, Math.min(SN[2] + 20, sheetH - dy)); L.panel.y = H - sheetH; L.panel.h = sheetH; touch.vy = -dy; }
+          else { pScroll -= dy; touch.vy = -dy; const ms = maxScroll(); if (pScroll < 0) pScroll *= .5; if (pScroll > ms) pScroll = ms + (pScroll - ms) * .5; } } } }
     if (touch.pts.size === 2 && touch.zone === "map" && touch.pinch){ const [a, b] = [...touch.pts.values()], d = Math.hypot(a.x - b.x, a.y - b.y);
       if (d > 0){ zoom(touch.pinch / d, (a.x + b.x) / 2, (a.y + b.y) / 2); touch.pinch = d; } } },
   end(e){ const ts = e.changedTouches || [];
@@ -766,6 +827,9 @@ P.onTouch({
     if (touch.pts.size < 2) touch.pinch = 0;
     if (touch.pts.size) return;
     touch.active = false; press = null;
+    if (touch.sheet){ touch.sheet = false; let k = 0; SN.forEach((h0, i) => { if (Math.abs(h0 - sheetH) < Math.abs(SN[k] - sheetH)) k = i; });
+      if (Math.abs(touch.vy) > 4){ const dir = touch.vy > 0 ? 1 : -1; k = SN.findIndex(h0 => dir > 0 ? h0 > sheetH + 1 : false); if (dir < 0){ k = -1; SN.forEach((h0, i) => { if (h0 < sheetH - 1) k = i; }); } if (k < 0) k = dir > 0 ? 2 : 0; }
+      setSheet(k); clampScroll(); return; }
     if (touch.zone === "panel"){ if (touch.moved > 6) pVel = touch.vy; clampScrollSoft(); }
     if (touch.moved >= 8) return;
     const f = ts[0] || touch.start, x = f.clientX !== undefined ? f.clientX : f.x, y = f.clientY !== undefined ? f.clientY : f.y;
@@ -773,7 +837,10 @@ P.onTouch({
     if (h && h.prio) return h.fn();
     if (tapAny && zoneAt(x, y) === "panel") return tapAny();
     if (h) return h.fn();
-    if (zoneAt(x, y) === "map") mapTap(x, y); }
+    if (zoneAt(x, y) === "map"){
+      // 双击星图放大
+      const now = Date.now(); if (lastTap && now - lastTap.t < 320 && Math.hypot(x - lastTap.x, y - lastTap.y) < 30){ lastTap = null; zoom(.5, x, y, true); return; }
+      lastTap = {t: now, x, y}; mapTap(x, y); } }
 });
 function clampScrollSoft(){ const ms = maxScroll(); if (pScroll < 0 || pScroll > ms){ clampScroll(); pVel = 0; } }
 
@@ -784,4 +851,4 @@ P.share("单词星系：答对题目，点亮一整片单词星空");
 P.onShow(() => { if (!busy()){ refresh(); renderPanel(false); } });
 P.raf(frame);
 // 浏览器预览里方便自动化测试
-if (typeof window !== "undefined" && window.__wxPreview) window.__game = { get core(){ return core; }, get quiz(){ return quiz; }, get L(){ return L; }, get hits(){ return hits; }, get selected(){ return selected; }, get statN(){ return statN; }, boot, select, selectCons, showLevel, startQuiz, answer, nextQ, get ign(){ return ign; }, get V(){ return V; }, get vb(){ return vb; }, toWorld, view, get pScroll(){ return pScroll; } };
+if (typeof window !== "undefined" && window.__wxPreview) window.__game = { get core(){ return core; }, get quiz(){ return quiz; }, get L(){ return L; }, get hits(){ return hits; }, get selected(){ return selected; }, get statN(){ return statN; }, boot, select, selectCons, showLevel, startQuiz, answer, nextQ, fit, mapTap, get pick(){ return pick; }, get sheetK(){ return sheetK; }, get ign(){ return ign; }, get V(){ return V; }, get vb(){ return vb; }, toWorld, view, get pScroll(){ return pScroll; } };

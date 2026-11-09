@@ -1,4 +1,4 @@
-// 词库构建脚本：读 words/*.txt，生成 data.js（单词、连线、星座、星系、布局坐标）。
+// 词库构建脚本：读 words/*.txt，生成 data.js（单词、连线、星座、主题、整张星空的布局坐标）。
 // 用法：node tools/build.js
 // 源文件格式见 words/README.md：每行 单词|级别|音标|中文|例句|关系
 const fs = require("fs"), path = require("path");
@@ -13,7 +13,7 @@ const TYPES = {
   root:  { name: "同词根", ask: "来自同一个词根（是一家人）" },
   coll:  { name: "搭配", ask: "常常搭配在一起用" },
   topic: { name: "同主题", ask: "属于同一个小话题" },
-  hyper: { name: "上下位", ask: "是“一种……”的上下位关系" }
+  hyper: { name: "上下位", ask: "是“一种……”或“一部分”的关系" }
 };
 const STRONG = ["sound","form","ant","syn","root","coll","hyper"];
 
@@ -176,7 +176,8 @@ for (const w of order){ if (w.includes(" ") || GENERIC.has(w) || FUNC.has(w)) co
 }
 // 4f) 手写的额外关系表 words/links.txt：反义、近义、上下位、搭配
 { let sec = null; const LS = new Set("a an the of to your my his her our their in on at for by with".split(" ")); let used = 0, skipped = 0;
-  for (const ln of fs.readFileSync(path.join(SRC, "links.txt"), "utf8").split(/\r?\n/)){
+  const lines = fs.readdirSync(SRC).filter(f => /^links.*\.txt$/.test(f)).sort().flatMap(f => fs.readFileSync(path.join(SRC, f), "utf8").split(/\r?\n/));
+  for (const ln of lines){
     if (!ln.trim() || ln.startsWith("//")) continue;
     if (ln.startsWith("## ")){ sec = ln.slice(3).trim(); continue; }
     for (const item of ln.split(";").map(x => x.trim()).filter(Boolean)){
@@ -192,8 +193,9 @@ for (const w of order){ if (w.includes(" ") || GENERIC.has(w) || FUNC.has(w)) co
       const A = words[a], B = words[b];
       const note = sec === "syn" ? `${a}（${first(A.cn)}）和 ${b}（${first(B.cn)}）意思相近。`
         : sec === "ant" ? `${a} ${first(A.cn)} ↔ ${b} ${first(B.cn)}。`
+        : sec === "part" ? `${a}（${first(A.cn)}）是 ${b}（${first(B.cn)}）的一部分。`
         : `${a}（${first(A.cn)}）是一种 ${b}（${first(B.cn)}）。`;
-      if (add(a, b, sec, note)) used++; else skipped++; } }
+      if (add(a, b, sec === "part" ? "hyper" : sec, note)) used++; else skipped++; } }
   console.log(`关系表：用上 ${used} 条，跳过 ${skipped} 条（词库外或已有）`); }
 // 4e) 押韵：一到两个音节的词，从最后一个元音起读音相同（每个词最多 2 条，同星系优先）
 const VOW = /(eɪ|aɪ|ɔɪ|əʊ|aʊ|ɪə|eə|ʊə|iː|uː|ɑː|ɔː|ɜː|[iɪeæʌɒʊuəɑɔ])/g;
@@ -213,6 +215,34 @@ for (const [a, b, k] of rc){ if ((rhCnt[a]||0) >= 3 || (rhCnt[b]||0) >= 3) conti
 for (const g of galaxies) for (const s of g.subs){ const ws = s.words;
   for (let i = 0; i < ws.length; i++){ const w = ws[i]; if (deg(w) >= 4 && i) continue;
     const nb = ws[(i + 1) % ws.length]; if (ws.length > 1) add(w, nb, "topic", `${w} 和 ${nb} 都属于“${s.name}”这个话题。`); } }
+
+// 5b) 星系内加密：每种词库组合下，每个词在自己星系里至少 MIN_IN 条连线
+//   先用例句里一起出现的同星系实词（例句里有的就是真实的语境），再在同一小话题里补“同主题”连线
+const MIN_IN = 4, FILL_CAP = 8;
+const BANKS_D = [["A2","B1","B2"], ["A2","B1"], ["A2"], ["B1"]];
+const inDeg = (w, lvs) => { let n = 0; for (const [a, b] of edges){ const o = a === w ? b : b === w ? a : null;
+  if (o && words[o].gal === words[w].gal && lvs.includes(words[o].lv)) n++; } return n; };
+const exToks = {}; order.forEach(w => { exToks[w] = [...new Set(words[w].ex.toLowerCase().replace(/[^a-z' -]/g, " ").split(/\s+/).map(t => words[t] ? t : lemma(t)).filter(o => o && o !== w && !FUNC.has(o) && !GENERIC.has(o) && !SKIP.has(o) && o.length >= 3))]; });
+let dense = {ex: 0, topic: 0};
+for (const lvs of BANKS_D){
+  const inLv = w => lvs.includes(words[w].lv);
+  const dg = {}; order.filter(inLv).forEach(w => dg[w] = inDeg(w, lvs));
+  const link = (a, b, t, note) => { if (!add(a, b, t, note)) return false; dg[a]++; dg[b]++; return true; };
+  // 例句共现：w 的例句里出现了同星系的 x，或 x 的例句里出现了 w
+  for (const w of order){ if (!inLv(w) || dg[w] >= MIN_IN) continue;
+    const cands = order.length && exToks[w].filter(x => inLv(x) && words[x].gal === words[w].gal && dg[x] < FILL_CAP).map(x => [x, w])
+      .concat(order.filter(x => inLv(x) && x !== w && words[x].gal === words[w].gal && dg[x] < FILL_CAP && exToks[x].includes(w)).map(x => [x, x]));
+    for (const [x, src] of cands){ if (dg[w] >= MIN_IN) break;
+      if (link(w, x, "topic", `例句里一起出现：${words[src].ex}`)) dense.ex++; } }
+  // 同小话题：按话题里的顺序，向两边找连线最少、还没连上的词
+  for (const g of galaxies) for (const sub of g.subs){ const ws = sub.words.filter(inLv);
+    for (let i = 0; i < ws.length; i++){ const w = ws[i];
+      for (let d = 1; d < ws.length && dg[w] < MIN_IN; d++){
+        for (const j of [i + d, i - d]){ if (dg[w] >= MIN_IN) break; if (j < 0 || j >= ws.length) continue; const x = ws[j];
+          if (dg[x] >= FILL_CAP) continue;
+          if (link(w, x, "topic", `${w} 和 ${x} 都属于“${sub.name}”这个话题。`)) dense.topic++; } } } }
+}
+console.log(`星系内加密：例句共现 ${dense.ex} 条，同小话题 ${dense.topic} 条`);
 
 // 6) 保证每个星系内部连通：每种词库组合（KET、PET、KET+PET、KET+PET+FCE）都能从起点一路点亮整个星系
 const BANKS = [["A2"], ["B1"], ["A2","B1"], ["A2","B1","B2"]];
@@ -292,8 +322,28 @@ for (const g of galaxies){
     W.forEach(w => { const p = P[w]; p.vx -= p.x*0.006; p.vy -= p.y*0.006;
       p.x += Math.max(-20,Math.min(20,p.vx))*k; p.y += Math.max(-20,Math.min(20,p.vy))*k; p.vx *= .5; p.vy *= .5; });
   }
-  W.forEach(w => pos[w] = [Math.round(P[w].x), Math.round(P[w].y)]);
+  W.forEach(w => pos[w] = [P[w].x, P[w].y]);
 }
+// 一整张星空：先把各主题按网格摆开，再用全部连线（包括跨主题的）整体做一次力导向，让有关系的主题靠近
+{ const COLS = 5, CW = 1000, CH = 950, ALLW = order, N = ALLW.length, idx = {}; ALLW.forEach((w, i) => idx[w] = i);
+  const X = new Float64Array(N), Y = new Float64Array(N), VX = new Float64Array(N), VY = new Float64Array(N);
+  ALLW.forEach((w, i) => { const g = words[w].gal; X[i] = pos[w][0] * .85 + (g % COLS) * CW; Y[i] = pos[w][1] * .85 + Math.floor(g / COLS) * CH; });
+  const E = edges.map(([a, b, t]) => [idx[a], idx[b], words[a].gal === words[b].gal ? (consOf[a] !== undefined && consOf[a] === consOf[b] ? 2 : t === "topic" ? 0 : 1) : 3]);
+  const IT = 260, CELL = 140;
+  for (let it = 0; it < IT; it++){ const k = 1 - it / IT; const grid = new Map();
+    for (let i = 0; i < N; i++){ const key = Math.floor(X[i] / CELL) + "," + Math.floor(Y[i] / CELL); let c = grid.get(key); if (!c) grid.set(key, c = []); c.push(i); }
+    for (let i = 0; i < N; i++){ const cx = Math.floor(X[i] / CELL), cy = Math.floor(Y[i] / CELL);
+      for (let ox = -1; ox <= 1; ox++) for (let oy = -1; oy <= 1; oy++){ const c = grid.get((cx + ox) + "," + (cy + oy)); if (!c) continue;
+        for (const j of c){ if (j <= i) continue; let dx = X[i] - X[j], dy = Y[i] - Y[j]; let d2 = dx*dx + dy*dy || .01; if (d2 > CELL * CELL) continue;
+          const f = 4200 / d2, d = Math.sqrt(d2); dx /= d; dy /= d; VX[i] += dx*f; VY[i] += dy*f; VX[j] -= dx*f; VY[j] -= dy*f; } } }
+    for (const [u, v, kind] of E){ const dx = X[v] - X[u], dy = Y[v] - Y[u], d = Math.hypot(dx, dy) || .01;
+      const [L, s] = kind === 2 ? [70, .08] : kind === 1 ? [110, .03] : kind === 0 ? [120, .015] : [160, .004];
+      const f = (d - L) * s; VX[u] += dx/d*f; VY[u] += dy/d*f; VX[v] -= dx/d*f; VY[v] -= dy/d*f; }
+    let mx = 0, my = 0; for (let i = 0; i < N; i++){ mx += X[i]; my += Y[i]; } mx /= N; my /= N;
+    for (let i = 0; i < N; i++){ VX[i] -= (X[i] - mx) * .0006; VY[i] -= (Y[i] - my) * .0006;
+      X[i] += Math.max(-18, Math.min(18, VX[i])) * k; Y[i] += Math.max(-18, Math.min(18, VY[i])) * k; VX[i] *= .5; VY[i] *= .5; } }
+  let mx = 0, my = 0; for (let i = 0; i < N; i++){ mx += X[i]; my += Y[i]; } mx /= N; my /= N;
+  ALLW.forEach((w, i) => pos[w] = [Math.round(X[i] - mx), Math.round(Y[i] - my)]); }
 
 // ---------- 检查 ----------
 const lonely = order.filter(w => !adj[w].length);
@@ -312,6 +362,7 @@ const data = {
 };
 const banner = `// 本文件由 tools/build.js 根据 words/*.txt 自动生成，请改源文件后重新运行 node tools/build.js。\n`;
 fs.writeFileSync(path.join(ROOT, "data.js"), banner + "window.WORDNET = " + JSON.stringify(data) + ";\n");
+require("./build-minigame.js");   // 同步生成微信小游戏的词库
 const tc = {}; edges.forEach(e => tc[e[2]] = (tc[e[2]]||0) + 1);
 console.log(`单词 ${order.length}（A2 ${lvCnt.A2} · B1 ${lvCnt.B1} · B2 ${lvCnt.B2}）  连线 ${edges.length} ${JSON.stringify(tc)}  星座 ${constellations.length}  星系 ${galaxies.length}`);
 console.log(`在星座里的词 ${Object.keys(consOf).filter(w => consOf[w] >= 0).length}`);

@@ -323,6 +323,7 @@ function createCore(store, shiftDays){
     if (z.lucky) S.luck.got = true;
     z.dust = dustFor(w, stars) * (z.lucky ? 2 : 1) + (z.newCons !== null ? CONS_BONUS : 0); S.dust += z.dust;
     z.goal = bumpDaily(); z.streak = streakHit;
+    { const g = daily(); g.ws = (g.ws || []).concat(w); }   // 今天点亮的词，阶段目标完成时在整片星空里依次闪一下
     z.galDone = false;
     save();
   }

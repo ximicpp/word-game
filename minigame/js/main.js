@@ -61,13 +61,13 @@ let vb = {x:0, y:0, w:1000, h:1000}, BB = vb, glideA = null;
 const sc = () => Math.max(vb.w / L.map.w, vb.h / L.map.h);
 function view(){ const s = sc(); return {s, ox: vb.x + (vb.w - L.map.w * s) / 2, oy: vb.y + (vb.h - L.map.h * s) / 2}; }
 const toWorld = (sx, sy) => { const v = view(); return {x: v.ox + (sx - L.map.x) * v.s, y: v.oy + (sy - L.map.y) * v.s}; };
-function glide(to){ glideA = {from: {...vb}, to, t0: Date.now()}; }
-const go = (to, anim) => { if (anim) glide(to); else { glideA = null; vb = to; } };
+function glide(to, dur){ glideA = {from: {...vb}, to, t0: Date.now(), dur: dur || 350}; }
+const go = (to, anim, dur) => { if (anim) glide(to, dur); else { glideA = null; vb = to; } };
 // 把一块世界区域放进“看得见的星图”中间（星图比可见区域高，下面压着抽屉）
-function fitBox(cx, cy, w, h, anim){ const vh = visH(), asp = vh / L.map.w;
+function fitBox(cx, cy, w, h, anim, dur){ const vh = visH(), asp = vh / L.map.w;
   if (h / w < asp) h = w * asp; else w = h / asp;
-  const s = w / L.map.w; go({x: cx - w / 2, y: cy - vh * s / 2, w, h: L.map.h * s}, anim); }
-function fit(anim){ fitBox(BB.x + BB.w / 2, BB.y + BB.h / 2, BB.w, BB.h, anim); }
+  const s = w / L.map.w; go({x: cx - w / 2, y: cy - vh * s / 2, w, h: L.map.h * s}, anim, dur); }
+function fit(anim, dur){ fitBox(BB.x + BB.w / 2, BB.y + BB.h / 2, BB.w, BB.h, anim, dur); }
 // 打开时：放大到“下一颗”附近，能看清周围十几个词的名字；整片星空用“全览”按钮看
 function fitActive(anim){ const c = core.candidates()[0], w = c ? c.w : core.litArr[core.litArr.length - 1];
   if (!w) return fit(anim);
@@ -200,6 +200,8 @@ function lightUp(){
   else if (z.goal) toast(`今日目标完成！星尘 +${core.GOAL_BONUS}`);
   else if (z.newCons !== null) toast(`连成了${CONS[z.newCons].name}！`);
   // 没有大事（星座、升级、里程碑、今日目标）就直接接下一个词
+  // 今日目标、升级、考纲里程碑：点亮动画放完后拉远看整片星空
+  z.reveal = !!(z.goal || z.lvUp || z.ms.length);
   const big = z.newCons !== null || z.lvUp || z.ms.length || z.streak || z.goal || core.litArr.length === core.WORDS.length, nx = !big && core.candidates()[0];
   if (nx){ z.chain = nx.w; z.chainT0 = Date.now(); chainT = setTimeout(goChain, CHAIN_MS); }
   renderPanel(true);
@@ -217,7 +219,27 @@ function ignTick(t){ if (!ign) return; const e = t - ign.t0;
   if (e > ign.end){ const z = quiz, w = ign.w; ign = null;
     if (z && z.w === w && z.newCons !== null && !core.isFolded(z.newCons)) core.fold(z.newCons, true);
     if (z && z.w === w && ign === null && ignTextFor(z)) fxText = {w, s: ignTextFor(z), t0: t};
+    if (z && z.w === w && z.reveal){ z.reveal = false; startReveal(z); }
     refresh(); } }
+// ---------- 阶段目标完成：拉远看整片星空 ----------
+let reveal = null;
+const REVEAL_MS = 4200;
+function startReveal(z){ const lines = [];
+  if (z.ms.length){ const k = z.ms[z.ms.length - 1], l = k.split(":")[0], e = core.EXAMS.find(x => x.lv === l), n = core.examLit()[l] || 0;
+    lines.push(core.msText(k), `${e.name} 已点亮 ${n} / ${core.EXAM_N[l]} · ${Math.floor(n / core.EXAM_N[l] * 100)}%`); }
+  else if (z.lvUp){ const LA = core.LV_AT, n = S().lit.length; lines.push(`升到 Lv.${z.lvUp} · ${core.titleOf(z.lvUp)}`, z.lvUp < LA.length ? `一共点亮 ${n} 颗 · 再点亮 ${LA[z.lvUp] - n} 颗升到 Lv.${z.lvUp + 1}` : `一共点亮 ${n} 颗`); }
+  else { const g = core.daily(); lines.push("今天的目标完成了！", `今天点亮 ${g.n} 颗 · 一共 ${S().lit.length} 颗`); }
+  const t0 = Date.now(), ws = (core.daily().ws || []).filter(w => core.isLit(w) && core.rep(w) === w);
+  fxText = null; reveal = {t0, lines, w: z.w, back: {...(glideA ? glideA.to : vb)}}; setSheet(0); fit(true, 1200);
+  ws.forEach((x, k) => { pops[x] = t0 + 1100 + k * Math.min(160, 1400 / ws.length); });
+  sfx("cons"); }
+function endReveal(){ if (!reveal) return; const r = reveal; reveal = null; if (quiz && quiz.done && quiz.w === r.w){ setSheet(1); glide(r.back, 600); } }
+function drawReveal(t){ if (!reveal) return; const e = t - reveal.t0; if (e > REVEAL_MS){ endReveal(); return; }
+  const c = ctx, a = Math.min(1, Math.max(0, (e - 700) / 400)) * Math.min(1, (REVEAL_MS - e) / 400); if (a <= 0) return;
+  const w = Math.min(W - 32, 360), h = 64, x = (W - w) / 2, y = L.map.y + 14;
+  c.save(); c.globalAlpha = a; c.shadowColor = "rgba(255,201,92,.45)"; c.shadowBlur = 24; U.box(c, x, y, w, h, 14, "rgba(20,30,52,.92)", "rgba(255,201,92,.6)"); c.restore();
+  c.save(); c.globalAlpha = a; U.text(c, reveal.lines[0], W / 2, y + 22, "cn", 17, "lamp", {align: "center", b: 1}); U.text(c, reveal.lines[1], W / 2, y + 46, "cn", 13, "ink", {align: "center"});
+  U.text(c, "点一下继续", W / 2, y + h + 14, "cn", 11, "muted", {align: "center"}); c.restore(); }
 const ignTextFor = z => { const n = new Set(adj[z.w].filter(e => core.isLit(e.w)).map(e => e.w)).size; return n ? `+${n} 条星光` : ""; };
 let fxText = null;
 function finishReview(){
@@ -709,7 +731,7 @@ function drawMap(t){
       if (f < 1){ c.beginPath(); c.arc(p.x + (px.x - p.x) * ff, p.y + (px.y - p.y) * ff, Z(2.4), 0, 6.2832); c.fillStyle = "#fff"; c.fill(); } });
     drawLit(c, w, p, Z, boost); }
   // 邻居被光流到时闪一下
-  for (const w in pops){ const e = (t - pops[w]) / 700; if (e >= 1){ delete pops[w]; continue; } if (!POS[w]) continue; const p = POS[w];
+  for (const w in pops){ const e = (t - pops[w]) / 700; if (e >= 1){ delete pops[w]; continue; } if (e < 0 || !POS[w]) continue; const p = POS[w];
     ring(p, Z(4 + 10 * e), COL.cream, PX(1.6 * (1 - e) + .3), 1 - e); }
   // 星点四散
   for (let q = sparks.length - 1; q >= 0; q--){ const sp = sparks[q], e = (t - sp.t0) / 900; if (e >= 1){ sparks.splice(q, 1); continue; }
@@ -814,18 +836,18 @@ function drawToast(t){ if (!toastMsg) return; const e = t - toastT; if (e > 2200
 let lastDraw = 0, frameN = 0;
 function frame(){
   const t = Date.now();
-  if (glideA){ const k = Math.min(1, (t - glideA.t0) / 350), e = 1 - Math.pow(1 - k, 3), f = glideA.from, to = glideA.to;
+  if (glideA){ const k = Math.min(1, (t - glideA.t0) / glideA.dur), e = 1 - Math.pow(1 - k, 3), f = glideA.from, to = glideA.to;
     vb = {x: f.x + (to.x - f.x) * e, y: f.y + (to.y - f.y) * e, w: f.w + (to.w - f.w) * e, h: f.h + (to.h - f.h) * e}; if (k >= 1) glideA = null; }
   if (pVel && !touch.active){ pScroll += pVel; pVel *= .94; if (Math.abs(pVel) < .3) pVel = 0; const ms = maxScroll(); if (pScroll < 0 || pScroll > ms){ clampScroll(); pVel = 0; } }
   if (scrollTo !== null){ if (touch.active) scrollTo = null; else { pScroll += (scrollTo - pScroll) * .2; if (Math.abs(scrollTo - pScroll) < 1){ pScroll = scrollTo; scrollTo = null; } } }
   // 空闲时降到约 15 帧，省电
   ignTick(t); const sheetMoving = sheetTick();
-  const active = sheetMoving || pick || glideA || pVel || scrollTo !== null || touch.active || sparks.length || meteors.length || toastMsg || autoT && tapAny || ign || fxText || Object.keys(pops).length || (heat && t - heatT0 < 700) || (quiz && !quiz.done);
+  const active = sheetMoving || pick || reveal || glideA || pVel || scrollTo !== null || touch.active || sparks.length || meteors.length || toastMsg || autoT && tapAny || ign || fxText || Object.keys(pops).length || (heat && t - heatT0 < 700) || (quiz && !quiz.done);
   frameN++;
   if (active || frameN % 4 === 0){
     hits = []; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1;
     ctx.fillStyle = COL.sky; ctx.fillRect(0, 0, W, H);
-    drawMap(t); drawPanel(); drawHeader(); drawToast(t); drawPick();
+    drawMap(t); drawPanel(); drawHeader(); drawToast(t); drawPick(); drawReveal(t);
     lastDraw = t;
   }
   P.raf(frame);
@@ -883,6 +905,7 @@ P.onTouch({
     if (touch.pts.size < 2) touch.pinch = 0;
     if (touch.pts.size) return;
     touch.active = false; press = null;
+    if (reveal && touch.moved < 8){ endReveal(); return; }
     if (touch.sheet){ touch.sheet = false; let k = 0; SN.forEach((h0, i) => { if (Math.abs(h0 - sheetH) < Math.abs(SN[k] - sheetH)) k = i; });
       if (Math.abs(touch.vy) > 4){ const dir = touch.vy > 0 ? 1 : -1; k = SN.findIndex(h0 => dir > 0 ? h0 > sheetH + 1 : false); if (dir < 0){ k = -1; SN.forEach((h0, i) => { if (h0 < sheetH - 1) k = i; }); } if (k < 0) k = dir > 0 ? 2 : 0; }
       setSheet(k); clampScroll(); return; }
@@ -907,4 +930,4 @@ P.share("单词星系：答对题目，点亮一整片单词星空");
 P.onShow(() => { if (!busy()){ refresh(); renderPanel(false); } });
 P.raf(frame);
 // 浏览器预览里方便自动化测试
-if (typeof window !== "undefined" && window.__wxPreview) window.__game = { get core(){ return core; }, get quiz(){ return quiz; }, get L(){ return L; }, get hits(){ return hits; }, get selected(){ return selected; }, get statN(){ return statN; }, boot, select, selectCons, showLevel, startQuiz, answer, nextQ, fit, polish, get run(){ return run; }, mapTap, get pick(){ return pick; }, get sheetK(){ return sheetK; }, get ign(){ return ign; }, get V(){ return V; }, get vb(){ return vb; }, toWorld, view, get pScroll(){ return pScroll; } };
+if (typeof window !== "undefined" && window.__wxPreview) window.__game = { get core(){ return core; }, get quiz(){ return quiz; }, get L(){ return L; }, get hits(){ return hits; }, get selected(){ return selected; }, get statN(){ return statN; }, boot, select, selectCons, showLevel, startQuiz, answer, nextQ, fit, polish, get reveal(){ return reveal; }, get run(){ return run; }, mapTap, get pick(){ return pick; }, get sheetK(){ return sheetK; }, get ign(){ return ign; }, get V(){ return V; }, get vb(){ return vb; }, toWorld, view, get pScroll(){ return pScroll; } };

@@ -326,6 +326,10 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .bank span{grid-row:1/3;grid-column:2;font-family:var(--f-mono);font-size:12px;color:var(--muted);text-align:right}
 .bank.on{border-color:var(--lamp);box-shadow:0 0 16px rgba(255,201,92,.2)}
 .bank:hover{border-color:var(--ready)}
+.reveal{position:absolute;left:50%;top:14px;transform:translate(-50%,-6px);z-index:6;width:min(360px,calc(100% - 32px));padding:12px 14px 10px;border-radius:14px;
+  background:rgba(20,30,52,.92);border:1px solid rgba(255,201,92,.6);box-shadow:0 0 24px rgba(255,201,92,.35);text-align:center;opacity:0;transition:opacity .4s,transform .4s;pointer-events:none}
+.reveal.on{opacity:1;transform:translate(-50%,0)}
+.reveal b{display:block;color:var(--lamp);font-size:17px}.reveal span{display:block;margin-top:4px;font-size:13px}.reveal small{display:block;margin-top:6px;font-size:11px;color:var(--muted)}
 #vp.swap{transition:opacity .22s ease;opacity:0}
 /* 星系切换条 */
 .gbar{position:absolute;left:0;right:0;top:0;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;z-index:3;
@@ -597,6 +601,7 @@ details.fold[open] summary{margin-bottom:10px}
       <nav class="gbar" id="gbar" aria-label="星系"></nav>
       <div class="tip" id="tip" role="status" hidden><p></p><button type="button">知道了</button></div>
       <div class="mapkey" id="mapkey"></div>
+      <div class="reveal" id="reveal" role="status" hidden></div>
       <div class="zoom"><button id="zin" type="button" aria-label="放大">+</button><button id="zout" type="button" aria-label="缩小">−</button><button id="zfit" type="button" aria-label="全部显示">⤢</button></div>
     </div>
     <aside id="panel" aria-live="polite"></aside>
@@ -985,8 +990,8 @@ let svgR = null; new ResizeObserver(() => { svgR = null; }).observe(svg);
 function setVB(){ svg.setAttribute("viewBox", `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
   const r = svgR || (svgR = svg.getBoundingClientRect()); const scale = Math.max(vb.w / (r.width || 1), vb.h / (r.height || 1));
   const far = scale > .8; if (far !== svg.classList.contains("far")) { svg.classList.toggle("far", far); paintEdges(); } }      // 缩得很小时，未解锁的词不显示名字
-const go = (to, anim) => { if (anim) glide(to); else { glideT++; vb = to; setVB(); } };
-function fit(anim){ go({...BB}, anim); }
+const go = (to, anim, dur) => { if (anim) glide(to, dur); else { glideT++; vb = to; setVB(); } };
+function fit(anim, dur){ go({...BB}, anim, dur); }
 // 只看已点亮和能挑战的区域（开局时整张星系太大，起点会显得很小）
 function fitActive(anim){ if (ALLV){ const ls = litArr.filter(w => rep(w) === w), rc = candidates().slice(0, 6).map(c => c.w);
     return fitWords(ls.length > 300 ? rc : ls.concat(rc), small() ? 520 : 900, anim); }
@@ -1101,9 +1106,9 @@ function focusOn(p){ const r = svg.getBoundingClientRect(); const ww = 380, hh =
   glide({x: p.x - ww/2, y: p.y - hh/2, w: ww, h: hh}); }
 // 平滑移动视野
 let glideT = 0;
-function glide(to){ const from = {...vb}, t0 = performance.now(), id = ++glideT;
+function glide(to, dur){ const from = {...vb}, t0 = performance.now(), id = ++glideT;
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) { vb = to; return setVB(); }
-  const step = t => { if (id !== glideT) return; const k = Math.min(1, (t - t0) / 350), e = 1 - Math.pow(1 - k, 3);
+  const step = t => { if (id !== glideT) return; const k = Math.min(1, (t - t0) / (dur || 350)), e = 1 - Math.pow(1 - k, 3);
     vb = {x: from.x + (to.x - from.x)*e, y: from.y + (to.y - from.y)*e, w: from.w + (to.w - from.w)*e, h: from.h + (to.h - from.h)*e}; setVB();
     if (k < 1) requestAnimationFrame(step); };
   requestAnimationFrame(step); }
@@ -1492,11 +1497,14 @@ function lightUp(w){
   if (z.lucky) S.luck.got = true;
   z.dust = dustFor(w, stars) * (z.lucky ? 2 : 1) + (z.newCons !== null ? CONS_BONUS : 0); S.dust += z.dust;
   streakHit = null; z.goal = bumpDaily(); z.streak = streakHit;
+  { const g = daily(); g.ws = (g.ws || []).concat(w); }   // 今天点亮的词，阶段目标完成时在整片星空里依次闪一下
   z.galDone = false;
   igniting = w; setProg(w, 0); save(); paint();
   { const mx = small() ? 420 : 620, ns = adj[w].map(e => e.w).filter(x => isLit(x) && inView(x) && rep(x) === x && Math.hypot(P[x].x - P[w].x, P[x].y - P[w].y) < mx * .6);
     fitWords([w, ...ns], mx, true); }                     // 镜头对准新星和已点亮的邻居，再播放点亮动画
-  ignite(w, () => { if (z.newCons !== null) { fold(z.newCons, true); paint(); } });   // 连成的星座等光流完再收起成一颗大星
+  // 今日目标、升级、考纲里程碑：点亮动画放完后拉远看整片星空
+  z.reveal = !!(z.goal || z.lvUp || z.ms.length);
+  ignite(w, () => { if (z.newCons !== null) { fold(z.newCons, true); paint(); } if (z.reveal && quiz === z) startReveal(z); });   // 连成的星座等光流完再收起成一颗大星
   if (z.goal || z.galDone || z.lvUp || z.ms.length || z.streak) meteor(8);
   sfx(z.newCons !== null || z.lvUp || z.ms.length || z.streak ? "cons" : "light");
   if (z.newCons !== null) meteor(5); else if (stars === 3) meteor(1);
@@ -1506,6 +1514,23 @@ function lightUp(w){
   if (nx){ z.chain = nx.w; chainT = setTimeout(goChain, CHAIN_MS); }
   renderResult();
 }
+// ---------- 阶段目标完成：拉远看整片星空，今天点亮的星依次闪一下，浮出进度 ----------
+let reveal = null;
+function startReveal(z){ const L = [];
+  if (z.ms.length){ const k = z.ms[z.ms.length - 1], l = k.split(":")[0], e = examOf(l), n = examLit()[l] || 0;
+    L.push(msText(k), `${e.name} 已点亮 ${n} / ${EXAM_N[l]} · ${Math.floor(n / EXAM_N[l] * 100)}%`); }
+  else if (z.lvUp){ const n = S.lit.length; L.push(`升到 Lv.${z.lvUp} · ${titleOf(z.lvUp)}`, z.lvUp < LV_AT.length ? `一共点亮 ${n} 颗 · 再点亮 ${LV_AT[z.lvUp] - n} 颗升到 Lv.${z.lvUp + 1}` : `一共点亮 ${n} 颗`); }
+  else L.push("今天的目标完成了！", `今天点亮 ${daily().n} 颗 · 一共 ${S.lit.length} 颗`);
+  const box = document.getElementById("reveal"); box.innerHTML = `<b>${esc(L[0])}</b><span>${esc(L[1])}</span><small>点一下继续</small>`; box.hidden = false;
+  requestAnimationFrame(() => box.classList.add("on"));
+  const ws = (daily().ws || []).filter(x => isLit(x) && rep(x) === x && nodeEls[x]), gap = Math.min(160, 1400 / Math.max(1, ws.length));
+  reveal = {w: z.w, back: {...vb}, ts: ws.map((x, k) => setTimeout(() => pop(x), 1100 + k * gap))};
+  reveal.ts.push(setTimeout(endReveal, 4200));
+  fit(true, 1200); sfx("cons"); }
+function endReveal(){ if (!reveal) return; const r = reveal; reveal = null; r.ts.forEach(clearTimeout);
+  const box = document.getElementById("reveal"); box.classList.remove("on"); setTimeout(() => { if (!reveal) box.hidden = true; }, 300);
+  if (quiz && quiz.done && quiz.w === r.w) glide(r.back, 600); }
+document.addEventListener("pointerdown", e => { if (!reveal) return; if (e.target.closest(".stage")){ e.stopPropagation(); e.preventDefault(); } endReveal(); }, true);
 // 阶段完成卡：考纲里程碑优先，其次升级；回顾这一阶段学了什么
 const examOf = lv => EXAMS.find(e => e.lv === lv);
 function msText(k){ const [l, q] = k.split(":"), e = examOf(l); return q === "100" ? `${e.name} 词汇全部点亮！` : q === "50" ? `${e.name} 词汇点亮一半了！` : `${e.name} 词汇点亮 ${q}%！`; }

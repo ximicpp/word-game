@@ -226,7 +226,6 @@ aside{border-left:1px solid var(--rule);background:var(--panel);overflow:auto;mi
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.tags span{font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid var(--rule,#2f3c5c);color:var(--muted)}
 .tags span.gold{border-color:rgba(255,201,92,.6);color:var(--lamp)}
 .confw{margin:8px 0 2px;padding:7px 10px;border-radius:10px;font-size:13px;color:#ffb38a;background:rgba(255,140,90,.12);border:1px solid rgba(255,140,90,.5)}.confw b{color:#ffd2b8}
-#subg circle{fill:url(#sgG);pointer-events:none;mix-blend-mode:screen}
 .badge{margin-top:16px;padding:14px;border-radius:10px;border:1px solid rgba(255,201,92,.5);background:var(--lamp-soft)}
 .badge b{color:var(--lamp);font-size:18px}
 .badge p{margin:6px 0 0;font-size:14px;color:var(--ink)}
@@ -603,7 +602,7 @@ details.fold[open] summary{margin-bottom:10px}
   <main>
     <div class="stage">
       <canvas class="sky" id="sky" aria-hidden="true"></canvas>
-      <svg id="net" role="img" aria-label="单词关系网"><defs><radialGradient id="sgG"><stop offset="0" stop-color="rgb(255,226,170)" stop-opacity=".11"/><stop offset="1" stop-color="rgb(255,226,170)" stop-opacity="0"/></radialGradient></defs><g id="vp"><g id="heat"><image class="hm"/><image class="hm"/></g><g id="subg"></g><g id="cglow"></g><g id="edges"></g><g id="halfs"></g><g id="bundles"></g><g id="nodes"></g><g id="xnb"></g><g id="supers"></g><g id="fx"></g></g></svg>
+      <svg id="net" role="img" aria-label="单词关系网"><g id="vp"><g id="heat"><image class="hm"/><image class="hm"/></g><g id="cglow"></g><g id="edges"></g><g id="halfs"></g><g id="bundles"></g><g id="nodes"></g><g id="xnb"></g><g id="supers"></g><g id="fx"></g></g></svg>
       <nav class="gbar" id="gbar" aria-label="星系"></nav>
       <div class="tip" id="tip" role="status" hidden><p></p><button type="button">知道了</button></div>
       <div class="mapkey" id="mapkey"></div>
@@ -1198,7 +1197,6 @@ function candHtml(list){ return `<div class="cands">${list.map(({w, g, cl}) =>
 
 function renderPanel(){
   clearTimeout(autoT); setFocus(!!quiz);
-  subGlow(selected);
   if (quiz) return renderQuiz();
   if (selCons !== null) return renderCons();
   if (!selected) return renderHome();
@@ -1249,9 +1247,6 @@ function renderCons(){
 }
 
 // 选中的词：它所在的那一片泛起很淡的暖白光
-let subGlowW = null;
-function subGlow(w){ const si = w && D.words[w] ? subOf(w) : undefined, g = document.getElementById("subg"), k = si === undefined ? null : si;
-  if (k === subGlowW) return; subGlowW = k; g.innerHTML = k === null ? "" : SW[k].map(x => `<circle cx="${P[x].x}" cy="${P[x].y}" r="46"/>`).join(""); }
 function renderHome(){
   const fades = dueToday(), cands = candidates(), RN = n => Math.min(REVIEW_RUN, n);
   let html = "";

@@ -722,12 +722,6 @@ function drawMap(t){
   c.drawImage(mapLayer, 0, 0, LW, LH, m.x - MX + dx, m.y - MY + dy, m.w + 2 * MX, m.h + 2 * MY);
   c.globalAlpha = 1;
   worldTf(c, v); c.lineCap = "round";
-  // 选中的词：它所在的那一片泛起很淡的暖白光
-  if (selected && D.words[selected] && D.words[selected].s !== undefined){ const ws = core.SW[D.words[selected].s], R = 46;
-    c.save(); c.globalCompositeOperation = "lighter";
-    ws.forEach(w => { const p = POS[w], g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, R); g.addColorStop(0, "rgba(255,226,170,.07)"); g.addColorStop(1, "rgba(255,226,170,0)");
-      c.fillStyle = g; c.beginPath(); c.arc(p.x, p.y, R, 0, 6.2832); c.fill(); });
-    c.restore(); }
   // 选中的词：它的连线（细实线）和相关的词恢复亮度
   if (selected){ V.hl.forEach(([i, both]) => { const [a, b, tp] = D.edges[i]; c.beginPath(); c.moveTo(POS[a].x, POS[a].y); c.lineTo(POS[b].x, POS[b].y);
       c.globalAlpha = both ? .95 : .55; c.strokeStyle = COL[tp]; c.lineWidth = PX(both ? 1.6 : 1.2); c.stroke(); });

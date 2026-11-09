@@ -5,7 +5,7 @@ const U = require("./ui.js");
 const { createCore } = require("./core.js");
 const { COL } = U;
 
-const VERSION = "1.12";
+const VERSION = "1.13";
 const ctx = P.ctx, W = P.W, H = P.H, dpr = P.dpr;
 const PAD = 16, AUTO_MS = 3500;
 U.setFamilies(P.families || {});
@@ -553,11 +553,15 @@ function drawStatic(c, G){ statN++;
   // 点亮的星：星等越高越大越亮，二、一等星带光晕
   core.litArr.forEach(w => { if (w === skip || core.rep(w) !== w) return; const p = POS[w]; if (!inV(p)) return; drawLit(c, w, p, Z); });
 }
+const MCOL = ["#ff9a55", "#ffb85c", "#ffd27a", "#fff1d0"];
 function drawLit(c, w, p, Z, boost){
   const T0 = core.tierOf(w), fade = core.isFading(w), giant = core.isGiant(w), r = litR(w, Z) * (boost || 1);
   // 不画光晕外环（重要程度看热力场和星星大小）；只在点亮动画时闪一下
-  if (boost && boost > 1.05){ c.globalAlpha = .35 * (boost - 1); c.beginPath(); c.arc(p.x, p.y, r * 3.4, 0, 6.2832); c.fillStyle = COL.lamp; c.fill(); c.globalAlpha = 1; }
-  c.beginPath(); c.arc(p.x, p.y, r, 0, 6.2832); c.fillStyle = fade ? "#8a7440" : giant ? COL.cream : COL.lamp; c.fill();
+  // 颜色 = 记得多牢：刚点亮橙色，复习一次比一次“热”（黄 → 白），恒星淡蓝白；该擦亮时冷却成暗红、变小
+  const m = S().mem[w], col = fade ? "#8f5d4a" : giant ? "#d6e8ff" : MCOL[Math.min(3, (m && m.lv) || 0)];
+  if (boost && boost > 1.05){ c.globalAlpha = .35 * (boost - 1); c.beginPath(); c.arc(p.x, p.y, r * 3.4, 0, 6.2832); c.fillStyle = col; c.fill(); c.globalAlpha = 1; }
+  if (fade) c.globalAlpha = .75;
+  c.beginPath(); c.arc(p.x, p.y, fade ? r * .8 : r, 0, 6.2832); c.fillStyle = col; c.fill(); c.globalAlpha = 1;
  }
 function drawMap(t){
   const m = L.map, c = ctx, G = geo(), {v, s, k, far, Z, PX} = G;
@@ -590,9 +594,12 @@ function drawMap(t){
     else { c.beginPath(); c.arc(p.x, p.y, Z(3.2), 0, 6.2832); c.fillStyle = "#4a5778"; c.fill(); } });
   // 推荐、幸运星、待擦亮：一圈实线
   const ring = (p, r, col, lw, a) => { c.globalAlpha = a === undefined ? 1 : a; c.beginPath(); c.arc(p.x, p.y, r, 0, 6.2832); c.strokeStyle = col; c.lineWidth = lw; c.stroke(); c.globalAlpha = 1; };
-  if (!quiz){ V.rec.forEach(w => { if (w !== selected) ring(POS[w], Z(7), COL.ready, PX(1.3), .75); });
-    if (V.luck && V.luck !== selected) ring(POS[V.luck], Z(8), COL.lamp, PX(1.4), .55 + .35 * Math.cos(t / 1600 * Math.PI * 2)); }
-  core.fadingWords().slice(0, 40).forEach(w => { if (core.rep(w) === w) ring(POS[w], Z(7), "#b99a5a", PX(1.1), .8); });
+  // 推荐的词：一团淡淡的暖光；幸运星：慢慢明暗的金星（都不画圈）
+  if (!quiz){ V.rec.forEach(w => { if (w === selected || core.isLit(w)) return; const p = POS[w], R = Z(11), g = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, R);
+      g.addColorStop(0, "rgba(255,140,90,.45)"); g.addColorStop(1, "rgba(255,140,90,0)"); c.fillStyle = g; c.beginPath(); c.arc(p.x, p.y, R, 0, 6.2832); c.fill();
+      c.fillStyle = "#ffb08a"; c.beginPath(); c.arc(p.x, p.y, Z(2.4), 0, 6.2832); c.fill(); });
+    if (V.luck && V.luck !== selected && !core.isLit(V.luck)){ const p = POS[V.luck]; c.globalAlpha = .725 + .275 * Math.cos(t / 3000 * Math.PI * 2);
+      c.fillStyle = "#ffd36b"; c.beginPath(); c.arc(p.x, p.y, Z(4), 0, 6.2832); c.fill(); c.globalAlpha = 1; } }
   if (selected && core.rep(selected) === selected) ring(POS[selected], Z(9), "#fff", PX(1.8));
   // 答题中：选中星外面一圈进度
   if (quiz && !quiz.done){ const z = quiz, p = POS[z.w], N = z.qs.length, ok = z.picked !== null && z.qs[z.i].opts[z.picked].key === z.qs[z.i].answer, f = (z.i + (ok ? 1 : 0)) / N;
@@ -630,7 +637,6 @@ function drawMap(t){
     U.text(c, w, q.x, q.y + Math.max(9, 12 / Math.max(s, .5)) + 6, "w", size || 12, col, {align: "center", b, stroke: COL.sky}); };
   if (selected){ V.nbl.forEach(w => { if (core.rep(w) === w) lab(w, core.isLit(w) ? COL.cream : "#aab4cc", 0, 11); }); lab(selected, "#fff", 1, 14); }
   if (quiz && quiz.w !== selected) lab(quiz.w, COL.cream, 1, 14);
-  if (V.luck && !quiz){ const q = toScr(POS[V.luck], v); c.globalAlpha = .675 + .325 * Math.cos(t / 1600 * Math.PI * 2); U.text(c, "✦", q.x + 7, q.y - 9, "cn", 12, "lamp"); c.globalAlpha = 1; }
   ALLC.forEach(i => { if (!core.isFolded(i)) return; const q = toScr(CP[i], v); if (q.x < -60 || q.x > W + 60) return;
     U.text(c, CONS[i].name, q.x, q.y + Z(20) / s + 14, "cn", 12, "cream", {align: "center", b: 1, stroke: COL.sky}); });
   if (fxText){ const e = (t - fxText.t0) / 1600; if (e >= 1) fxText = null; else { const q = toScr(POS[fxText.w], v);

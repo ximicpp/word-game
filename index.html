@@ -603,7 +603,7 @@ details.fold[open] summary{margin-bottom:10px}
   <main>
     <div class="stage">
       <canvas class="sky" id="sky" aria-hidden="true"></canvas>
-      <svg id="net" role="img" aria-label="单词关系网"><defs><radialGradient id="sgG"><stop offset="0" stop-color="rgb(120,190,255)" stop-opacity=".16"/><stop offset="1" stop-color="rgb(120,190,255)" stop-opacity="0"/></radialGradient></defs><g id="vp"><g id="heat"><image class="hm"/><image class="hm"/></g><g id="subg"></g><g id="cglow"></g><g id="edges"></g><g id="halfs"></g><g id="bundles"></g><g id="nodes"></g><g id="xnb"></g><g id="supers"></g><g id="fx"></g></g></svg>
+      <svg id="net" role="img" aria-label="单词关系网"><defs><radialGradient id="sgG"><stop offset="0" stop-color="rgb(255,226,170)" stop-opacity=".11"/><stop offset="1" stop-color="rgb(255,226,170)" stop-opacity="0"/></radialGradient></defs><g id="vp"><g id="heat"><image class="hm"/><image class="hm"/></g><g id="subg"></g><g id="cglow"></g><g id="edges"></g><g id="halfs"></g><g id="bundles"></g><g id="nodes"></g><g id="xnb"></g><g id="supers"></g><g id="fx"></g></g></svg>
       <nav class="gbar" id="gbar" aria-label="星系"></nav>
       <div class="tip" id="tip" role="status" hidden><p></p><button type="button">知道了</button></div>
       <div class="mapkey" id="mapkey"></div>
@@ -1248,7 +1248,7 @@ function renderCons(){
   document.getElementById("home").onclick = () => select(null);
 }
 
-// 选中的词：它所在的那一片泛起淡蓝光
+// 选中的词：它所在的那一片泛起很淡的暖白光
 let subGlowW = null;
 function subGlow(w){ const si = w && D.words[w] ? subOf(w) : undefined, g = document.getElementById("subg"), k = si === undefined ? null : si;
   if (k === subGlowW) return; subGlowW = k; g.innerHTML = k === null ? "" : SW[k].map(x => `<circle cx="${P[x].x}" cy="${P[x].y}" r="46"/>`).join(""); }

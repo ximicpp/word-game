@@ -17,7 +17,7 @@
   const fire = (kind, e) => { const t = toTouch(e); if (kind === "start") active.set(e.pointerId, t); else if (kind === "move") { if (!active.has(e.pointerId)) return; active.set(e.pointerId, t); } else active.delete(e.pointerId);
     touchHandlers[kind].forEach(h => h({ touches: [...active.values()], changedTouches: [t] })); };
   window.wx = {
-    createCanvas(){ const c = document.createElement("canvas"); if (!first){ first = c; phone.insertBefore(c, phone.firstChild);
+    createCanvas(){ const c = document.createElement("canvas"); c.toTempFilePathSync = () => c.toDataURL("image/png"); if (!first){ first = c; phone.insertBefore(c, phone.firstChild);
         c.addEventListener("pointerdown", e => { c.setPointerCapture(e.pointerId); fire("start", e); });
         c.addEventListener("pointermove", e => fire("move", e));
         c.addEventListener("pointerup", e => fire("end", e)); c.addEventListener("pointercancel", e => fire("cancel", e));
@@ -30,7 +30,8 @@
     onTouchStart: h => touchHandlers.start.push(h), onTouchMove: h => touchHandlers.move.push(h),
     onTouchEnd: h => touchHandlers.end.push(h), onTouchCancel: h => touchHandlers.cancel.push(h),
     createWebAudioContext: () => new (window.AudioContext || window.webkitAudioContext)(),
-    vibrateShort(){}, showShareMenu(){}, onShareAppMessage(){}, onShareTimeline(){}, onShow(){},
+    vibrateShort(){}, showShareMenu(){}, onShareAppMessage(f){ window.__onShare = f; }, onShareTimeline(){}, onShow(){},
+    shareAppMessage(o){ window.__shared = o; },
     getLaunchOptionsSync: () => ({ query: Object.fromEntries(q.entries()) }),
     showActionSheet({ itemList, success }){ const s = document.getElementById("sheet"), box = s.firstElementChild;
       box.innerHTML = itemList.map((t, i) => `<button data-i="${i}">${t}</button>`).join("") + `<button data-i="-1" style="margin-top:6px">取消</button>`;

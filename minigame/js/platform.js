@@ -25,13 +25,18 @@ function onTouch(h){ wx.onTouchStart(h.start); wx.onTouchMove(h.move); wx.onTouc
 function actionSheet(items, cb){ wx.showActionSheet({ itemList: items, success: r => cb(r.tapIndex), fail(){} }); }
 function confirm(title, content, okText, cb){ wx.showModal({ title, content, confirmText: okText, confirmColor: "#e2475e", cancelText: "取消", success: r => { if (r.confirm) cb(); } }); }
 
-function share(title){
+// 分享：get() 返回 {title, canvas}，卡片图片现画现存；存图失败就只发标题
+function shareData(get){ const d = get() || {}, o = { title: d.title };
+  try { if (d.canvas && d.canvas.toTempFilePathSync) o.imageUrl = d.canvas.toTempFilePathSync({ x: 0, y: 0, width: d.canvas.width, height: d.canvas.height, destWidth: d.canvas.width, destHeight: d.canvas.height }); } catch(e){}
+  return o; }
+function share(get){
   try {
     wx.showShareMenu && wx.showShareMenu({ withShareTicket: false, menus: ["shareAppMessage", "shareTimeline"] });
-    wx.onShareAppMessage && wx.onShareAppMessage(() => ({ title }));
-    wx.onShareTimeline && wx.onShareTimeline(() => ({ title }));
+    wx.onShareAppMessage && wx.onShareAppMessage(() => shareData(get));
+    wx.onShareTimeline && wx.onShareTimeline(() => shareData(get));
   } catch(e){}
 }
+function shareNow(get){ try { wx.shareAppMessage && wx.shareAppMessage(shareData(get)); } catch(e){} }
 function onShow(fn){ try { wx.onShow && wx.onShow(fn); } catch(e){} }
 
 // ?days=N 模拟 N 天后（只在浏览器预览里能用）
@@ -39,4 +44,4 @@ let shiftDays = 0; try { const q = (wx.getLaunchOptionsSync && wx.getLaunchOptio
 
 const raf = typeof requestAnimationFrame === "function" ? (f => requestAnimationFrame(f)) : (f => setTimeout(() => f(Date.now()), 16));
 
-module.exports = { canvas, ctx, W, H, dpr, safe, menu, store, audio, vibrate, offscreen, onTouch, actionSheet, confirm, share, onShow, shiftDays, raf };
+module.exports = { canvas, ctx, W, H, dpr, safe, menu, store, audio, vibrate, offscreen, onTouch, actionSheet, confirm, share, shareNow, onShow, shiftDays, raf };

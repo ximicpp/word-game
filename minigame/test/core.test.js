@@ -24,7 +24,10 @@ for (const bank of ["ket", "pet", "kp", "kpf"]){
     const z = C.newQuiz(c[0].w, "light");
     // 星等决定题数（三等星 3 题 … 一等星 5 题），每轮至少一道拼写类题
     assert.strictEqual(z.qs.length, C.qnOf(c[0].w), `${bank} ${c[0].w} 题数不对`);
-    if (C.gensFor(c[0].w, "light").includes("spell")) assert.ok(z.qs.some(q => q.gen === "spell" || q.gen === "letters"), `${bank} ${c[0].w} 没有拼写题`);
+    // 新手头 3 颗少出题：第 1 颗 2 题（意思 + 填空），第 2、3 颗最多 3 题
+    if (k === 0){ assert.strictEqual(z.qs.length, 2); assert.deepStrictEqual(z.qs.map(q => q.gen), ["meaning", "blank"]); }
+    else if (k < 3) assert.ok(z.qs.length <= 3, `${bank} 第 ${k + 1} 颗题太多`);
+    if (k >= 3 && C.gensFor(c[0].w, "light").includes("spell")) assert.ok(z.qs.some(q => q.gen === "spell" || q.gen === "letters"), `${bank} ${c[0].w} 没有拼写题`);
     z.qs.forEach((q, i) => { z.i = i; z.picked = null; C.answer(z, q.opts.findIndex(o => o.key === q.answer)); });
     C.lightUp(z); assert.ok(C.isLit(c[0].w)); assert.strictEqual(z.stars, 3);
   }

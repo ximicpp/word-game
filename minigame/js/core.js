@@ -61,7 +61,8 @@ function createCore(store, shiftDays){
   const IMP = {}; WORDS.forEach(w => IMP[w] = new Set(adj[w].filter(e => e.t !== "topic").map(e => e.w)).size);
   const IMP_AT = (() => { const v = WORDS.map(w => IMP[w]).sort((a, b) => a - b); return [v[Math.floor(v.length * .6)], v[Math.floor(v.length * .88)]]; })();
   const tierOf = w => IMP[w] >= Math.max(IMP_AT[1], 6) ? 3 : IMP[w] >= Math.max(IMP_AT[0], 3) ? 2 : 1;
-  const qnOf = w => 2 + tierOf(w);
+  // 新手头几颗星少出题：第 1 颗 2 题，第 2、3 颗最多 3 题，先尝到点亮的甜头
+  const qnOf = w => { const n = 2 + tierOf(w), k = S && S.lit ? S.lit.length : 9; return k === 0 ? 2 : k < 3 ? Math.min(n, 3) : n; };
   // ---------- 片区（小话题）：一片一片学 ----------
   const SUBS = RAW.subs || [], subOf = w => D.words[w].s;
   const SW = SUBS.map(() => []); WORDS.forEach(w => { if (subOf(w) !== undefined) SW[subOf(w)].push(w); });
@@ -331,7 +332,8 @@ function createCore(store, shiftDays){
     else if (adj[w].length) g.push("relation");
     return g; }
   // 点亮：一道考意思、一道考拼写（能拼的词），其余随机；题数按星等 3–5 道
-  function drawGens(w){ const all = gensFor(w, "light"), first = pick(["meaning","reverse"]);
+  function drawGens(w){ if (!S.lit.length) return ["meaning", "blank"];   // 第一颗星：先考意思，再选词填空
+    const all = gensFor(w, "light"), first = pick(["meaning","reverse"]);
     const sp = all.some(g => SPELL_G.includes(g)) ? [pick(SPELL_G)] : [];
     const rest = shuffle(all.filter(g => g !== "meaning" && g !== "reverse" && !SPELL_G.includes(g)).concat(first === "meaning" ? ["reverse"] : ["meaning"]));
     return shuffle([first, ...sp, ...rest].slice(0, qnOf(w))); }

@@ -678,7 +678,7 @@ const DIFF = {}; WORDS.forEach(w => { const n = adj[w].filter(e => e.t === "soun
 const IMP = {}; WORDS.forEach(w => IMP[w] = new Set(adj[w].filter(e => e.t !== "topic").map(e => e.w)).size);
 const IMP_AT = (() => { const v = WORDS.map(w => IMP[w]).sort((a, b) => a - b); return [v[Math.floor(v.length * .6)], v[Math.floor(v.length * .88)]]; })();
 const tierOf = w => IMP[w] >= Math.max(IMP_AT[1], 6) ? 3 : IMP[w] >= Math.max(IMP_AT[0], 3) ? 2 : 1;
-const qnOf = w => 2 + tierOf(w);
+const qnOf = w => { const n = 2 + tierOf(w), k = S && S.lit ? S.lit.length : 9; return k === 0 ? 2 : k < 3 ? Math.min(n, 3) : n; };
 // ---------- 片区（小话题）：一片一片学 ----------
 const SUBS = RAW.subs || [], subOf = w => D.words[w].s;
 const SW = SUBS.map(() => []); WORDS.forEach(w => { if (subOf(w) !== undefined) SW[subOf(w)].push(w); });
@@ -1407,7 +1407,8 @@ function gensFor(w, mode){ const g = ["meaning","reverse","blank","ipa"];
   return g; }
 // 点亮：随机抽 3 种不同题型：一道考意思（看英文选中文或看中文选英文）、一道考拼写（能拼的词），其余随机
 const SPELL_G = ["spell", "letters"];
-function drawGens(w){ const all = gensFor(w, "light"), first = pick(["meaning","reverse"]);
+function drawGens(w){ if (!S.lit.length) return ["meaning", "blank"];
+  const all = gensFor(w, "light"), first = pick(["meaning","reverse"]);
   const sp = all.some(g => SPELL_G.includes(g)) ? [pick(SPELL_G)] : [];
   const rest = shuffle(all.filter(g => g !== "meaning" && g !== "reverse" && !SPELL_G.includes(g)).concat(first === "meaning" ? ["reverse"] : ["meaning"]));
   return shuffle([first, ...sp, ...rest].slice(0, qnOf(w))); }

@@ -5,7 +5,7 @@ const U = require("./ui.js");
 const { createCore } = require("./core.js");
 const { COL } = U;
 
-const VERSION = "1.17";
+const VERSION = "1.18";
 const ctx = P.ctx, W = P.W, H = P.H, dpr = P.dpr;
 const PAD = 16, AUTO_MS = 800, CHAIN_MS = 1300, LD = Math.min(dpr, 2);   // LD：星图离屏层的清晰度，最高 2 倍，省内存
 U.setFamilies(P.families || {});
@@ -25,10 +25,12 @@ function boot(){
   const g = core.guardCheck(); weekCard = core.weekly();
   build(); refresh(); renderPanel(true);
   if (g) toast(`守护星帮你保住了连续天数（用掉 ${g} 颗）`);
-  if (!core.S.lit.length) tip("first");
+  // 新玩家先看到开场封面，一个按钮直接开始第一颗星
+  cover = !core.S.lit.length && !(core.S.tips && core.S.tips.first);
   if (core.fadingWords().length) tip("fade");
 }
-let weekCard = null, page = null;
+let weekCard = null, page = null, cover = false;
+function startFirst(){ cover = false; if (!S().tips) S().tips = {}; S().tips.first = 1; core.save(); sfx("ok"); const c = core.candidates()[0]; if (c) startQuiz(c.w, "light"); }
 const S = () => core.S;
 const posOf = id => /^c\d+$/.test(id) ? CP[+id.slice(1)] : POS[id];
 
@@ -203,7 +205,7 @@ function lightUp(){
   if (z.goal || z.lvUp || z.ms.length || z.streak) meteor(8);
   sfx(z.newCons !== null || z.lvUp || z.ms.length || z.streak ? "cons" : "light");
   if (z.newCons !== null) meteor(5); else if (z.stars === 3) meteor(1);
-  tip("stars"); if (z.newCons !== null) tip("cons");
+  tip("stars"); if (z.newCons !== null) tip("cons"); if (z.goal) tip("fav");
   if (core.litArr.length === core.WORDS.length) toast("整片单词星系都点亮了！");
   else if (z.ms.length) toast(core.msText(z.ms[z.ms.length - 1]));
   else if (z.streak) toast(`连续 ${z.streak} 天！`);
@@ -467,7 +469,10 @@ function pLevel(){
   else btn(`${core.GUARD_COST} 星尘换 1 颗守护星`, S().dust >= core.GUARD_COST ? "alt" : "ghost", () => { if (S().dust < core.GUARD_COST) toast(`星尘不够，需要 ${core.GUARD_COST}`); else buyGuard(); }, {h: 34, size: 13});
   gap(8); txt([T(`每天点亮或擦亮 1 颗星就算连续。守护星最多存 ${core.GUARD_MAX} 颗，哪天没来会自动用掉 1 颗，连续天数不会断。`, {c: "muted"})], {size: 12, lh: 18});
   gap(12); txt([T(`星座 ${ALLC.filter(core.consDone).length} / ${core.NCONS} · 正确率 ${S().answered ? Math.round(S().correct / S().answered * 100) + "%" : "—"} · 最高连击 ${S().best}`, {c: "muted"})], {size: 12, lh: 18});
-  gap(12); soundBtn();
+  gap(14); txt([T("词库  "), T(core.BANKS[core.BANK].name, {c: "lamp", b: 1, f: "mono"}), T(`  共 ${core.WORDS.length} 词`, {c: "muted", size: 12})], {size: 14, lh: 22});
+  gap(6); btn("换词库", "ghost", askBank, {w: 90, h: 34, size: 13});
+  gap(12); if (n) { btn("把我的星空发给爸妈或同学", "alt", () => P.shareNow(shareInfo), {h: 40, size: 14}); gap(12); }
+  soundBtn();
   gap(14); btn("‹ 返回", "ghost", () => { page = null; renderPanel(true); }, {w: 76, h: 32, size: 13});
 }
 function pCons(){
@@ -567,6 +572,7 @@ function pResult(){
   if (c0) badge("新星座：" + c0.name, [T(c0.note), T("\n"), T("已收起成一颗大星，点它可以展开。", {c: "muted"})]);
   if (z.subDone !== null){ const nm = core.SUBS[z.subDone].name, N = core.SW[z.subDone].length; badge(`「${nm}」这一片学完了`, [T(`${N} 个词全部点亮，这片星空亮起了金色光晕。`)]); }
   if (z.goal) goalBadge();
+  if (z.goal || z.lvUp || z.ms.length || z.streak) shareBtn();
   if (z.goal && core.dueToday().length){ gap(16); btn(`擦亮 ${Math.min(core.REVIEW_RUN, core.dueToday().length)} 颗 · 今天还剩 ${core.dueToday().length} 颗`, "cta", polish); }
   else if (cs0.length){ const t = cs0[0]; gap(16);
     btn(`继续：${t.w} · ${core.qnOf(t.w)} 题`, z.goal ? "alt" : "cta", () => startQuiz(t.w, "light")); whyBlock(t.w);
@@ -586,7 +592,7 @@ function pRunDone(){ const z = quiz, R = z.runDone, okN = R.res.filter(r => !r.m
   if (z.streak) streakBadge(z.streak);
   gap(14);
   if (left) btn(`再擦亮 ${Math.min(core.REVIEW_RUN, left)} 颗 · 今天还剩 ${left} 颗`, "cta", polish);
-  else if (core.dayDone()) { goalBadge(); gap(12); btn("回到星图", "alt", () => { quiz = null; select(null); }); }
+  else if (core.dayDone()) { goalBadge(); shareBtn(); gap(12); btn("回到星图", "alt", () => { quiz = null; select(null); }); }
   else { const c = core.candidates(); if (c.length) btn(`继续点亮：${c[0].w} · ${core.qnOf(c[0].w)} 题`, "cta", () => startQuiz(c[0].w, "light")); else btn("回到星图", "alt", () => { quiz = null; select(null); }); } }
 function pReviewDone(){
   if (quiz.runDone) return pRunDone();
@@ -611,6 +617,7 @@ const TIPS = {
   choose: "想学哪个词都可以：在星图上点它，或者从推荐里挑。<b>越亮越大的星</b>越重要，题目也越多。",
   hint:   "星尘够了！答题时可以用<b>提示卡</b>去掉两个错误选项。",
   cons:   "连成<b>星座</b>了！它已经收起成一颗大星，点它可以展开。",
+  fav:    "喜欢的话，点右上角 <b>···</b>，选<b>添加到我的小程序</b>，明天更好找到。",
   fade:   "有的星<b>变暗</b>了，说明该复习了。每轮擦亮 <b>5 颗</b>，一颗只要答 1 题。"
 };
 const tipQ = [];
@@ -819,9 +826,11 @@ function drawZoom(){ const c = ctx, s = 36, x = W - 10 - s, y = L.panel.y - 12 -
     const yy = y + k * (s + 6); U.box(c, x, yy, s, s, 10, "rgba(20,30,52,.88)", "rule"); pressFx(c, x, yy, s, s, 10);
     U.text(c, lab, x + s / 2, yy + s / 2 + 1, "cn", lab.length > 1 ? 11 : 18, "ink", {align: "center"}); hit(x - 4, yy - 3, s + 8, s + 6, fn); }); }
 let tipCache = null;
-function drawTip(){ if (!tipQ.length) return; const c = ctx, key = tipQ[0], w = Math.min(440, W - 76), x = 12;
+function drawTip(){ if (!tipQ.length || cover) return; const c = ctx, key = tipQ[0], w = Math.min(440, W - 76), x = 12;
   if (!tipCache || tipCache.key !== key){ const runs = TIPS[key].split(/<\/?b>/).map((s, k) => ({s, b: k % 2 ? 1 : 0, c: k % 2 ? "lamp" : "ink"})).filter(r => r.s);
-    tipCache = {key, L: U.layout(c, runs, w - 28 - 70, {size: 14, lh: 21})}; }
+    tipCache = {key, t0: Date.now(), L: U.layout(c, runs, w - 28 - 70, {size: 14, lh: 21})}; }
+  // 提示不挡路：8 秒后自己收起
+  if (reveal) tipCache.t0 = Date.now(); else if (Date.now() - tipCache.t0 > 8000){ closeTip(); return; }
   const Lr = tipCache.L, h = Math.max(48, Lr.h + 24), y = L.panel.y - 12 - h;
   c.save(); c.shadowColor = "rgba(0,0,0,.5)"; c.shadowBlur = 30; c.shadowOffsetY = 8; U.box(c, x, y, w, h, 12, "#1b2742"); c.restore();
   U.box(c, x, y, w, h, 12, null, "rgba(255,201,92,.6)");
@@ -835,17 +844,18 @@ function drawHeader(){ const c = ctx, h = L.head;
   const lit = core.litArr.length, tot = core.WORDS.length;
   c.fillStyle = COL.lamp; c.save(); c.shadowColor = COL.lamp; c.shadowBlur = 8; c.fillRect(0, h.h - 2, W * lit / tot, 2); c.restore();
   const cy = h.r1y + h.r1h / 2, dg = core.daily(), gp = Math.min(1, dg.n / core.goalOf());
-  let x = PAD; c.lineWidth = 3; c.beginPath(); c.arc(x + 10, cy, 9, 0, 7); c.strokeStyle = COL.rule; c.stroke();
-  if (gp > 0){ c.beginPath(); c.arc(x + 10, cy, 9, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * gp); c.strokeStyle = COL.lamp; c.lineCap = "round"; c.stroke(); c.lineCap = "butt"; }
-  if (dg.done) U.text(c, "✓", x + 10, cy + 1, "cn", 11, "lamp", {align: "center", b: 1});
-  x += 28;
+  // 今日目标：写明“今日 2/5”，底色按进度填充
+  let x = PAD; { const gt = dg.done ? "今日 ✓" : `今日 ${dg.n}/${core.goalOf()}`, gw = U.measure(c, gt, "cn", 12, 1) + 18;
+    U.box(c, x, cy - 13, gw, 26, 9, "rgba(255,201,92,.08)", "rgba(255,201,92,.45)");
+    if (gp > 0){ c.save(); U.rr(c, x, cy - 13, gw, 26, 9); c.clip(); c.fillStyle = "rgba(255,201,92,.28)"; c.fillRect(x, cy - 13, gw * gp, 26); c.restore(); }
+    pressFx(c, x, cy - 13, gw, 26, 9); U.text(c, gt, x + gw / 2, cy, "cn", 12, "lamp", {align: "center", b: 1}); x += gw + 8; }
   const n = S().lit.length, lv = core.lvOf(n), LA = core.LV_AT, top = lv >= LA.length, kf = top ? 1 : (n - LA[lv - 1]) / (LA[lv] - LA[lv - 1]);
-  const lt = `Lv.${lv}`, lvw = U.measure(c, lt, "mono", 13, 1) + 46;
+  const lt = `Lv.${lv}`, lvw = U.measure(c, lt, "mono", 13, 1) + 38;
   U.box(c, x, cy - 13, lvw, 26, 9, "rgba(255,201,92,.12)", "rgba(255,201,92,.45)"); pressFx(c, x, cy - 13, lvw, 26, 9);
-  U.text(c, lt, x + 9, cy, "mono", 13, "lamp", {b: 1}); const bx2 = x + lvw - 32; U.box(c, bx2, cy - 2, 24, 4, 2, "rule"); U.box(c, bx2, cy - 2, Math.max(4, 24 * kf), 4, 2, "lamp");
+  U.text(c, lt, x + 9, cy, "mono", 13, "lamp", {b: 1}); const bx2 = x + lvw - 25; U.box(c, bx2, cy - 2, 17, 4, 2, "rule"); U.box(c, bx2, cy - 2, Math.max(4, 17 * kf), 4, 2, "lamp");
   hits.push({x: 0, y: cy - 20, w: x + lvw + 4, h: 40, fn: showLevel});
   x += lvw + 10;
-  const ls = String(lit), lW = U.measure(c, ls, "mono", 17, 1); U.text(c, ls, x, cy, "mono", 17, "lamp", {b: 1}); x += lW + 8;
+  const ls = "★ " + lit, lW = U.measure(c, ls, "mono", 15, 1); U.text(c, ls, x, cy, "mono", 15, "lamp", {b: 1}); x += lW + 8;
   const bl = core.BANKS[core.BANK].name, bw = U.measure(c, bl, "mono", 11) + 16;
   if (x + bw <= h.r1right){ U.box(c, x, cy - 12, bw, 24, 8, null, "rgba(255,201,92,.4)"); pressFx(c, x, cy - 12, bw, 24, 8); U.text(c, bl, x + bw / 2, cy, "mono", 11, "lamp", {align: "center"});
     hit(x - 4, cy - 18, bw + 8, 36, askBank); }
@@ -876,16 +886,61 @@ function frame(){
   if (scrollTo !== null){ if (touch.active) scrollTo = null; else { pScroll += (scrollTo - pScroll) * .2; if (Math.abs(scrollTo - pScroll) < 1){ pScroll = scrollTo; scrollTo = null; } } }
   // 空闲时降到约 15 帧，省电
   ignTick(t); const sheetMoving = sheetTick();
-  const active = sheetMoving || pick || reveal || glideA || pVel || scrollTo !== null || touch.active || sparks.length || meteors.length || toastMsg || autoT && tapAny || ign || fxText || Object.keys(pops).length || (heat && t - heatT0 < 700) || (quiz && !quiz.done);
+  const active = cover || sheetMoving || pick || reveal || glideA || pVel || scrollTo !== null || touch.active || sparks.length || meteors.length || toastMsg || autoT && tapAny || ign || fxText || Object.keys(pops).length || (heat && t - heatT0 < 700) || (quiz && !quiz.done);
   frameN++;
   if (active || frameN % 4 === 0){
     hits = []; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1;
     ctx.fillStyle = COL.sky; ctx.fillRect(0, 0, W, H);
-    drawMap(t); drawPanel(); drawHeader(); drawToast(t); drawPick(); drawReveal(t);
+    drawMap(t); drawPanel(); drawHeader(); drawToast(t); drawPick(); drawReveal(t); drawCover(t);
     lastDraw = t;
   }
   P.raf(frame);
 }
+
+// ---------- 开场封面（只给新玩家看一次） ----------
+function drawCover(t){ if (!cover) return; const c = ctx;
+  const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "rgba(8,13,26,.62)"); g.addColorStop(.5, "rgba(8,13,26,.86)"); g.addColorStop(1, "rgba(8,13,26,.97)"); c.fillStyle = g; c.fillRect(0, 0, W, H);
+  hits.push({x: 0, y: 0, w: W, h: H, fn: () => {}, prio: true});
+  const cy = Math.round(H * .36), sy = cy - 100, pul = .5 + .5 * Math.sin(t / 650), R = 50 + pul * 12;
+  const rg = c.createRadialGradient(W / 2, sy, 0, W / 2, sy, R); rg.addColorStop(0, "rgba(255,240,200,1)"); rg.addColorStop(.16, "rgba(255,201,92,.8)"); rg.addColorStop(1, "rgba(255,201,92,0)");
+  c.fillStyle = rg; c.beginPath(); c.arc(W / 2, sy, R, 0, 7); c.fill();
+  c.save(); c.shadowColor = COL.lamp; c.shadowBlur = 26; U.text(c, "单词星系", W / 2, cy, "cn", 46, "lamp", {align: "center", b: 1}); c.restore();
+  U.text(c, "每个单词都是一颗星", W / 2, cy + 54, "cn", 18, "ink", {align: "center"});
+  U.text(c, "答对几道小题，就能把它点亮", W / 2, cy + 82, "cn", 18, "ink", {align: "center"});
+  U.text(c, `KET · PET · FCE 考纲 ${Object.keys(core.RAW.words).length} 词`, W / 2, cy + 118, "cn", 13, "muted", {align: "center"});
+  const bw = Math.min(320, W - 64), bh = 56, bx = W / 2 - bw / 2, by = Math.round(H * .68);
+  c.save(); c.shadowColor = "rgba(255,201,92,.55)"; c.shadowBlur = 18 + pul * 14; U.box(c, bx, by, bw, bh, 28, "lamp"); c.restore();
+  pressFx(c, bx, by, bw, bh, 28); U.text(c, "点亮第一颗星", W / 2, by + bh / 2 + 1, "cn", 20, "dark", {align: "center", b: 1});
+  U.text(c, "先答 2 道题，十几秒就能点亮", W / 2, by + bh + 26, "cn", 13, "muted", {align: "center"});
+  hits.push({x: bx - 8, y: by - 8, w: bw + 16, h: bh + 16, fn: startFirst, prio: true}); }
+
+// ---------- 分享卡片：画出自己的星空和今天的成绩 ----------
+let shareCv = null;
+function shareCard(){ const SW0 = 500, SH0 = 400; if (!shareCv) shareCv = P.offscreen(SW0, SH0); const c = shareCv.getContext("2d");
+  c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = "source-over";
+  const g = c.createLinearGradient(0, 0, 0, SH0); g.addColorStop(0, "#0b1222"); g.addColorStop(1, "#1b2547"); c.fillStyle = g; c.fillRect(0, 0, SW0, SH0);
+  const bx = BBall, k = Math.min(SW0 / bx.w, SH0 / bx.h) * 1.2, ox = SW0 * .62 - (bx.x + bx.w / 2) * k, oy = SH0 * .46 - (bx.y + bx.h / 2) * k;
+  c.fillStyle = "rgba(150,170,220,.3)"; core.WORDS.forEach((w, i) => { if (i % 2 || core.isLit(w)) return; const p = POS[w]; c.fillRect(ox + p.x * k, oy + p.y * k, 1.5, 1.5); });
+  c.globalCompositeOperation = "lighter";
+  core.litArr.forEach(w => { const p = POS[w], x = ox + p.x * k, y = oy + p.y * k, rg = c.createRadialGradient(x, y, 0, x, y, 10);
+    rg.addColorStop(0, "rgba(255,226,150,.95)"); rg.addColorStop(.22, "rgba(255,190,90,.4)"); rg.addColorStop(1, "rgba(255,190,90,0)"); c.fillStyle = rg; c.beginPath(); c.arc(x, y, 10, 0, 7); c.fill(); });
+  c.globalCompositeOperation = "source-over";
+  const sg = c.createLinearGradient(0, 0, SW0 * .6, 0); sg.addColorStop(0, "rgba(11,18,34,.92)"); sg.addColorStop(1, "rgba(11,18,34,0)"); c.fillStyle = sg; c.fillRect(0, 0, SW0 * .6, SH0);
+  const n = S().lit.length, sn = core.streakNow(), lv = core.lvOf(n), d = core.daily(), today = d.n ? S().lit.slice(-d.n) : [];
+  U.text(c, "单词星系", 28, 44, "cn", 22, "lamp", {b: 1});
+  U.text(c, String(n), 26, 138, "mono", 84, "lamp", {b: 1}); const nw = U.measure(c, String(n), "mono", 84, 1);
+  U.text(c, "颗星", 34 + nw, 158, "cn", 24, "ink", {b: 1});
+  U.text(c, "已经点亮", 28, 204, "cn", 20, "ink");
+  U.text(c, `${sn > 1 ? `连续 ${sn} 天 · ` : ""}Lv.${lv} ${core.titleOf(lv)}`, 28, 240, "cn", 16, "muted");
+  if (today.length){ c.fillStyle = "rgba(11,18,34,.78)"; c.fillRect(0, SH0 - 92, SW0, 92);
+    U.text(c, `今天学会 ${today.length} 个词`, 28, SH0 - 64, "cn", 15, "lamp", {b: 1});
+    let line = ""; for (const w of today.slice().reverse()){ const nx = line ? line + " · " + w : w; if (U.measure(c, nx + " …", "w", 18, 1) > SW0 - 56){ line += " …"; break; } line = nx; }
+    U.text(c, line, 28, SH0 - 32, "w", 18, "ink", {b: 1}); }
+  return shareCv; }
+function shareInfo(){ const n = S().lit.length, sn = core.streakNow(), d = core.daily();
+  const title = !n ? "单词星系：答对题目，点亮一整片单词星空" : d.n ? `我今天在单词星系点亮了 ${d.n} 颗单词星${sn > 1 ? `，已经连续 ${sn} 天` : ""}，你也来试试？` : `我的单词星空已经亮了 ${n} 颗星，你也来点亮一片？`;
+  return {title, canvas: shareCard()}; }
+function shareBtn(){ gap(10); btn("把我的星空发给爸妈或同学", "ghost", () => P.shareNow(shareInfo), {h: 40, size: 14}); }
 
 // ---------- 触摸 ----------
 const touch = {active: false, pts: new Map(), zone: null, moved: 0, pinch: 0, last: null, vy: 0, vx: 0, sheet: false, mode: null};
@@ -922,7 +977,7 @@ P.onTouch({
       press = {x: f.clientX, y: f.clientY, moved: false}; pVel = 0; touch.vx = touch.vy = 0; touch.mode = null; touch.sheet = false;
       const h = findHit(f.clientX, f.clientY); if (h && touch.zone === "map") touch.zone = "ui"; }
     if (touch.pts.size === 2 && (touch.zone === "map" || touch.zone === "ui")){ touch.zone = "map"; const [a, b] = [...touch.pts.values()]; touch.pinch = Math.hypot(a.x - b.x, a.y - b.y); touch.moved = 99; press = null; } },
-  move(e){ const ts = e.changedTouches || e.touches || [];
+  move(e){ const ts = e.changedTouches || e.touches || []; if (cover) return;
     for (const tt of ts){ const prev = touch.pts.get(tt.identifier); if (!prev) continue; const p = {x: tt.clientX, y: tt.clientY}, dx = p.x - prev.x, dy = p.y - prev.y;
       touch.pts.set(tt.identifier, p);
       if (touch.pts.size === 1){ touch.moved += Math.abs(dx) + Math.abs(dy); if (touch.moved > 8 && press) press.moved = true;
@@ -960,7 +1015,7 @@ function clampScrollSoft(){ const ms = maxScroll(); if (pScroll < 0 || pScroll >
 // ---------- 启动 ----------
 computeLayout();
 boot();
-P.share("单词星系：答对题目，点亮一整片单词星空");
+P.share(shareInfo);
 P.onShow(() => { if (!busy()){ refresh(); renderPanel(false); } });
 P.raf(frame);
 // 浏览器预览里方便自动化测试

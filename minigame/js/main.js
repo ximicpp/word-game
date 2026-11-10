@@ -5,7 +5,7 @@ const U = require("./ui.js");
 const { createCore } = require("./core.js");
 const { COL } = U;
 
-const VERSION = "1.18";
+const VERSION = "1.18.1", APP_NAME = "单词星系背单词";
 const ctx = P.ctx, W = P.W, H = P.H, dpr = P.dpr;
 const PAD = 16, AUTO_MS = 800, CHAIN_MS = 1300, LD = Math.min(dpr, 2);   // LD：星图离屏层的清晰度，最高 2 倍，省内存
 U.setFamilies(P.families || {});
@@ -416,7 +416,7 @@ function pHome(){
     txt([T(`拖动或双指缩放地图，所有单词都在这一整张星空里。越亮越大的星越重要，题目也越多。点亮的词过几天会变暗，答 1 题就能擦亮。点亮的星会发热，学得越多，星空越暖。`)], {size: 13, lh: 20, c: "muted"});
     gap(8); txt([].concat(...core.TYPE_ORDER.map(t => [T("▬ ", {c: t}), T(TYPES[t].name + "   ", {c: "muted"})])), {size: 12, lh: 20});
     gap(8); txt([T(`正确率 ${S().answered ? Math.round(S().correct / S().answered * 100) + "%" : "—"} · 最高连击 ${S().best} · 星座 ${done} / ${core.NCONS}`)], {size: 13, lh: 20, c: "muted"});
-    gap(8); txt([T(`单词星系 v${VERSION} · 当前词库 ${core.BANKS[core.BANK].name}，共 ${core.WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。`)], {size: 13, lh: 20, c: "muted"});
+    gap(8); txt([T(`${APP_NAME} v${VERSION} · 当前词库 ${core.BANKS[core.BANK].name}，共 ${core.WORDS.length} 词。词表按剑桥 A2 Key（KET）、B1 Preliminary（PET）和 B2 First（FCE）的范围整理；例句为原创。`)], {size: 13, lh: 20, c: "muted"});
     gap(12); soundBtn(); gap(10); btn("重新开始", "ghost", askReset, {w: 90, h: 32, size: 13});
   }
 }
@@ -924,7 +924,7 @@ function drawCover(t){ if (!cover) return; const c = ctx;
   const rg = c.createRadialGradient(cx, sy, 0, cx, sy, 30 + pul * 6); rg.addColorStop(0, "rgba(255,240,200,1)"); rg.addColorStop(.2, "rgba(255,201,92,.8)"); rg.addColorStop(1, "rgba(255,201,92,0)");
   c.fillStyle = rg; c.beginPath(); c.arc(cx, sy, 36, 0, 7); c.fill();
   U.text(c, "happy", cx, sy + 30, "w", 17, "cream", {align: "center", b: 1, stroke: "rgba(8,13,26,.9)", sw: 4});
-  c.save(); c.shadowColor = COL.lamp; c.shadowBlur = 26; U.text(c, "单词星系", cx, cy, "cn", 46, "lamp", {align: "center", b: 1}); c.restore();
+  c.save(); c.shadowColor = COL.lamp; c.shadowBlur = 26; U.text(c, APP_NAME, cx, cy, "cn", Math.min(42, Math.floor((W - 48) / 7)), "lamp", {align: "center", b: 1}); c.restore();
   U.text(c, "单词连成一张星网", cx, cy + 54, "cn", 18, "ink", {align: "center"});
   U.text(c, "点亮一颗，顺着线记住一串", cx, cy + 82, "cn", 18, "ink", {align: "center"});
   U.text(c, `KET · PET · FCE 考纲 ${Object.keys(core.RAW.words).length} 词 · ${core.RAW.edges.length} 条连线`, cx, cy + 116, "cn", 12, "muted", {align: "center"});
@@ -958,7 +958,7 @@ function shareCard(){ const SW0 = 500, SH0 = 400; if (!shareCv) shareCv = P.offs
     used.push({x, y, hw}); U.text(c, w, x, y, "w", 13, "cream", {align: "center", b: 1, stroke: "rgba(11,18,34,.85)", sw: 3}); }); }
   const sg = c.createLinearGradient(0, 0, SW0 * .5, 0); sg.addColorStop(0, "rgba(11,18,34,.92)"); sg.addColorStop(.55, "rgba(11,18,34,.6)"); sg.addColorStop(1, "rgba(11,18,34,0)"); c.fillStyle = sg; c.fillRect(0, 0, SW0 * .5, SH0);
   const n = S().lit.length, sn = core.streakNow(), lv = core.lvOf(n), d = core.daily(), today = d.n ? S().lit.slice(-d.n) : [];
-  U.text(c, "单词星系", 28, 44, "cn", 22, "lamp", {b: 1});
+  U.text(c, APP_NAME, 28, 44, "cn", 22, "lamp", {b: 1});
   U.text(c, String(n), 26, 138, "mono", 84, "lamp", {b: 1}); const nw = U.measure(c, String(n), "mono", 84, 1);
   U.text(c, "颗星", 34 + nw, 158, "cn", 24, "ink", {b: 1});
   U.text(c, "已经点亮", 28, 204, "cn", 20, "ink");
@@ -970,7 +970,7 @@ function shareCard(){ const SW0 = 500, SH0 = 400; if (!shareCv) shareCv = P.offs
     U.text(c, line, 28, SH0 - 32, "w", 18, "ink", {b: 1}); }
   return shareCv; }
 function shareInfo(){ const n = S().lit.length, sn = core.streakNow(), d = core.daily();
-  const title = !n ? "单词星系：答对题目，点亮一整片单词星空" : d.n ? `我今天在单词星系点亮了 ${d.n} 颗单词星${sn > 1 ? `，已经连续 ${sn} 天` : ""}，你也来试试？` : `我的单词星网已经亮了 ${n} 颗星，你也来连一片？`;
+  const title = !n ? APP_NAME + "：答对题目，点亮一整片单词星空" : d.n ? `我今天在「${APP_NAME}」点亮了 ${d.n} 颗单词星${sn > 1 ? `，已经连续 ${sn} 天` : ""}，你也来试试？` : `我的单词星网已经亮了 ${n} 颗星，你也来连一片？`;
   return {title, canvas: shareCard()}; }
 function shareBtn(){ gap(10); btn("把我的星空发给爸妈或同学", "ghost", () => P.shareNow(shareInfo), {h: 40, size: 14}); }
 

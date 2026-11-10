@@ -10,8 +10,9 @@ let menu = null; try { menu = wx.getMenuButtonBoundingClientRect && wx.getMenuBu
 if (!menu || !menu.width) menu = null;
 
 const store = {
-  get(k){ try { const v = wx.getStorageSync(k); return v === "" || v === undefined ? null : v; } catch(e){ return null; } },
-  set(k, v){ try { wx.setStorageSync(k, v); } catch(e){} }
+  // 读失败时再试一次；写入返回是否成功，方便上层提示
+  get(k){ for (let i = 0; i < 2; i++){ try { const v = wx.getStorageSync(k); return v === "" || v === undefined ? null : v; } catch(e){} } return null; },
+  set(k, v){ for (let i = 0; i < 2; i++){ try { wx.setStorageSync(k, v); return true; } catch(e){} } return false; }
 };
 
 let AC = null;
@@ -38,10 +39,11 @@ function share(get){
 }
 function shareNow(get){ try { wx.shareAppMessage && wx.shareAppMessage(shareData(get)); } catch(e){} }
 function onShow(fn){ try { wx.onShow && wx.onShow(fn); } catch(e){} }
+function onHide(fn){ try { wx.onHide && wx.onHide(fn); } catch(e){} }
 
 // ?days=N 模拟 N 天后（只在浏览器预览里能用）
 let shiftDays = 0; try { const q = (wx.getLaunchOptionsSync && wx.getLaunchOptionsSync().query) || {}; shiftDays = parseFloat(q.days) || 0; } catch(e){}
 
 const raf = typeof requestAnimationFrame === "function" ? (f => requestAnimationFrame(f)) : (f => setTimeout(() => f(Date.now()), 16));
 
-module.exports = { canvas, ctx, W, H, dpr, safe, menu, store, audio, vibrate, offscreen, onTouch, actionSheet, confirm, share, shareNow, onShow, shiftDays, raf };
+module.exports = { canvas, ctx, W, H, dpr, safe, menu, store, audio, vibrate, offscreen, onTouch, actionSheet, confirm, share, shareNow, onShow, onHide, shiftDays, raf };

@@ -32,7 +32,10 @@ const W = (s, o) => T(s, Object.assign({f:"w"}, o));
 function createCore(store, shiftDays){
   const SHIFT = (shiftDays || 0) * DAY;
   const now = () => Date.now() + SHIFT;
-  const readSave = () => { try { const v = store.get(KEY); return v ? JSON.parse(v) : null; } catch(e){ return null; } };
+  // 存档读两份：主存档读不出来或是空的，而备份里有进度时，用备份（防止一次读写失败把进度冲掉）
+  const parse = k => { try { const v = store.get(k); return v ? JSON.parse(v) : null; } catch(e){ return null; } };
+  const readSave = () => { const m = parse(KEY), ok = m && Array.isArray(m.lit); if (ok && m.lit.length) return m;
+    const b = parse(KEY + "-bak"); return b && Array.isArray(b.lit) && b.lit.length ? b : (ok ? m : null); };
   let BANK = "kp"; { const v = readSave(); if (v && BANKS[v.bank]) BANK = v.bank; }
   const LVS = BANKS[BANK].lv;
   const D = Object.assign({}, RAW, { words: {} });
@@ -85,7 +88,14 @@ function createCore(store, shiftDays){
   let cur = 0;
   let litSet = new Set(), readySet = new Set(), openG = [], litArr = [];
   function load(){ const v = readSave(); if (v && Array.isArray(v.lit)) S = Object.assign(S, v);
-    S.lit = [...new Set(S.lit.filter(w => RAW.words[w]))]; S.bank = BANK;
+    // 存档里个别字段坏了（类型不对）就换回默认值，不让整个游戏打不开
+    { const d = fresh(), obj = x => x && typeof x === "object" && !Array.isArray(x);
+      ["tips", "stars", "mem", "daily", "streak", "luck"].forEach(k => { if (!obj(S[k])) S[k] = d[k]; });
+      ["ms", "sms", "week", "conf"].forEach(k => { if (S[k] !== undefined && !obj(S[k])) delete S[k]; });
+      if (!Array.isArray(S.folded)) S.folded = [];
+      ["answered", "correct", "combo", "best", "dust", "guard", "polished", "lvl", "goal"].forEach(k => { if (S[k] !== undefined && !(typeof S[k] === "number" && isFinite(S[k]) && S[k] >= 0)){ if (k in d) S[k] = d[k]; else delete S[k]; } }); }
+    S.lit = [...new Set(S.lit.filter(w => typeof w === "string" && RAW.words[w]))]; S.bank = BANK;
+    S.lit.forEach(w => { if (!S.mem[w] || typeof S.mem[w] !== "object" || !isFinite(S.mem[w].due)) delete S.mem[w]; if (![1, 2, 3].includes(S.stars[w])) delete S.stars[w]; });
     if (S.v !== 2){ S.folded = []; S.v = 2; }
     S.lit.forEach(w => { if (!S.stars[w]) S.stars[w] = 3; if (!S.mem[w]) S.mem[w] = {lv:0, due: now() + DAY}; });
     S.gal = 0;
@@ -148,7 +158,10 @@ function createCore(store, shiftDays){
     const all = [...readySet].filter(w => tierOf(w) >= 2); if (!all.length) all.push(...readySet);
     if (!all.length) return null;
     all.sort(); S.luck = {d: t, w: all[hash(t) % all.length], got: false}; save(); return S.luck.w; }
-  function save(){ try { store.set(KEY, JSON.stringify(S)); } catch(e){} }
+  let saveOk = true;
+  function save(){ try { saveOk = store.set(KEY, JSON.stringify(S)) !== false; } catch(e){ saveOk = false; } return saveOk; }
+  // 备份：启动读档成功后、切到后台时、重新开始时各写一次
+  function backup(){ try { return store.set(KEY + "-bak", JSON.stringify(S)) !== false; } catch(e){ return false; } }
   function recalc(){
     litArr = S.lit.filter(w => D.words[w]); litSet = new Set(litArr); const ra = new Set();
     // 自由浏览：任何没点亮的词都可以做题点亮
@@ -396,7 +409,7 @@ function createCore(store, shiftDays){
     z.goal = bumpDaily("review"); z.streak = streakHit;
     save(); z.done = true;
   }
-  function reset(){ S = Object.assign(fresh(), {tips: S.tips || {}, mute: S.mute}); recalc(); cur = 0; S.gal = 0; save(); }
+  function reset(){ S = Object.assign(fresh(), {tips: S.tips || {}, mute: S.mute}); recalc(); cur = 0; S.gal = 0; save(); backup(); }
   function setBank(k){ S.bank = k; S.gal = 0; save(); }
   function setCur(g){ cur = g; S.gal = g; }
 
@@ -407,7 +420,7 @@ function createCore(store, shiftDays){
     SUBS, SW, subOf, subLit, isCore, KIDS, BASE, band, whyOf, confOf, confMiss, confPairs, subDone: i => SW[i].length >= 3 && SW[i].every(x => litSet.has(x)),
     HINT_COST, OPEN_STEP, GOAL, GOALS, REVIEW_RUN, REVIEW_CAP, goalOf, setGoal, reviewLeft, dueToday, dayDone, GOAL_BONUS, QN, RAW, IMP, tierOf, qnOf, MAG, LV_AT, lvOf, titleOf, EXAMS, EXAM_N, QUARTERS, STREAK_MS, GUARD_COST, GUARD_MAX, GIANT_LV, INTERVALS, LVS,
     get S(){ return S; }, get cur(){ return cur; }, get litArr(){ return litArr; }, get readySet(){ return readySet; }, get openG(){ return openG; },
-    now, save, recalc, daily, lucky, isLit, status, isFading, fadingWords, consDone, isFolded, gainOf, consLeft, dueText, candidates, rep, fold, dustFor,
+    now, save, backup, saveOk: () => saveOk, recalc, daily, lucky, isLit, status, isFading, fadingWords, consDone, isFolded, gainOf, consLeft, dueText, candidates, rep, fold, dustFor,
     GENS, gensFor, newQuiz, answer, retry, useHint, lightUp, finishReview, reset, setBank, setCur, today,
     isGiant, giantCount, streakNow, guardCheck, buyGuard, examLit, examPassed, msText, mdText, weekly, cn1
   }));

@@ -88,7 +88,14 @@ function createCore(store, shiftDays){
   let cur = 0;
   let litSet = new Set(), readySet = new Set(), openG = [], litArr = [];
   function load(){ const v = readSave(); if (v && Array.isArray(v.lit)) S = Object.assign(S, v);
-    S.lit = [...new Set(S.lit.filter(w => RAW.words[w]))]; S.bank = BANK;
+    // 存档里个别字段坏了（类型不对）就换回默认值，不让整个游戏打不开
+    { const d = fresh(), obj = x => x && typeof x === "object" && !Array.isArray(x);
+      ["tips", "stars", "mem", "daily", "streak", "luck"].forEach(k => { if (!obj(S[k])) S[k] = d[k]; });
+      ["ms", "sms", "week", "conf"].forEach(k => { if (S[k] !== undefined && !obj(S[k])) delete S[k]; });
+      if (!Array.isArray(S.folded)) S.folded = [];
+      ["answered", "correct", "combo", "best", "dust", "guard", "polished", "lvl", "goal"].forEach(k => { if (S[k] !== undefined && !(typeof S[k] === "number" && isFinite(S[k]) && S[k] >= 0)){ if (k in d) S[k] = d[k]; else delete S[k]; } }); }
+    S.lit = [...new Set(S.lit.filter(w => typeof w === "string" && RAW.words[w]))]; S.bank = BANK;
+    S.lit.forEach(w => { if (!S.mem[w] || typeof S.mem[w] !== "object" || !isFinite(S.mem[w].due)) delete S.mem[w]; if (![1, 2, 3].includes(S.stars[w])) delete S.stars[w]; });
     if (S.v !== 2){ S.folded = []; S.v = 2; }
     S.lit.forEach(w => { if (!S.stars[w]) S.stars[w] = 3; if (!S.mem[w]) S.mem[w] = {lv:0, due: now() + DAY}; });
     S.gal = 0;

@@ -22,6 +22,8 @@ function boot(){
   CP = CONS.map(c => c.words.length ? { x: c.words.reduce((s,w) => s + POS[w].x, 0) / c.words.length, y: c.words.reduce((s,w) => s + POS[w].y, 0) / c.words.length,
     top: Math.min(...c.words.map(w => POS[w].y)) } : {x:0, y:0, top:0});
   quiz = null; selected = null; selCons = null; tipQ.length = 0; tipCache = null; heatKey = ""; ign = null; page = null;
+  clearTimeout(chainT); chainT = null; clearTimeout(autoT); tapAny = null; run = null; pick = null; fxText = null; glideA = null; sparks.length = 0; for (const k in pops) delete pops[k];
+  bootDay = core.today();
   const g = core.guardCheck(); weekCard = core.weekly();
   build(); refresh(); renderPanel(true);
   if (core.S.lit.length) core.backup();
@@ -30,7 +32,7 @@ function boot(){
   cover = !core.S.lit.length && !(core.S.tips && core.S.tips.first);
   if (core.fadingWords().length) tip("fade");
 }
-let weekCard = null, page = null, cover = false;
+let weekCard = null, page = null, cover = false, bootDay = "";
 function startFirst(){ cover = false; if (!S().tips) S().tips = {}; S().tips.first = 1; core.save(); sfx("ok"); const c = core.candidates()[0]; if (c) startQuiz(c.w, "light"); }
 const S = () => core.S;
 const posOf = id => /^c\d+$/.test(id) ? CP[+id.slice(1)] : POS[id];
@@ -804,7 +806,7 @@ function drawMap(t){
   if (quiz && quiz.w !== selected) lab(quiz.w, COL.cream, 1, 14);
   ALLC.forEach(i => { if (!core.isFolded(i)) return; const q = toScr(CP[i], v); if (q.x < -60 || q.x > W + 60) return;
     U.text(c, CONS[i].name, q.x, q.y + Z(20) / s + 14, "cn", 12, "cream", {align: "center", b: 1, stroke: COL.sky}); });
-  if (fxText){ const e = (t - fxText.t0) / 1600; if (e >= 1) fxText = null; else { const q = toScr(POS[fxText.w], v);
+  if (fxText){ const e = (t - fxText.t0) / 1600; if (e >= 1) fxText = null; else if (!POS[fxText.w]) fxText = null; else { const q = toScr(POS[fxText.w], v);
     c.globalAlpha = e < .15 ? e / .15 : 1 - Math.max(0, (e - .5) / .5); U.text(c, fxText.s, q.x, q.y - 20 - 24 * e, "cn", 14, "lamp", {align: "center", b: 1, stroke: COL.sky}); c.globalAlpha = 1; } }
   // 流星（屏幕坐标）
   for (let q = meteors.length - 1; q >= 0; q--){ const me = meteors[q], e = (t - me.t0) / 1100; if (e < 0) continue; if (e >= 1){ meteors.splice(q, 1); continue; }
@@ -890,7 +892,7 @@ function drawToast(t){ if (!toastMsg) return; const e = t - toastT; if (e > 2200
 let lastDraw = 0, frameN = 0, lastFrame = 0, loopId = 0, frameErr = 0;
 // 画面循环：某一帧出错也照样排下一帧，不让整个游戏停住
 function frame(id){ if (id !== loopId) return; lastFrame = Date.now();
-  try { frameBody(); frameErr = 0; } catch(e){ if (++frameErr === 3){ try { quiz && quiz.done && (quiz = null); pick = null; reveal = null; ign = null; glideA = null; refresh(); renderPanel(true); } catch(e2){} } if (typeof console !== "undefined") console.error(e); }
+  try { frameBody(); frameErr = 0; } catch(e){ if (++frameErr === 3){ try { quiz && quiz.done && (quiz = null); pick = null; reveal = null; ign = null; glideA = null; fxText = null; sparks.length = 0; for (const k in pops) delete pops[k]; mapKey = ""; refresh(); renderPanel(true); } catch(e2){} } if (typeof console !== "undefined") console.error(e); }
   P.raf(() => frame(id)); }
 function startLoop(){ const id = ++loopId; lastFrame = Date.now(); P.raf(() => frame(id)); }
 function frameBody(){
@@ -1041,10 +1043,11 @@ P.onTouch({
     if (touch.zone === "panel"){ if (touch.moved > 6) pVel = touch.vy; clampScrollSoft(); }
     if (touch.moved >= 8) return;
     const f = ts[0] || touch.start, x = f.clientX !== undefined ? f.clientX : f.x, y = f.clientY !== undefined ? f.clientY : f.y;
-    const h = findHit(x, y);
-    if (h && h.prio) return h.fn();
-    if (tapAny && zoneAt(x, y) === "panel") return tapAny();
-    if (h) return h.fn();
+    const h = findHit(x, y), ta = tapAny;
+    // 一次点击只触发一个按钮；按钮列表下一帧重画前先清空，免得连点时按到已经换掉的旧按钮
+    if (h && h.prio){ hits = []; return h.fn(); }
+    if (ta && zoneAt(x, y) === "panel"){ hits = []; return ta(); }
+    if (h){ hits = []; return h.fn(); }
     if (zoneAt(x, y) === "map"){
       // 双击星图放大
       const now = Date.now(); if (lastTap && now - lastTap.t < 320 && Math.hypot(x - lastTap.x, y - lastTap.y) < 30){ lastTap = null; zoom(.5, x, y, true); return; }
@@ -1059,10 +1062,15 @@ P.share(shareInfo);
 // 从后台回来：清掉没收尾的触摸（否则之后的点击都会被当成双指）、重画星图、重启画面循环
 function resetTouch(){ touch.pts.clear(); touch.active = false; touch.pinch = 0; touch.sheet = false; touch.mode = null; touch.moved = 0; press = null; pVel = 0;
   sheetH = sheetTarget(); L.panel.y = H - sheetH; L.panel.h = sheetH; }
-P.onShow(() => { resetTouch(); mapKey = ""; heatKey = ""; try { refresh(); renderPanel(false); } catch(e){} startLoop(); });
+P.onShow(() => { resetTouch(); mapKey = ""; heatKey = "";
+  try {
+    // 放在后台过了一夜：按新的一天重新算（守护星、每周回顾、变暗的星）
+    if (core.today() !== bootDay){ bootDay = core.today(); const g = core.guardCheck(); if (g) toast(`守护星帮你保住了连续天数（用掉 ${g} 颗）`);
+      if (!busy()){ const wc = core.weekly(); if (wc) weekCard = wc; } if (core.fadingWords().length) tip("fade"); }
+    refresh(); renderPanel(false); } catch(e){} startLoop(); });
 P.onHide(() => { resetTouch(); core.save(); core.backup(); });
 // 画面循环万一停了（有的手机切后台后不再回调），1.5 秒内自动重启
 setInterval(() => { if (Date.now() - lastFrame > 1500) startLoop(); }, 1000);
 startLoop();
 // 浏览器预览里方便自动化测试
-if (typeof window !== "undefined" && window.__wxPreview) window.__game = { get core(){ return core; }, get quiz(){ return quiz; }, get L(){ return L; }, get hits(){ return hits; }, get selected(){ return selected; }, get statN(){ return statN; }, boot, select, selectCons, showLevel, startQuiz, answer, nextQ, fit, polish, get reveal(){ return reveal; }, get run(){ return run; }, mapTap, get pick(){ return pick; }, get sheetK(){ return sheetK; }, get ign(){ return ign; }, get V(){ return V; }, get vb(){ return vb; }, toWorld, view, get pScroll(){ return pScroll; } };
+if (typeof window !== "undefined" && window.__wxPreview) window.__game = { get core(){ return core; }, get quiz(){ return quiz; }, get L(){ return L; }, get hits(){ return hits; }, get selected(){ return selected; }, get statN(){ return statN; }, boot, select, selectCons, showLevel, startQuiz, answer, nextQ, fit, polish, get reveal(){ return reveal; }, get run(){ return run; }, mapTap, get pick(){ return pick; }, get sheetK(){ return sheetK; }, get ign(){ return ign; }, get V(){ return V; }, get vb(){ return vb; }, toWorld, view, get pScroll(){ return pScroll; }, set bootDay(v){ bootDay = v; }, get fx(){ return fxText; }, set fx(v){ fxText = v; }, get weekCard(){ return weekCard; } };

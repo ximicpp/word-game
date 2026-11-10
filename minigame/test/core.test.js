@@ -70,4 +70,11 @@ for (const bank of ["ket", "pet", "kp", "kpf"]){
   const R = createCore(store); R.reset(); assert.strictEqual(createCore(store).S.lit.length, 0, "重新开始后进度应该是空的");
   // 写入失败时能知道
   const bad = createCore({ get: store.get, set: () => false }); assert.strictEqual(bad.save(), false); assert.strictEqual(bad.saveOk(), false); }
+// 存档里字段类型坏了也能打开、能继续玩
+[{lit:["cat","dog"],stars:null,mem:null,folded:null,tips:null,daily:null,streak:null,luck:null,dust:"abc",combo:null},
+ {lit:["cat"],stars:"x",mem:[],folded:"1",daily:"d",streak:5,luck:1,dust:null,answered:"q",week:"z",ms:3,sms:"k",conf:7,guard:"a"},
+ {lit:["cat",5,null,{}],mem:{cat:null},stars:{cat:"9"}}].forEach(bad => { for (const k in mem) delete mem[k]; mem[KEY] = JSON.stringify(bad);
+  const C = createCore(store); assert.ok(C.S.lit.includes("cat")); assert.ok(isFinite(C.S.dust)); C.guardCheck(); C.weekly(); C.lucky(); C.dueToday();
+  const z = C.newQuiz(C.candidates()[0].w, "light"); z.qs.forEach((q, j) => { z.i = j; z.picked = null; C.answer(z, q.opts.findIndex(o => o.key === q.answer)); }); C.lightUp(z);
+  assert.ok(C.isLit(z.w)); assert.ok(JSON.parse(mem[KEY]).lit.includes(z.w)); });
 console.log(`核心自测通过：${n} 道题`);

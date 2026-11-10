@@ -217,7 +217,9 @@ function lightUp(){
   // 没有大事（星座、升级、里程碑、今日目标）就直接接下一个词
   // 今日目标、升级、考纲里程碑：点亮动画放完后拉远看整片星空
   z.reveal = !!(z.goal || z.lvUp || z.ms.length);
-  const big = z.newCons !== null || z.subDone !== null || z.lvUp || z.ms.length || z.streak || z.goal || core.litArr.length === core.WORDS.length, nx = !big && core.candidates()[0];
+  // 接下一颗时，前几名推荐里有和刚点亮的词直接相连的，就顺着这条线走
+  const big = z.newCons !== null || z.subDone !== null || z.lvUp || z.ms.length || z.streak || z.goal || core.litArr.length === core.WORDS.length, cs1 = big ? [] : core.candidates(),
+    nx = cs1.slice(0, 8).find(c => adj[w].some(e => e.w === c.w && e.t !== "topic")) || cs1.slice(0, 8).find(c => adj[w].some(e => e.w === c.w)) || cs1[0];
   if (nx){ z.chain = nx.w; z.chainT0 = Date.now(); chainT = setTimeout(goChain, CHAIN_MS); }
   renderPanel(true);
 }
@@ -450,7 +452,7 @@ function pLevel(){
     U.text(c, lt, x + bw / 2, y + 19, "mono", 15, "dark", {align: "center", b: 1}); U.text(c, core.titleOf(lv), x + bw + 12, y + 19, "cn", 20, "ink", {b: 1}); });
   gap(6); bar(top ? 1 : (n - LA[lv - 1]) / (LA[lv] - LA[lv - 1]));
   gap(8); txt([T(top ? "已经满级了！" : `再点亮 `), ...(top ? [] : [T(String(LA[lv] - n), {c: "lamp", b: 1}), T(` 颗升到 Lv.${lv + 1}${core.titleOf(lv + 1) !== core.titleOf(lv) ? " · " + core.titleOf(lv + 1) : ""}。`)]),
-    T(`一共点亮了 ${n} 个词，其中 `), T(String(core.giantCount()), {c: "lamp", b: 1}), T(" 颗恒星。")], {size: 14, lh: 21});
+    T(`一共点亮了 ${n} 个词，其中 `), T(String(core.giantCount()), {c: "lamp", b: 1}), T(" 颗恒星，它们之间连成了 "), T(String(linkCount()), {c: "lamp", b: 1}), T(" 条线。")], {size: 14, lh: 21});
   core.EXAMS.filter(e => core.LVS.includes(e.lv) || ex[e.lv]).forEach(e => { const k = ex[e.lv] || 0, t = core.EXAM_N[e.lv];
     gap(16); add(22, (c, x, y) => { U.text(c, e.name, x, y + 10, "w", 15, "ink", {b: 1}); U.text(c, e.note, x + U.measure(c, e.name + " ", "w", 15, 1), y + 10, "w", 12, "muted");
       U.text(c, `${k} / ${t} · ${Math.floor(k / t * 100)}%`, x + cw(), y + 10, "mono", 12, "muted", {align: "right"}); });
@@ -558,9 +560,15 @@ function pChain(){ const z = quiz, w = z.w;
     U.box(c, x, y, cw(), 48, 10, "sky2", "rgba(255,201,92,.45)"); U.box(c, x, y + 45, cw() * k, 3, 2, "lamp");
     U.text(c, "下一颗", x + 14, y + 24, "cn", 13, "muted"); U.text(c, z.chain, x + 14 + U.measure(c, "下一颗 ", "cn", 13), y + 24, "w", 17, "ink", {b: 1});
     U.text(c, "›", x + cw() - 16, y + 24, "cn", 20, "lamp", {align: "right"}); });
+  // 写出下一颗和刚点亮的词（或别的已点亮的词）是什么关系
+  { let a = w, e = relOf(w, z.chain); if (!e){ const e2 = adj[z.chain].find(x => x.t !== "topic" && core.isLit(x.w)) || adj[z.chain].find(x => core.isLit(x.w)); if (e2){ a = e2.w; e = e2; } }
+    if (e){ gap(8); txt([T("顺着线学  ", {c: "muted"}), T("▬ ", {c: e.t}), Wd(a, {b: 1}), T(" 和 "), Wd(z.chain, {b: 1}), T(" " + REL_SAY[e.t], {c: e.t})], {size: 14, lh: 22}); } }
   gap(8); subLine(z.chain, D.words[z.chain].s === D.words[w].s ? "还在" : "下一片：");
   gap(6); btn("停一下", "ghost", () => { clearChain(); renderPanel(false); }, {w: 90, h: 32, size: 13, prio: true});
   tapAny = goChain; }
+const REL_SAY = {sound: "读音很像", form: "长得很像", syn: "意思相近", ant: "意思相反", root: "是同一个词根", coll: "常搭配在一起", topic: "是同一个话题", hyper: "是一类"};
+const relOf = (a, b) => adj[a].find(e => e.w === b && e.t !== "topic") || adj[a].find(e => e.w === b);
+const linkCount = () => { let n = 0; D.edges.forEach(([a, b]) => { if (core.isLit(a) && core.isLit(b)) n++; }); return n; };
 function pResult(){
   const z = quiz, w = z.w, c0 = z.newCons !== null ? CONS[z.newCons] : null, cs0 = core.candidates(new Set(z.unlocked));
   if (z.chain) return pChain();
@@ -901,14 +909,26 @@ function frame(){
 function drawCover(t){ if (!cover) return; const c = ctx;
   const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "rgba(8,13,26,.62)"); g.addColorStop(.5, "rgba(8,13,26,.86)"); g.addColorStop(1, "rgba(8,13,26,.97)"); c.fillStyle = g; c.fillRect(0, 0, W, H);
   hits.push({x: 0, y: 0, w: W, h: H, fn: () => {}, prio: true});
-  const cy = Math.round(H * .36), sy = cy - 100, pul = .5 + .5 * Math.sin(t / 650), R = 50 + pul * 12;
-  const rg = c.createRadialGradient(W / 2, sy, 0, W / 2, sy, R); rg.addColorStop(0, "rgba(255,240,200,1)"); rg.addColorStop(.16, "rgba(255,201,92,.8)"); rg.addColorStop(1, "rgba(255,201,92,0)");
-  c.fillStyle = rg; c.beginPath(); c.arc(W / 2, sy, R, 0, 7); c.fill();
-  c.save(); c.shadowColor = COL.lamp; c.shadowBlur = 26; U.text(c, "单词星系", W / 2, cy, "cn", 46, "lamp", {align: "center", b: 1}); c.restore();
-  U.text(c, "每个单词都是一颗星", W / 2, cy + 54, "cn", 18, "ink", {align: "center"});
-  U.text(c, "答对几道小题，就能把它点亮", W / 2, cy + 82, "cn", 18, "ink", {align: "center"});
-  U.text(c, `KET · PET · FCE 考纲 ${Object.keys(core.RAW.words).length} 词`, W / 2, cy + 118, "cn", 13, "muted", {align: "center"});
-  const bw = Math.min(320, W - 64), bh = 56, bx = W / 2 - bw / 2, by = Math.round(H * .68);
+  const cy = Math.round(Math.max(H * .4, L.head.h + 250)), sy = cy - 124, R = 84, pul = .5 + .5 * Math.sin(t / 650), cx = W / 2;
+  // 一张小星网：中间的词亮着，四条不同颜色的线依次亮起，连到有关系的词
+  const NET = [["glad", "近义", "syn", -148], ["sad", "反义", "ant", -32], ["birthday", "搭配", "coll", 28], ["happiness", "同词根", "root", 152]];
+  const ph = (t % 4800) / 800;   // 每 0.8 秒亮一条，亮完停一会儿再重来
+  NET.forEach(([wd, rel, tp, deg], k) => { const a = deg * Math.PI / 180, x = cx + Math.cos(a) * R * 1.25, y = sy + Math.sin(a) * R * .8, on = Math.max(0, Math.min(1, ph - k));
+    c.save(); c.globalAlpha = .22; c.strokeStyle = COL[tp]; c.lineWidth = 1.5; c.beginPath(); c.moveTo(cx, sy); c.lineTo(x, y); c.stroke();
+    if (on > 0){ c.globalAlpha = .95; c.shadowColor = COL[tp]; c.shadowBlur = 8; c.lineWidth = 2; c.beginPath(); c.moveTo(cx, sy); c.lineTo(cx + (x - cx) * on, sy + (y - sy) * on); c.stroke(); }
+    c.restore();
+    const lit = on >= 1; c.beginPath(); c.arc(x, y, lit ? 6 : 4, 0, 7); c.fillStyle = lit ? COL.lamp : "#6673a0"; c.save(); if (lit){ c.shadowColor = COL.lamp; c.shadowBlur = 14; } c.fill(); c.restore();
+    const up = deg < 0, ty = y + (up ? -20 : 20);
+    U.text(c, wd, x, ty, "w", 15, lit ? "cream" : "muted", {align: "center", b: 1});
+    U.text(c, rel, x, ty + (up ? -17 : 17), "cn", 11, COL[tp], {align: "center"}); });
+  const rg = c.createRadialGradient(cx, sy, 0, cx, sy, 30 + pul * 6); rg.addColorStop(0, "rgba(255,240,200,1)"); rg.addColorStop(.2, "rgba(255,201,92,.8)"); rg.addColorStop(1, "rgba(255,201,92,0)");
+  c.fillStyle = rg; c.beginPath(); c.arc(cx, sy, 36, 0, 7); c.fill();
+  U.text(c, "happy", cx, sy + 30, "w", 17, "cream", {align: "center", b: 1, stroke: "rgba(8,13,26,.9)", sw: 4});
+  c.save(); c.shadowColor = COL.lamp; c.shadowBlur = 26; U.text(c, "单词星系", cx, cy, "cn", 46, "lamp", {align: "center", b: 1}); c.restore();
+  U.text(c, "单词连成一张星网", cx, cy + 54, "cn", 18, "ink", {align: "center"});
+  U.text(c, "点亮一颗，顺着线记住一串", cx, cy + 82, "cn", 18, "ink", {align: "center"});
+  U.text(c, `KET · PET · FCE 考纲 ${Object.keys(core.RAW.words).length} 词 · ${core.RAW.edges.length} 条连线`, cx, cy + 116, "cn", 12, "muted", {align: "center"});
+  const bw = Math.min(320, W - 64), bh = 56, bx = W / 2 - bw / 2, by = Math.round(Math.max(H * .68, cy + 142));
   c.save(); c.shadowColor = "rgba(255,201,92,.55)"; c.shadowBlur = 18 + pul * 14; U.box(c, bx, by, bw, bh, 28, "lamp"); c.restore();
   pressFx(c, bx, by, bw, bh, 28); U.text(c, "点亮第一颗星", W / 2, by + bh / 2 + 1, "cn", 20, "dark", {align: "center", b: 1});
   U.text(c, "先答 2 道题，十几秒就能点亮", W / 2, by + bh + 26, "cn", 13, "muted", {align: "center"});
@@ -919,18 +939,30 @@ let shareCv = null;
 function shareCard(){ const SW0 = 500, SH0 = 400; if (!shareCv) shareCv = P.offscreen(SW0, SH0); const c = shareCv.getContext("2d");
   c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = "source-over";
   const g = c.createLinearGradient(0, 0, 0, SH0); g.addColorStop(0, "#0b1222"); g.addColorStop(1, "#1b2547"); c.fillStyle = g; c.fillRect(0, 0, SW0, SH0);
-  const bx = BBall, k = Math.min(SW0 / bx.w, SH0 / bx.h) * 1.2, ox = SW0 * .62 - (bx.x + bx.w / 2) * k, oy = SH0 * .46 - (bx.y + bx.h / 2) * k;
-  c.fillStyle = "rgba(150,170,220,.3)"; core.WORDS.forEach((w, i) => { if (i % 2 || core.isLit(w)) return; const p = POS[w]; c.fillRect(ox + p.x * k, oy + p.y * k, 1.5, 1.5); });
-  c.globalCompositeOperation = "lighter";
-  core.litArr.forEach(w => { const p = POS[w], x = ox + p.x * k, y = oy + p.y * k, rg = c.createRadialGradient(x, y, 0, x, y, 10);
-    rg.addColorStop(0, "rgba(255,226,150,.95)"); rg.addColorStop(.22, "rgba(255,190,90,.4)"); rg.addColorStop(1, "rgba(255,190,90,0)"); c.fillStyle = rg; c.beginPath(); c.arc(x, y, 10, 0, 7); c.fill(); });
+  // 镜头对准已点亮的那一片（没点亮时看整片星空），画出点亮的词之间的连线
+  const lw = core.litArr, bx = BBall; let k, ox, oy, links = 0;
+  if (lw.length){ const xs = lw.map(w => POS[w].x), ys = lw.map(w => POS[w].y), x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+    const vw = Math.max(340, x1 - x0 + 150), vh = Math.max(280, y1 - y0 + 150); k = Math.min(SW0 * .62 / vw, (SH0 - 110) / vh); ox = SW0 * .66 - (x0 + x1) / 2 * k; oy = (SH0 - 92) / 2 + 6 - (y0 + y1) / 2 * k; }
+  else { k = Math.min(SW0 / bx.w, SH0 / bx.h) * 1.2; ox = SW0 * .62 - (bx.x + bx.w / 2) * k; oy = SH0 * .46 - (bx.y + bx.h / 2) * k; }
+  const ds = Math.max(1.5, Math.min(3, 2.4 * k));
+  c.fillStyle = "rgba(150,170,220,.3)"; core.WORDS.forEach(w => { if (core.isLit(w)) return; const p = POS[w], x = ox + p.x * k, y = oy + p.y * k; if (x < -4 || x > SW0 + 4 || y < -4 || y > SH0 + 4) return; c.beginPath(); c.arc(x, y, ds / 2, 0, 7); c.fill(); });
+  c.lineCap = "round"; D.edges.forEach(([a, b, tp]) => { if (!core.isLit(a) || !core.isLit(b)) return; links++;
+    c.globalAlpha = tp === "topic" ? .35 : .85; c.strokeStyle = COL[tp]; c.lineWidth = tp === "topic" ? 1 : 1.6; c.beginPath(); c.moveTo(ox + POS[a].x * k, oy + POS[a].y * k); c.lineTo(ox + POS[b].x * k, oy + POS[b].y * k); c.stroke(); });
+  c.globalAlpha = 1; c.globalCompositeOperation = "lighter"; const gr = Math.max(9, Math.min(22, 20 * k));
+  lw.forEach(w => { const p = POS[w], x = ox + p.x * k, y = oy + p.y * k, rg = c.createRadialGradient(x, y, 0, x, y, gr);
+    rg.addColorStop(0, "rgba(255,226,150,.95)"); rg.addColorStop(.22, "rgba(255,190,90,.45)"); rg.addColorStop(1, "rgba(255,190,90,0)"); c.fillStyle = rg; c.beginPath(); c.arc(x, y, gr, 0, 7); c.fill(); });
   c.globalCompositeOperation = "source-over";
-  const sg = c.createLinearGradient(0, 0, SW0 * .6, 0); sg.addColorStop(0, "rgba(11,18,34,.92)"); sg.addColorStop(1, "rgba(11,18,34,0)"); c.fillStyle = sg; c.fillRect(0, 0, SW0 * .6, SH0);
+  // 镜头够近时，给最近点亮的几颗标上词名
+  if (k > .55){ const used = []; lw.slice(-8).reverse().forEach(w => { const p = POS[w], x = ox + p.x * k, y = oy + p.y * k + 17, hw = U.measure(c, w, "w", 13, 1) / 2 + 4;
+    if (x - hw < SW0 * .34 || x + hw > SW0 - 6 || y > SH0 - 104 || used.some(u => Math.abs(u.x - x) < u.hw + hw && Math.abs(u.y - y) < 16)) return;
+    used.push({x, y, hw}); U.text(c, w, x, y, "w", 13, "cream", {align: "center", b: 1, stroke: "rgba(11,18,34,.85)", sw: 3}); }); }
+  const sg = c.createLinearGradient(0, 0, SW0 * .5, 0); sg.addColorStop(0, "rgba(11,18,34,.92)"); sg.addColorStop(.55, "rgba(11,18,34,.6)"); sg.addColorStop(1, "rgba(11,18,34,0)"); c.fillStyle = sg; c.fillRect(0, 0, SW0 * .5, SH0);
   const n = S().lit.length, sn = core.streakNow(), lv = core.lvOf(n), d = core.daily(), today = d.n ? S().lit.slice(-d.n) : [];
   U.text(c, "单词星系", 28, 44, "cn", 22, "lamp", {b: 1});
   U.text(c, String(n), 26, 138, "mono", 84, "lamp", {b: 1}); const nw = U.measure(c, String(n), "mono", 84, 1);
   U.text(c, "颗星", 34 + nw, 158, "cn", 24, "ink", {b: 1});
   U.text(c, "已经点亮", 28, 204, "cn", 20, "ink");
+  if (links) U.text(c, `连成了 ${links} 条线`, 28, 268, "cn", 15, "cream");
   U.text(c, `${sn > 1 ? `连续 ${sn} 天 · ` : ""}Lv.${lv} ${core.titleOf(lv)}`, 28, 240, "cn", 16, "muted");
   if (today.length){ c.fillStyle = "rgba(11,18,34,.78)"; c.fillRect(0, SH0 - 92, SW0, 92);
     U.text(c, `今天学会 ${today.length} 个词`, 28, SH0 - 64, "cn", 15, "lamp", {b: 1});
@@ -938,7 +970,7 @@ function shareCard(){ const SW0 = 500, SH0 = 400; if (!shareCv) shareCv = P.offs
     U.text(c, line, 28, SH0 - 32, "w", 18, "ink", {b: 1}); }
   return shareCv; }
 function shareInfo(){ const n = S().lit.length, sn = core.streakNow(), d = core.daily();
-  const title = !n ? "单词星系：答对题目，点亮一整片单词星空" : d.n ? `我今天在单词星系点亮了 ${d.n} 颗单词星${sn > 1 ? `，已经连续 ${sn} 天` : ""}，你也来试试？` : `我的单词星空已经亮了 ${n} 颗星，你也来点亮一片？`;
+  const title = !n ? "单词星系：答对题目，点亮一整片单词星空" : d.n ? `我今天在单词星系点亮了 ${d.n} 颗单词星${sn > 1 ? `，已经连续 ${sn} 天` : ""}，你也来试试？` : `我的单词星网已经亮了 ${n} 颗星，你也来连一片？`;
   return {title, canvas: shareCard()}; }
 function shareBtn(){ gap(10); btn("把我的星空发给爸妈或同学", "ghost", () => P.shareNow(shareInfo), {h: 40, size: 14}); }
 

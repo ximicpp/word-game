@@ -32,7 +32,10 @@ const W = (s, o) => T(s, Object.assign({f:"w"}, o));
 function createCore(store, shiftDays){
   const SHIFT = (shiftDays || 0) * DAY;
   const now = () => Date.now() + SHIFT;
-  const readSave = () => { try { const v = store.get(KEY); return v ? JSON.parse(v) : null; } catch(e){ return null; } };
+  // 存档读两份：主存档读不出来或是空的，而备份里有进度时，用备份（防止一次读写失败把进度冲掉）
+  const parse = k => { try { const v = store.get(k); return v ? JSON.parse(v) : null; } catch(e){ return null; } };
+  const readSave = () => { const m = parse(KEY), ok = m && Array.isArray(m.lit); if (ok && m.lit.length) return m;
+    const b = parse(KEY + "-bak"); return b && Array.isArray(b.lit) && b.lit.length ? b : (ok ? m : null); };
   let BANK = "kp"; { const v = readSave(); if (v && BANKS[v.bank]) BANK = v.bank; }
   const LVS = BANKS[BANK].lv;
   const D = Object.assign({}, RAW, { words: {} });
@@ -148,7 +151,10 @@ function createCore(store, shiftDays){
     const all = [...readySet].filter(w => tierOf(w) >= 2); if (!all.length) all.push(...readySet);
     if (!all.length) return null;
     all.sort(); S.luck = {d: t, w: all[hash(t) % all.length], got: false}; save(); return S.luck.w; }
-  function save(){ try { store.set(KEY, JSON.stringify(S)); } catch(e){} }
+  let saveOk = true;
+  function save(){ try { saveOk = store.set(KEY, JSON.stringify(S)) !== false; } catch(e){ saveOk = false; } return saveOk; }
+  // 备份：启动读档成功后、切到后台时、重新开始时各写一次
+  function backup(){ try { return store.set(KEY + "-bak", JSON.stringify(S)) !== false; } catch(e){ return false; } }
   function recalc(){
     litArr = S.lit.filter(w => D.words[w]); litSet = new Set(litArr); const ra = new Set();
     // 自由浏览：任何没点亮的词都可以做题点亮
@@ -396,7 +402,7 @@ function createCore(store, shiftDays){
     z.goal = bumpDaily("review"); z.streak = streakHit;
     save(); z.done = true;
   }
-  function reset(){ S = Object.assign(fresh(), {tips: S.tips || {}, mute: S.mute}); recalc(); cur = 0; S.gal = 0; save(); }
+  function reset(){ S = Object.assign(fresh(), {tips: S.tips || {}, mute: S.mute}); recalc(); cur = 0; S.gal = 0; save(); backup(); }
   function setBank(k){ S.bank = k; S.gal = 0; save(); }
   function setCur(g){ cur = g; S.gal = g; }
 
@@ -407,7 +413,7 @@ function createCore(store, shiftDays){
     SUBS, SW, subOf, subLit, isCore, KIDS, BASE, band, whyOf, confOf, confMiss, confPairs, subDone: i => SW[i].length >= 3 && SW[i].every(x => litSet.has(x)),
     HINT_COST, OPEN_STEP, GOAL, GOALS, REVIEW_RUN, REVIEW_CAP, goalOf, setGoal, reviewLeft, dueToday, dayDone, GOAL_BONUS, QN, RAW, IMP, tierOf, qnOf, MAG, LV_AT, lvOf, titleOf, EXAMS, EXAM_N, QUARTERS, STREAK_MS, GUARD_COST, GUARD_MAX, GIANT_LV, INTERVALS, LVS,
     get S(){ return S; }, get cur(){ return cur; }, get litArr(){ return litArr; }, get readySet(){ return readySet; }, get openG(){ return openG; },
-    now, save, recalc, daily, lucky, isLit, status, isFading, fadingWords, consDone, isFolded, gainOf, consLeft, dueText, candidates, rep, fold, dustFor,
+    now, save, backup, saveOk: () => saveOk, recalc, daily, lucky, isLit, status, isFading, fadingWords, consDone, isFolded, gainOf, consLeft, dueText, candidates, rep, fold, dustFor,
     GENS, gensFor, newQuiz, answer, retry, useHint, lightUp, finishReview, reset, setBank, setCur, today,
     isGiant, giantCount, streakNow, guardCheck, buyGuard, examLit, examPassed, msText, mdText, weekly, cn1
   }));

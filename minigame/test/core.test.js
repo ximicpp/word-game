@@ -60,4 +60,14 @@ for (const bank of ["ket", "pet", "kp", "kpf"]){
   // 学完一片
   const si = C.D.words.apple.s; C.SW[si].forEach(w => { if (C.isLit(w)) return; const z3 = C.newQuiz(w, "light"); z3.qs.forEach((q, j) => { z3.i = j; z3.picked = null; C.answer(z3, q.opts.findIndex(o => o.key === q.answer)); }); C.lightUp(z3); if (C.SW[si].every(C.isLit)) assert.strictEqual(z3.subDone, si); });
   assert.ok(C.subDone(si)); }
+// 存档备份：主存档坏了或被清空时，从备份恢复；“重新开始”会连备份一起清
+{ for (const k in mem) delete mem[k]; mem[KEY] = JSON.stringify({ lit: [], bank: "kp" }); const C = createCore(store);
+  for (let k = 0; k < 6; k++){ const w = C.candidates()[0].w, z = C.newQuiz(w, "light"); z.qs.forEach((q, i) => { z.i = i; z.picked = null; C.answer(z, q.opts.findIndex(o => o.key === q.answer)); }); C.lightUp(z); }
+  assert.ok(C.save() && C.saveOk() && C.backup()); const lit = C.S.lit.slice();
+  mem[KEY] = "{坏掉的存档"; assert.deepStrictEqual(createCore(store).S.lit, lit, "主存档损坏时没有用备份");
+  delete mem[KEY]; assert.deepStrictEqual(createCore(store).S.lit, lit, "主存档丢失时没有用备份");
+  mem[KEY] = JSON.stringify({ lit: [], bank: "kp" }); assert.deepStrictEqual(createCore(store).S.lit, lit, "主存档被清空时没有用备份");
+  const R = createCore(store); R.reset(); assert.strictEqual(createCore(store).S.lit.length, 0, "重新开始后进度应该是空的");
+  // 写入失败时能知道
+  const bad = createCore({ get: store.get, set: () => false }); assert.strictEqual(bad.save(), false); assert.strictEqual(bad.saveOk(), false); }
 console.log(`核心自测通过：${n} 道题`);

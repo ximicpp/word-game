@@ -5,7 +5,7 @@ const U = require("./ui.js");
 const { createCore } = require("./core.js");
 const { COL } = U;
 
-const VERSION = "1.18.1", APP_NAME = "单词星系背单词";
+const VERSION = "1.18.2", APP_NAME = "单词星系背单词";
 const ctx = P.ctx, W = P.W, H = P.H, dpr = P.dpr;
 const PAD = 16, AUTO_MS = 800, CHAIN_MS = 1300, LD = Math.min(dpr, 2);   // LD：星图离屏层的清晰度，最高 2 倍，省内存
 U.setFamilies(P.families || {});
@@ -24,6 +24,7 @@ function boot(){
   quiz = null; selected = null; selCons = null; tipQ.length = 0; tipCache = null; heatKey = ""; ign = null; page = null;
   const g = core.guardCheck(); weekCard = core.weekly();
   build(); refresh(); renderPanel(true);
+  if (core.S.lit.length) core.backup();
   if (g) toast(`守护星帮你保住了连续天数（用掉 ${g} 颗）`);
   // 新玩家先看到开场封面，一个按钮直接开始第一颗星
   cover = !core.S.lit.length && !(core.S.tips && core.S.tips.first);
@@ -193,7 +194,7 @@ function answer(k){ const z = quiz; const r = core.answer(z, k); if (!r) return;
 function nextQ(){ clearTimeout(autoT); tapAny = null; const z = quiz; if (!z || z.done || z.picked === null) return;
   if (z.i < z.qs.length - 1){ z.i++; z.picked = null; renderPanel(true); } else if (z.mode === "review") finishReview(); else lightUp(); }
 function lightUp(){
-  const z = quiz, w = z.w; core.lightUp(z);
+  const z = quiz, w = z.w; core.lightUp(z); const saveFail = !core.saveOk();
   // 点亮动画：镜头对准新星和已点亮的邻居 → 星星燃起、冲击波、星点四散 → 光沿连线流向已点亮的邻居
   const nbs = [...new Set(adj[w].filter(e => core.isLit(e.w) && core.rep(e.w) === e.w).map(e => e.w))]
     .sort((x, y) => Math.hypot(POS[x].x - POS[w].x, POS[x].y - POS[w].y) - Math.hypot(POS[y].x - POS[w].x, POS[y].y - POS[w].y)).slice(0, 8);
@@ -214,6 +215,7 @@ function lightUp(){
   else if (z.newCons !== null) toast(`连成了${CONS[z.newCons].name}！`);
   else if (z.subDone !== null) toast(`「${core.SUBS[z.subDone].name}」这一片全部点亮！`);
   if (z.subDone !== null){ meteor(5); sfx("cons"); }
+  if (saveFail) toast("进度没有保存成功，请检查手机存储空间");
   // 没有大事（星座、升级、里程碑、今日目标）就直接接下一个词
   // 今日目标、升级、考纲里程碑：点亮动画放完后拉远看整片星空
   z.reveal = !!(z.goal || z.lvUp || z.ms.length);
@@ -885,8 +887,13 @@ function drawToast(t){ if (!toastMsg) return; const e = t - toastT; if (e > 2200
   c.save(); c.globalAlpha = a; c.shadowColor = "rgba(255,201,92,.5)"; c.shadowBlur = 24; U.box(c, x, y, w, 34, 17, "lamp"); c.restore();
   c.save(); c.globalAlpha = a; U.text(c, toastMsg, W / 2, y + 17, "cn", 14, "dark", {align: "center", b: 1}); c.restore(); }
 
-let lastDraw = 0, frameN = 0;
-function frame(){
+let lastDraw = 0, frameN = 0, lastFrame = 0, loopId = 0, frameErr = 0;
+// 画面循环：某一帧出错也照样排下一帧，不让整个游戏停住
+function frame(id){ if (id !== loopId) return; lastFrame = Date.now();
+  try { frameBody(); frameErr = 0; } catch(e){ if (++frameErr === 3){ try { quiz && quiz.done && (quiz = null); pick = null; reveal = null; ign = null; glideA = null; refresh(); renderPanel(true); } catch(e2){} } if (typeof console !== "undefined") console.error(e); }
+  P.raf(() => frame(id)); }
+function startLoop(){ const id = ++loopId; lastFrame = Date.now(); P.raf(() => frame(id)); }
+function frameBody(){
   const t = Date.now();
   if (glideA){ const k = Math.min(1, (t - glideA.t0) / glideA.dur), e = 1 - Math.pow(1 - k, 3), f = glideA.from, to = glideA.to;
     vb = {x: f.x + (to.x - f.x) * e, y: f.y + (to.y - f.y) * e, w: f.w + (to.w - f.w) * e, h: f.h + (to.h - f.h) * e}; if (k >= 1) glideA = null; }
@@ -902,7 +909,6 @@ function frame(){
     drawMap(t); drawPanel(); drawHeader(); drawToast(t); drawPick(); drawReveal(t); drawCover(t);
     lastDraw = t;
   }
-  P.raf(frame);
 }
 
 // ---------- 开场封面（只给新玩家看一次） ----------
@@ -1004,6 +1010,8 @@ function drawPick(){ if (!pick) return; const c = ctx, n = pick.ws.length, rh = 
     hits.push({x: x + 4, y: yy, w: w - 8, h: rh - 4, fn: () => { pick = null; select(wd); }, prio: true}); }); }
 P.onTouch({
   start(e){ const ts = e.changedTouches || e.touches || [];
+    // 系统没发“结束”的旧触摸点先清掉
+    if (e.touches){ const live = new Set(e.touches.map(x => x.identifier)); for (const id of [...touch.pts.keys()]) if (!live.has(id)) touch.pts.delete(id); if (!touch.pts.size) touch.active = false; }
     for (const tt of ts) touch.pts.set(tt.identifier, {x: tt.clientX, y: tt.clientY});
     if (!touch.active){ const f = ts[0]; touch.active = true; touch.zone = zoneAt(f.clientX, f.clientY); touch.moved = 0; touch.start = {x: f.clientX, y: f.clientY}; touch.t0 = Date.now();
       press = {x: f.clientX, y: f.clientY, moved: false}; pVel = 0; touch.vx = touch.vy = 0; touch.mode = null; touch.sheet = false;
@@ -1048,7 +1056,13 @@ function clampScrollSoft(){ const ms = maxScroll(); if (pScroll < 0 || pScroll >
 computeLayout();
 boot();
 P.share(shareInfo);
-P.onShow(() => { if (!busy()){ refresh(); renderPanel(false); } });
-P.raf(frame);
+// 从后台回来：清掉没收尾的触摸（否则之后的点击都会被当成双指）、重画星图、重启画面循环
+function resetTouch(){ touch.pts.clear(); touch.active = false; touch.pinch = 0; touch.sheet = false; touch.mode = null; touch.moved = 0; press = null; pVel = 0;
+  sheetH = sheetTarget(); L.panel.y = H - sheetH; L.panel.h = sheetH; }
+P.onShow(() => { resetTouch(); mapKey = ""; heatKey = ""; try { refresh(); renderPanel(false); } catch(e){} startLoop(); });
+P.onHide(() => { resetTouch(); core.save(); core.backup(); });
+// 画面循环万一停了（有的手机切后台后不再回调），1.5 秒内自动重启
+setInterval(() => { if (Date.now() - lastFrame > 1500) startLoop(); }, 1000);
+startLoop();
 // 浏览器预览里方便自动化测试
 if (typeof window !== "undefined" && window.__wxPreview) window.__game = { get core(){ return core; }, get quiz(){ return quiz; }, get L(){ return L; }, get hits(){ return hits; }, get selected(){ return selected; }, get statN(){ return statN; }, boot, select, selectCons, showLevel, startQuiz, answer, nextQ, fit, polish, get reveal(){ return reveal; }, get run(){ return run; }, mapTap, get pick(){ return pick; }, get sheetK(){ return sheetK; }, get ign(){ return ign; }, get V(){ return V; }, get vb(){ return vb; }, toWorld, view, get pScroll(){ return pScroll; } };

@@ -30,7 +30,7 @@
     onTouchStart: h => touchHandlers.start.push(h), onTouchMove: h => touchHandlers.move.push(h),
     onTouchEnd: h => touchHandlers.end.push(h), onTouchCancel: h => touchHandlers.cancel.push(h),
     createWebAudioContext: () => new (window.AudioContext || window.webkitAudioContext)(),
-    vibrateShort(){}, showShareMenu(){}, onShareAppMessage(f){ window.__onShare = f; }, onShareTimeline(){}, onShow(){},
+    vibrateShort(){}, showShareMenu(){}, onShareAppMessage(f){ window.__onShare = f; }, onShareTimeline(){}, onShow(f){ window.__show = f; }, onHide(f){ window.__hide = f; },
     shareAppMessage(o){ window.__shared = o; },
     getLaunchOptionsSync: () => ({ query: Object.fromEntries(q.entries()) }),
     showActionSheet({ itemList, success }){ const s = document.getElementById("sheet"), box = s.firstElementChild;

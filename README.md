@@ -77,3 +77,11 @@ GitHub Actions 在推送分支、提交或更新 Pull Request 时自动构建，
 推送以 `v` 开头的标签（例如 `v1.0.0`）会在三个构建都成功后创建 GitHub Release，并附上 HTML、APK 和小游戏工程。创建标签和推送由维护者执行；仓库需要启用 Actions 和允许工作流创建 Release。已有同名 Release 时发布步骤会失败，避免覆盖已有文件。
 
 Android 使用 Java 11、Gradle 7.3.3、Android SDK 34 和 Build Tools 34.0.0；本地可在 `android-offline` 目录运行 `gradle assembleDebug`。当前 APK 使用构建机器临时生成的调试密钥签名，适合体验，不保证不同构建可以直接覆盖安装，也不适合应用商店发布。需要稳定升级或正式发布时，应配置并安全保管固定的正式签名密钥。
+
+## 词宝小队（独立原型，`autochess/`）
+
+单词自走棋：答对题请来单词小精灵“词宝”，同主题、同词根、同词性、反义词、近义词排在一起触发组合；8 支小队同场，有等级、利息、技能、道具和小星灵回合。和单词星系是两个独立的游戏，共用这个仓库。
+
+- 打开 `autochess/index.html` 即可玩（单文件，无需构建）；发布后地址为 `https://ximicpp.github.io/word-game/autochess/`。
+- 词池由 `node tools/build-autochess.js` 从 `words/*.txt` 生成，详见 `autochess/README.md`。
+- 进度只存在本机浏览器。
